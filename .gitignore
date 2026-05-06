@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+.env.local
+*_skill.md
+SKILL.md
+koputus.jsx

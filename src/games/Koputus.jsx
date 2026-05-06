@@ -1,0 +1,656 @@
+import { useState, useEffect, useRef } from 'react';
+import { C } from '../shared/colors.js';
+import { BACKS } from '../shared/BACKS.jsx';
+import { SFX } from '../shared/audio.js';
+import { isRed, lbl, SUITS, RANKS, VAL, shuffle } from '../shared/helpers.js';
+import Card from '../shared/Card.jsx';
+
+const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
+
+const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
+function shuffledAINames() {
+  const a = [...AI_NAMES];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function newDeck() {
+  return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));
+}
+
+function initGame(n) {
+  const aiNames = shuffledAINames();
+  const deck = newDeck();
+  return {
+    players: Array.from({ length: n }, (_, i) => ({
+      id: i, name: i === 0 ? 'Hero' : aiNames[i - 1], isHuman: i === 0,
+      cards: [deck.shift(), deck.shift(), deck.shift(), deck.shift()],
+      known: new Set(i === 0 ? [] : [0, 1]),
+    })),
+    deck, discard: [],
+  };
+}
+
+const M = {
+  peekStart: 'Kortit on jaettu! Kurkkaa kaksi omaa pöytäkorttia — muista ne, sillä ne pysyvät piilossa koko pelin.',
+  peekOne:   'Hyvä! Kurkkaa vielä toinen kortti.',
+  peekDone:  'Pelaajat katsoivat kaksi korttiaan. Peli voi alkaa.',
+  yourTurn:  'Sinun vuorosi — nosta kortti pakasta tai poistopakasta. Voit koputtaa ennen nostoa, jos uskot pisteidesi olevan pienimmät.',
+  drawn:     c => `Nostit ${lbl(c)} (${c.v} p). Vaihda se johonkin pöytäkorteistasi tai lyö poistopakkaan.`,
+  drawnD:    c => `Nostit ${lbl(c)} (${c.v} p) poistopakasta. Vaihda pöytäkorttiin vai lyö takaisin?`,
+  swapped:   c => `Vaihdoit — ${lbl(c)} siirtyi poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
+  discarded: c => `Löit ${lbl(c)} poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
+  reactQ:    c => `${lbl(c)} on poistopakassa — onko sinulla samanvahvuinen pöytäkortti? Klikkaa sitä nopeasti!`,
+  reactWin:  () => 'Muistit oikein, pöytäkorttimääräsi vähenee.',
+  reactWrong: 'Väärä kortti! Menetät sen poistopakkaan ja nostat kaksi rangaistuskorttia (max 4 pöytäkorttia).',
+  reactEnd:  'Reaktioaika umpeutui — kukaan ei reagoinut.',
+  jackMsg:   'Jätkä! Saat kurkata yhtä omaa pöytäkorttia — valitse kumpi.',
+  queenMsg:  'Kuningatar! Valitse ensin oma korttisi jonka haluat vaihtaa...',
+  queenMsg2: 'Hyvä. Valitse nyt kenen tahansa pöytäkortti — ne vaihtavat paikkaa.',
+  kingMsg:   'Kuningas! Kurkkaa ensin yksi omistasi — valitse se.',
+  knocked:   n => `${n} koputtaa! Peli päättyy kunkin pelattua vuoronsa.`,
+  gameOver:  'Peli päättyi! Pienin pistesumma voittaa.',
+  aiTurn:    n => `${n} miettii...`,
+  aiSwapped: (n, c) => `${n} vaihtoi pöytäkortin — ${lbl(c)} poistopakkaan.`,
+  aiDiscard: (n, c) => `${n} heitti ${lbl(c)} poistopakkaan.`,
+  aiKnock:   n => `${n} koputtaa — luottaa käteensä!`,
+  aiReact:   (n, c) => `${n} reagoi lyömällä ${lbl(c)} — kortti poistuu!`,
+};
+
+function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle }) {
+  return (
+    <div style={{ padding: small ? 8 : 14, borderRadius: 12, transition: 'border-color 0.2s', border: `1px solid ${isActive ? 'rgba(201,168,76,0.3)' : 'rgba(42,74,50,0.4)'}`, background: isActive ? 'rgba(201,168,76,0.03)' : 'transparent' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim }}>
+        <span style={{ fontSize: small ? 12 : 14 }}>{player.isHuman ? '👤' : '🤖'}</span>
+        <span style={{ fontWeight: isActive ? 700 : 400, letterSpacing: 0.5 }}>{player.name}</span>
+        {isActive && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>● vuoro</span>}
+        {showScore && player.isHuman && <span style={{ marginLeft: 'auto', color: '#a0baa8', fontSize: 12 }}>{pScore(player)} p</span>}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+        {player.cards.map((card, i) => {
+          const vis = !!(debug || peekSet?.has(i));
+          const cl = clickableSet?.has(i) ?? false;
+          const memGlow = player.isHuman && player.known.has(i) && !peekSet?.has(i);
+          const reactHL = cl && phase === 'reaction';
+          const justPlaced = lastSwap === i;
+          if (card === null) return <Card key={i} empty small={small} />;
+          return (
+            <Card key={i} card={card} faceUp={vis}
+              highlight={cl && !small && !reactHL}
+              reactHL={reactHL}
+              justPlaced={justPlaced}
+              pulse={memGlow && !cl && !justPlaced}
+              backStyle={backStyle}
+              onClick={cl ? () => onCardClick?.(i) : undefined}
+              disabled={clickableSet && !cl}
+              small={small}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default function Koputus() {
+  const [screen, setScreen]     = useState('select');
+  const [nP, setNP]             = useState(3);
+  const [G, setG]               = useState(null);
+  const [phase, setPhase]       = useState('idle');
+  const [curIdx, setCurIdx]     = useState(0);
+  const [drawn, setDrawn]       = useState(null);
+  const [msg, setMsg_]          = useState('');
+  const [log, setLog]           = useState([]);
+  const [debugOpen, setDebug]   = useState(false);
+  const [peeksDone, setPD]      = useState(0);
+  const [tempPeek, setTP]       = useState(new Set());
+  const [reactionOpen, setRO]   = useState(false);
+  const [reactionSec, setRS]    = useState(3);
+  const [knockedBy, setKB]      = useState(null);
+  const [lastRound, setLR]      = useState(null);
+  const [specState, setSS]      = useState(null);
+  const [lastSwap, setLastSwap] = useState(null);
+  const [soundOn, setSoundOn]   = useState(true);
+  const [logOpen, setLogOpen]   = useState(true);
+  const [cardBack, setCardBack] = useState('ilves');
+
+  const logRef   = useRef([]);
+  const gRef     = useRef(null);
+  const knockRef = useRef(null);
+  const lrRef    = useRef(null);
+  const curRef   = useRef(0);
+  const stopReact = useRef(false);
+  const reactInt  = useRef(null);
+  const aiTmr     = useRef(null);
+
+  const setMsg = m => {
+    setMsg_(m);
+    if (!m) return;
+    const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
+    logRef.current = [entry, ...logRef.current].slice(0, 40);
+    setLog([...logRef.current]);
+  };
+
+  useEffect(() => { gRef.current = G; }, [G]);
+  useEffect(() => { knockRef.current = knockedBy; }, [knockedBy]);
+  useEffect(() => { lrRef.current = lastRound; }, [lastRound]);
+  useEffect(() => { curRef.current = curIdx; }, [curIdx]);
+  useEffect(() => () => { clearTimeout(aiTmr.current); clearInterval(reactInt.current); }, []);
+
+  function startGame() {
+    clearTimeout(aiTmr.current); clearInterval(reactInt.current);
+    const g = initGame(nP);
+    setG(g); gRef.current = g;
+    setPhase('peeking'); setCurIdx(0); setPD(0); setTP(new Set());
+    setDrawn(null); setMsg(M.peekStart); setKB(null); knockRef.current = null;
+    setLR(null); lrRef.current = null; setSS(null); setRO(false);
+    logRef.current = []; setLog([]);
+    setScreen('game');
+  }
+
+  function onPeek(idx) {
+    if (peeksDone >= 2) return;
+    const next = peeksDone + 1;
+    setPD(next);
+    setTP(prev => new Set([...prev, idx]));
+    const newG = { ...gRef.current, players: gRef.current.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p) };
+    setG(newG); gRef.current = newG;
+    setTimeout(() => setTP(prev => { const n = new Set(prev); n.delete(idx); return n; }), 2500);
+    if (next === 1) setMsg(M.peekOne);
+    else {
+      setMsg(M.peekDone);
+      setTimeout(() => {
+        setPhase('draw');
+        const si = 1 % nP;
+        setCurIdx(si); curRef.current = si;
+        if (si === 0) setMsg(M.yourTurn);
+        else { setMsg(M.aiTurn(newG.players[si].name)); aiTmr.current = setTimeout(() => runAI(si, gRef.current), 600); }
+      }, 1600);
+    }
+  }
+
+  function advance(gState, fromIdx) {
+    const kb = knockRef.current, lr = lrRef.current;
+    if (kb !== null && lr !== null) {
+      const newLR = new Set(lr); newLR.delete(gState.players[fromIdx].id);
+      if (newLR.size === 0) { endGame(gState); return; }
+      setLR(newLR); lrRef.current = newLR;
+    }
+    const next = (fromIdx + 1) % gState.players.length;
+    setCurIdx(next); curRef.current = next;
+    setPhase('draw'); setDrawn(null);
+    const np = gState.players[next];
+    if (np.isHuman) setMsg(M.yourTurn);
+    else { setMsg(M.aiTurn(np.name)); aiTmr.current = setTimeout(() => runAI(next, gState), 600); }
+  }
+
+  function endGame(gState) { setPhase('gameover'); setScreen('gameover'); setMsg(M.gameOver); }
+
+  function humanDrawDeck() {
+    const g = gRef.current; if (!g || !g.deck.length) return;
+    if (soundOn) SFX.flip();
+    const deck = [...g.deck], card = deck.shift();
+    const newG = { ...g, deck }; setG(newG); gRef.current = newG;
+    setDrawn(card); setPhase('drawn'); setMsg(M.drawn(card));
+  }
+  function humanDrawDiscard() {
+    const g = gRef.current; if (!g || !g.discard.length) return;
+    if (soundOn) SFX.flip();
+    const discard = [...g.discard], card = discard.pop();
+    const newG = { ...g, discard }; setG(newG); gRef.current = newG;
+    setDrawn(card); setPhase('drawn'); setMsg(M.drawnD(card));
+  }
+  function humanKnock() {
+    if (knockRef.current !== null) return;
+    setKB(0); knockRef.current = 0;
+    const lr = new Set(gRef.current.players.filter((_, i) => i !== 0).map(p => p.id));
+    setLR(lr); lrRef.current = lr;
+    setMsg(M.knocked('Hero'));
+  }
+
+  function flashSlot(pIdx, cIdx) {
+    setLastSwap({ pIdx, cIdx });
+    setTimeout(() => setLastSwap(null), 2200);
+  }
+
+  function humanSwap(cardIdx) {
+    const g = gRef.current, oldCard = g.players[0].cards[cardIdx];
+    flashSlot(0, cardIdx);
+    if (soundOn) SFX.flip();
+    const players = g.players.map((p, i) => {
+      if (i !== 0) return p;
+      const cards = [...p.cards]; cards[cardIdx] = drawn;
+      return { ...p, cards, known: new Set([...p.known, cardIdx]) };
+    });
+    const newG = { ...g, players, discard: [...g.discard, oldCard] };
+    setG(newG); gRef.current = newG;
+    setMsg(M.swapped(oldCard));
+    stopReact.current = false;
+    setTimeout(() => openReaction(newG, oldCard, 0), 600);
+  }
+  function humanDiscard() {
+    const g = gRef.current;
+    const newG = { ...g, discard: [...g.discard, drawn] };
+    setG(newG); gRef.current = newG; setMsg(M.discarded(drawn));
+    if (drawn.r === 'J') { setPhase('spec_j'); setMsg(M.jackMsg); return; }
+    if (drawn.r === 'Q') { setPhase('spec_q_own'); setMsg(M.queenMsg); setSS({ type: 'Q', ownIdx: null }); return; }
+    if (drawn.r === 'K') { setPhase('spec_k'); setMsg(M.kingMsg); setSS({ type: 'K', ownIdx: null }); return; }
+    setTimeout(() => openReaction(newG, drawn, 0), 200);
+  }
+
+  function handleJ(idx) {
+    const g = gRef.current, card = g.players[0].cards[idx];
+    setTP(new Set([idx])); setTimeout(() => setTP(new Set()), 2500);
+    const players = g.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p);
+    const newG = { ...g, players }; setG(newG); gRef.current = newG;
+    setMsg(`Kurkkasit ${lbl(card)} (${card.v} p) — muista se!`);
+    setTimeout(() => openReaction(newG, drawn, 0), 2800);
+  }
+  function handleQOwn(idx) {
+    stopReact.current = true; clearInterval(reactInt.current);
+    setSS({ type: 'Q', ownIdx: idx }); setPhase('spec_q_tgt');
+    setMsg(`Valitsit oman korttisi (paikka ${idx + 1}). Valitse nyt kenen tahansa pöytäkortti jonka kanssa vaihdat — tai paina Ohita.`);
+  }
+  function handleQTarget(pIdx, cIdx) {
+    const g = gRef.current, own = specState.ownIdx;
+    const oc = g.players[0].cards[own], tc = g.players[pIdx].cards[cIdx];
+    const players = g.players.map((p, i) => {
+      if (i === 0) { const c = [...p.cards]; c[own] = tc; return { ...p, cards: c }; }
+      if (i === pIdx) { const c = [...p.cards]; c[cIdx] = oc; return { ...p, cards: c }; }
+      return p;
+    });
+    const newG = { ...g, players }; setG(newG); gRef.current = newG; setSS(null);
+    setMsg('Vaihto tehty — kukaan ei nähnyt kortteja!');
+    stopReact.current = false;
+    setTimeout(() => openReaction(newG, drawn, 0), 800);
+  }
+  function handleKPeek(idx) {
+    stopReact.current = true; clearInterval(reactInt.current);
+    const g = gRef.current, card = g.players[0].cards[idx];
+    setTP(new Set([idx]));
+    const players = g.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p);
+    const newG = { ...g, players }; setG(newG); gRef.current = newG;
+    setMsg(`Kurkkasit ${lbl(card)} (${card.v} p). Klikkaa vastustajan korttia kurkataksesi sen — tai paina Ohita.`);
+    setSS({ type: 'K', ownIdx: idx }); setPhase('spec_k_decide');
+  }
+  function handleKPeekTarget(pIdx, cIdx) {
+    const g = gRef.current, tgtCard = g.players[pIdx].cards[cIdx];
+    if (!tgtCard) return;
+    setSS(prev => ({ ...prev, tgtPIdx: pIdx, tgtCIdx: cIdx, tgtCard }));
+    setPhase('spec_k_confirm');
+    setMsg(`Vastustajan kortti on ${lbl(tgtCard)} (${tgtCard.v} p). Vaihdetaanko?`);
+  }
+  function handleKSwap() {
+    const g = gRef.current, own = specState.ownIdx;
+    const realPIdx = specState.tgtPIdx, realCIdx = specState.tgtCIdx;
+    const oc = g.players[0].cards[own], tc = g.players[realPIdx].cards[realCIdx];
+    const players = g.players.map((p, i) => {
+      if (i === 0) { const c = [...p.cards]; c[own] = tc; return { ...p, cards: c }; }
+      if (i === realPIdx) { const c = [...p.cards]; c[realCIdx] = oc; return { ...p, cards: c }; }
+      return p;
+    });
+    const newG = { ...g, players }; setG(newG); gRef.current = newG;
+    setTP(new Set()); setSS(null); stopReact.current = false;
+    setMsg('Vaihto tehty!');
+    setTimeout(() => openReaction(newG, drawn, 0), 1200);
+  }
+  function handleKSkip() {
+    setTP(new Set()); setSS(null); stopReact.current = false;
+    setMsg('Ohitettu — vuoro jatkuu.');
+    setTimeout(() => openReaction(gRef.current, drawn, 0), 800);
+  }
+
+  function openReaction(gState, card, byIdx) {
+    if (gState.deck.length < 2) { advance(gState, byIdx); return; }
+    stopReact.current = false; setRO(true); setRS(5); setPhase('reaction'); setMsg(M.reactQ(card));
+    let t = 5;
+    clearInterval(reactInt.current);
+    reactInt.current = setInterval(() => {
+      t--; setRS(t);
+      if (t <= 0) {
+        clearInterval(reactInt.current);
+        if (!stopReact.current) { stopReact.current = true; setRO(false); setMsg(M.reactEnd); advance(gState, byIdx); }
+      }
+    }, 1000);
+    gState.players.forEach((p, i) => {
+      if (p.isHuman) return;
+      const mi = [...p.known].find(ki => p.cards[ki]?.r === card.r);
+      if (mi !== undefined) {
+        const delay = 2000 + Math.random() * 2500;
+        setTimeout(() => {
+          if (stopReact.current) return;
+          stopReact.current = true; clearInterval(reactInt.current); setRO(false);
+          setMsg(M.aiReact(p.name, p.cards[mi]));
+          const cur = gRef.current;
+          const players = cur.players.map((pl, pi) => {
+            if (pi !== i) return pl;
+            const cards = [...pl.cards]; cards[mi] = null;
+            const kn = new Set([...pl.known].filter(k => k !== mi));
+            return { ...pl, cards, known: kn };
+          });
+          const newG = { ...cur, players }; setG(newG); gRef.current = newG;
+          setTimeout(() => advance(newG, byIdx), 900);
+        }, delay);
+      }
+    });
+  }
+
+  function humanReact(cardIdx) {
+    if (!reactionOpen || !gRef.current) return;
+    const g = gRef.current, top = g.discard[g.discard.length - 1];
+    if (!top) return;
+    stopReact.current = true; clearInterval(reactInt.current); setRO(false);
+    if (g.players[0].cards[cardIdx]?.r === top.r) {
+      const remainingNonNull = g.players[0].cards.filter((c, i) => c !== null && i !== cardIdx).length;
+      const isLastCard = remainingNonNull === 0;
+      const players = g.players.map((p, i) => {
+        if (i !== 0) return p;
+        const cards = [...p.cards]; cards[cardIdx] = null;
+        const kn = new Set(p.known); kn.delete(cardIdx);
+        return { ...p, cards, known: kn };
+      });
+      const newG = { ...g, players }; setG(newG); gRef.current = newG;
+      if (isLastCard) {
+        if (soundOn) SFX.lastCardWin();
+        setMsg('Löit viimeisen korttisi — peli päättyy sinulle! Erinomainen!');
+        setTimeout(() => endGame(newG), 2200);
+      } else {
+        if (soundOn) SFX.reactWin();
+        setMsg(M.reactWin());
+        setTimeout(() => advance(newG, curRef.current), 2000);
+      }
+    } else {
+      if (soundOn) SFX.reactWrong();
+      setMsg(M.reactWrong);
+      const lostCard = g.players[0].cards[cardIdx];
+      const afterLoss = [...g.players[0].cards]; afterLoss[cardIdx] = null;
+      const draws = g.deck.slice(0, 2); let dIdx = 0;
+      const withPenalty = afterLoss.map(c => { if (c === null && dIdx < draws.length) return draws[dIdx++]; return c; });
+      const newDeck = g.deck.slice(2);
+      const newKn = new Set([...g.players[0].known].filter(k => k !== cardIdx));
+      const players = g.players.map((p, i) => i === 0 ? { ...p, cards: withPenalty, known: newKn } : p);
+      const newG = { ...g, players, deck: newDeck, discard: [...g.discard, lostCard] };
+      setG(newG); gRef.current = newG;
+      setTimeout(() => advance(newG, curRef.current), 2200);
+    }
+  }
+
+  function runAI(playerIdx, gState) {
+    if (!gState) gState = gRef.current; if (!gState) return;
+    const p = gState.players[playerIdx];
+    if (knockRef.current === null) {
+      const ks = [...p.known].reduce((s, i) => s + (p.cards[i]?.v || 0), 0);
+      const uk = p.cards.filter(c => c !== null).length - p.known.size;
+      if (ks + uk * 5 <= 8) {
+        setKB(playerIdx); knockRef.current = playerIdx;
+        const lr = new Set(gState.players.filter((_, i) => i !== playerIdx).map(pl => pl.id));
+        setLR(lr); lrRef.current = lr; setMsg(M.aiKnock(p.name));
+      }
+    }
+    const dt = gState.discard[gState.discard.length - 1];
+    const worstKn = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
+      .sort((a, b) => gState.players[playerIdx].cards[b].v - gState.players[playerIdx].cards[a].v)[0];
+    const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
+    setTimeout(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'kaatopakasta' : 'pakasta'}...`); }, 1600);
+    setTimeout(() => {
+      let card, deck, discard;
+      if (drawFromDiscard) {
+        card = dt; deck = gState.deck; discard = gState.discard.slice(0, -1);
+      } else {
+        if (!gState.deck.length) { endGame(gState); return; }
+        card = gState.deck[0]; deck = gState.deck.slice(1); discard = gState.discard;
+      }
+      const wo = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
+        .sort((a, b) => p.cards[b].v - p.cards[a].v)[0];
+      if (wo !== undefined && card.v < p.cards[wo].v) {
+        const old = p.cards[wo];
+        const players = gState.players.map((pl, i) => {
+          if (i !== playerIdx) return pl;
+          const cards = [...pl.cards]; cards[wo] = card;
+          return { ...pl, cards, known: new Set([...pl.known, wo]) };
+        });
+        const updG = { ...gState, players, deck, discard: [...discard, old] };
+        setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
+        flashSlot(playerIdx, wo);
+        setTimeout(() => openReaction(updG, old, playerIdx), 1200);
+      } else {
+        const updG = { ...gState, deck, discard: [...discard, card] };
+        setG(updG); gRef.current = updG; setMsg(M.aiDiscard(p.name, card));
+        setTimeout(() => openReaction(updG, card, playerIdx), 1200);
+      }
+    }, 3600);
+  }
+
+  const Btn = ({ label, onClick, color, outline, small: sm }) => {
+    const [h, setH] = useState(false);
+    return (
+      <button onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+        style={{ background: outline ? (h ? color + '18' : 'transparent') : `linear-gradient(135deg,${color},${color}cc)`, border: `1px solid ${outline ? (h ? color : color + '66') : color}`, borderRadius: 9, padding: sm ? '7px 14px' : '10px 20px', color: outline ? (h ? color : color + 'bb') : '#0d2118', fontSize: sm ? 11 : 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.4, transition: 'all 0.15s' }}>
+        {label}
+      </button>
+    );
+  };
+
+  if (screen === 'select') return (
+    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 32, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 13, letterSpacing: 8, color: C.gold, opacity: 0.6, marginBottom: 10 }}>♠ ♥ ♦ ♣</div>
+        <h1 style={{ fontSize: 54, letterSpacing: 14, margin: 0, background: 'linear-gradient(135deg,#e8c96a,#c9a84c,#a07830)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KOPUTUS</h1>
+        <p style={{ color: C.dim, fontSize: 14, fontStyle: 'italic', margin: '10px 0 0' }}>Muistinko oikein</p>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 12, marginBottom: 14, letterSpacing: 2 }}>PELAAJIA</p>
+        <div style={{ display: 'flex', gap: 10 }}>
+          {[2, 3, 4].map(n => (
+            <button key={n} onClick={() => setNP(n)} style={{ width: 52, height: 52, borderRadius: 10, cursor: 'pointer', fontSize: 19, fontWeight: 700, fontFamily: 'Georgia,serif', transition: 'all 0.2s', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim }}>{n}</button>
+          ))}
+        </div>
+      </div>
+      <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita peli →</button>
+      <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
+    </div>
+  );
+
+  if (screen === 'gameover' && G) {
+    const sorted = [...G.players].sort((a, b) => pScore(a) - pScore(b));
+    return (
+      <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+        <h1 style={{ fontSize: 32, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+        <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {sorted.map((p, i) => (
+            <div key={p.id} style={{ borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 0 ? C.gold + '55' : '#1a3a22'}` }}>
+              <div style={{ fontSize: 24, minWidth: 32, textAlign: 'center' }}>{i === 0 ? '🏆' : i === sorted.length - 1 ? '💀' : '🎯'}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, color: i === 0 ? C.gold : C.text, marginBottom: 6, fontSize: 15 }}>{p.name}</div>
+                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                  {p.cards.map((c, ci) => <Card key={ci} card={c} faceUp small />)}
+                </div>
+              </div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: i === 0 ? C.gold : C.dim }}>{pScore(p)}<span style={{ fontSize: 11, opacity: 0.55 }}> p</span></div>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <Btn label="Uusi peli →" onClick={startGame} color={C.gold} />
+          <Btn label="← Vaihda pelaajia" onClick={() => setScreen('select')} color={C.gold} outline />
+        </div>
+        <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
+      </div>
+    );
+  }
+
+  if (!G) return null;
+
+  const human = G.players[0];
+  const ais = G.players.slice(1);
+  const discardTop = G.discard[G.discard.length - 1];
+  const isHuman = curIdx === 0;
+
+  const ownClickable = () => {
+    const nonNull = i => G.players[0].cards[i] !== null;
+    if (phase === 'peeking' && peeksDone < 2) return new Set([0, 1, 2, 3].filter(i => !human.known.has(i) && nonNull(i)));
+    if (phase === 'drawn' && isHuman) return new Set([0, 1, 2, 3].filter(nonNull));
+    if (phase === 'reaction' && reactionOpen) return new Set([0, 1, 2, 3].filter(nonNull));
+    if (phase === 'spec_j') return new Set([0, 1, 2, 3].filter(nonNull));
+    if (phase === 'spec_q_own') return new Set([0, 1, 2, 3].filter(nonNull));
+    if (phase === 'spec_k') return new Set([0, 1, 2, 3].filter(nonNull));
+    return null;
+  };
+  const tgtClickable = pi => (phase === 'spec_q_tgt' || phase === 'spec_k_decide') && pi !== 0 ? new Set([0, 1, 2, 3]) : null;
+  const onOwnCard = idx => {
+    if (phase === 'peeking') onPeek(idx);
+    else if (phase === 'drawn' && isHuman) humanSwap(idx);
+    else if (phase === 'reaction' && reactionOpen) humanReact(idx);
+    else if (phase === 'spec_j') handleJ(idx);
+    else if (phase === 'spec_q_own') handleQOwn(idx);
+    else if (phase === 'spec_k') handleKPeek(idx);
+  };
+  const showDrawn = ['drawn', 'spec_j', 'spec_q_own', 'spec_q_tgt', 'spec_k', 'spec_k_decide', 'spec_k_confirm'].includes(phase);
+
+  return (
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: 16, maxWidth: 560, margin: '0 auto', paddingBottom: 40 }}>
+      <div style={{ background: 'linear-gradient(135deg,#09192a,#071420)', border: `1px solid ${C.blue}40`, borderRadius: 14, padding: '13px 17px', marginBottom: 14, display: 'flex', gap: 12, alignItems: 'flex-start', height: 78, overflow: 'hidden' }}>
+        <span style={{ fontSize: 17, flexShrink: 0, marginTop: 1 }}>🎓</span>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.65, color: '#b5d5e5', overflow: 'hidden' }}>{msg}</p>
+      </div>
+      <div style={{ height: 32, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {knockedBy !== null && <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>🤜 Koputettu — viimeinen kierros!</div>}
+      </div>
+      {ais.length > 0 && (
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
+          {ais.map((ai, i) => {
+            const pi = i + 1;
+            const selectMode = phase === 'spec_k_decide' || phase === 'spec_k_confirm' || phase === 'spec_q_tgt';
+            return (
+              <div key={ai.id} style={{ flex: 1, minWidth: selectMode ? 140 : 110 }}>
+                <PlayerGrid player={ai} isActive={curIdx === pi} small={!selectMode} backStyle={BACKS[cardBack]}
+                  phase={phase} debug={debugOpen}
+                  lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
+                  clickableSet={tgtClickable(pi)}
+                  onCardClick={ci => {
+                    if (phase === 'spec_q_tgt') handleQTarget(pi, ci);
+                    else if (phase === 'spec_k_decide') handleKPeekTarget(pi, ci);
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Pakka-alue */}
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', padding: '14px 16px', background: 'rgba(255,255,255,0.013)', border: '1px solid #1a3a22', borderRadius: 14, marginBottom: 12 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>NOSTOPAKKA</div>
+          <div onClick={isHuman && phase === 'draw' && G.deck.length ? humanDrawDeck : undefined}
+            style={{ cursor: isHuman && phase === 'draw' && G.deck.length ? 'pointer' : 'default', position: 'relative', width: 82, height: 112 }}>
+            {G.deck.length === 0
+              ? <div style={{ width: 82, height: 112, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.3 }} />
+              : <>
+                {G.deck.length > 2 && <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-5deg) translate(-4px,3px)', transformOrigin: 'bottom center', opacity: 0.55, zIndex: 0 }}>{BACKS[cardBack].render(82, 112)}</div>}
+                {G.deck.length > 1 && <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-2.5deg) translate(-2px,1.5px)', transformOrigin: 'bottom center', opacity: 0.75, zIndex: 1 }}>{BACKS[cardBack].render(82, 112)}</div>}
+                <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, overflow: 'hidden', background: BACKS[cardBack].bg, border: `2px solid ${isHuman && phase === 'draw' ? C.gold : BACKS[cardBack].border}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.4)', zIndex: 2 }}>
+                  {BACKS[cardBack].render(82, 112)}
+                </div>
+              </>}
+          </div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 6 }}>{G.deck.length} kpl</div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 72, flexShrink: 0 }}>
+          {reactionOpen
+            ? <div style={{ width: 64, height: 64, borderRadius: 32, border: `3px solid ${C.red}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 22px ${C.red}44`, animation: 'rpulse 1s ease infinite' }}>
+              <span style={{ fontSize: 22, fontWeight: 700, color: C.red, lineHeight: 1, fontFamily: 'monospace' }}>{reactionSec}</span>
+              <span style={{ fontSize: 9, color: C.dim, fontFamily: 'sans-serif', letterSpacing: 1 }}>SEK</span>
+            </div>
+            : <div style={{ width: 64, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, opacity: 0.12 }}>⚡</div>}
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
+          <div onClick={isHuman && phase === 'draw' && discardTop ? humanDrawDiscard : undefined}
+            style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: 82, height: 112 }}>
+            {!discardTop
+              ? <div style={{ width: 82, height: 112, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
+              : <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: '#f8f2e6', border: `2px solid ${isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ color: isRed(discardTop.s) ? '#b83030' : '#1a1a2e', fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
+                  <div style={{ fontSize: 22, fontWeight: 700 }}>{discardTop.r}</div>
+                  <div style={{ fontSize: 26 }}>{discardTop.s}</div>
+                </div>
+              </div>}
+          </div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 6 }}>{G.discard.length} kpl</div>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 12 }}>
+        <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={debugOpen} backStyle={BACKS[cardBack]}
+          clickableSet={ownClickable()} onCardClick={onOwnCard} peekSet={tempPeek}
+          lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} />
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: drawn && showDrawn ? 'rgba(255,255,255,0.022)' : 'transparent', border: `1px solid ${drawn && showDrawn ? '#2a4a32' : 'transparent'}`, borderRadius: 10, marginBottom: 12, minHeight: 50, transition: 'background 0.2s' }}>
+        {drawn && showDrawn
+          ? <><span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flexShrink: 0 }}>Nostettu:</span><Card card={drawn} faceUp small /><span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{drawn.r}{drawn.s} — <span style={{ color: C.gold, fontWeight: 700 }}>{drawn.v} p</span></span></>
+          : <span style={{ color: 'transparent', userSelect: 'none' }}>·</span>}
+      </div>
+      {phase === 'spec_k_confirm' && specState?.tgtCard && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'rgba(201,168,76,0.06)', border: `1px solid ${C.gold}44`, borderRadius: 10, marginBottom: 12 }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, flexShrink: 0 }}>Vastustajan kortti:</span>
+          <Card card={specState.tgtCard} faceUp small />
+          <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{specState.tgtCard.r}{specState.tgtCard.s} — <span style={{ color: C.gold, fontWeight: 700 }}>{specState.tgtCard.v} p</span></span>
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 10, minHeight: 44, alignItems: 'center' }}>
+        {isHuman && phase === 'drawn' && <Btn label="Lyö poistopakkaan ›" onClick={humanDiscard} color={C.gold} />}
+        {isHuman && phase === 'draw' && knockedBy === null && <Btn label="🤜 Koputan!" onClick={humanKnock} color={C.red} outline />}
+        {phase === 'spec_q_tgt' && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; setTimeout(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
+        {phase === 'spec_k_decide' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
+        {phase === 'spec_k_confirm' && <Btn label="✓ Vaihda tähän" onClick={handleKSwap} color={C.gold} />}
+        {phase === 'spec_k_confirm' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
+        {G.players.map((p, i) => (
+          <div key={p.id} style={{ fontFamily: 'sans-serif', fontSize: 11, padding: '4px 10px', borderRadius: 16, border: `1px solid ${curIdx === i ? C.gold + '55' : '#1a3a22'}`, color: curIdx === i ? C.gold : C.dim, background: curIdx === i ? C.gold + '08' : 'transparent', transition: 'all 0.2s' }}>
+            {p.name}{curIdx === i ? ' ●' : ''}
+          </div>
+        ))}
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
+          {Object.entries(BACKS).map(([key, b]) => (
+            <button key={key} onClick={() => setCardBack(key)} title={b.label}
+              style={{ width: 20, height: 28, borderRadius: 3, cursor: 'pointer', padding: 0, overflow: 'hidden', background: b.bg, border: `2px solid ${cardBack === key ? C.gold : b.border}`, transition: 'all 0.15s', transform: cardBack === key ? 'scale(1.2)' : 'none', flexShrink: 0 }} />
+          ))}
+          <span style={{ width: 4 }} />
+          <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>
+        <button onClick={() => setLogOpen(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', borderBottom: logOpen ? '1px solid #1a3a22' : 'none', padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
+          <span style={{ fontSize: 11, fontFamily: 'sans-serif', letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
+          <span style={{ fontSize: 14, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
+        </button>
+        {logOpen && (
+          <div style={{ maxHeight: 280, overflowY: 'auto' }}>
+            {log.map((e, i) => (
+              <div key={i} style={{ display: 'flex', gap: 10, padding: '5px 14px', borderBottom: '1px solid rgba(42,74,50,0.3)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
+                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
+                <span style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{e.m}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <style>{`
+        @keyframes rpulse{0%{transform:scale(1);box-shadow:0 0 22px rgba(224,92,59,0.4)}40%{transform:scale(1.13);box-shadow:0 0 32px rgba(224,92,59,0.7)}100%{transform:scale(1);box-shadow:0 0 22px rgba(224,92,59,0.4)}}
+        @keyframes slotFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9),0 0 18px rgba(201,168,76,0.6)}60%{box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 0 10px rgba(201,168,76,0.3)}100%{box-shadow:none}}
+        @keyframes reactPulse{0%,100%{border-color:#e05c3b;box-shadow:0 0 8px rgba(224,92,59,0.4)}50%{border-color:#ff7a5a;box-shadow:0 0 16px rgba(224,92,59,0.7)}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+      `}</style>
+    </div>
+  );
+}
