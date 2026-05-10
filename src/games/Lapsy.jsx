@@ -4,6 +4,8 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { isRed, lbl, SUITS, RANKS, shuffle } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
+import Card from '../shared/Card.jsx';
+import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames() {
@@ -29,10 +31,10 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy() {
+export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(3);
-  const [soundOn, setSnd]   = useState(true);
+  const [soundOn, setSnd]   = useState(initSoundOn);
   const [phase, setPhase]   = useState('idle');
   const [center, setCenter] = useState([]);
   const [piles, setPiles]   = useState([]);
@@ -40,9 +42,13 @@ export default function Lapsy() {
   const [challenge, setCh]  = useState(null);
   const [msg, setMsg]       = useState('');
   const [log, setLog]       = useState([]);
-  const [cardBack, setCB]   = useState('ilves');
-  const [logOpen, setLO]    = useState(true);
+  const cardBack = 'ilves';
+  const [logOpen, setLO]    = useState(hints);
+  const [debugOpen, setDebug] = useState(initSeeAll);
+  const [shuffling, setShuffling] = useState(false);
   const [slapResult, setSR]   = useState(null);
+  const [bestMs, setBestMs]   = useState(null);
+  const [failReveal, setFR]  = useState(null);
   const [flipAnim,  setFA]   = useState(null); // { playerIdx, card }
   const [cardBackState]      = [cardBack];
   const [aiNames]            = useState(() => shuffledAINames());
@@ -57,6 +63,7 @@ export default function Lapsy() {
   const matchTimeRef = useRef(null);
   const recentMatch  = useRef(false);
   const aiSlapTmrs   = useRef([]);
+  const failTmr      = useRef(null);
   const logRef       = useRef([]);
 
   useEffect(() => { pilesRef.current = piles; }, [piles]);
@@ -65,7 +72,7 @@ export default function Lapsy() {
   useEffect(() => { curRef.current = curTurn; }, [curTurn]);
   useEffect(() => { chRef.current = challenge; }, [challenge]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => { clearTimeout(aiTmr.current); aiSlapTmrs.current.forEach(clearTimeout); }, []);
+  useEffect(() => () => { clearTimeout(aiTmr.current); clearTimeout(failTmr.current); aiSlapTmrs.current.forEach(clearTimeout); }, []);
 
   const addLog = useCallback(m => {
     const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
@@ -79,6 +86,7 @@ export default function Lapsy() {
   function startGame() {
     clearTimeout(aiTmr.current);
     aiSlapTmrs.current.forEach(clearTimeout);
+    clearTimeout(failTmr.current); setFR(null);
     const initPiles = deal(nP);
     setPiles(initPiles); pilesRef.current = initPiles;
     setCenter([]); centerRef.current = [];
@@ -89,7 +97,8 @@ export default function Lapsy() {
     logRef.current = []; setLog([]);
     addLog('Peli alkaa! Jokainen kääntää vuorollaan pinonsa päällimmäisen kortin.');
     setScreen('game');
-    setTimeout(() => maybeAIFlip(0, initPiles, [], null), 400);
+    setShuffling(true);
+    setTimeout(() => maybeAIFlip(0, initPiles, [], null), 2300);
   }
 
   function nextTurn(fromIdx, newPiles, newCenter, ch) {
@@ -101,7 +110,7 @@ export default function Lapsy() {
         return;
       }
       setCur(target); curRef.current = target;
-      setTimeout(() => maybeAIFlip(target, newPiles, newCenter, ch), 1800 + Math.random() * 400);
+      setTimeout(() => maybeAIFlip(target, newPiles, newCenter, ch), 100 + Math.random() * 80);
       return;
     }
     const n = newPiles.length;
@@ -109,14 +118,14 @@ export default function Lapsy() {
     while (newPiles[next].length === 0 && tries < n) { next = (next + 1) % n; tries++; }
     if (tries >= n) { checkGameOver(newPiles); return; }
     setCur(next); curRef.current = next;
-    setTimeout(() => maybeAIFlip(next, newPiles, newCenter, null), 600);
+    setTimeout(() => maybeAIFlip(next, newPiles, newCenter, null), 500);
   }
 
   function maybeAIFlip(idx, piles, center, ch) {
     if (phaseRef.current === 'gameover') return;
     if (idx === 0) return;
     if (piles[idx].length === 0) { nextTurn(idx, piles, center, chRef.current); return; }
-    const delay = ch ? 1000 + Math.random() * 600 : 600 + Math.random() * 400;
+    const delay = ch ? 1000 : 800 + Math.random() * 100;
     setTimeout(() => doFlip(idx, piles, center), delay);
   }
 
@@ -129,7 +138,7 @@ export default function Lapsy() {
     const newPiles = curPiles.map((p, i) => i === playerIdx ? pile : p);
     if (sndRef.current) SFX.flip();
     setFA({ playerIdx, card });
-    setTimeout(() => setFA(null), 850);
+    setTimeout(() => setFA(null), 1900);
     setPiles(newPiles); pilesRef.current = newPiles;
     setCenter(newCenter); centerRef.current = newCenter;
 
@@ -142,7 +151,11 @@ export default function Lapsy() {
         if (sndRef.current) SFX.challenge();
         const nn = newPiles.length;
         let target2 = (playerIdx + 1) % nn, t2 = 0;
-        while (newPiles[target2].length === 0 && t2 < nn) { target2 = (target2 + 1) % nn; t2++; }
+        while ((newPiles[target2].length === 0 || target2 === playerIdx) && t2 < nn) { target2 = (target2 + 1) % nn; t2++; }
+        if (t2 >= nn || target2 === playerIdx) {
+          addLog(`${pName(playerIdx)} vastasi ${lbl(card)}! Ei enää vastustajia — voittaa kasan!`);
+          giveCenter(playerIdx, newPiles, newCenter, null); return;
+        }
         const newCh = { byIdx: playerIdx, targetIdx: target2, cardsLeft: SPEC[card.r], specRank: card.r };
         setCh(newCh); chRef.current = newCh;
         addLog(`${pName(playerIdx)} vastasi ${lbl(card)}! Haaste siirtyy — ${pName(target2)}:lla on ${SPEC[card.r]} ${kk(SPEC[card.r])} aikaa vastata haasteeseen.`);
@@ -151,7 +164,10 @@ export default function Lapsy() {
         const left = ch.cardsLeft - 1;
         if (left <= 0) {
           addLog(`${pName(playerIdx)} epäonnistui. ${pName(ch.byIdx)} voitti ${newCenter.length} ${kk(newCenter.length)}.`);
-          giveCenter(ch.byIdx, newPiles, newCenter, null);
+          setCh(null); chRef.current = null;
+          setFR({ card, winner: ch.byIdx, n: newCenter.length });
+          clearTimeout(failTmr.current);
+          failTmr.current = setTimeout(() => { setFR(null); giveCenter(ch.byIdx, newPiles, newCenter, null); }, 1600);
         } else {
           const newCh = { ...ch, cardsLeft: left };
           setCh(newCh); chRef.current = newCh;
@@ -165,7 +181,11 @@ export default function Lapsy() {
       if (sndRef.current) SFX.challenge();
       const n = newPiles.length;
       let target = (playerIdx + 1) % n, t = 0;
-      while (newPiles[target].length === 0 && t < n) { target = (target + 1) % n; t++; }
+      while ((newPiles[target].length === 0 || target === playerIdx) && t < n) { target = (target + 1) % n; t++; }
+      if (t >= n || target === playerIdx) {
+        addLog(`${pName(playerIdx)} haastaa ${lbl(card)}! Ei enää vastustajia — voittaa kasan!`);
+        giveCenter(playerIdx, newPiles, newCenter, null); return;
+      }
       const newCh = { byIdx: playerIdx, targetIdx: target, cardsLeft: SPEC[card.r], specRank: card.r };
       setCh(newCh); chRef.current = newCh;
       addLog(`${pName(playerIdx)} haastaa ${lbl(card)}! ${pName(target)}:lla on ${SPEC[card.r]} ${kk(SPEC[card.r])} aikaa vastata haasteeseen.`);
@@ -213,6 +233,7 @@ export default function Lapsy() {
     const n = curCenter.length;
     const msStr = ms ? ` (${ms} ms)` : '';
     addLog(`${pName(playerIdx)} läpsäsi nopeiten${msStr} — voitti ${n} korttia!`);
+    if (playerIdx === 0 && ms) setBestMs(prev => prev === null || ms < prev ? ms : prev);
     setSR({ winner: playerIdx, ms, n }); setTimeout(() => setSR(null), 2000);
     giveCenter(playerIdx, curPiles, curCenter, ms);
   }
@@ -260,6 +281,7 @@ export default function Lapsy() {
       setPhase('gameover'); phaseRef.current = 'gameover';
       const winner = piles.findIndex(p => p.length > 0);
       addLog(winner >= 0 ? `${pName(winner)} voittaa pelin!` : 'Peli päättyi!');
+      onResult?.(winner === 0);
       setTimeout(() => setScreen('gameover'), 1800);
       return true;
     }
@@ -318,6 +340,7 @@ export default function Lapsy() {
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 520, margin: '0 auto', paddingBottom: 32 }}>
+      <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       <div style={{ background: 'rgba(20,5,5,0.9)', border: `1px solid ${isMatch ? C.red + '88' : C.red + '22'}`, borderRadius: 12, padding: '11px 16px', marginBottom: 12, height: 68, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10, transition: 'border-color 0.2s', boxShadow: isMatch ? `0 0 18px ${C.red}44` : 'none' }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>{isMatch ? '👋' : '🃏'}</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: isMatch ? '#ff9988' : C.dim }}>{msg}</p>
@@ -332,12 +355,17 @@ export default function Lapsy() {
                 🤖 {pName(pi)}{curTurn === pi ? ' ●' : ''}
               </div>
               <div style={{ margin: '0 auto', width: 44 }}>
-                <FanStack
-                  count={pile.length}
-                  w={44} h={60}
-                  backStyle={BACKS[cardBack]}
-                  borderColor={curTurn === pi ? C.red + '88' : undefined}
-                />
+                {debugOpen
+                  ? <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+                      {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
+                      {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center' }}>+{pile.length - 6}</span>}
+                    </div>
+                  : <FanStack
+                      count={pile.length}
+                      w={44} h={60}
+                      backStyle={BACKS[cardBack]}
+                      borderColor={curTurn === pi ? C.red + '88' : undefined}
+                    />}
               </div>
               <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, marginTop: 5 }}>{pile.length} {pile.length === 1 ? 'kortti' : 'korttia'}</div>
             </div>
@@ -345,12 +373,26 @@ export default function Lapsy() {
         })}
       </div>
 
-      <div style={{ height: 36, marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ height: 36, marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+        {bestMs !== null && (
+          <div style={{ fontFamily: 'monospace', fontSize: 11, color: C.gold, opacity: 0.7, letterSpacing: 1 }}>
+            ⚡ paras {bestMs} ms
+          </div>
+        )}
         {ch && (
           <div style={{ display: 'flex', gap: 6, alignItems: 'center', padding: '5px 14px', background: C.gold + '14', border: `1px solid ${C.gold}55`, borderRadius: 20 }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold }}>Haaste: {pName(ch.byIdx)}</span>
             {Array.from({ length: ch.cardsLeft }).map((_, i) => <div key={i} style={{ width: 8, height: 12, borderRadius: 2, background: C.gold, opacity: 0.8 }} />)}
             <span style={{ fontFamily: 'monospace', fontSize: 11, color: C.gold }}>{ch.cardsLeft}</span>
+          </div>
+        )}
+      </div>
+
+      <div style={{ height: 46, marginBottom: 10 }}>
+        {failReveal && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 14px', background: 'rgba(224,92,59,0.08)', border: `1px solid ${C.red}44`, borderRadius: 10, animation: 'fadeIn 0.25s ease' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.red, flexShrink: 0 }}>{pName(failReveal.winner)} voitti haasteen! {pName(failReveal.winner)} voitti {failReveal.n} {kk(failReveal.n)}.</span>
+            <span style={{ background: '#f8f2e6', borderRadius: 5, padding: '2px 8px', fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: 16, color: isRed(failReveal.card.s) ? '#b83030' : '#1a1a2e' }}>{failReveal.card.r}{failReveal.card.s}</span>
           </div>
         )}
       </div>
@@ -372,7 +414,7 @@ export default function Lapsy() {
                 border: `1px solid ${C.panelBorder}`,
                 borderRadius: 16, padding: '3px 9px',
                 whiteSpace: 'nowrap', zIndex: 30,
-                animation: flipAnim.playerIdx === 0 ? 'flipFromBottom 0.85s ease forwards' : 'flipFromTop 0.85s ease forwards',
+                animation: flipAnim.playerIdx === 0 ? 'flipFromBottom 1.9s ease forwards' : 'flipFromTop 1.9s ease forwards',
                 pointerEvents: 'none',
               }}>
                 <span style={{
@@ -442,11 +484,8 @@ export default function Lapsy() {
           {phase === 'match' ? '⚡ Täsmäys!' : ch ? `📣 Haaste (${ch.cardsLeft})` : `Vuoro: ${pName(curTurn)}`}
         </span>
         <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          {Object.entries(BACKS).map(([key, b]) => (
-            <button key={key} onClick={() => setCB(key)} title={b.label} style={{ width: 18, height: 25, borderRadius: 3, cursor: 'pointer', padding: 0, overflow: 'hidden', background: b.bg, border: `2px solid ${cardBack === key ? C.gold : b.border}`, transition: 'all 0.15s', transform: cardBack === key ? 'scale(1.2)' : 'none', flexShrink: 0 }} />
-          ))}
-          <span style={{ width: 3 }} />
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
         </div>
       </div>
 
@@ -475,6 +514,7 @@ export default function Lapsy() {
           72%{opacity:1;transform:translateX(-50%) translateY(0)}
           100%{opacity:0;transform:translateX(-50%) translateY(-6px)}
         }
+        @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
         @keyframes flipFromBottom{
           0%{opacity:0;transform:translateX(-50%) translateY(10px)}
           18%{opacity:1;transform:translateX(-50%) translateY(0)}

@@ -4,6 +4,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { tone, noise } from '../shared/audio.js';
 import { isRed, lbl, SUITS, RANKS, VAL, shuffle } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
+import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames() {
@@ -58,12 +59,12 @@ function KaCard({ card, faceUp, small, highlight, dim, pulse, unknown, onClick, 
     );
   }
 
-  const borderCol = highlight ? C.gold : pulse ? 'rgba(91,168,212,0.6)' : back.border;
-  const shadow = highlight ? '0 0 16px rgba(201,168,76,0.6)' : pulse ? '0 0 8px rgba(91,168,212,0.4)' : h && clickable ? '0 6px 16px rgba(0,0,0,0.5)' : '0 2px 6px rgba(0,0,0,0.3)';
+  const borderCol = highlight ? C.gold : pulse ? 'rgba(210,215,235,0.75)' : back.border;
+  const shadow = highlight ? '0 0 16px rgba(201,168,76,0.6)' : pulse ? '0 0 10px rgba(210,215,255,0.35)' : h && clickable ? '0 6px 16px rgba(0,0,0,0.5)' : '0 2px 6px rgba(0,0,0,0.3)';
 
   return (
     <div onClick={clickable ? onClick : undefined} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
-      style={{ width: w, height: ht, borderRadius: 7, position: 'relative', overflow: 'hidden', flexShrink: 0, border: `2px solid ${borderCol}`, background: faceUp ? C.card : back.bg, cursor: clickable ? 'pointer' : 'default', transition: 'transform 0.15s,box-shadow 0.15s', transform: h && clickable ? 'translateY(-4px) scale(1.06)' : 'none', boxShadow: shadow, opacity: dim ? 0.4 : 1 }}>
+      style={{ width: w, height: ht, borderRadius: 7, position: 'relative', overflow: 'hidden', flexShrink: 0, border: `2px solid ${borderCol}`, background: faceUp ? C.card : back.bg, cursor: clickable ? 'pointer' : 'default', transition: 'transform 0.15s,box-shadow 0.15s', transform: h && clickable ? 'translateY(-4px) scale(1.06)' : 'none', boxShadow: shadow, opacity: dim ? 0.4 : 1, animation: pulse ? 'platina 2.4s ease-in-out infinite' : undefined }}>
       {faceUp && card
         ? <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
           <div style={{ textAlign: 'center', color: isRed(card.s) ? '#b83030' : '#1a1a2e', fontFamily: 'Georgia,serif', lineHeight: 1.1 }}>
@@ -124,11 +125,11 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala() {
+export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(3);
-  const [soundOn, setSnd]     = useState(true);
-  const [cardBack, setCB]     = useState('ilves');
+  const [soundOn, setSnd]     = useState(initSoundOn);
+  const cardBack = 'ilves';
   const [G, setG]             = useState(null);
   const [phase, setPhase]     = useState('idle');
   const [curIdx, setCur]      = useState(0);
@@ -136,18 +137,22 @@ export default function Kultakala() {
   const [swapIdx, setSwapIdx] = useState(null);
   const [msg, setMsg_]        = useState('');
   const [log, setLog]         = useState([]);
-  const [logOpen, setLO]      = useState(true);
+  const [logOpen, setLO]      = useState(hints);
   const [revealed, setRevealed] = useState(false);
-  const [debugOpen, setDebug] = useState(false);
+  const [drawnFromDeck, setFromDeck] = useState(false);
+  const [debugOpen, setDebug] = useState(initSeeAll);
+  const [shuffling, setShuffling] = useState(false);
   const [showDice, setShowDice] = useState(false);
   const [tiedPlayers, setTiedPlayers] = useState([]);
+  const [kohahdus, setKohahdus] = useState(null);
 
-  const gRef    = useRef(null);
-  const phaseRef = useRef('idle');
-  const curRef  = useRef(0);
-  const aiTmr   = useRef(null);
-  const logRef  = useRef([]);
-  const sndRef  = useRef(true);
+  const gRef        = useRef(null);
+  const phaseRef    = useRef('idle');
+  const curRef      = useRef(0);
+  const aiTmr       = useRef(null);
+  const logRef      = useRef([]);
+  const sndRef      = useRef(true);
+  const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
@@ -156,6 +161,11 @@ export default function Kultakala() {
   useEffect(() => () => clearTimeout(aiTmr.current), []);
 
   const korttia = n => n === 1 ? '1 kortti' : `${n} korttia`;
+
+  function triggerKohahdus(card) {
+    setKohahdus(card);
+    setTimeout(() => setKohahdus(null), 1800);
+  }
 
   function addLog(m) {
     setMsg_(m);
@@ -170,11 +180,12 @@ export default function Kultakala() {
     setG(g); gRef.current = g;
     setCur(0); curRef.current = 0;
     setPhase('drawing'); phaseRef.current = 'drawing';
-    setHeld(null); setSwapIdx(null); setRevealed(false); setShowDice(false);
+    setHeld(null); setSwapIdx(null); setRevealed(false); drawnFromRef.current = null; setFromDeck(false); setShowDice(false);
     logRef.current = []; setLog([]);
     addLog('Kortit on jaettu. Jokaisella on tuntematon kortti ja viisi pöytäkorttia. Nosta pakasta tai poistopakasta.');
     setScreen('game');
-    setTimeout(() => maybeAI(0, g), 600);
+    setShuffling(true);
+    setTimeout(() => maybeAI(0, g), 2500);
   }
 
   function advance(g, fromIdx) {
@@ -187,7 +198,7 @@ export default function Kultakala() {
     }
     setCur(next); curRef.current = next;
     setPhase('drawing'); phaseRef.current = 'drawing';
-    setHeld(null); setSwapIdx(null);
+    setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
     const p = g.players[next];
     addLog(p.id === 0 ? 'Sinun vuorosi — nosta pakasta tai poistopakasta.' : `${p.name} miettii...`);
     aiTmr.current = setTimeout(() => maybeAI(next, g), 600);
@@ -203,61 +214,57 @@ export default function Kultakala() {
     if (!g || phaseRef.current === 'gameover') return;
     const p = g.players[idx];
     const top = g.discard[g.discard.length - 1];
+    // Valitse huonoin tunnettu kortti vaihtokohteeksi
     const worstKnownIdx = [...p.known].sort((a, b) => p.row[b].v - p.row[a].v)[0];
     let card, newG;
     if (top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v) {
+      // Poistopakasta nostaminen: pakollinen vaihto
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;
-      addLog(`${p.name} nostaa poistopakasta ${lbl(top)}.`);
+      addLog(`${p.name} nostaa poistopakasta.`);
+      setG(newG); gRef.current = newG;
+      if (sndRef.current) SFX.flip();
+      setTimeout(() => aiDoSwap(idx, gRef.current, card, worstKnownIdx), 1000);
     } else {
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
       addLog(`${p.name} nostaa pakasta.`);
+      setG(newG); gRef.current = newG;
+      if (sndRef.current) SFX.flip();
+      setTimeout(() => {
+        const g2 = gRef.current, p2 = g2.players[idx];
+        const worst = [...p2.known].sort((a, b) => p2.row[b].v - p2.row[a].v)[0];
+        if (worst !== undefined && card.v < p2.row[worst].v) {
+          aiDoSwap(idx, g2, card, worst);
+        } else if (card.v <= 5) {
+          // Matala arvo: vaihda sokkona satunnaiseen tuntemattomaan paikkaan
+          const unknowns = p2.row.map((_, i) => i).filter(i => !p2.known.has(i));
+          if (unknowns.length) {
+            aiDoSwap(idx, g2, card, unknowns[Math.floor(Math.random() * unknowns.length)]);
+          } else {
+            aiDoDiscard(idx, g2, card);
+          }
+        } else {
+          aiDoDiscard(idx, g2, card);
+        }
+      }, 1000);
     }
-    setG(newG); gRef.current = newG;
-    if (sndRef.current) SFX.flip();
-    setTimeout(() => {
-      const g2 = gRef.current, p2 = g2.players[idx];
-      const swapTarget = 4;
-      if (p2.known.has(swapTarget) && card.v < p2.row[swapTarget].v) {
-        aiDoSwap(idx, g2, card, swapTarget);
-      } else if (!p2.known.has(swapTarget) && card.v <= 6) {
-        aiDoSwap(idx, g2, card, swapTarget);
-      } else {
-        aiDiscard(idx, g2, card);
-      }
-    }, 1000);
   }
 
   function aiDoSwap(idx, g, card, rowIdx) {
     const p = g.players[idx], old = p.row[rowIdx];
     const newRow = [...p.row]; newRow[rowIdx] = card;
-    const players = g.players.map((pl, i) => i === idx ? { ...pl, row: newRow } : pl);
+    const known = new Set(p.known); known.add(rowIdx);
+    const players = g.players.map((pl, i) => i === idx ? { ...pl, row: newRow, known } : pl);
     const newG = { ...g, players, discard: [...g.discard, old] };
     setG(newG); gRef.current = newG;
     if (sndRef.current) SFX.swap();
-    addLog(`${g.players[idx].name} vaihtaa — ${lbl(old)} poistopakkaan.`);
-    setTimeout(() => aiChainSwap(idx, newG, old, rowIdx - 1), 700);
+    addLog(`${g.players[idx].name} vaihtaa paikka ${rowIdx + 1} poistopakkaan.`);
+    if (rowIdx === 0 && old.v <= 2) triggerKohahdus(old);
+    setTimeout(() => advance(newG, idx), 700);
   }
 
-  function aiChainSwap(idx, g, card, nextIdx) {
-    if (nextIdx < 0) { advance(g, idx); return; }
-    const p = g.players[idx];
-    if (p.known.has(nextIdx) && card.v < p.row[nextIdx].v) {
-      const old = p.row[nextIdx];
-      const newRow = [...p.row]; newRow[nextIdx] = card;
-      const players = g.players.map((pl, i) => i === idx ? { ...pl, row: newRow } : pl);
-      const newG = { ...g, players, discard: [...g.discard, old] };
-      setG(newG); gRef.current = newG;
-      if (sndRef.current) SFX.swap();
-      addLog(`${g.players[idx].name} jatkaa — ${lbl(old)} poistopakkaan.`);
-      setTimeout(() => aiChainSwap(idx, newG, old, nextIdx - 1), 600);
-    } else {
-      advance(g, idx);
-    }
-  }
-
-  function aiDiscard(idx, g, card) {
+  function aiDoDiscard(idx, g, card) {
     const newG = { ...g, discard: [...g.discard, card] };
     setG(newG); gRef.current = newG;
     addLog(`${g.players[idx].name} heittää ${lbl(card)} poistopakkaan.`);
@@ -272,61 +279,65 @@ export default function Kultakala() {
       if (!g.discard.length) return;
       const discard = [...g.discard]; card = discard.pop();
       newG = { ...g, discard };
-      addLog(`Nostit ${lbl(card)} (${card.v} p) poistopakasta.`);
+      addLog(`Nostit ${lbl(card)} (${card.v} p) poistopakasta — pakollinen vaihto. Klikkaa pöytäkorttia.`);
     } else {
       if (!g.deck.length) return;
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
-      addLog(`Nostit ${lbl(card)} (${card.v} p). Vaihda jonosi oikeaan päähän tai heitä poistopakkaan.`);
+      addLog(`Nostit ${lbl(card)} (${card.v} p). Klikkaa pöytäkorttia vaihtaaksesi tai heitä poistopakkaan.`);
     }
     if (sndRef.current) SFX.flip();
     setG(newG); gRef.current = newG;
-    setHeld(card); setSwapIdx(4);
+    drawnFromRef.current = fromDiscard ? 'discard' : 'deck';
+    setHeld(card); setSwapIdx(4); setFromDeck(!fromDiscard);
     setPhase('holding'); phaseRef.current = 'holding';
   }
 
-  function humanDiscardHeld() {
-    if (phaseRef.current !== 'holding' || curIdx !== 0) return;
-    const g = gRef.current;
-    const newG = { ...g, discard: [...g.discard, held] };
-    setG(newG); gRef.current = newG;
-    addLog(`Heitit ${lbl(held)} poistopakkaan.`);
-    setHeld(null); setSwapIdx(null);
-    setPhase('drawing'); phaseRef.current = 'drawing';
-    setTimeout(() => advance(newG, 0), 300);
-  }
-
   function humanSwapRow(rowIdx) {
+    if ((phaseRef.current !== 'holding' && phaseRef.current !== 'swapping') || curIdx !== 0) return;
     const g = gRef.current;
-    if (!g || curIdx !== 0) return;
-    if (phaseRef.current !== 'holding' && phaseRef.current !== 'swapping') return;
-    const p = g.players[0], old = p.row[rowIdx];
-    const newRow = [...p.row]; newRow[rowIdx] = held;
-    const players = g.players.map((pl, i) => i === 0 ? { ...pl, row: newRow } : pl);
-    const newG = { ...g, players, discard: [...g.discard, old] };
-    setG(newG); gRef.current = newG;
+    if (!g) return;
+    const p = g.players[0];
+    const newRow = [...p.row];
+    const known = new Set(p.known);
+
+    const old = p.row[rowIdx];
+    newRow[rowIdx] = held;
+    known.add(rowIdx);
+    const players = g.players.map((pl, i) => i === 0 ? { ...pl, row: newRow, known } : pl);
     if (sndRef.current) SFX.swap();
-    const oldName = p.known.has(rowIdx) ? `${lbl(old)} (${old.v} p)` : 'tuntematon';
-    addLog(`Paikka ${rowIdx + 1}: oli ${oldName}, vaihtui ${lbl(held)} (${held.v} p).`);
-    setHeld(old);
+    const wasKnown = p.known.has(rowIdx);
+    const oldName = wasKnown ? `${lbl(old)} (${old.v} p)` : `?? (${old.v} p paljastui)`;
     const nextIdx = rowIdx - 1;
-    setSwapIdx(nextIdx);
-    setPhase('swapping'); phaseRef.current = 'swapping';
+    drawnFromRef.current = null; setFromDeck(false);
+
     if (nextIdx < 0) {
-      const finalG = { ...newG, discard: [...newG.discard, old] };
+      // Reached leftmost — displaced card forced to discard
+      const finalG = { ...g, players, discard: [...g.discard, old] };
       setG(finalG); gRef.current = finalG;
-      setHeld(null);
-      addLog(`Paikka 1:n kortti menee poistopakkaan — kaikki paikat vaihdettu.`);
+      addLog(`Paikka ${rowIdx + 1}: ${lbl(held)} (${held.v} p) sisään, ${oldName} poistopakkaan.`);
+      if (old.v <= 2) triggerKohahdus(old);
+      setHeld(null); setSwapIdx(null);
       setPhase('drawing'); phaseRef.current = 'drawing';
       setTimeout(() => advance(finalG, 0), 500);
+    } else {
+      // Displaced card goes to KÄDESSÄ for possible continued chain
+      const newG = { ...g, players };
+      setG(newG); gRef.current = newG;
+      addLog(`Paikka ${rowIdx + 1}: ${lbl(held)} (${held.v} p) sisään, ${oldName} käteen.`);
+      setHeld(old);
+      setSwapIdx(nextIdx);
+      setPhase('swapping'); phaseRef.current = 'swapping';
     }
   }
 
   function humanStopSwap() {
+    if ((phaseRef.current !== 'swapping' && phaseRef.current !== 'holding') || curIdx !== 0) return;
+    if (drawnFromRef.current === 'discard') return;
     const g = gRef.current;
     const newG = { ...g, discard: [...g.discard, held] };
     setG(newG); gRef.current = newG;
     addLog(`Heitit ${lbl(held)} poistopakkaan. Vuoro ohi.`);
-    setHeld(null); setSwapIdx(null);
+    setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
     setPhase('drawing'); phaseRef.current = 'drawing';
     setTimeout(() => advance(newG, 0), 300);
   }
@@ -338,15 +349,15 @@ export default function Kultakala() {
     setG(g); gRef.current = g;
     const scores = g.players.map(p => ({ ...p, total: p.unknown.v + p.row.reduce((s, c) => s + c.v, 0) }));
     const minScore = Math.min(...scores.map(s => s.total));
+    onResult?.(scores[0].total === minScore);
     const tied = scores.filter(s => s.total === minScore);
     addLog(`Tuntemattomat paljastetaan! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`);
     setTimeout(() => {
       if (tied.length > 1) {
         addLog(`Tasatilanne — noppafanaali!`);
         setTiedPlayers(tied); setShowDice(true);
-      } else {
-        setScreen('gameover');
       }
+      setScreen('gameover');
     }, 2000);
   }
 
@@ -413,10 +424,22 @@ export default function Kultakala() {
   const discardTop = G.discard[G.discard.length - 1];
   const canDraw = curIdx === 0 && phase === 'drawing';
   const canSwapRow = curIdx === 0 && (phase === 'holding' || phase === 'swapping');
-  const canDiscard = false; // must swap at least once before discarding; "Lopeta vaihto" handles discard after first swap
+  // canDiscard: holding phase AND drew from deck (not discard)
+  const canDiscard = curIdx === 0 && phase === 'holding' && drawnFromRef.current !== 'discard';
+  const canStop    = curIdx === 0 && !!held && (phase === 'swapping' || canDiscard);
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: 32 }}>
+      <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
+      {kohahdus && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, pointerEvents: 'none' }}>
+          <div style={{ background: 'rgba(160,20,20,0.18)', border: '2px solid rgba(255,90,90,0.65)', borderRadius: 22, padding: '22px 36px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, boxShadow: '0 0 50px rgba(255,60,60,0.45)', animation: 'kohahdus 1.8s ease-out forwards' }}>
+            <span style={{ fontSize: 40 }}>😱</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 26, fontWeight: 700, color: isRed(kohahdus.s) ? '#ff7070' : '#e8e8e8' }}>{lbl(kohahdus)}</span>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: '#cc8888', letterSpacing: 1 }}>pakotettiin poistopakkaan!</span>
+          </div>
+        </div>
+      )}
       <div style={{ background: 'linear-gradient(135deg,#09192a,#071420)', border: `1px solid ${C.blue}40`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, height: 72, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>🐟</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: '#b5d5e5' }}>{msg}</p>
@@ -461,10 +484,13 @@ export default function Kultakala() {
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
-          <div onClick={canDraw ? () => humanDraw(true) : undefined} style={{ cursor: canDraw && discardTop ? 'pointer' : 'default', position: 'relative', width: 72, height: 98 }}>
+          <div
+            onClick={canDraw ? () => humanDraw(true) : canDiscard ? humanStopSwap : undefined}
+            style={{ cursor: (canDraw && discardTop) || canDiscard ? 'pointer' : 'default', position: 'relative', width: 72, height: 98 }}
+          >
             {!discardTop
-              ? <div style={{ width: 72, height: 98, borderRadius: 9, border: `1.5px dashed ${C.panelBorder}`, opacity: 0.3 }} />
-              : <div style={{ position: 'relative', width: 72, height: 98, borderRadius: 9, background: C.card, border: `2px solid ${canDraw ? C.gold : '#aaa'}`, boxShadow: canDraw ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              ? <div style={{ width: 72, height: 98, borderRadius: 9, border: `1.5px dashed ${canDiscard ? C.gold : C.panelBorder}`, opacity: canDiscard ? 0.8 : 0.3, boxShadow: canDiscard ? `0 0 14px rgba(201,168,76,0.4)` : 'none', transition: 'all 0.2s' }} />
+              : <div style={{ position: 'relative', width: 72, height: 98, borderRadius: 9, background: C.card, border: `2px solid ${(canDraw || canDiscard) ? C.gold : '#aaa'}`, boxShadow: (canDraw || canDiscard) ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ textAlign: 'center', color: isRed(discardTop.s) ? '#b83030' : '#1a1a2e', fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: 18, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: 22 }}>{discardTop.s}</div>
@@ -499,8 +525,7 @@ export default function Kultakala() {
               <div key={i} style={{ textAlign: 'center' }}>
                 <KaCard card={c} faceUp={debugOpen || human.known.has(i)} small
                   highlight={isSwapTarget}
-                  onClick={isSwapTarget ? () => humanSwapRow(i) : undefined}
-                  pulse={human.known.has(i) && !isSwapTarget}
+                  pulse={hints && human.known.has(i) && !isSwapTarget}
                   backStyle={BACKS[cardBack]} />
                 <div style={{ fontFamily: 'sans-serif', fontSize: 9, color: isSwapTarget ? C.gold : C.dim, marginTop: 3 }}>{i + 1}</div>
               </div>
@@ -511,14 +536,14 @@ export default function Kultakala() {
 
       {/* Toimintopainikkeet */}
       <div style={{ minHeight: 44, display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10, flexWrap: 'wrap' }}>
-        {canDiscard && held && (
-          <button onClick={humanDiscardHeld} style={{ background: 'transparent', border: `1px solid ${C.dim}66`, borderRadius: 9, padding: '10px 16px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            Heitä {lbl(held)} poistopakkaan
+        {canSwapRow && swapIdx !== null && (
+          <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}>
+            {`Vaihda ${lbl(held)} paikan ${swapIdx + 1} korttiin`}
           </button>
         )}
-        {canSwapRow && phase === 'swapping' && swapIdx >= 0 && (
-          <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: '10px 16px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            Lopeta vaihto
+        {canStop && (
+          <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}>
+            {`Heitä ${lbl(held)} poistopakkaan`}
           </button>
         )}
       </div>
@@ -531,10 +556,6 @@ export default function Kultakala() {
           </div>
         ))}
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
-          {Object.entries(BACKS).map(([key, b]) => (
-            <button key={key} onClick={() => setCB(key)} title={b.label} style={{ width: 18, height: 25, borderRadius: 3, cursor: 'pointer', padding: 0, overflow: 'hidden', background: b.bg, border: `2px solid ${cardBack === key ? C.gold : b.border}`, transition: 'all 0.15s', transform: cardBack === key ? 'scale(1.2)' : 'none', flexShrink: 0 }} />
-          ))}
-          <span style={{ width: 3 }} />
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
           <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
         </div>
@@ -558,6 +579,8 @@ export default function Kultakala() {
       </div>
       <style>{`
         @keyframes revealFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9)}100%{box-shadow:none}}
+        @keyframes platina{0%,100%{border-color:rgba(200,210,235,0.5);box-shadow:0 0 5px rgba(210,215,255,0.2)}50%{border-color:rgba(235,240,255,1);box-shadow:0 0 14px rgba(220,225,255,0.7)}}
+        @keyframes kohahdus{0%{opacity:0;transform:scale(0.55)}15%{opacity:1;transform:scale(1.08)}60%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0.92)}}
         button:active{transform:scale(0.97)}
       `}</style>
     </div>

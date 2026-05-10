@@ -4,6 +4,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { isRed, lbl, SUITS, RANKS, VAL, shuffle } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
+import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 
@@ -39,10 +40,10 @@ const M = {
   peekOne:   'Hyvä! Kurkkaa vielä toinen kortti.',
   peekDone:  'Pelaajat katsoivat kaksi korttiaan. Peli voi alkaa.',
   yourTurn:  'Sinun vuorosi — nosta kortti pakasta tai poistopakasta. Voit koputtaa ennen nostoa, jos uskot pisteidesi olevan pienimmät.',
-  drawn:     c => `Nostit ${lbl(c)} (${c.v} p). Vaihda se johonkin pöytäkorteistasi tai lyö poistopakkaan.`,
-  drawnD:    c => `Nostit ${lbl(c)} (${c.v} p) poistopakasta. Vaihda pöytäkorttiin vai lyö takaisin?`,
+  drawn:     c => `Nostit ${lbl(c)} (${c.v} p). Vaihda se johonkin pöytäkorteistasi tai heitä poistopakkaan.`,
+  drawnD:    c => `Nostit ${lbl(c)} (${c.v} p) poistopakasta. Vaihda pöytäkorttiin vai heitä takaisin?`,
   swapped:   c => `Vaihdoit — ${lbl(c)} siirtyi poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
-  discarded: c => `Löit ${lbl(c)} poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
+  discarded: c => `Heitit ${lbl(c)} poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
   reactQ:    c => `${lbl(c)} on poistopakassa — onko sinulla samanvahvuinen pöytäkortti? Klikkaa sitä nopeasti!`,
   reactWin:  () => 'Muistit oikein, pöytäkorttimääräsi vähenee.',
   reactWrong: 'Väärä kortti! Menetät sen poistopakkaan ja nostat kaksi rangaistuskorttia (max 4 pöytäkorttia).',
@@ -95,7 +96,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus() {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(3);
   const [G, setG]               = useState(null);
@@ -104,7 +105,7 @@ export default function Koputus() {
   const [drawn, setDrawn]       = useState(null);
   const [msg, setMsg_]          = useState('');
   const [log, setLog]           = useState([]);
-  const [debugOpen, setDebug]   = useState(false);
+  const [debugOpen, setDebug]   = useState(initSeeAll);
   const [peeksDone, setPD]      = useState(0);
   const [tempPeek, setTP]       = useState(new Set());
   const [reactionOpen, setRO]   = useState(false);
@@ -113,13 +114,16 @@ export default function Koputus() {
   const [lastRound, setLR]      = useState(null);
   const [specState, setSS]      = useState(null);
   const [lastSwap, setLastSwap] = useState(null);
-  const [soundOn, setSoundOn]   = useState(true);
-  const [logOpen, setLogOpen]   = useState(true);
-  const [cardBack, setCardBack] = useState('ilves');
+  const [soundOn, setSoundOn]   = useState(initSoundOn);
+  const [logOpen, setLogOpen]   = useState(hints);
+  const cardBack = 'ilves';
+  const [pakaAnim, setPakaAnim] = useState(false);
+  const [shuffling, setShuffling] = useState(false);
 
-  const logRef   = useRef([]);
-  const gRef     = useRef(null);
-  const knockRef = useRef(null);
+  const logRef     = useRef([]);
+  const gRef       = useRef(null);
+  const knockRef   = useRef(null);
+  const prevDeckRef = useRef(null);
   const lrRef    = useRef(null);
   const curRef   = useRef(0);
   const stopReact = useRef(false);
@@ -139,6 +143,12 @@ export default function Koputus() {
   useEffect(() => { lrRef.current = lastRound; }, [lastRound]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => () => { clearTimeout(aiTmr.current); clearInterval(reactInt.current); }, []);
+  useEffect(() => {
+    if (!G) { prevDeckRef.current = null; return; }
+    const cur = G.deck.length;
+    if (prevDeckRef.current !== null && prevDeckRef.current > 0 && cur === 0) setPakaAnim(true);
+    prevDeckRef.current = cur;
+  }, [G?.deck?.length]);
 
   function startGame() {
     clearTimeout(aiTmr.current); clearInterval(reactInt.current);
@@ -147,8 +157,9 @@ export default function Koputus() {
     setPhase('peeking'); setCurIdx(0); setPD(0); setTP(new Set());
     setDrawn(null); setMsg(M.peekStart); setKB(null); knockRef.current = null;
     setLR(null); lrRef.current = null; setSS(null); setRO(false);
-    logRef.current = []; setLog([]);
+    logRef.current = []; setLog([]); setPakaAnim(false);
     setScreen('game');
+    setShuffling(true);
   }
 
   function onPeek(idx) {
@@ -187,7 +198,11 @@ export default function Koputus() {
     else { setMsg(M.aiTurn(np.name)); aiTmr.current = setTimeout(() => runAI(next, gState), 600); }
   }
 
-  function endGame(gState) { setPhase('gameover'); setScreen('gameover'); setMsg(M.gameOver); }
+  function endGame(gState) {
+    const heroScore = pScore(gState.players[0]);
+    onResult?.(heroScore === Math.min(...gState.players.map(pScore)));
+    setPhase('gameover'); setScreen('gameover'); setMsg(M.gameOver);
+  }
 
   function humanDrawDeck() {
     const g = gRef.current; if (!g || !g.deck.length) return;
@@ -394,7 +409,7 @@ export default function Koputus() {
     const worstKn = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
       .sort((a, b) => gState.players[playerIdx].cards[b].v - gState.players[playerIdx].cards[a].v)[0];
     const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
-    setTimeout(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'kaatopakasta' : 'pakasta'}...`); }, 1600);
+    setTimeout(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); }, 1600);
     setTimeout(() => {
       let card, deck, discard;
       if (drawFromDiscard) {
@@ -512,6 +527,7 @@ export default function Koputus() {
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: 16, maxWidth: 560, margin: '0 auto', paddingBottom: 40 }}>
+      <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       <div style={{ background: 'linear-gradient(135deg,#09192a,#071420)', border: `1px solid ${C.blue}40`, borderRadius: 14, padding: '13px 17px', marginBottom: 14, display: 'flex', gap: 12, alignItems: 'flex-start', height: 78, overflow: 'hidden' }}>
         <span style={{ fontSize: 17, flexShrink: 0, marginTop: 1 }}>🎓</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.65, color: '#b5d5e5', overflow: 'hidden' }}>{msg}</p>
@@ -557,7 +573,9 @@ export default function Koputus() {
                 </div>
               </>}
           </div>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 6 }}>{G.deck.length} kpl</div>
+          <div style={{ fontSize: 10, fontFamily: 'sans-serif', marginTop: 6, color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
+            {G.deck.length === 0 ? 'TYHJÄ!' : `${G.deck.length} kpl`}
+          </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 72, flexShrink: 0 }}>
           {reactionOpen
@@ -604,7 +622,7 @@ export default function Koputus() {
       )}
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 10, minHeight: 44, alignItems: 'center' }}>
-        {isHuman && phase === 'drawn' && <Btn label="Lyö poistopakkaan ›" onClick={humanDiscard} color={C.gold} />}
+        {isHuman && phase === 'drawn' && <Btn label="Heitä poistopakkaan ›" onClick={humanDiscard} color={C.gold} />}
         {isHuman && phase === 'draw' && knockedBy === null && <Btn label="🤜 Koputan!" onClick={humanKnock} color={C.red} outline />}
         {phase === 'spec_q_tgt' && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; setTimeout(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
         {phase === 'spec_k_decide' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
@@ -619,11 +637,6 @@ export default function Koputus() {
           </div>
         ))}
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
-          {Object.entries(BACKS).map(([key, b]) => (
-            <button key={key} onClick={() => setCardBack(key)} title={b.label}
-              style={{ width: 20, height: 28, borderRadius: 3, cursor: 'pointer', padding: 0, overflow: 'hidden', background: b.bg, border: `2px solid ${cardBack === key ? C.gold : b.border}`, transition: 'all 0.15s', transform: cardBack === key ? 'scale(1.2)' : 'none', flexShrink: 0 }} />
-          ))}
-          <span style={{ width: 4 }} />
           <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
           <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
         </div>
@@ -650,6 +663,7 @@ export default function Koputus() {
         @keyframes slotFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9),0 0 18px rgba(201,168,76,0.6)}60%{box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 0 10px rgba(201,168,76,0.3)}100%{box-shadow:none}}
         @keyframes reactPulse{0%,100%{border-color:#e05c3b;box-shadow:0 0 8px rgba(224,92,59,0.4)}50%{border-color:#ff7a5a;box-shadow:0 0 16px rgba(224,92,59,0.7)}}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+        @keyframes pakaFlash{0%{opacity:0.4;letter-spacing:1.5px}12%{opacity:1;letter-spacing:3px;text-shadow:0 0 14px rgba(224,92,59,0.9),0 0 30px rgba(224,92,59,0.5)}40%{opacity:1;letter-spacing:2px;text-shadow:0 0 8px rgba(224,92,59,0.5)}70%{opacity:1;letter-spacing:1.5px;text-shadow:none}100%{opacity:1}}
       `}</style>
     </div>
   );

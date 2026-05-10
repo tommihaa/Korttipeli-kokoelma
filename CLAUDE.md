@@ -22,10 +22,26 @@ Nine games with unified Finnish UI terms:
 
 Key terms: kortti, käsi, pino, nosto, lasku, pistelasku, kierros, vuoro, jako
 
+## Pakkatyypit
+
+Kolme tyyppiä — näkyy päävalikossa pelikorteissa:
+
+| Tyyppi | Koodi | Pelit |
+|---|---|---|
+| Täysin jaettu | `jaettu` | Läpsy, Ristiseiska |
+| Täydennetty | `taydennetty` | Kultakala, Maija, Moska, Paskahousu, Koputus, Kasino |
+| Kierrätetty | `kierratetty` | Seiska |
+
+Erikoistapaukset (silti yllä olevissa luokissa):
+- **Koputus**: Koputus käynnistää viimeisen kierroksen — nostopakkaa voi jäädä huomiotta
+- **Seiska**: Voittaja pääsee korteistaan eroon ensin — nostopakkaa voi jäädä huomiotta
+- **Kasino**: 16 pistettä ensin saanut voittaa; pisteet lasketaan nostopakan ehdyttyä pelatun kierroksen päätyttyä; tasapeli on mahdollinen
+
 ## Modes
-- **Opetustila** – step-by-step guidance, move hints (default at startup)
-- **Vapaa tila** – free play, no restrictions
-- **Kilpailutila** – strict rules, scoring enforced
+- **Opetustila** – move hints visible, tapahtumaloki auki oletuksena (default)
+- **Vapaa tila** – ei ohjeviestejä, loki kiinni oletuksena
+- Toggle-nappi oikeassa yläkulmassa pelin aikana (🎓 / 🃏)
+- Proppi: `hints: boolean` jokaisessa pelissä — lisää vaikutuksia tarpeen mukaan
 
 ## Players
 - Human player: "Hero"

@@ -14,10 +14,10 @@ export const C = {
 };
 
 export const SUIT_COLOR = {
-  '♠': '#1a1a2e',
-  '♥': '#b83030',
-  '♦': '#c05a00',
-  '♣': '#0a5c6a',
+  '♠': '#1a1a1a',
+  '♥': '#cc2222',
+  '♦': '#1a5fb4',
+  '♣': '#2a7a2a',
 };
 
 export const suitColor = s => SUIT_COLOR[s] || '#1a1a2e';

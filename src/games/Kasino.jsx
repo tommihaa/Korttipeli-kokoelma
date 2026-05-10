@@ -4,6 +4,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
+import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames() {
@@ -100,25 +101,37 @@ function dealHands(g) {
   return { ...g, players, deck };
 }
 
-export default function Kasino() {
+const SUIT_ORDER = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
+function sortHand(hand) {
+  return [...hand].sort((a, b) => {
+    const sd = SUIT_ORDER[a.s] - SUIT_ORDER[b.s];
+    return sd !== 0 ? sd : handVal(a) - handVal(b);
+  });
+}
+
+export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(2);
-  const [soundOn, setSnd] = useState(true);
-  const [cardBack, setCB] = useState('ilves');
+  const [soundOn, setSnd] = useState(initSoundOn);
+  const cardBack = 'ilves';
   const [G, setG] = useState(null);
   const [curIdx, setCur] = useState(0);
   const [phase, setPhase] = useState('idle');
   const [selTable, setSelTable] = useState([]);
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(true);
-  const [debugOpen, setDebug] = useState(false);
+  const [logOpen, setLO] = useState(hints);
+  const [debugOpen, setDebug] = useState(initSeeAll);
   const [scores, setScores] = useState(null);
+  const [pakaAnim, setPakaAnim] = useState(false);
   const [aiSel, setAiSel] = useState({ handCard: null, tableCards: [] });
   const [captureAnim, setCaptureAnim] = useState(null); // {handCard, tableCards}
+  const [jpId, setJP] = useState(null);
+  const [shuffling, setShuffling] = useState(false);
 
   const gRef    = useRef(null);
   const phaseRef = useRef('idle');
+  const prevDeckRef = useRef(null);
   const curRef  = useRef(0);
   const aiTmr   = useRef(null);
   const logRef  = useRef([]);
@@ -129,6 +142,12 @@ export default function Kasino() {
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => () => clearTimeout(aiTmr.current), []);
+  useEffect(() => {
+    if (!G) { prevDeckRef.current = null; return; }
+    const cur = G.deck.length;
+    if (prevDeckRef.current !== null && prevDeckRef.current > 0 && cur === 0) setPakaAnim(true);
+    prevDeckRef.current = cur;
+  }, [G?.deck?.length]);
 
   function addLog(m) {
     setMsg_(m);
@@ -143,10 +162,11 @@ export default function Kasino() {
     setG(g); gRef.current = g;
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
-    setSelTable([]); setScores(null);
+    setSelTable([]); setScores(null); setPakaAnim(false);
     logRef.current = []; setLog([]);
     addLog(`Kasino alkaa! Pöydässä ${korttia(g.table.length)}. Sinun vuorosi.`);
     setScreen('game');
+    setShuffling(true);
   }
 
   function getTurnHint(hand, table) {
@@ -213,7 +233,7 @@ export default function Kasino() {
       addLog(`Sinun vuorosi — ${korttia(p.hand.length)} kädessä. ${hint}`);
     } else {
       addLog(`${p.name} miettii...`);
-      aiTmr.current = setTimeout(() => runAI(next, g2), 2200 + Math.random() * 800);
+      aiTmr.current = setTimeout(() => runAI(next, g2), 1200 + Math.random() * 400);
     }
   }
 
@@ -231,6 +251,7 @@ export default function Kasino() {
       totalScore: (g2.players[i].score || 0) + r.roundPts,
     }));
     const anyAt16 = newScores.some(s => s.totalScore >= 16);
+    if (anyAt16) onResult?.(newScores[0].totalScore === Math.max(...newScores.map(s => s.totalScore)));
     const finalPlayers = g2.players.map((p, i) => ({ ...p, score: newScores[i].totalScore }));
     const g3 = { ...g2, players: finalPlayers };
     setG(g3); gRef.current = g3;
@@ -248,7 +269,7 @@ export default function Kasino() {
       players: newG.players.map((p, i) => ({ ...p, score: finalPlayers[i]?.score || 0 })),
     };
     setG(withScores); gRef.current = withScores;
-    setScores(null); setSelTable([]);
+    setScores(null); setSelTable([]); setPakaAnim(false);
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
     const h0 = withScores.players[0];
@@ -300,6 +321,8 @@ export default function Kasino() {
       : p
     );
     const newG = { ...g, players, table: [...g.table, handCard] };
+    setJP(handCard.id);
+    setTimeout(() => setJP(null), 2200);
     if (sndRef.current) SFX.leave();
     const who = playerIdx === 0 ? 'Jätit' : `${g.players[playerIdx].name} jätti`;
     addLog(`${who} ${lbl(handCard)} pöytään.`);
@@ -458,7 +481,7 @@ export default function Kasino() {
           ))}
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi ottelu →</button>
+          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
           <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
         </div>
       </div>
@@ -494,6 +517,8 @@ export default function Kasino() {
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: 32 }}>
 
+      <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
+
       {/* Viestikupla */}
       <div style={{ background: 'linear-gradient(135deg,#09192a,#071420)', border: `1px solid ${C.blue}40`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, height: 68, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>🂺</span>
@@ -507,8 +532,12 @@ export default function Kasino() {
             {p.name}: {p.score}p {curIdx === i ? '●' : ''}
           </div>
         ))}
-        <div style={{ marginLeft: 'auto', padding: '4px 10px', borderRadius: 20, fontFamily: 'sans-serif', fontSize: 11, color: C.dim, border: `1px solid ${C.panelBorder}` }}>
-          {korttia(G.deck.length)} pakassa
+        <div style={{ marginLeft: 'auto', padding: '4px 10px', borderRadius: 20, fontFamily: 'sans-serif', fontSize: 11,
+          color: G.deck.length === 0 ? C.red : C.dim,
+          fontWeight: G.deck.length === 0 ? 700 : 400,
+          border: `1px solid ${G.deck.length === 0 ? C.red + '55' : C.panelBorder}`,
+          animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
+          {G.deck.length === 0 ? 'PAKKA TYHJÄ' : `${korttia(G.deck.length)} pakassa`}
         </div>
       </div>
 
@@ -587,6 +616,7 @@ export default function Kasino() {
                   showBadges
                   selected={!!isSel || !!isAiPick}
                   highlight={isMyTurn && !isSel}
+                  justPlaced={c.id === jpId}
                   onClick={isMyTurn ? () => humanToggleTable(c) : undefined}
                   backStyle={BACKS[cardBack]}
                 />
@@ -624,7 +654,7 @@ export default function Kasino() {
           👤 Hero {curIdx === 0 ? '●' : ''} — {korttia(human.captured.length)} kaapattu, {human.tikkiCount} mökkiä
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {human.hand.map(c => {
+          {sortHand(human.hand).map(c => {
             const valid = isMyTurn && selTable.length > 0 && isValidCapture(c, selTable);
             return (
               <Card key={c.id} card={c} large showBadges
@@ -653,11 +683,6 @@ export default function Kasino() {
           Tavoite: 16p · 10♦=2p · 2♠=1p · eniten kortteja=1p · eniten patoja=1p · mökki=1p
         </span>
         <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          {Object.entries(BACKS).map(([key, b]) => (
-            <button key={key} onClick={() => setCB(key)} title={b.label}
-              style={{ width: 18, height: 25, borderRadius: 3, cursor: 'pointer', padding: 0, overflow: 'hidden', background: b.bg, border: `2px solid ${cardBack === key ? C.gold : b.border}`, transition: 'all 0.15s', transform: cardBack === key ? 'scale(1.2)' : 'none', flexShrink: 0 }} />
-          ))}
-          <span style={{ width: 3 }} />
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
             {soundOn ? '🔊' : '🔇'}
           </button>
@@ -684,7 +709,7 @@ export default function Kasino() {
           </div>
         )}
       </div>
-      <style>{`button:active{transform:scale(0.97)}`}</style>
+      <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}`}</style>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, SUITS, RANKS, VAL } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
+import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 
 // ── Seiska ─────────────────────────────────────────────────────
 const SUIT_SYMS = ['♠', '♥', '♦', '♣'];
@@ -27,7 +28,7 @@ function mkDeck() {
 // Voidaanko yksittäinen kortti lyödä
 function canSingle(card, discardTop, reqSuit, isLast) {
   if (card.r === '7' && isLast)            return false; // ei voi voittaa seiskalla
-  if (card.r === '7' && reqSuit !== null)  return false; // seiskaa ei seiskan päälle
+  if (card.r === 'A' && isLast)            return false; // ei voi voittaa ässällä
   if (card.r === '7')                      return true;  // 7 on villikortti — käy kaiken päälle
   const suit = reqSuit || discardTop.s;
   if (card.s === suit)                     return true;
@@ -70,6 +71,7 @@ function mkInitState(nP) {
     aceBonus: null,
     finished: [],
     phase: 'play',
+    reshuffleCount: 0,
   };
 }
 
@@ -77,7 +79,7 @@ function reshuffleIfNeeded(g) {
   if (g.deck.length > 0) return g;
   if (g.discardPile.length <= 1) return g;
   const top = g.discardPile[g.discardPile.length - 1];
-  return { ...g, deck: shuffle(g.discardPile.slice(0, -1)), discardPile: [top] };
+  return { ...g, deck: shuffle(g.discardPile.slice(0, -1)), discardPile: [top], reshuffleCount: (g.reshuffleCount || 0) + 1 };
 }
 
 function nextActive(players, from, finished) {
@@ -115,26 +117,48 @@ function sortHand(hand) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska() {
+export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(3);
-  const [soundOn,  setSnd]     = useState(true);
-  const [cardBack, setCB]      = useState('ilves');
+  const [soundOn,  setSnd]     = useState(initSoundOn);
+  const cardBack = 'ilves';
   const [G,        setG]       = useState(null);
   const [msg,      setMsg_]    = useState('');
   const [log,      setLog]     = useState([]);
-  const [logOpen,  setLO]      = useState(true);
+  const [logOpen,  setLO]      = useState(hints);
   const [selected, setSel]     = useState([]);
-  const [debugOpen,setDebug]   = useState(false);
+  const [debugOpen,setDebug]   = useState(initSeeAll);
+  const [pakaAnim, setPakaAnim] = useState(false);
+  const [jpId, setJP] = useState(null);
+  const [shuffling, setShuffling] = useState(false);
 
   const gRef   = useRef(null);
   const aiTmr  = useRef(null);
   const logRef = useRef([]);
   const sndRef = useRef(true);
+  const prevDeckRef = useRef(null);
+  const prevRCRef   = useRef(0);
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => () => clearTimeout(aiTmr.current), []);
+
+  useEffect(() => {
+    if (!G) { prevDeckRef.current = null; return; }
+    const cur = G.deck.length;
+    const trulyEmpty = cur === 0 && G.discardPile.length <= 1;
+    if (prevDeckRef.current !== null && prevDeckRef.current > 0 && trulyEmpty) setPakaAnim(true);
+    prevDeckRef.current = cur;
+  }, [G?.deck?.length, G?.discardPile?.length]);
+
+  useEffect(() => {
+    if (!G) return;
+    const rc = G.reshuffleCount || 0;
+    if (rc > prevRCRef.current) {
+      prevRCRef.current = rc;
+      setShuffling(true);
+    }
+  }, [G?.reshuffleCount]);
 
   function addLog(m) {
     setMsg_(m);
@@ -147,16 +171,32 @@ export default function Seiska() {
 
   function startGame() {
     clearTimeout(aiTmr.current);
+    prevRCRef.current = 0;
     const g = mkInitState(nP);
-    logRef.current = []; setLog([]); setSel([]);
+    logRef.current = []; setLog([]); setSel([]); setPakaAnim(false);
     setGS(g);
     addLog(`Seiska alkaa! Päällimmäinen: ${lbl(g.discardTop)}.`);
     setScreen('game');
+    setShuffling(true);
     if (g.players[0].isHuman) {
       addLog(`Sinun vuorosi — lyö ${g.discardTop.s}-maa tai ${g.discardTop.r}.`);
     } else {
-      aiTmr.current = setTimeout(() => runAI(g), 1200);
+      aiTmr.current = setTimeout(() => runAI(g), 3100);
     }
+  }
+
+  // ── Ässärangaistus: muut nostavat kortin ────────────────────
+  function applyAcePenalty(g, fromIdx) {
+    let g2 = reshuffleIfNeeded(g);
+    let deck = [...g2.deck];
+    const players = g2.players.map((p, i) => {
+      if (i === fromIdx || g2.finished.includes(i)) return p;
+      if (!deck.length) return p;
+      const drawn = deck.shift();
+      addLog(`${p.isHuman ? 'Sinä nostat' : `${p.name} nostaa`} ässärangaistuksena ${lbl(drawn)}.`);
+      return { ...p, hand: [...p.hand, drawn] };
+    });
+    return { ...g2, players, deck };
   }
 
   // ── Lappu-tarkistus ennen seuraavaa vuoroa ──────────────────
@@ -186,8 +226,8 @@ export default function Seiska() {
     const g3 = { ...g2, activePlayer: nextIdx, drawsThisTurn: 0 };
     setGS(g3);
     if (!g3.players[nextIdx].isHuman) {
-      aiTmr.current = setTimeout(() => runAI(g3), 2200 + Math.random() * 600);
-    } else {
+      aiTmr.current = setTimeout(() => runAI(g3), 1200 + Math.random() * 400);
+    } else if (hints) {
       const cl = g3.reqSuit
         ? `Vaadittu maa: ${g3.reqSuit} — lyö ${g3.reqSuit}-maa tai nosta.`
         : `Lyö ${g3.discardTop.s}-maa tai ${g3.discardTop.r}-arvo tai nosta.`;
@@ -199,10 +239,10 @@ export default function Seiska() {
   function doPlay(g, playerIdx, cards, suitChoice) {
     const p     = g.players[playerIdx];
     const card  = cards[cards.length - 1];
-    const pname = p.name;
+    const isH   = p.isHuman;
 
     if (sndRef.current) SFX.flip();
-    addLog(`${pname}: ${cards.map(lbl).join(', ')}`);
+    addLog(`${isH ? 'Sinä' : p.name}: ${cards.map(lbl).join(', ')}`);
 
     // Poista kädestä
     let players = g.players.map((pl, i) => i !== playerIdx ? pl
@@ -214,7 +254,7 @@ export default function Seiska() {
     let gameOver = false;
     if (newHand.length === 0 && !finished.includes(playerIdx)) {
       finished = [...finished, playerIdx];
-      addLog(`${pname} voittaa! 🏆`);
+      addLog(`${isH ? 'Voitat' : `${p.name} voittaa`}! 🏆`);
       if (sndRef.current) SFX.capture();
       if (g.players.every((_, i) => finished.includes(i) || i === playerIdx)) {
         g.players.forEach((_, i) => { if (!finished.includes(i)) finished.push(i); });
@@ -228,22 +268,32 @@ export default function Seiska() {
     let g2 = { ...g, players, finished };
 
     if (gameOver) {
+      onResult?.(finished[0] === 0);
       setGS({ ...g2, phase: 'gameover' });
       return;
     }
+
+    setJP(card.id);
+    setTimeout(() => setJP(null), 2200);
 
     // Seiska: valitse maa
     if (card.r === '7') {
       const newDiscard = { ...g2, discardTop: card, discardPile: [...g2.discardPile, ...cards], reqSuit: null, finished };
       const pendLappu = (newHand.length === 1 && !g2.lappuSaid.has(playerIdx)) ? playerIdx : g2.pendingLappu;
-      if (!suitChoice && p.isHuman) {
-        setGS({ ...newDiscard, phase: 'awaiting_suit', pendingLappu: pendLappu });
+      if (g2.reqSuit !== null) {
+        // Seiska seiskan päälle — väri automaattisesti tämän seiskan oma maa
+        const suit = card.s;
+        addLog(`${isH ? 'Sinä' : p.name} laittaa seiskan päälle — vaadittu maa: ${suit}`);
+        g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
+      } else if (!suitChoice && p.isHuman) {
+        setGS({ ...newDiscard, phase: 'awaiting_suit', pendingLappu: null });
         addLog('Valitse vaadittu maa seiskan jälkeen.');
         return;
+      } else {
+        const suit = suitChoice || aiSuit(newHand);
+        if (!suitChoice) addLog(`${isH ? 'Sinä valitset' : `${p.name} valitsee`} maan: ${suit}`);
+        g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
       }
-      const suit = suitChoice || aiSuit(newHand);
-      if (!suitChoice) addLog(`${pname} valitsee maan: ${suit}`);
-      g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
     } else {
       g2 = { ...g2, discardTop: card, discardPile: [...g2.discardPile, ...cards], reqSuit: null };
     }
@@ -253,13 +303,12 @@ export default function Seiska() {
       g2 = { ...g2, aceBonus: card.s };
       if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
         if (!p.isHuman) {
-          addLog(`${pname}: Lappu!`);
+          addLog(`${p.name}: Lappu!`);
           g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
-        } else {
-          g2 = { ...g2, pendingLappu: playerIdx };
         }
+        // Ihmiselle: ei aseteta pendingLappu vielä — odotetaan bonusvuoron päättymistä
       }
-      addLog(`Ässä! ${pname} voi jatkaa ${card.s}-maalla.`);
+      addLog(`Ässä! ${isH ? 'Sinä voit' : `${p.name} voi`} jatkaa ${card.s}-maalla.`);
       setGS(g2);
       if (!p.isHuman) aiTmr.current = setTimeout(() => runAI(gRef.current), 1600);
       return;
@@ -268,7 +317,7 @@ export default function Seiska() {
     // Lappu
     if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
       if (!p.isHuman) {
-        addLog(`${pname}: Lappu!`);
+        addLog(`${p.name}: Lappu!`);
         g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
         advanceTurn(g2, playerIdx);
       } else {
@@ -291,25 +340,34 @@ export default function Seiska() {
       return;
     }
     const [drawn, ...deck] = g2.deck;
+    const prevHandSize = g2.players[playerIdx].hand.length;
     const players = g2.players.map((p, i) => i !== playerIdx ? p : { ...p, hand: [...p.hand, drawn] });
     const draws   = g2.drawsThisTurn + 1;
-    g2 = { ...g2, deck, players, drawsThisTurn: draws };
-    const pname = g2.players[playerIdx].name;
-    addLog(`${pname} nostaa ${lbl(drawn)}.`);
+    let lappuSaid = g2.lappuSaid;
+    if (prevHandSize === 1 && lappuSaid.has(playerIdx)) {
+      lappuSaid = new Set([...lappuSaid].filter(id => id !== playerIdx));
+    }
+    g2 = { ...g2, deck, players, drawsThisTurn: draws, lappuSaid };
+    const isH2 = g2.players[playerIdx].isHuman;
     setGS(g2);
 
     const hand  = players[playerIdx].hand;
     const valid = canSingle(drawn, g2.discardTop, g2.reqSuit, hand.length === 1);
 
-    if (!g2.players[playerIdx].isHuman) {
+    if (!isH2) {
+      const pName = g2.players[playerIdx].name;
       if (valid) {
+        addLog(`${pName} nostaa.`);
         aiTmr.current = setTimeout(() => doPlay(gRef.current, playerIdx, [drawn], null), 700);
       } else if (draws < 3) {
+        addLog(`${pName}: Nosto ei auta.`);
         aiTmr.current = setTimeout(() => doDraw(gRef.current, playerIdx), 700);
       } else {
+        addLog(`${pName}: Nostot eivät auttaneet.`);
         aiTmr.current = setTimeout(() => advanceTurn(gRef.current, playerIdx), 700);
       }
     } else {
+      addLog(`Nostat ${lbl(drawn)}.`);
       if (valid) {
         addLog(`${lbl(drawn)} on pelattavissa! Lyö se tai nosta uudelleen (${3 - draws} jäljellä).`);
       } else if (draws >= 3) {
@@ -329,13 +387,14 @@ export default function Seiska() {
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
 
-    // Ässä-bonusvuoro: pelaa saman maan kortti tai lopeta
+    // Ässä-bonusvuoro: pelaa saman maan kortti tai lopeta (+ rangaistus)
     if (aceBonus !== null) {
       const bonusCard = p.hand.find(c => c.s === aceBonus && c.r !== '7');
       if (bonusCard) {
         doPlay({ ...gRef.current, aceBonus: null }, activePlayer, [bonusCard], null);
       } else {
-        advanceTurn({ ...gRef.current, aceBonus: null }, activePlayer);
+        const g2 = applyAcePenalty({ ...gRef.current, aceBonus: null }, activePlayer);
+        advanceTurn(g2, activePlayer);
       }
       return;
     }
@@ -365,7 +424,7 @@ export default function Seiska() {
       const has = prev.find(c => c.id === card.id);
       if (has) return prev.filter(c => c.id !== card.id);
       if (prev.length > 0) {
-        if (G.reqSuit || card.r !== G.discardTop.r || card.r === '7') return prev;
+        if (card.r === '7' || card.r === 'A') return prev;
         if (prev[0].r !== card.r) return prev;
       }
       return [...prev, card];
@@ -394,14 +453,29 @@ export default function Seiska() {
     const g = gRef.current;
     if (!g || g.aceBonus === null) return;
     setSel([]);
-    advanceTurn({ ...g, aceBonus: null }, 0);
+    const g2 = applyAcePenalty({ ...g, aceBonus: null }, 0);
+    const newHand = g2.players[0].hand;
+    if (newHand.length === 1 && !g2.lappuSaid.has(0)) {
+      const g3 = { ...g2, pendingLappu: 0 };
+      setGS(g3);
+      setTimeout(() => advanceTurn(gRef.current, 0), 3000);
+    } else {
+      advanceTurn(g2, 0);
+    }
   }
 
   function humanChooseSuit(suit) {
     const g = gRef.current;
     if (!g || g.phase !== 'awaiting_suit') return;
     addLog(`Valitsit maan: ${suit}`);
-    advanceTurn({ ...g, reqSuit: suit, phase: 'play' }, 0);
+    const newHand = g.players[0].hand;
+    if (newHand.length === 1 && !g.lappuSaid.has(0)) {
+      const g2 = { ...g, reqSuit: suit, phase: 'play', pendingLappu: 0 };
+      setGS(g2);
+      setTimeout(() => advanceTurn(gRef.current, 0), 3000);
+    } else {
+      advanceTurn({ ...g, reqSuit: suit, phase: 'play' }, 0);
+    }
   }
 
   function humanDraw() {
@@ -419,7 +493,7 @@ export default function Seiska() {
     const g = gRef.current;
     if (!g) return;
     setGS({ ...g, lappuSaid: new Set([...g.lappuSaid, 0]), pendingLappu: null });
-    addLog('Lappu! Herolla yksi kortti jäljellä.');
+    addLog('Lappu! Sinulla on yksi kortti jäljellä.');
   }
 
   // ── Select ──────────────────────────────────────────────────
@@ -444,7 +518,8 @@ export default function Seiska() {
         Lyö sama maa (1 kerralla) TAI sama arvo (useampi kerralla)<br />
         Ei sovi → nosta enintään 3 korttia, pelaa jos löytyy<br />
         <span style={{ color: C.blue }}>7</span> → valitse vaadittu maa · seiskaa ei seiskan päälle<br />
-        <span style={{ color: C.red }}>A</span> → jatka saman maan kortilla (bonusvuoro) · 1 kortti → sano <strong>LAPPU</strong> tai +5<br />
+        <span style={{ color: C.red }}>A</span> → bonusvuoro saman maan kortilla · jos ei jatka, muut nostavat kortin<br />
+        1 kortti → sano <strong>LAPPU</strong> tai +5 · jos nostat, Lappu täytyy sanoa uudelleen<br />
         <span style={{ color: C.gold }}>Ei voi voittaa seiskalla · Tyhjennä käsi ensimmäisenä</span>
       </div>
       <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
@@ -490,6 +565,7 @@ export default function Seiska() {
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: 32 }}>
+      <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(13,33,24,0.95)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -540,12 +616,17 @@ export default function Seiska() {
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
           <div style={{ width: 60, height: 82, borderRadius: 7, background: BACKS[cardBack].bg, border: `2px solid ${BACKS[cardBack].border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>{G.deck.length}</span>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11,
+              color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : C.dim,
+              fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 400,
+              animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
+              {G.deck.length === 0 && G.discardPile.length <= 1 ? 'TYHJÄ!' : G.deck.length}
+            </span>
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>LYÖNTIPAKKA</div>
-          <Card card={G.discardTop} large backStyle={BACKS[cardBack]} />
+          <Card card={G.discardTop} large justPlaced={G.discardTop?.id === jpId} backStyle={BACKS[cardBack]} />
         </div>
         {G.reqSuit && (
           <div style={{ padding: '10px 18px', borderRadius: 12, background: 'rgba(201,168,76,0.1)', border: `2px solid ${C.gold}66`, textAlign: 'center' }}>
@@ -604,9 +685,13 @@ export default function Seiska() {
             const single  = canAct && (G.aceBonus !== null
               ? (c.s === G.aceBonus && c.r !== '7')
               : canSingle(c, G.discardTop, G.reqSuit, human.hand.length === 1));
-            const multi   = canAct && G.aceBonus === null && !G.reqSuit && c.r === G.discardTop.r && c.r !== '7' && c.r !== 'A';
-            const hl      = (single || multi) && !isSel;
-            const dimmed  = canAct && !single && !multi && !isSel;
+            const multi   = canAct && G.aceBonus === null && c.r !== '7' && c.r !== 'A' && (
+              selected.length > 0
+                ? c.r === selected[0].r && !isSel
+                : !G.reqSuit && c.r === G.discardTop.r
+            );
+            const hl      = !isSel && (selected.length > 0 ? multi : (single || multi));
+            const dimmed  = canAct && !isSel && (selected.length > 0 ? !multi : (!single && !multi));
             return (
               <Card key={c.id} card={c} large
                 selected={isSel}
@@ -652,13 +737,15 @@ export default function Seiska() {
       {/* Tilapalkki */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
-          Pakka: {G.deck.length}k · {G.reqSuit ? `Vaadittu: ${G.reqSuit}` : `Päällimmäinen: ${lbl(G.discardTop)}`}
+          <span style={{
+            color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : 'inherit',
+            fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 'inherit',
+            animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
+            {G.deck.length === 0 && G.discardPile.length <= 1 ? 'Pakka: TYHJÄ' : `Pakka: ${G.deck.length}k`}
+          </span>
+          {' · '}{G.reqSuit ? `Vaadittu: ${G.reqSuit}` : `Päällimmäinen: ${lbl(G.discardTop)}`}
         </span>
         <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          {Object.entries(BACKS).map(([key, b]) => (
-            <button key={key} onClick={() => setCB(key)} title={b.label}
-              style={{ width: 18, height: 25, borderRadius: 3, cursor: 'pointer', padding: 0, overflow: 'hidden', background: b.bg, border: `2px solid ${cardBack === key ? C.gold : b.border}`, transition: 'all 0.15s', transform: cardBack === key ? 'scale(1.2)' : 'none', flexShrink: 0 }} />
-          ))}
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
           <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
         </div>
@@ -681,7 +768,7 @@ export default function Seiska() {
           </div>
         )}
       </div>
-      <style>{`button:active{transform:scale(0.97)}`}</style>
+      <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}`}</style>
     </div>
   );
 }

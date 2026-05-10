@@ -3,6 +3,7 @@ import { C, suitColor } from '../shared/colors.js';
 import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle } from '../shared/helpers.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { tone, noise } from '../shared/audio.js';
+import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 
 // A=14 for combat comparisons — different from shared helpers (A=1)
 const VAL = { A:14,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13 };
@@ -72,6 +73,14 @@ function Card({ card, small, highlight, dim, selected, onClick, backStyle, faceD
   );
 }
 
+const SUIT_ORDER = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
+function sortHand(hand) {
+  return [...hand].sort((a, b) => {
+    const sd = SUIT_ORDER[a.s] - SUIT_ORDER[b.s];
+    return sd !== 0 ? sd : a.v - b.v;
+  });
+}
+
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames() {
   const a = [...AI_NAMES];
@@ -102,24 +111,27 @@ function initGame(nPlayers) {
 }
 
 // ── Pääkomponentti ──────────────────────────────────────────────────
-export default function Maija() {
+export default function Maija({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(3);
-  const [soundOn, setSnd] = useState(true);
-  const [cardBack, setCB] = useState('ilves');
+  const [soundOn, setSnd] = useState(initSoundOn);
+  const cardBack = 'ilves';
   const [G, setG] = useState(null);
   const [phase, setPhase] = useState('idle');
   const [table, setTable] = useState([]);
   const [selectedCards, setSel] = useState([]);
-  const [selDefTargetIdx, setSelDefTargetIdx] = useState(null); // table slot index selected first when defending
+  const [selDefTargetIdx, setSelDefTargetIdx] = useState(null);
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(true);
-  const [debugOpen, setDebug] = useState(false);
+  const [logOpen, setLO] = useState(hints);
+  const [debugOpen, setDebug] = useState(initSeeAll);
   const [finished, setFinished] = useState([]);
+  const [pakaAnim, setPakaAnim] = useState(false);
+  const [shuffling, setShuffling] = useState(false);
 
   const gRef = useRef(null);
   const phaseRef = useRef('idle');
+  const prevDeckRef = useRef(null);
   const tableRef = useRef([]);
   const aiTmr = useRef(null);
   const logRef = useRef([]);
@@ -132,6 +144,12 @@ export default function Maija() {
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { finRef.current = finished; }, [finished]);
   useEffect(() => () => clearTimeout(aiTmr.current), []);
+  useEffect(() => {
+    if (!G) { prevDeckRef.current = null; return; }
+    const cur = G.deck.length;
+    if (prevDeckRef.current !== null && prevDeckRef.current > 0 && cur === 0) setPakaAnim(true);
+    prevDeckRef.current = cur;
+  }, [G?.deck?.length]);
 
   function addLog(m) {
     setMsg_(m);
@@ -148,11 +166,12 @@ export default function Maija() {
     setTable([]); tableRef.current = [];
     setSel([]); setSelDefTargetIdx(null);
     setFinished([]); finRef.current = [];
-    logRef.current = []; setLog([]);
+    logRef.current = []; setLog([]); setPakaAnim(false);
     const trumpLabel = g.trump==='♥' ? '♥ Hertta' : g.trump==='♦' ? '♦ Ruutu' : g.trump==='♣' ? '♣ Risti' : '?';
     addLog(`Peli alkaa! Valttimaa: ${trumpLabel}. ${g.players[g.attackerIdx].name} hyökkää.`);
     setScreen('game');
-    aiTmr.current = setTimeout(() => maybeAIAttack(g), 1800);
+    setShuffling(true);
+    aiTmr.current = setTimeout(() => maybeAIAttack(g), 3100 + Math.random() * 400);
   }
 
   function drawHand(g, playerIdx) {
@@ -179,6 +198,7 @@ export default function Maija() {
         if (sndRef.current) SFX.maija();
         addLog(`${loser.name} jäi ${isMaijaPlayer ? 'patakuningattaren kanssa — ' : ''}Maijana!`);
       }
+      onResult?.(active.length === 0 || active[0].id !== 0);
       setPhase('gameover'); phaseRef.current = 'gameover';
       setFinished(newFin); finRef.current = newFin;
       setTimeout(() => setScreen('gameover'), 1800);
@@ -266,7 +286,7 @@ export default function Maija() {
       }
       if (!toPlay.length) { toPlay = maija ? [maija] : [hand[0]]; }
       doAttack(g2, toPlay);
-    }, 3000 + Math.random() * 1200);
+    }, 1200 + Math.random() * 400);
   }
 
   function doAttack(g, cards) {
@@ -287,7 +307,7 @@ export default function Maija() {
     if (tbl.some(r => isMaija(r.att))) {
       addLog('Maija pöydällä — puolustajan on nostettava se käteen!');
     }
-    aiTmr.current = setTimeout(() => maybeAIDefend(g2, tbl), 2500);
+    aiTmr.current = setTimeout(() => maybeAIDefend(g2, tbl), 1000 + Math.random() * 400);
   }
 
   function maybeAIDefend(g, tbl) {
@@ -336,7 +356,7 @@ export default function Maija() {
           : `${n.name} kaataa ${newTbl.length - unbeaten.length}/${newTbl.length} — nostaa ${kortin(unbeaten.length)}.`);
         setTimeout(() => resolveDefenseLoss({ ...g2, players }, newTbl, finRef.current), 1500);
       }
-    }, 1800 + Math.random() * 800);
+    }, 1000 + Math.random() * 400);
   }
 
   function humanToggleCard(card) {
@@ -490,6 +510,8 @@ export default function Maija() {
     <div style={{ background:C.bg, fontFamily:'Georgia,serif', color:C.text,
       padding:'14px 16px', maxWidth:560, margin:'0 auto', paddingBottom:32 }}>
 
+      <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
+
       {/* Viestikupla */}
       <div style={{ background:'linear-gradient(135deg,#09192a,#071420)', border:`1px solid ${C.blue}40`,
         borderRadius:14, padding:'12px 16px', marginBottom:12,
@@ -543,8 +565,12 @@ export default function Maija() {
             Valtti: {G.trump}
           </div>
           <div style={{ padding:'4px 12px', borderRadius:20, background:'rgba(255,255,255,0.03)',
-            border:`1px solid ${C.panelBorder}`, fontFamily:'sans-serif', fontSize:12, color:C.dim }}>
-            {korttia(G.deck.length)} jäljellä
+            border:`1px solid ${G.deck.length===0 ? C.red+'55' : C.panelBorder}`,
+            fontFamily:'sans-serif', fontSize:12,
+            color:G.deck.length===0 ? C.red : C.dim,
+            fontWeight:G.deck.length===0 ? 700 : 400,
+            animation:pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
+            {G.deck.length===0 ? 'PAKKA TYHJÄ' : `${korttia(G.deck.length)} jäljellä`}
           </div>
           <div style={{ padding:'4px 12px', borderRadius:20, background:`${C.maija}18`,
             border:`1px solid ${C.maija}55`, fontFamily:'sans-serif', fontSize:12, color:C.maija }}>
@@ -630,7 +656,7 @@ export default function Maija() {
           {isHumanDefender && selDefTargetRow && <span style={{ color:C.gold, fontSize:11, marginLeft:8 }}>— valitse käsikorttisi, jolla kaadoat {lbl(selDefTargetRow.att)}</span>}
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-          {G.players[0].hand.map(c => {
+          {sortHand(G.players[0].hand).map(c => {
             const isSel = !!selectedCards.find(x => x.id === c.id);
             const wrongSuit = isHumanAttacker && selectedCards.length > 0 && c.s !== selectedCards[0].s;
             const canBeatTarget = isHumanDefender && selDefTargetRow && canBeat(selDefTargetRow.att, c, G.trump) && !isMaija(c);
@@ -704,14 +730,6 @@ export default function Maija() {
           </div>
         ))}
         <div style={{ marginLeft:'auto', display:'flex', gap:4, alignItems:'center' }}>
-          {Object.entries(BACKS).map(([key, b]) => (
-            <button key={key} onClick={() => setCB(key)} title={b.label}
-              style={{ width:18, height:25, borderRadius:3, cursor:'pointer', padding:0,
-                overflow:'hidden', background:b.bg,
-                border:`2px solid ${cardBack===key ? C.gold : b.border}`,
-                transition:'all 0.15s', transform:cardBack===key ? 'scale(1.2)' : 'none', flexShrink:0 }}/>
-          ))}
-          <span style={{ width:3 }}/>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize:10, padding:'3px 8px', borderRadius:12,
             border:`1px solid ${soundOn ? C.gold+'55' : C.panelBorder}`,
             background:'transparent', color:soundOn ? C.gold : C.dim, cursor:'pointer', fontFamily:'sans-serif' }}>
@@ -749,7 +767,10 @@ export default function Maija() {
         )}
       </div>
 
-      <style>{`button:active{transform:scale(0.97)}`}</style>
+      <style>{`
+        button:active{transform:scale(0.97)}
+        @keyframes pakaFlash{0%{opacity:0.4;letter-spacing:1.5px}12%{opacity:1;letter-spacing:3px;text-shadow:0 0 14px rgba(224,92,59,0.9),0 0 30px rgba(224,92,59,0.5)}40%{opacity:1;letter-spacing:2px;text-shadow:0 0 8px rgba(224,92,59,0.5)}70%{opacity:1;letter-spacing:1.5px;text-shadow:none}100%{opacity:1}}
+      `}</style>
     </div>
   );
 }

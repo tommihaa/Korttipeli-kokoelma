@@ -5,7 +5,7 @@
 
 ## Projektin kuvaus
 
-**Jako** on korttipelisovellus joka kokoaa enimmäkseen suomalaisia versioita korttipelisuosikeistani yhteen. Nimi tulee korttipelien jako-termistä. Sovelluksessa on kolme tilaa: opetustila, vapaa tila ja kilpailutila. Kehitetty React-pohjaisena sovelluksena, tavoitteena toimia sekä säännöstönä että pelattavana sovelluksena selaimessa ja mobiilissa.
+**Jako** on korttipelisovellus joka kokoaa enimmäkseen suomalaisia versioita korttipelisuosikeistani yhteen. Nimi tulee korttipelien jako-termistä. Sovelluksessa on kaksi tilaa: opetustila ja vapaa tila. Kehitetty React-pohjaisena sovelluksena, tavoitteena toimia sekä säännöstönä että pelattavana sovelluksena selaimessa ja mobiilissa.
 
 ---
 
@@ -357,7 +357,6 @@ Etusivu → Pelin sivu → Säännöt TAI Tilanvalinta → Pelitila
 - Kulta: #c9a84c
 - Teksti: #f0e6cc
 - Opetustila: #5ba8d4
-- Kilpailutila: #e05c3b
 - Helppo: #4caf7d, Keskitaso: #e0a93b, Vaativa: #e05c3b
 
 **Olio-rakenne:** Jokainen peli on objekti `games`-taulukossa. Uuden pelin lisääminen = uuden objektin lisääminen samassa muodossa.
@@ -367,7 +366,6 @@ Etusivu → Pelin sivu → Säännöt TAI Tilanvalinta → Pelitila
 ## Muistiinpanot kehitykseen
 
 - Äänet oletuksena pois — löydettävissä asetuksista
-- Kilpailutilassa sekuntilaskuri reaktionopeuden mittaamiseen (Läpsy)
 - Valttimaa aina pakan pohjimmaisesta kortista (Maija ja Moska yhdenmukaistettu)
 - Kultakalan tuntematon-elementti on pelin keskeinen satunnaistaja
 - Kultakalan noppafinaalit ovat spektaakkelihetki
