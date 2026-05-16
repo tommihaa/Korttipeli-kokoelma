@@ -37,7 +37,7 @@ const SFX = {
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const M = {
-  gameStart: 'Kortit on jaettu. Jokaisella on tuntematon kortti ja viisi pöytäkorttia. Nosta nostopakasta tai poistopakasta.',
+  gameStart: 'Kortit on jaettu. Jokaisella on tuntematon kortti ja viisi pöytäkorttia. Aloita klikkaamalla nostopakkaa. Myöhemmillä kierroksilla voit nostaa myös poistopakasta.',
   deckEmpty: 'Nostopakka ehtyi — paljastetaan tuntemattomat!',
   yourTurn: 'Sinun vuorosi — nosta nostopakasta tai poistopakasta.',
   aiThinking: p => `${p.name} miettii...`,
@@ -658,24 +658,19 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
 
       {ais.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: ais.length === 3 ? 'column' : 'row', gap: 8, marginBottom: 12, flexWrap: ais.length === 3 ? 'nowrap' : 'wrap' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
           {ais.map((p, i) => {
             const pi = i + 1, isActive = curIdx === pi;
             return (
-              <div key={p.id} style={{ flex: ais.length === 3 ? '1' : '1 1 100px', width: ais.length === 3 ? '100%' : undefined, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px', textAlign: 'center' }}>
-                <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 6 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
-                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
-                </div>
-                <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px' }}>
+                <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
+                <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                <div style={{ display: 'flex', gap: 2 }}>
                   {p.row.map((c, ci) => (
                     <div key={ci} style={{ borderRadius: 6, border: teachMode && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: teachMode && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: teachMode && p.known.has(ci) ? 2 : 0 }}>
                       <KaCard card={c} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
                     </div>
                   ))}
-                </div>
-                <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginTop: 4 }}>
-                  {revealed ? `${p.unknown.v + p.row.reduce((s, c) => s + c.v, 0)} p` : korttia(p.row.length)}
                 </div>
               </div>
             );
