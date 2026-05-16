@@ -154,9 +154,6 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setSR(null);
     logRef.current = []; setLog([]);
     addLog(M.gameStart);
-    if (teachMode) {
-      addLog('💡 Vihje: Korttien täsmätessä nopein vie kasan!');
-    }
     setScreen('game');
     setShuffling(true);
     setTimeout(() => maybeAIFlip(0, initPiles, [], null), 2300);
@@ -256,9 +253,6 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       const count2 = SPEC[card.r];
       const cardStr2 = count2 === 1 ? 'kortti' : 'korttia';
       addLog(M.challenged(pName(playerIdx), lblColored(card), pName(target), count2, cardStr2));
-      if (teachMode && playerIdx !== 0) {
-        addLog(`💡 Vihje: Kuningas, kuningatar tai jätkä asettaa haasteen. Vastustajalla on ${count2} ${cardStr2} vastata samalla kortilla.`);
-      }
       nextTurn(playerIdx, newPiles, newCenter, newCh);
       return;
     }
@@ -315,9 +309,6 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       if (recentMatch.current) { addLog(M.heroTooSlow); return; }
       if (sndRef.current) SFX.wrongSlap();
       addLog(M.heroSlapNoMatch);
-      if (teachMode) {
-        addLog('💡 Vihje: Läpsää vain kun korttien arvot täsmäävät!');
-      }
       if (pilesRef.current[0].length === 0) return;
       setPhase('idle'); phaseRef.current = 'idle';
       const lostCard = pilesRef.current[0][0];
@@ -463,7 +454,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
           </div>
         )}
         {ch && (
-          <div style={{ position: 'sticky', top: 0, left: '50%', display: 'flex', gap: 6, alignItems: 'center', padding: '5px 14px', background: C.gold + '14', border: `1px solid ${C.gold}55`, borderRadius: 20, zIndex: 100, marginLeft: 'calc(-50vw + 50%)' }}>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center', padding: '5px 14px', background: C.gold + '14', border: `1px solid ${C.gold}55`, borderRadius: 20 }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold }}>Haaste: {pName(ch.byIdx)}</span>
             {Array.from({ length: ch.cardsLeft }).map((_, i) => <div key={i} style={{ width: 8, height: 12, borderRadius: 2, background: C.gold, opacity: 0.8 }} />)}
             <span style={{ fontFamily: 'monospace', fontSize: 11, color: C.gold }}>{ch.cardsLeft}</span>
