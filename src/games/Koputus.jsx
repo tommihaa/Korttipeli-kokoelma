@@ -533,7 +533,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     const sorted = [...G.players].sort((a, b) => pScore(a) - pScore(b));
     return (
       <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 32, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
         <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {sorted.map((p, i) => (
             <div key={p.id} style={{ borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 0 ? C.gold + '55' : '#1a3a22'}` }}>

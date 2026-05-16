@@ -387,7 +387,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
   if (screen === 'gameover') return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <h1 style={{ fontSize: 32, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+      <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
         {piles.map((p, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 12, background: p.length > 0 ? C.red + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${p.length > 0 ? C.red + '55' : C.panelBorder}` }}>
