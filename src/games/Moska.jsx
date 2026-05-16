@@ -518,7 +518,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       if (g.players[idx].rank !== null) continue;
       if (getAddable(g, idx).length > 0) queue.push(idx);
     }
-    if (!queue.length) { resolveRound(g, true); return; }
+    // Jos ei ole ketään joka voi lisätä, tarkista onko kaikki pöydän kortit kaadettu
+    if (!queue.length) {
+      const unbeaten = g.table.filter(t => !t.def).length;
+      resolveRound(g, unbeaten === 0);
+      return;
+    }
 
     // Näytä lisäysvaiheen alku
     const tableCards = g.table.map(t => lbl(t.atk)).join(', ');
@@ -530,7 +535,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   function processAddQueue(g) {
-    if (!g.addQueue?.length) { resolveRound(g, true); return; }
+    // Kun lisäysvaiheen jono on tyhjä, tarkista onko kaikki pöydän kortit kaadettu
+    if (!g.addQueue?.length) {
+      const unbeaten = g.table.filter(t => !t.def).length;
+      resolveRound(g, unbeaten === 0);
+      return;
+    }
     const next = g.addQueue[0];
     const p = g.players[next];
     const addable = getAddable(g, next);
