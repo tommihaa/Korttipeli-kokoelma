@@ -469,10 +469,11 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const g2 = {
       ...g, players, table: newTable,
       attackers: [...new Set([...g.attackers, playerIdx])],
-      addQueue: rest, phase: 'defend',
+      addQueue: rest, phase: 'add',
     };
     setGS(g2);
-    goDefend(g2);
+    // Jatka lisäysvaiheen jonoa seuraavalle pelaajalle (phase pysyy 'add')
+    aiTmr.current = setTimeout(() => processAddQueue(gRef.current), 600);
   }
 
   // ── Puolustuskierros ──────────────────────────────────────
