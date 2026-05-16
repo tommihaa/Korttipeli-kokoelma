@@ -138,7 +138,7 @@ function sortHand(hand) {
   });
 }
 
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
+const lblColored = c => c ? `${c.r}${c.s}` : '—';
 
 const M = {
   gameStart: (hint) => `Kasino alkaa! Pöydässä kortit. Sinun vuorosi. ${hint}`,
