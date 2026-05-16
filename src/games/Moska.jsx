@@ -365,7 +365,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         const rank = rankings.length + 1;
         players[i] = { ...p, rank };
         rankings = [...rankings, i];
-        addLog(`${act(p, 'Veit', 'Vei')} voiton! 🏆🎉`);
+        // Eri viesti riippuen sijoituksesta
+        if (rank === 1) {
+          addLog(`${act(p, 'Veit', 'Vei')} voiton! 🏆🎉`);
+        } else {
+          addLog(`${act(p, 'Pääsit', 'Pääsi')} pelistä pois.`);
+        }
       }
     });
 
@@ -377,7 +382,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           const rank = rankings.length + 1;
           players[p.id] = { ...p, rank };
           rankings = [...rankings, p.id];
-          addLog(`${p.name} on Moska! 🐟`);
+          addLog(`${act(p, 'Kärsit', 'Kärsi')} tällä kertaa tappion.`);
         }
       });
       onResult?.(rankings[0] === 0);
