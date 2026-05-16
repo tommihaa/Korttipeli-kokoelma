@@ -371,6 +371,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     const maxCards = Math.max(...counts);
     const spadesCounts = g.players.map(p => p.captured.filter(c => c.s === '♠').length);
     const maxSpades = Math.max(...spadesCounts);
+    const tikkiCounts = g.players.map(p => p.tikkiCount);
+    const maxTikki = Math.max(...tikkiCounts);
     return g.players.map((p, i) => {
       let pts = 0;
       if (counts[i] === maxCards && counts.filter(c => c === maxCards).length === 1) pts += 1;
@@ -380,7 +382,10 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         if (isPataKakkonen(c)) pts += 1;
         if (c.r === 'A') pts += 1;
       });
-      if (g.lastCapture === i) pts += p.tikkiCount;
+      if (tikkiCounts[i] > 0) {
+        const othersHaveLess = tikkiCounts.some((t, j) => j !== i && t < tikkiCounts[i]);
+        if (othersHaveLess) pts += p.tikkiCount;
+      }
       return { roundPts: pts, cards: counts[i], spades: spadesCounts[i], tikkiCount: p.tikkiCount, aces: p.captured.filter(c => c.r === 'A').length };
     });
   }
@@ -801,7 +806,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> 16p · <span style={{ color: SUIT_COLOR['♦'], fontWeight: 700 }}>10♦</span>=2p · <span style={{ color: SUIT_COLOR['♠'], fontWeight: 700 }}>2♠</span>=1p · kukin ässä=1p · eniten kortteja=1p · eniten patoja=1p · mökki=1p
+          <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> 16p · <span style={{ color: SUIT_COLOR['♦'], fontWeight: 700 }}>10♦</span>=2p · <span style={{ color: SUIT_COLOR['♠'], fontWeight: 700 }}>2♠</span>=1p · kukin ässä=1p · eniten kortteja=1p · eniten patoja=1p · kukin mökki=1p
         </span>
         <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
