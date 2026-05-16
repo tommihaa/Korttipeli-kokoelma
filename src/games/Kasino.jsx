@@ -42,7 +42,7 @@ function renderLogMessage(text) {
     parts.push(text.substring(lastIndex));
   }
 
-  return parts.length > 1 ? parts : text;
+  return parts.length > 1 ? <>{parts}</> : text;
 }
 
 // ── Kasino-arvot ──────────────────────────────────────────────
@@ -824,7 +824,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{renderLogMessage(e.m)}</span>
+                <div style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{renderLogMessage(e.m)}</div>
               </div>
             ))}
           </div>
