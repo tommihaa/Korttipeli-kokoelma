@@ -456,8 +456,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         {ch && (
           <div style={{ display: 'flex', gap: 6, alignItems: 'center', padding: '5px 14px', background: C.gold + '14', border: `1px solid ${C.gold}55`, borderRadius: 20 }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold }}>Haaste: {pName(ch.byIdx)}</span>
-            {Array.from({ length: ch.cardsLeft }).map((_, i) => <div key={i} style={{ width: 8, height: 12, borderRadius: 2, background: C.gold, opacity: 0.8 }} />)}
-            <span style={{ fontFamily: 'monospace', fontSize: 11, color: C.gold }}>{ch.cardsLeft}</span>
+            <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: C.gold }}>{ch.cardsLeft}</span>
           </div>
         )}
       </div>
