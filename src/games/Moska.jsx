@@ -282,7 +282,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     cannotPass: 'Ei voi siirtää enempää.',
     pass: (defender, cards, nextDef) => `${defender} (${cards}) → ${nextDef}.`,
     add: (player, cards) => `${player}: ${cards}.`,
-    defendHuman: (count) => `Sinun puolustettava — ${korttia(count)} lyömättä. Valitse ensin pöytäkortti, jonka haluat kaataa, ja sitten käsikorttisi, jolla haluat kaataa.`,
+    defendHuman: (count) => `On vuorosi puolustautua.`,
     defendAI: (name) => `${name} puolustaa...`,
   };
 
@@ -480,7 +480,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const def = g.players[g.defender];
     const unbeaten = g.table.filter(t => !t.def).length;
     if (def.isHuman) {
-      addLog(`Sinun puolustettava — ${korttia(unbeaten)} lyömättä. Valitse ensin pöytäkortti, jonka haluat kaataa, ja sitten käsikorttisi, jolla haluat kaataa.`);
+      addLog('On vuorosi puolustautua.');
     } else {
       addLog(`${def.name} puolustaa...`);
       aiTmr.current = setTimeout(() => runAI(g), 1400 + Math.random() * 500);
