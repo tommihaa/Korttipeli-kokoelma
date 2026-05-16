@@ -658,11 +658,11 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
 
       {ais.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: ais.length === 3 ? 'row' : 'column', gap: 8, marginBottom: 12, flexWrap: ais.length === 3 ? 'wrap' : 'nowrap' }}>
+        <div style={{ display: 'flex', flexDirection: ais.length === 3 ? 'column' : 'row', gap: 8, marginBottom: 12, flexWrap: ais.length === 3 ? 'nowrap' : 'wrap' }}>
           {ais.map((p, i) => {
             const pi = i + 1, isActive = curIdx === pi;
             return (
-              <div key={p.id} style={{ flex: ais.length === 3 ? '1 1 100px' : '1', width: ais.length === 3 ? undefined : '100%', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px', textAlign: 'center' }}>
+              <div key={p.id} style={{ flex: ais.length === 3 ? '1' : '1 1 100px', width: ais.length === 3 ? '100%' : undefined, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px', textAlign: 'center' }}>
                 <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 6 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
                   <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
