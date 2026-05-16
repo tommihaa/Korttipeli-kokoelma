@@ -588,7 +588,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: 16, maxWidth: 560, margin: '0 auto', paddingBottom: 40 }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, height: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 17, flexShrink: 0 }}>🎓</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
