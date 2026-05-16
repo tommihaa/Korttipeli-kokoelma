@@ -313,7 +313,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
     // Kuvaa pöydän tilanne kun kierros päättyi
     const tableDesc = g.table.map(t =>
-      t.def ? `${lbl(t.atk)}→${lbl(t.def)}` : `${lbl(t.atk)}❌`
+      t.def ? `${lblColored(t.atk)}→${lblColored(t.def)}` : `${lblColored(t.atk)}❌`
     ).join(', ');
 
     if (defWon) {
@@ -415,7 +415,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = cards.map(c => ({ atk: c, def: null, atkBy: atkIdx }));
     const players = g.players.map((pl, i) => i === atkIdx ? { ...pl, hand: newHand } : pl);
-    addLog(`${act(p, 'hyökkäsit', 'hyökkäsi')}: ${cards.map(lbl).join(', ')}.`);
+    addLog(`${act(p, 'hyökkäsit', 'hyökkäsi')}: ${cards.map(lblColored).join(', ')}.`);
     if (sndRef.current) SFX.leave();
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
@@ -456,7 +456,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const newHand = def.hand.filter(c => !passCards.find(pc => pc.id === c.id));
     const newTable = [...g.table, ...passCards.map(c => ({ atk: c, def: null, atkBy: g.defender }))];
     const players = g.players.map((p, i) => i === g.defender ? { ...p, hand: newHand } : p);
-    addLog(`${act(def, 'siirrit', 'siirsi')} (${passCards.map(lbl).join(',')}) → ${act(g.players[nextDef], 'puolustat', 'puolustaa')}.`);
+    addLog(`${act(def, 'siirrit', 'siirsi')} (${passCards.map(lblColored).join(',')}) → ${act(g.players[nextDef], 'puolustat', 'puolustaa')}.`);
     const g2 = {
       ...g, players, table: newTable, defender: nextDef,
       passChain: [...g.passChain, g.defender],
@@ -472,7 +472,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = [...g.table, ...cards.map(c => ({ atk: c, def: null, atkBy: playerIdx }))];
     const players = g.players.map((pl, i) => i === playerIdx ? { ...pl, hand: newHand } : pl);
-    addLog(`${act(p, 'lisäsit', 'lisäsi')}: ${cards.map(lbl).join(', ')}.`);
+    addLog(`${act(p, 'lisäsit', 'lisäsi')}: ${cards.map(lblColored).join(', ')}.`);
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
     setTimeout(() => setJustPlaced(new Set()), 1800);
@@ -491,7 +491,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   function goDefend(g) {
     const def = g.players[g.defender];
     const unbeaten = g.table.filter(t => !t.def).length;
-    const unbeatenCards = g.table.filter(t => !t.def).map(t => lbl(t.atk));
+    const unbeatenCards = g.table.filter(t => !t.def).map(t => lblColored(t.atk));
     const beaten = g.table.filter(t => t.def).length;
 
     if (def.isHuman) {
@@ -534,7 +534,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     }
 
     // Näytä lisäysvaiheen alku
-    const tableCards = g.table.map(t => lbl(t.atk)).join(', ');
+    const tableCards = g.table.map(t => lblColored(t.atk)).join(', ');
     addLog(`═══ LISÄYSVAIHE ═══ Pöydällä: ${tableCards}`);
 
     const g2 = { ...g, phase: 'add', addQueue: queue };
@@ -568,7 +568,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       return;
     }
     if (p.isHuman) {
-      addLog(`${p.name}: Voit lisätä sivusta: ${addable.map(lbl).join(', ')} — tai Ohita.`);
+      addLog(`${p.name}: Voit lisätä sivusta: ${addable.map(lblColored).join(', ')} — tai Ohita.`);
       setSelAdd([]);
     } else {
       // AI lisää jos puolustajalla paljon kortteja jäljellä, muuten ohittaa
@@ -576,7 +576,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       const shouldAdd = def.hand.length >= 3 || g.table.length <= 2;
       if (shouldAdd) {
         const toAdd = addable.slice(0, 1);
-        addLog(`${p.name} voi lisätä: ${addable.map(lbl).join(', ')}`);
+        addLog(`${p.name} voi lisätä: ${addable.map(lblColored).join(', ')}`);
         aiTmr.current = setTimeout(() => {
           doAdd(gRef.current, next, toAdd);
         }, 900 + Math.random() * 300);
