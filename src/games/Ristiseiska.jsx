@@ -389,7 +389,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       </div>
       <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
         <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
-        Rakenna neljä pinoa. Järjestys: 7 → 6 → 8 → ala-pino + ylä-pino. Passaus vain kun ei voi pelata. A ja K kaatavat pinot ja antavat bonusvuoron. Ensimmäinen kortiton voittaa!
+        Pöytäkortit pelataan maittain kaksi pinoa per maa. Ensin 7, sitten sen alapuolelle 6 ja seuraavaksi seiskan yläpuolelle 8. Ala-pino 6 päälle 5,4,3,2 ja A kaataa. Ylä-pino järjestys 8,9,T,J,Q ja K kaataa. Passaus vain kun ei kortti käy. Ensimmäinen kortiton voittaa.
       </div>
       <div style={{ textAlign: 'center' }}>
         <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
