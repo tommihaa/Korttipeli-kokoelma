@@ -623,11 +623,14 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         </div>
       </div>
 
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 360, fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.8, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
         <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
-        Pienimmät (♥2/♦2) suurimmiksi (♠2/♣2)<br />
-        10 ja A kaataa · Voi pelaa 1-4 samanarvoista<br />
-        Viimeinen pelaaja on Paskahousu
+        6 korttia. Pienin kortti aloittaa. Neljä samaa kaataa.<br />
+        Seiskan päälle saa laittaa kuvan. 10 kaataa 2–9, A kaataa J–K.<br />
+        Voi pelata 1–4 samanarvoista yhdellä vuorolla.<br />
+        Saa vaihtaa, jos ehtii ennen seuraavan lyöntiä.<br />
+        Tavoite: päästä korteista eroon nostopakan ehdyttyä.<br />
+        Viimeinen pelaaja on Paskahousu.
       </div>
 
       <div style={{ textAlign: 'center' }}>
