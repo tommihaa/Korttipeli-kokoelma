@@ -255,7 +255,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     let finished = [...g.finished];
     if (p.hand.length === 0 && !finished.includes(pidx)) {
       finished = [...finished, pidx];
-      addLog(`${isH ? 'Pääsit kortista' : `${p.name} pääsi kortista`}! 🎉`);
+      addLog(`${isH ? 'Veit voiton' : `${p.name} vei voiton`}! 🏆🎉`);
       if (sndRef.current) SFX.capture();
     }
 
@@ -352,7 +352,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       let finished = [...g.finished];
       if (p.hand.length === 0 && !finished.includes(pidx)) {
         finished = [...finished, pidx];
-        addLog(`${isH ? 'Sinä pääsit kortista' : `${p.name} pääsi kortista`}! 🎉`);
+        addLog(`${isH ? 'Veit voiton' : `${p.name} vei voiton`}! 🏆🎉`);
         if (sndRef.current) SFX.capture();
       }
 

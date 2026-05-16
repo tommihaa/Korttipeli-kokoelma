@@ -258,7 +258,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     let gameOver = false;
     if (newHand.length === 0 && !finished.includes(playerIdx)) {
       finished = [...finished, playerIdx];
-      addLog(`${isH ? 'Voitat' : `${p.name} voittaa`}! 🏆`);
+      addLog(`${isH ? 'Veit voiton' : `${p.name} vei voiton`}! 🏆🎉`);
       if (sndRef.current) SFX.capture();
       if (g.players.every((_, i) => finished.includes(i) || i === playerIdx)) {
         g.players.forEach((_, i) => { if (!finished.includes(i)) finished.push(i); });

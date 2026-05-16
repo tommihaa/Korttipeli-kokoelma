@@ -200,7 +200,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       const trumpSpan = `<span style="color:${SUIT_COLOR[trumpCard.s]}">${trumpCard.s}</span>`;
       return `Peli alkaa! Valttimaa: ${trumpSpan}. ${attacker} hyökkää, ${defender} puolustaa.`;
     },
-    finishedGame: (name, rank) => `${name} — sijoitus ${rank}!`,
+    finishedGame: (name, rank) => `${name.includes('Pääsit') ? 'Veit voiton' : name.split(' ')[0] + ' vei voiton'}! 🏆🎉`,
     maija: (name, hadMaija) => `${name} jäi ${hadMaija ? 'patakuningattaren kanssa — ' : ''}Maijana!`,
     newAttack: (attacker, defender) => `${attacker} hyökkää — ${defender} puolustaa.`,
     defendTake: (name, unbeatenCount, detail) => `${name} ${kortin(unbeatenCount)} kaatamatta jääneistä${detail}.`,

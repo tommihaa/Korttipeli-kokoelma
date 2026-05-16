@@ -360,7 +360,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         const rank = rankings.length + 1;
         players[i] = { ...p, rank };
         rankings = [...rankings, i];
-        addLog(`${act(p, 'pääsit', 'pääsi')} kortista! Sija ${rank}.`);
+        addLog(`${act(p, 'Veit', 'Vei')} voiton! 🏆🎉`);
       }
     });
 

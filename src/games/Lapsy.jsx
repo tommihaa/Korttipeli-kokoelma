@@ -138,7 +138,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     },
     heroTooSlow: 'Hero oli hieman hitaampi — ei rangaistusta.',
     heroSlapNoMatch: 'Hero läpsäsi — mutta ei täsmäystä! Menettää päällimmäisen kortin.',
-    gameOver: (playerName) => playerName ? `${playerName} voittaa pelin!` : 'Peli päättyi!',
+    gameOver: (playerName) => playerName ? `${playerName === 'Hero' ? 'Veit voiton' : playerName + ' vei voiton'}! 🏆🎉` : 'Peli päättyi!',
   };
 
   function startGame() {

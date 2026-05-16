@@ -229,7 +229,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     let finished = [...g.finished];
     if (players[playerIdx].hand.length === 0 && !finished.includes(playerIdx)) {
       finished = [...finished, playerIdx];
-      addLog(`${isH ? 'Voitat' : `${p.name} voittaa`}! 🏆`);
+      addLog(`${isH ? 'Veit voiton' : `${p.name} vei voiton`}! 🏆🎉`);
       if (sndRef.current) SFX.capture();
     }
 
