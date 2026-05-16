@@ -311,13 +311,18 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const defPlayer = g.players[g.defender];
     let players = g.players.map(p => ({ ...p }));
 
+    // Kuvaa pöydän tilanne kun kierros päättyi
+    const tableDesc = g.table.map(t =>
+      t.def ? `${lbl(t.atk)}→${lbl(t.def)}` : `${lbl(t.atk)}❌`
+    ).join(', ');
+
     if (defWon) {
-      addLog(`${act(defPlayer, 'puolustit', 'puolusti')} onnistuneesti!`);
+      addLog(`${act(defPlayer, 'puolustit', 'puolusti')} onnistuneesti! Pöydällä: ${tableDesc}`);
       if (sndRef.current) SFX.capture();
     } else {
       const taken = g.table.flatMap(t => [t.atk, t.def].filter(Boolean));
       players[g.defender] = { ...players[g.defender], hand: [...players[g.defender].hand, ...taken] };
-      addLog(`${act(defPlayer, 'otit', 'otti')} ${kortin(taken.length)}.`);
+      addLog(`${act(defPlayer, 'otit', 'otti')} ${kortin(taken.length)}. Pöydällä oli: ${tableDesc}`);
       if (sndRef.current) SFX.leave();
     }
 
@@ -426,7 +431,13 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const atkCard = g.table.find(t => t.atk.id === atkId)?.atk;
     const newTable = g.table.map(t => t.atk.id === atkId ? { ...t, def: defCard } : t);
     const players = g.players.map((p, i) => i === g.defender ? { ...p, hand: newHand } : p);
-    addLog(`${def.name}: ${lblColored(defCard)} kaataa ${lblColored(atkCard)}.`);
+
+    // Laske pöydän tila: kaadetut/kaatamatta jääneet
+    const unbeaten = newTable.filter(t => !t.def).length;
+    const beaten = newTable.filter(t => t.def).length;
+    const statusMsg = unbeaten > 0 ? `(${beaten}🛡️/${unbeaten}⚔️ pöydällä)` : '(kaikki kaadettu)';
+
+    addLog(`${def.name}: ${lblColored(defCard)} kaataa ${lblColored(atkCard)}. ${statusMsg}`);
     if (sndRef.current) SFX.capture();
     return { ...g, players, table: newTable };
   }
@@ -480,10 +491,19 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   function goDefend(g) {
     const def = g.players[g.defender];
     const unbeaten = g.table.filter(t => !t.def).length;
+    const unbeatenCards = g.table.filter(t => !t.def).map(t => lbl(t.atk));
+    const beaten = g.table.filter(t => t.def).length;
+
     if (def.isHuman) {
-      addLog('On vuorosi puolustautua.');
+      const msg = unbeaten > 0
+        ? `On vuorosi puolustautua. Pöydällä: ${unbeatenCards.join(', ')} (${beaten}🛡️/${unbeaten}⚔️).`
+        : 'On vuorosi puolustautua.';
+      addLog(msg);
     } else {
-      addLog(`${def.name} puolustaa...`);
+      const msg = unbeaten > 0
+        ? `${def.name} puolustaa... (pöydällä: ${unbeatenCards.join(', ')})`
+        : `${def.name} puolustaa...`;
+      addLog(msg);
       aiTmr.current = setTimeout(() => runAI(g), 1400 + Math.random() * 500);
     }
   }
@@ -499,6 +519,11 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       if (getAddable(g, idx).length > 0) queue.push(idx);
     }
     if (!queue.length) { resolveRound(g, true); return; }
+
+    // Näytä lisäysvaiheen alku
+    const tableCards = g.table.map(t => lbl(t.atk)).join(', ');
+    addLog(`═══ LISÄYSVAIHE ═══ Pöydällä: ${tableCards}`);
+
     const g2 = { ...g, phase: 'add', addQueue: queue };
     setGS(g2);
     processAddQueue(g2);
@@ -517,7 +542,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       return;
     }
     if (p.isHuman) {
-      addLog(`Voit lisätä: ${addable.map(lbl).join(', ')} — tai Ohita.`);
+      addLog(`${p.name}: Voit lisätä sivusta: ${addable.map(lbl).join(', ')} — tai Ohita.`);
       setSelAdd([]);
     } else {
       // AI lisää jos puolustajalla paljon kortteja jäljellä, muuten ohittaa
@@ -525,10 +550,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       const shouldAdd = def.hand.length >= 3 || g.table.length <= 2;
       if (shouldAdd) {
         const toAdd = addable.slice(0, 1);
+        addLog(`${p.name} voi lisätä: ${addable.map(lbl).join(', ')}`);
         aiTmr.current = setTimeout(() => {
           doAdd(gRef.current, next, toAdd);
         }, 900 + Math.random() * 300);
       } else {
+        addLog(`${p.name} ohittaa.`);
         const rest = g.addQueue.slice(1);
         const g2 = { ...g, addQueue: rest };
         setGS(g2);
