@@ -1,9 +1,10 @@
 # Jako – Finnish Card Game Collection
 
 ## Project
-Android tablet card game app (React/JSX + Vite). Dark green (#1a3a2a) + gold (#c9a84c) aesthetic.
+Mobile-responsive card game app (React/JSX + Vite). Dark green (#1a3a2a) + gold (#c9a84c) aesthetic.
 Structure: `src/App.jsx` (entry), `src/games/*.jsx` (9 games), `src/shared/` (Card, FanStack, colors, helpers, audio).
-Reference doc: `jako_projekti.md`. Dev server: `http://localhost:5173/`.
+Reference docs: `jako_projekti.md`, `KULTAKALA.md` (sääntöjen yksityiskohdat). Dev server: `http://localhost:5173/`.
+Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 
 ## Games & Terminology
 Nine games with unified Finnish UI terms:
@@ -38,10 +39,11 @@ Erikoistapaukset (silti yllä olevissa luokissa):
 - **Kasino**: 16 pistettä ensin saanut voittaa; pisteet lasketaan nostopakan ehdyttyä pelatun kierroksen päätyttyä; tasapeli on mahdollinen
 
 ## Modes
-- **Opetustila** – move hints visible, tapahtumaloki auki oletuksena (default)
+- **Opetustila** – move hints visible, tapahtumaloki auki oletuksena (default), strategiatippejä loggissa
+- **Opastava tila** – teachMode toggle (🎓 / 🃏), näyttää strategiatippejä pelin aikana
 - **Vapaa tila** – ei ohjeviestejä, loki kiinni oletuksena
-- Toggle-nappi oikeassa yläkulmassa pelin aikana (🎓 / 🃏)
-- Proppi: `hints: boolean` jokaisessa pelissä — lisää vaikutuksia tarpeen mukaan
+- Toggle-napit pelin aikana oikeassa yläkulmassa (menu ← | pelinimi | opastava 🎓/🃏 →)
+- Props: `hints: boolean`, `teachMode: boolean` jokaisessa pelissä
 
 ## Players
 - Human player: "Hero"
@@ -53,7 +55,10 @@ Erikoistapaukset (silti yllä olevissa luokissa):
 - Tailwind core utilities only (no custom compiler)
 - No localStorage / sessionStorage (use useState/useReducer)
 - Single-file artifacts (.jsx) — no separate CSS/JS files
-- Touch + stylus primary input (tablet), no hover-dependent interactions
+- Touch + stylus primary input (phone + tablet), no hover-dependent interactions
+- Responsive: `window.innerWidth < 600` = mobile, else tablet
+- Mobile: 1-col game grid, smaller fonts (11-12px), reduced padding
+- Tablet: 3-col game grid, fonts 12-14px, normal padding
 
 ## Code style
 - Finnish variable names for game logic (e.g. `kortti`, `pelaaja`, `vuoro`)

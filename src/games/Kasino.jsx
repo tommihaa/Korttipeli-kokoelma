@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { C } from '../shared/colors.js';
+import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
+import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames() {
@@ -14,6 +15,34 @@ function shuffledAINames() {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function renderLogMessage(text) {
+  const parts = [];
+  let lastIndex = 0;
+  const cardRegex = /(\d+|[JQKA])([♠♥♦♣])/g;
+  let match;
+
+  while ((match = cardRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    const rank = match[1];
+    const suit = match[2];
+    const color = SUIT_COLOR[suit];
+    parts.push(
+      <span key={`${match.index}-${rank}${suit}`} style={{ color, fontWeight: 700 }}>
+        {rank}{suit}
+      </span>
+    );
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 1 ? parts : text;
 }
 
 // ── Kasino-arvot ──────────────────────────────────────────────
@@ -109,7 +138,24 @@ function sortHand(hand) {
   });
 }
 
-export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
+const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
+
+const M = {
+  gameStart: (hint) => `Kasino alkaa! Pöydässä kortit. Sinun vuorosi. ${hint}`,
+  newDeal: (left) => `Uusi jako — ${left} pakassa jäljellä.`,
+  forcedLeave: 'Pakollinen siirto — yksi kortti kädessä, pöytä tyhjä.',
+  yourTurn: (count, hint) => `Sinun vuorosi — ${count} kädessä. ${hint}`,
+  aiThinking: (name) => `${name} miettii...`,
+  endRound: 'Kierros päättyi! Pisteet lasketaan...',
+  newRound: (scores, hint) => `Uusi peli! Pisteet: ${scores}. Sinun vuorosi — ${hint}`,
+  humanCapture: (who, handCard, captureStr, isMokki) => `${who}: ${handCard} ← ${captureStr}${isMokki ? ' 🏠 MÖKKI!' : ''}`,
+  humanLeave: (who, card) => `${who} ${card} pöytään.`,
+  warning: (card, captured) => `⚠ Huom: ${card} olisi kaapattu ${captured} — klikkaa pöytäkortit ennen käsikorttia.`,
+  invalidMove: (card) => `${card} ei kaappaa valittuja kortteja — tarkista valintasi tai peruuta.`,
+  aiCapture: (name, handCard, captureStr, isMokki) => `${name}: ${handCard} ← ${captureStr}${isMokki ? ' 🏠' : ''}`,
+};
+
+export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(2);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -128,6 +174,7 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
   const [captureAnim, setCaptureAnim] = useState(null); // {handCard, tableCards}
   const [jpId, setJP] = useState(null);
   const [shuffling, setShuffling] = useState(false);
+  const [currentMoment, setCurrentMoment] = useState(null);
 
   const gRef    = useRef(null);
   const phaseRef = useRef('idle');
@@ -156,6 +203,40 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
     setLog([...logRef.current]);
   }
 
+  function detectMoment(eventType, context) {
+    if (eventType === 'epic_score' && context.score >= 12) {
+      const moment = {
+        type: 'epic_score',
+        game: 'Kasino',
+        title: '⚔️ EPIC! Voitolla liikkeellä!',
+        description: `Olet ${context.score} pisteellä! Kasino kuumenee — jäljellä enää ${16 - context.score} pistettä voittoon!`,
+        timestamp: new Date().toISOString(),
+        rarity: 'epic',
+        context,
+      };
+      saveMomentSilently(moment);
+    }
+  }
+
+  function saveMomentSilently(moment) {
+    const feedback = {
+      momentType: moment.type,
+      game: moment.game,
+      rarity: moment.rarity,
+      comment: '',
+      timestamp: moment.timestamp,
+      context: moment.context,
+    };
+
+    const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
+    stored.push(feedback);
+    localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
+
+    if (hints) {
+      addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
+    }
+  }
+
   function startGame() {
     clearTimeout(aiTmr.current);
     const g = initGame(nP);
@@ -164,7 +245,8 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
     setPhase('select_table'); phaseRef.current = 'select_table';
     setSelTable([]); setScores(null); setPakaAnim(false);
     logRef.current = []; setLog([]);
-    addLog(`Kasino alkaa! Pöydässä ${korttia(g.table.length)}. Sinun vuorosi.`);
+    const hint = getTurnHint(g.players[0].hand, g.table);
+    addLog(M.gameStart(hint));
     setScreen('game');
     setShuffling(true);
   }
@@ -206,7 +288,7 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
     if (allHandsEmpty) {
       if (g2.deck.length === 0) { endRound(g2); return; }
       g2 = dealHands({ ...g2, deck: [...g2.deck] });
-      addLog(`Uusi jako — ${korttia(g2.deck.length)} pakassa jäljellä.`);
+      addLog(M.newDeal(korttia(g2.deck.length)));
     }
     const next = (fromIdx + 1) % g2.players.length;
     const p = g2.players[next];
@@ -219,7 +301,7 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
       setG(g2); gRef.current = g2;
       const g3 = doLeave(g2, 0, p.hand[0]);
       setG(g3); gRef.current = g3;
-      addLog('Pakollinen siirto — yksi kortti kädessä, pöytä tyhjä.');
+      addLog(M.forcedLeave);
       aiTmr.current = setTimeout(() => advance(g3, 0), 1200);
       return;
     }
@@ -230,9 +312,9 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
     setG(g2); gRef.current = g2;
     if (p.isHuman) {
       const hint = getTurnHint(p.hand, g2.table);
-      addLog(`Sinun vuorosi — ${korttia(p.hand.length)} kädessä. ${hint}`);
+      addLog(M.yourTurn(korttia(p.hand.length), hint));
     } else {
-      addLog(`${p.name} miettii...`);
+      addLog(M.aiThinking(p.name));
       aiTmr.current = setTimeout(() => runAI(next, g2), 1200 + Math.random() * 400);
     }
   }
@@ -250,14 +332,21 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
       ...g2.players[i], ...r,
       totalScore: (g2.players[i].score || 0) + r.roundPts,
     }));
+    if (newScores[0].totalScore >= 12 && (g2.players[0].score || 0) < 12) {
+      detectMoment('epic_score', { score: newScores[0].totalScore });
+    }
     const anyAt16 = newScores.some(s => s.totalScore >= 16);
-    if (anyAt16) onResult?.(newScores[0].totalScore === Math.max(...newScores.map(s => s.totalScore)));
+    if (anyAt16) {
+      const maxScore = Math.max(...newScores.map(s => s.totalScore));
+      const winnerIndex = newScores.findIndex(s => s.totalScore === maxScore);
+      onResult?.(winnerIndex === 0);
+    }
     const finalPlayers = g2.players.map((p, i) => ({ ...p, score: newScores[i].totalScore }));
     const g3 = { ...g2, players: finalPlayers };
     setG(g3); gRef.current = g3;
     setScores(newScores);
     if (sndRef.current) SFX.score();
-    addLog('Kierros päättyi! Pisteet lasketaan...');
+    addLog(M.endRound);
   }
 
   function startNextRound() {
@@ -273,7 +362,8 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
     const h0 = withScores.players[0];
-    addLog(`Uusi peli! Pisteet: ${finalPlayers.map(p => `${p.name} ${p.score}p`).join(', ')}. Sinun vuorosi — ${getTurnHint(h0.hand, withScores.table)}`);
+    const scoreStr = finalPlayers.map(p => `${p.name} ${p.score}p`).join(', ');
+    addLog(M.newRound(scoreStr, getTurnHint(h0.hand, withScores.table)));
   }
 
   function scoreRound(g) {
@@ -285,9 +375,13 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
       let pts = 0;
       if (counts[i] === maxCards && counts.filter(c => c === maxCards).length === 1) pts += 1;
       if (spadesCounts[i] === maxSpades && spadesCounts.filter(s => s === maxSpades).length === 1) pts += 1;
-      p.captured.forEach(c => { if (isRuutuKymppi(c)) pts += 2; if (isPataKakkonen(c)) pts += 1; });
-      pts += p.tikkiCount;
-      return { roundPts: pts, cards: counts[i], spades: spadesCounts[i], tikkiCount: p.tikkiCount };
+      p.captured.forEach(c => {
+        if (isRuutuKymppi(c)) pts += 2;
+        if (isPataKakkonen(c)) pts += 1;
+        if (c.r === 'A') pts += 1;
+      });
+      if (g.lastCapture === i) pts += p.tikkiCount;
+      return { roundPts: pts, cards: counts[i], spades: spadesCounts[i], tikkiCount: p.tikkiCount, aces: p.captured.filter(c => c.r === 'A').length };
     });
   }
 
@@ -295,12 +389,21 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
     const isMökki = tableCards.length === g.table.length && g.table.length > 0;
     const allCaptured = [handCard, ...tableCards];
     const newTable = g.table.filter(c => !tableCards.find(t => t.id === c.id));
-    const players = g.players.map((p, i) => i === playerIdx ? {
+    let players = g.players.map((p, i) => i === playerIdx ? {
       ...p,
       hand: p.hand.filter(c => c.id !== handCard.id),
       captured: [...p.captured, ...allCaptured],
       tikkiCount: p.tikkiCount + (isMökki ? 1 : 0),
     } : p);
+
+    // Jos sai mökin, tarkista jos kaikilla muilla on mökit — jos on, poista ne
+    if (isMökki) {
+      const othersWithTikki = players.filter((p, i) => i !== playerIdx && p.tikkiCount > 0).length;
+      if (othersWithTikki === players.length - 1) {
+        players = players.map(p => ({ ...p, tikkiCount: 0 }));
+      }
+    }
+
     const newG = { ...g, players, table: newTable, lastCapture: playerIdx };
     if (sndRef.current) SFX.capture();
     if (isMökki && sndRef.current) setTimeout(() => SFX.tikki(), 200);
@@ -310,7 +413,7 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
       const captureStr = groups.length > 1
         ? groups.map(grp => grp.map(id => lbl(tableCards.find(c => c.id === id))).join('+')).join(' ja ')
         : tableCards.map(lbl).join('+');
-      addLog(`${who}: ${lbl(handCard)} ← ${captureStr}${isMökki ? ' 🏠 MÖKKI!' : ''}`);
+      addLog(M.humanCapture(who, lblColored(handCard), captureStr, isMökki));
     }
     return newG;
   }
@@ -325,7 +428,7 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
     setTimeout(() => setJP(null), 2200);
     if (sndRef.current) SFX.leave();
     const who = playerIdx === 0 ? 'Jätit' : `${g.players[playerIdx].name} jätti`;
-    addLog(`${who} ${lbl(handCard)} pöytään.`);
+    addLog(M.humanLeave(who, lblColored(handCard)));
     return newG;
   }
 
@@ -354,13 +457,14 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
       setSelTable([]);
       setPhase('select_table'); phaseRef.current = 'select_table';
       if (best && g.table.length > 0) {
-        addLog(`⚠ Huom: ${lbl(best.handCard)} olisi kaapattu ${best.tableCards.map(lbl).join('+')} — klikkaa pöytäkortit ennen käsikorttia.`);
+        const capturedStr = best.tableCards.map(lbl).join('+');
+        addLog(M.warning(lblColored(best.handCard), capturedStr));
       }
       setTimeout(() => advance(g2, 0), 600);
       return;
     }
     if (!isValidCapture(card, selTable)) {
-      addLog(`${lbl(card)} ei kaappaa valittuja kortteja — tarkista valintasi tai peruuta.`);
+      addLog(M.invalidMove(lblColored(card)));
       return;
     }
     const g = gRef.current;
@@ -415,7 +519,7 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
       const captureStr = groups.length > 1
         ? groups.map(grp => grp.map(id => lbl(bestCapture.tableCards.find(c => c.id === id))).join('+')).join(' ja ')
         : bestCapture.tableCards.map(lbl).join('+');
-      addLog(`${p.name}: ${lbl(bestCapture.handCard)} ← ${captureStr}${bestCapture.isMokki ? ' 🏠' : ''}`);
+      addLog(M.aiCapture(p.name, lblColored(bestCapture.handCard), captureStr, bestCapture.isMokki));
       setCaptureAnim({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       setAiSel({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       aiTmr.current = setTimeout(() => {
@@ -441,28 +545,32 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
 
   // ── Näkymät ──────────────────────────────────────────────────
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center' }}>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center', marginBottom: 24 }}>
         <div style={{ fontSize: 13, letterSpacing: 8, color: C.gold, opacity: 0.6, marginBottom: 8 }}>🂺</div>
         <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KASINO</h1>
-        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', marginTop: 8 }}>Kaappaa ja kerää</p>
-      </div>
-      <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>Kaappaa ja kerää</p>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginTop: 10, opacity: 0.6 }}>Hero + {nP - 1} tekoäly{nP === 2 ? '' : 'ä'}</p>
       </div>
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 340, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7 }}>
-        <span style={{ color: C.gold, fontWeight: 700 }}>Pisteet</span><br />
-        Eniten kortteja +1 · 10♦ +2 · 2♠ +1 · Eniten patoja +1 · Jokainen mökki +1<br />
-        <span style={{ color: C.gold }}>Ensimmäinen 16 pisteeseen voittaa!</span><br />
-        <span style={{ color: C.blue, fontSize: 11 }}>Uutta: voit kaapata useita settejä yhdellä kortilla!</span>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
+        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
+        Eniten kortteja +1 · 10♦ +2 · 2♠ +1 · Ässä +1<br />
+        Ensimmäinen 16 pisteeseen voittaa!
       </div>
-      <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      <div style={{ textAlign: 'center' }}>
+        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      </div>
     </div>
   );
 
@@ -517,12 +625,25 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: 32 }}>
 
+      {game && (
+        <div style={{ textAlign: 'center', marginBottom: 16 }}>
+          <div style={{ fontSize: 48, marginBottom: 4 }}>{game.emoji}</div>
+          <div style={{ fontSize: 18, marginBottom: 8, letterSpacing: 1 }}>{game.name}</div>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16 }}>
+            <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+            <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+            <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+            <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+          </div>
+        </div>
+      )}
+
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viestikupla */}
-      <div style={{ background: 'linear-gradient(135deg,#09192a,#071420)', border: `1px solid ${C.blue}40`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, height: 68, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>🂺</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: '#b5d5e5' }}>{msg}</p>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{renderLogMessage(msg)}</p>
       </div>
 
       {/* Pisteet + pakka */}
@@ -553,7 +674,7 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
               <div key={i} style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text, marginBottom: 3, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ minWidth: 70 }}>{p.name}</span>
                 <span style={{ color: C.gold, fontWeight: 700 }}>{s.roundPts}p</span>
-                <span style={{ color: C.dim, fontSize: 11 }}>({s.cards}k · {s.spades}♠ · {s.tikkiCount}🏠)</span>
+                <span style={{ color: C.dim, fontSize: 11 }}>({s.cards}k · {s.spades}♠ · {s.aces}A · {s.tikkiCount}🏠)</span>
                 {has10d && <span style={{ fontSize: 11, color: '#c05a00' }}>10♦</span>}
                 {has2s && <span style={{ fontSize: 11, color: '#5ba8d4' }}>2♠</span>}
                 <span style={{ marginLeft: 'auto', color: C.gold }}>→ {s.totalScore}p</span>
@@ -703,12 +824,22 @@ export default function Kasino({ onResult, hints = true, soundOn: initSoundOn = 
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{e.m}</span>
+                <span style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{renderLogMessage(e.m)}</span>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      <MomentFeedback
+        moment={currentMoment}
+        onClose={() => setCurrentMoment(null)}
+        onRate={() => {
+          addLog('💾 Momentti tallennettu! Hyvä peli!');
+          setCurrentMoment(null);
+        }}
+      />
+
       <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}`}</style>
     </div>
   );

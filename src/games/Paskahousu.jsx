@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { C, suitColor } from '../shared/colors.js';
+import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
+import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames() {
@@ -27,6 +28,8 @@ function shuffledAINames() {
 // Kaataja saa jatkaa (uusi vuoro)
 // 10/A tyhjälle → seuraava nostaa ja menettää vuoronsa
 // Voit pelata 1–4 samanarvoista korttia kerralla (ei pakkoa)
+
+const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const SUITS      = ['♠','♥','♦','♣'];
 const BASE_RANKS = ['3','4','5','6','7','8','9','10','J','Q','K','A'];
@@ -66,20 +69,20 @@ function canPlay(card, top) {
 // cards = kaikki saman vuoron aikana pelatut kortit (sama arvo)
 // pile = koko kasa PELAUKSEN JÄLKEEN (valinnainen) — tarvitaan eri vuoroilla kertyneen 4x:n tarkistukseen
 function pileClears(cards, top, pile) {
-  if (!top) return false;
   const r = cards[0].r;
-  if (r === '10' && top.v <= 9)        return true; // 10 → arvo ≤ 9 (3-9 + punainen 2)
-  if (r === 'A'  && FACES.has(top.r)) return true; // A → J/Q/K
-  // 4 samaa päällä → kaato (myös eri pelaajilta eri vuoroina kertynyt)
+  // 4 samaa → kaato (myös eri pelaajilta eri vuoroina kertynyt) — toimii myös tyhjällä pöydällä
   if (LOW.has(r) || FACES.has(r)) {
     if (pile) {
       let cnt = 0;
       for (let i = pile.length - 1; i >= 0 && pile[i].r === r; i--) cnt++;
       if (cnt >= 4) return true;
     } else if (cards.length === 4) {
-      return true; // fallback ilman kasatietoa
+      return true; // fallback ilman kasatietoa — toimii tyhjälläkin pöydällä
     }
   }
+  if (!top) return false;
+  if (r === '10' && top.v <= 9)        return true; // 10 → arvo ≤ 9 (3-9 + punainen 2)
+  if (r === 'A'  && FACES.has(top.r)) return true; // A → J/Q/K
   return false;
 }
 
@@ -150,12 +153,19 @@ function aiCards(hand, top, pile) {
 
   // 3. Valitse pienin arvo ja pelaa KAIKKI saman arvoiset kerralla
   const best = pool.reduce((a, b) => a.v < b.v ? a : b);
-  return opts.filter(c => c.r === best.r && c.v === best.v);
+  const cards = opts.filter(c => c.r === best.r && c.v === best.v);
+
+  // T ja A pelataan vain yksi kerralla (ne tyhjentävät kasan)
+  if (cards.length > 0 && (cards[0].r === '10' || cards[0].r === 'A')) {
+    return [cards[0]];
+  }
+
+  return cards;
 }
 
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
-export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
+export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(4);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -172,6 +182,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const [kasaAnim, setKasaAnim] = useState(null); // 'clear' | 'quad' | 'take' | null
   const [pakaAnim, setPakaAnim] = useState(false); // pakka ehtyi -animaatio
   const [shuffling, setShuffling] = useState(false);
+  const [currentMoment, setCurrentMoment] = useState(null);
 
   const gRef    = useRef(null);
   const aiTmr   = useRef(null);
@@ -208,7 +219,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g);
     const s = g.players[g.turn];
     const lowestCard = s.hand.reduce((a, b) => a.v <= b.v ? a : b);
-    addLog(`Paskahousu alkaa! ${s.isHuman ? `Sinä aloitat — alhaisin korttisi on ${lbl(lowestCard)}.` : `${s.name} aloittaa (alhaisin kortti).`}`);
+    addLog(`Paskahousu alkaa! ${s.isHuman ? `Kellään ei ole pienempää kuin ${lblColored(lowestCard)}, joten sinä aloitat. Voit lyödä useammankin samanarvoisen kerralla.` : `${s.name} aloittaa (pienin kortti).`}`);
     setScreen('game');
     setShuffling(true);
     if (!s.isHuman) aiTmr.current = setTimeout(() => runAI(g), 4100);
@@ -225,7 +236,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     const ids      = new Set(cards.map(c => c.id));
 
     p.hand = p.hand.filter(c => !ids.has(c.id));
-    addLog(`${isH ? 'Sinä' : p.name}: ${cards.map(lbl).join(', ')}`);
+    addLog(`${isH ? 'Sinä' : p.name}: ${cards.map(lblColored).join(', ')}`);
     if (sndRef.current) SFX.flip();
     setJP(ids);
     setLP({ name: isH ? 'Sinä' : p.name, cards, isHuman: isH });
@@ -280,7 +291,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const nextP = nextActive(players, pidx, finished);
       if (nextP !== -1) {
         skipNext = nextP;
-        addLog(`${lbl(cards[0])} tyhjälle — ${players[nextP].name} nostaa ja menettää vuoronsa!`);
+        addLog(`${lblColored(cards[0])} tyhjälle — ${players[nextP].name} nostaa ja menettää vuoronsa!`);
       }
     }
 
@@ -356,7 +367,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       }
 
       if (pileClears([knocked], topBefore, pile)) {
-        addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lbl(knocked)} pakasta — kaato! ${isH ? 'Jatkat.' : 'Jatkaa.'}`);
+        addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lblColored(knocked)} pakasta — kaato! ${isH ? 'Jatkat.' : 'Jatkaa.'}`);
         if (sndRef.current) SFX.capture();
         triggerKasaAnim('clear');
         const contP = finished.includes(pidx) ? nextActive(players, pidx, finished) : pidx;
@@ -368,14 +379,14 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         return;
       }
 
-      addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lbl(knocked)} pakasta — kortti kävi!`);
+      addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lblColored(knocked)} pakasta — kortti kävi!`);
 
       let skipNext = g.skipNext;
       if (!topBefore && emptyPenalty(knocked)) {
         const nextP = nextActive(players, pidx, finished);
         if (nextP !== -1) {
           skipNext = nextP;
-          addLog(`${lbl(knocked)} tyhjälle — ${players[nextP].name} menettää vuoronsa!`);
+          addLog(`${lblColored(knocked)} tyhjälle — ${players[nextP].name} menettää vuoronsa!`);
         }
       }
 
@@ -386,7 +397,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         aiTmr.current = setTimeout(() => runAI(g2), 1600 + Math.random() * 300);
       else addLog('On vuorosi.');
     } else {
-      addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lbl(knocked)} pakasta — ei käynyt, nosta kasa!`);
+      addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lblColored(knocked)} pakasta — ei käynyt, nosta kasa!`);
       triggerKasaAnim('take');
       p.hand = [...p.hand, knocked, ...pile];
       const advTurn = nextActive(players, pidx, g.finished);
@@ -429,11 +440,11 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const penaltyCard = pile.pop();
       newTop = pile.length > 0 ? pile[pile.length - 1] : null;
       players[pidx].hand.push(penaltyCard);
-      addLog(`${isH ? 'Sinä nostat' : `${pname} nostaa`} (${lbl(penaltyCard)}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`);
+      addLog(`${isH ? 'Sinä nostat' : `${pname} nostaa`} (${lblColored(penaltyCard)}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`);
     } else if (draw.length) {
       const drawn = draw.shift();
       players[pidx].hand.push(drawn);
-      addLog(`${isH ? 'Sinä nostat' : `${pname} nostaa`} (${lbl(drawn)}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`);
+      addLog(`${isH ? 'Sinä nostat' : `${pname} nostaa`} (${lblColored(drawn)}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`);
     } else {
       addLog(`${isH ? 'Sinä menetät' : `${pname} menettää`} vuoronsa.`);
     }
@@ -482,7 +493,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     const swapIds = new Set(swapCards.map(c => c.id));
     p.hand = p.hand.filter(c => !swapIds.has(c.id));
     p.hand = [...p.hand, ...playedCards];
-    addLog(`${p.isHuman ? 'Sinä vaihdat' : `${p.name} vaihtaa`}! ${swapCards.map(lbl).join(', ')} kasaan.`);
+    addLog(`${p.isHuman ? 'Sinä vaihdat' : `${p.name} vaihtaa`}! ${swapCards.map(lblColored).join(', ')} kasaan.`);
     if (sndRef.current) SFX.flip();
     setJP(new Set(swapCards.map(c => c.id)));
     setTimeout(() => setJP(new Set()), 2000);
@@ -593,39 +604,37 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
   // ── select-näkymä ─────────────────────────────────────────────────────────
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 13, letterSpacing: 8, color: C.gold, opacity: 0.6, marginBottom: 8 }}>♠ ♥ ♦ ♣</div>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center', marginBottom: 24 }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>🃏</div>
         <h1 style={{ fontSize: 40, letterSpacing: 8, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>PASKAHOUSU</h1>
-        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', marginTop: 8 }}>Wikipedia-versio · viimeinen on Paskahousu 💩</p>
-      </div>
-
-      <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>Wikipedia-versio · viimeinen on Paskahousu</p>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 44, height: 44, borderRadius: 10, cursor: 'pointer', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginTop: 10, opacity: 0.6 }}>Hero + {nP - 1} tekoäly{nP === 2 ? '' : 'ä'}</p>
       </div>
 
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 380, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.9 }}>
-        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt</span><br />
-        <span style={{ color: C.red }}>♥2/♦2</span> pienimmät (arvo 2) · 3…A · <span style={{ color: C.blue }}>♠2/♣2</span> suurimmat (15)<br />
-        Maa ei merkitse — pelaa yhtä suuri tai suurempi<br />
-        J/Q/K ei saa laittaa alle 7 (arvo &lt; 7) olevan päälle<br />
-        Tyhjälle pöydälle: <span style={{ color: C.gold }}>kaikki kortit käyvät</span><br />
-        <span style={{ color: C.gold }}>10</span> kaataa (päällä 3–9) · <span style={{ color: C.gold }}>A</span> kaataa (päällä J/Q/K)<br />
-        <span style={{ color: C.gold }}>4 samaa</span> kaataa (päällä 3–9 tai J/Q/K) → kaataja jatkaa<br />
-        10/A tyhjälle → seuraava nostaa ja menettää vuoronsa<br />
-        Voit pelata 1–4 samanarvoista ei-erikoiskorttia kerralla.<br />
-        Käsikorteista ei apua → vedä sokkona tai nosta kasa
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
+        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
+        Pienimmät (♥2/♦2) suurimmiksi (♠2/♣2)<br />
+        10 ja A kaataa · Voi pelaa 1-4 samanarvoista<br />
+        Viimeinen pelaaja on Paskahousu
       </div>
 
-      <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>
-        Aloita →
-      </button>
+      <div style={{ textAlign: 'center' }}>
+        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>
+          Aloita →
+        </button>
+      </div>
     </div>
   );
 
@@ -673,9 +682,9 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viesti */}
-      <div style={{ background: 'rgba(13,33,24,0.95)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 56, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 56, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>💩</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{msg}</p>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       {/* Pelaajastatus */}
@@ -889,7 +898,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         )}
         {canKnock && (
           <button onClick={() => { setSel([]); applyKnock(gRef.current, 0); }} style={{ background: 'rgba(201,168,76,0.08)', border: `1px solid ${C.gold}55`, borderRadius: 10, padding: '10px 20px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            Vedä sokkona
+            Aina voi kokeilla pakasta
           </button>
         )}
         {canTake && (
@@ -925,12 +934,22 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#c8e0d0' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{e.m}</span>
+                <span style={{ fontSize: 12, color: i === 0 ? '#c8e0d0' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      <MomentFeedback
+        moment={currentMoment}
+        onClose={() => setCurrentMoment(null)}
+        onRate={() => {
+          setMsg_('💾 Momentti tallennettu! Hyvä peli!');
+          setCurrentMoment(null);
+        }}
+      />
+
       <style>{`
         button:active { transform: scale(0.97); }
         @keyframes lastPlayFade {

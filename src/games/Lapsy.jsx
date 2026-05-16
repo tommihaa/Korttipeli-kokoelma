@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { C } from '../shared/colors.js';
+import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { isRed, lbl, SUITS, RANKS, shuffle } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
+import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames() {
@@ -20,6 +21,7 @@ function shuffledAINames() {
 const SPEC   = { J: 1, Q: 2, K: 3, A: 4 };
 const isSpec = r => r in SPEC;
 const kk = n => n === 1 ? 'kortti' : 'korttia';
+const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 function newDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, id: `${r}${s}_${Math.random()}` }))));
@@ -31,7 +33,7 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
+export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(3);
   const [soundOn, setSnd]   = useState(initSoundOn);
@@ -52,6 +54,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const [flipAnim,  setFA]   = useState(null); // { playerIdx, card }
   const [cardBackState]      = [cardBack];
   const [aiNames]            = useState(() => shuffledAINames());
+  const [currentMoment, setCurrentMoment] = useState(null);
 
   const pilesRef     = useRef([]);
   const centerRef    = useRef([]);
@@ -81,7 +84,62 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setMsg(m);
   }, []);
 
+  const detectMoment = useCallback((eventType, context) => {
+    if (eventType === 'epic_fast_slap' && context.ms && context.ms < 400) {
+      const moment = {
+        type: 'epic_fast_slap',
+        game: 'Läpsy',
+        title: '⚡ EPIC! Salamannopea reaktio!',
+        description: `Läpsäit vain ${context.ms}ms:ssä! Pelaajan refleksit ovat ylivertaisesti nopeat!`,
+        timestamp: new Date().toISOString(),
+        rarity: 'epic',
+        context,
+      };
+      saveMomentSilently(moment);
+    }
+  }, [hints]);
+
+  const saveMomentSilently = (moment) => {
+    const feedback = {
+      momentType: moment.type,
+      game: moment.game,
+      rarity: moment.rarity,
+      comment: '',
+      timestamp: moment.timestamp,
+      context: moment.context,
+    };
+
+    const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
+    stored.push(feedback);
+    localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
+
+    if (hints) {
+      addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
+    }
+  };
+
   const pName = i => i === 0 ? 'Hero' : aiNames[i - 1];
+
+  const M = {
+    gameStart: 'Peli alkaa! Jokainen kääntää vuorollaan pinonsa päällimmäisen kortin.',
+    winChallengeNoRival: (winner, target) => `${winner} voitti kasan — ${target}:lla ei kortteja!`,
+    respondedSpecialNoRival: (player, card) => `${player} vastasi ${card}! Ei enää vastustajia — voittaa kasan!`,
+    respondedSpecial: (player, card, target, count, cardStr) => `${player} vastasi ${card}! Haaste siirtyy — ${target}:lla on ${count} ${cardStr} aikaa vastata haasteeseen.`,
+    failedResponse: (player, winner, count, cardStr) => `${player} epäonnistui. ${winner} voitti ${count} ${cardStr}.`,
+    noResponse: (player, left, cardStr) => `${player} ei vastannut — ${left} ${cardStr} jäljellä vastata haasteeseen.`,
+    challengedNoRival: (player, card) => `${player} haastaa ${card}! Ei enää vastustajia — voittaa kasan!`,
+    challenged: (player, card, target, count, cardStr) => `${player} haastaa ${card}! ${target}:lla on ${count} ${cardStr} aikaa vastata haasteeseen.`,
+    flipped: (player, card) => `${player} kääntää ${card}.`,
+    match: (rank) => `TÄSMÄYS! ${rank} — kuka läpsää ensin?`,
+    wrongSlap: (player) => `${player} läpsäsi väärin — menettää päällimmäisen!`,
+    correctSlap: (player, ms, count) => {
+      const msStr = ms ? ` (${ms} ms)` : '';
+      return `${player} läpsäsi nopeiten${msStr} — voitti ${count} korttia!`;
+    },
+    heroTooSlow: 'Hero oli hieman hitaampi — ei rangaistusta.',
+    heroSlapNoMatch: 'Hero läpsäsi — mutta ei täsmäystä! Menettää päällimmäisen kortin.',
+    gameOver: (playerName) => playerName ? `${playerName} voittaa pelin!` : 'Peli päättyi!',
+  };
 
   function startGame() {
     clearTimeout(aiTmr.current);
@@ -95,7 +153,10 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setCh(null); chRef.current = null;
     setSR(null);
     logRef.current = []; setLog([]);
-    addLog('Peli alkaa! Jokainen kääntää vuorollaan pinonsa päällimmäisen kortin.');
+    addLog(M.gameStart);
+    if (teachMode) {
+      addLog('💡 Vihje: Korttien täsmätessä nopein vie kasan!');
+    }
     setScreen('game');
     setShuffling(true);
     setTimeout(() => maybeAIFlip(0, initPiles, [], null), 2300);
@@ -105,7 +166,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     if (ch) {
       const target = ch.targetIdx;
       if (newPiles[target].length === 0) {
-        addLog(`${pName(ch.byIdx)} voitti kasan — ${pName(target)}:lla ei kortteja!`);
+        addLog(M.winChallengeNoRival(pName(ch.byIdx), pName(target)));
         giveCenter(ch.byIdx, newPiles, newCenter, null);
         return;
       }
@@ -153,17 +214,20 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         let target2 = (playerIdx + 1) % nn, t2 = 0;
         while ((newPiles[target2].length === 0 || target2 === playerIdx) && t2 < nn) { target2 = (target2 + 1) % nn; t2++; }
         if (t2 >= nn || target2 === playerIdx) {
-          addLog(`${pName(playerIdx)} vastasi ${lbl(card)}! Ei enää vastustajia — voittaa kasan!`);
+          addLog(M.respondedSpecialNoRival(pName(playerIdx), lblColored(card)));
           giveCenter(playerIdx, newPiles, newCenter, null); return;
         }
         const newCh = { byIdx: playerIdx, targetIdx: target2, cardsLeft: SPEC[card.r], specRank: card.r };
         setCh(newCh); chRef.current = newCh;
-        addLog(`${pName(playerIdx)} vastasi ${lbl(card)}! Haaste siirtyy — ${pName(target2)}:lla on ${SPEC[card.r]} ${kk(SPEC[card.r])} aikaa vastata haasteeseen.`);
+        const count = SPEC[card.r];
+        const cardStr = count === 1 ? 'kortti' : 'korttia';
+        addLog(M.respondedSpecial(pName(playerIdx), lblColored(card), pName(target2), count, cardStr));
         nextTurn(playerIdx, newPiles, newCenter, newCh);
       } else {
         const left = ch.cardsLeft - 1;
         if (left <= 0) {
-          addLog(`${pName(playerIdx)} epäonnistui. ${pName(ch.byIdx)} voitti ${newCenter.length} ${kk(newCenter.length)}.`);
+          const cardStr = newCenter.length === 1 ? 'kortti' : 'korttia';
+          addLog(M.failedResponse(pName(playerIdx), pName(ch.byIdx), newCenter.length, cardStr));
           setCh(null); chRef.current = null;
           setFR({ card, winner: ch.byIdx, n: newCenter.length });
           clearTimeout(failTmr.current);
@@ -171,7 +235,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         } else {
           const newCh = { ...ch, cardsLeft: left };
           setCh(newCh); chRef.current = newCh;
-          addLog(`${pName(playerIdx)} ei vastannut — ${left} ${kk(left)} jäljellä vastata haasteeseen.`);
+          const cardStr = left === 1 ? 'kortti' : 'korttia';
+          addLog(M.noResponse(pName(playerIdx), left, cardStr));
           nextTurn(playerIdx, newPiles, newCenter, newCh);
         }
       }
@@ -183,16 +248,21 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       let target = (playerIdx + 1) % n, t = 0;
       while ((newPiles[target].length === 0 || target === playerIdx) && t < n) { target = (target + 1) % n; t++; }
       if (t >= n || target === playerIdx) {
-        addLog(`${pName(playerIdx)} haastaa ${lbl(card)}! Ei enää vastustajia — voittaa kasan!`);
+        addLog(M.challengedNoRival(pName(playerIdx), lblColored(card)));
         giveCenter(playerIdx, newPiles, newCenter, null); return;
       }
       const newCh = { byIdx: playerIdx, targetIdx: target, cardsLeft: SPEC[card.r], specRank: card.r };
       setCh(newCh); chRef.current = newCh;
-      addLog(`${pName(playerIdx)} haastaa ${lbl(card)}! ${pName(target)}:lla on ${SPEC[card.r]} ${kk(SPEC[card.r])} aikaa vastata haasteeseen.`);
+      const count2 = SPEC[card.r];
+      const cardStr2 = count2 === 1 ? 'kortti' : 'korttia';
+      addLog(M.challenged(pName(playerIdx), lblColored(card), pName(target), count2, cardStr2));
+      if (teachMode && playerIdx !== 0) {
+        addLog(`💡 Vihje: Kuningas, kuningatar tai jätkä asettaa haasteen. Vastustajalla on ${count2} ${cardStr2} vastata samalla kortilla.`);
+      }
       nextTurn(playerIdx, newPiles, newCenter, newCh);
       return;
     }
-    addLog(`${pName(playerIdx)} kääntää ${lbl(card)}.`);
+    addLog(M.flipped(pName(playerIdx), lblColored(card)));
     nextTurn(playerIdx, newPiles, newCenter, null);
   }
 
@@ -200,11 +270,11 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setPhase('match'); phaseRef.current = 'match';
     setCh(null); chRef.current = null;
     matchTimeRef.current = performance.now();
-    addLog(`TÄSMÄYS! ${center[0].r} — kuka läpsää ensin?`);
+    addLog(M.match(center[0].r));
     aiSlapTmrs.current.forEach(clearTimeout);
     aiSlapTmrs.current = piles.map((pile, i) => {
       if (i === 0 || pile.length === 0) return null;
-      const delay = 400 + Math.random() * 2200;
+      const delay = 600 + Math.random() * 2400;
       return setTimeout(() => {
         if (phaseRef.current !== 'match') return;
         const ms = Math.round(performance.now() - matchTimeRef.current);
@@ -219,7 +289,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     aiSlapTmrs.current.forEach(clearTimeout);
     if (curCenter.length < 2 || curCenter[0].r !== curCenter[1].r) {
       if (sndRef.current) SFX.wrongSlap();
-      addLog(`${pName(playerIdx)} läpsäsi väärin — menettää päällimmäisen!`);
+      addLog(M.wrongSlap(pName(playerIdx)));
       if (curPiles[playerIdx].length === 0) { nextTurn(playerIdx, curPiles, curCenter, chRef.current); return; }
       const lostCard = curPiles[playerIdx][0];
       const newPiles = curPiles.map((p, i) => i === playerIdx ? p.slice(1) : p);
@@ -231,18 +301,23 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     }
     if (sndRef.current) { SFX.slap(); setTimeout(() => SFX.winPile(), 200); }
     const n = curCenter.length;
-    const msStr = ms ? ` (${ms} ms)` : '';
-    addLog(`${pName(playerIdx)} läpsäsi nopeiten${msStr} — voitti ${n} korttia!`);
-    if (playerIdx === 0 && ms) setBestMs(prev => prev === null || ms < prev ? ms : prev);
+    addLog(M.correctSlap(pName(playerIdx), ms, n));
+    if (playerIdx === 0 && ms) {
+      setBestMs(prev => prev === null || ms < prev ? ms : prev);
+      if (ms < 400) detectMoment('epic_fast_slap', { ms });
+    }
     setSR({ winner: playerIdx, ms, n }); setTimeout(() => setSR(null), 2000);
     giveCenter(playerIdx, curPiles, curCenter, ms);
   }
 
   function humanSlap() {
     if (phaseRef.current !== 'match') {
-      if (recentMatch.current) { addLog('Hero oli hieman hitaampi — ei rangaistusta.'); return; }
+      if (recentMatch.current) { addLog(M.heroTooSlow); return; }
       if (sndRef.current) SFX.wrongSlap();
-      addLog('Hero läpsäsi — mutta ei täsmäystä! Menettää päällimmäisen kortin.');
+      addLog(M.heroSlapNoMatch);
+      if (teachMode) {
+        addLog('💡 Vihje: Läpsää vain kun korttien arvot täsmäävät!');
+      }
       if (pilesRef.current[0].length === 0) return;
       setPhase('idle'); phaseRef.current = 'idle';
       const lostCard = pilesRef.current[0][0];
@@ -280,7 +355,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     if (active.length <= 1) {
       setPhase('gameover'); phaseRef.current = 'gameover';
       const winner = piles.findIndex(p => p.length > 0);
-      addLog(winner >= 0 ? `${pName(winner)} voittaa pelin!` : 'Peli päättyi!');
+      addLog(M.gameOver(winner >= 0 ? pName(winner) : null));
       onResult?.(winner === 0);
       setTimeout(() => setScreen('gameover'), 1800);
       return true;
@@ -289,13 +364,17 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 13, letterSpacing: 8, color: C.red, opacity: 0.7, marginBottom: 8 }}>👋</div>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center', marginBottom: 24 }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>👋</div>
         <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e84040,${C.red},#8a1500)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>LÄPSY</h1>
-        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', marginTop: 8 }}>Läpsää ensin — reaktionopeus ratkaisee</p>
-      </div>
-      <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', margin: '0', marginBottom: 16 }}>Läpsää ensin — reaktionopeus ratkaisee</p>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
           {[2, 3, 4].map(n => (
@@ -303,11 +382,15 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
           ))}
         </div>
       </div>
-      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7 }}>
+      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
         <span style={{ color: C.gold, fontWeight: 700 }}>Pelitapa</span><br />
-        Kortit jaetaan tasan. Pelaajat kääntävät vuorotellen pinon päällimmäisen. Täsmäys → nopein läpsääjä voittaa kasan. J=1, Q=2, K=3, A=4 korttia aikaa vastata erityiskortilla.
+        Kortit jaetaan tasan. Pelaajat kääntävät vuorotellen pinonsa päällimmäisen pöydälle kasaan, mutta sitten voi tapahtua kaksi asiaa.<br /><br />
+        <strong style={{ fontSize: 11 }}>1. Täsmäys:</strong> Kaksi päällimmäistä korttia oli samanarvoisia → nopein läpsääjä voittaa kasan.<br /><br />
+        <strong style={{ fontSize: 11 }}>2. Erityiskortit (J, Q, K, A):</strong> Puolustajalla on 1–4 mahdollisuutta vetää erityiskortti. Jos epäonnistuu → haastaja voittaa. Jos onnistuu → haastaa seuraavan. Voi sattua myös täsmäys → nopein voittaa.
       </div>
-      <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.red},#8a1500)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: C.text, fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      <div style={{ textAlign: 'center' }}>
+        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.red},#8a1500)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: C.text, fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      </div>
     </div>
   );
 
@@ -341,9 +424,9 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 520, margin: '0 auto', paddingBottom: 32 }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
-      <div style={{ background: 'rgba(20,5,5,0.9)', border: `1px solid ${isMatch ? C.red + '88' : C.red + '22'}`, borderRadius: 12, padding: '11px 16px', marginBottom: 12, height: 68, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10, transition: 'border-color 0.2s', boxShadow: isMatch ? `0 0 18px ${C.red}44` : 'none' }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: '12px 16px', marginBottom: 12, minHeight: 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>{isMatch ? '👋' : '🃏'}</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: isMatch ? '#ff9988' : C.dim }}>{msg}</p>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
@@ -380,7 +463,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
           </div>
         )}
         {ch && (
-          <div style={{ display: 'flex', gap: 6, alignItems: 'center', padding: '5px 14px', background: C.gold + '14', border: `1px solid ${C.gold}55`, borderRadius: 20 }}>
+          <div style={{ position: 'sticky', top: 0, left: '50%', display: 'flex', gap: 6, alignItems: 'center', padding: '5px 14px', background: C.gold + '14', border: `1px solid ${C.gold}55`, borderRadius: 20, zIndex: 100, marginLeft: 'calc(-50vw + 50%)' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold }}>Haaste: {pName(ch.byIdx)}</span>
             {Array.from({ length: ch.cardsLeft }).map((_, i) => <div key={i} style={{ width: 8, height: 12, borderRadius: 2, background: C.gold, opacity: 0.8 }} />)}
             <span style={{ fontFamily: 'monospace', fontSize: 11, color: C.gold }}>{ch.cardsLeft}</span>
@@ -392,7 +475,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         {failReveal && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 14px', background: 'rgba(224,92,59,0.08)', border: `1px solid ${C.red}44`, borderRadius: 10, animation: 'fadeIn 0.25s ease' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.red, flexShrink: 0 }}>{pName(failReveal.winner)} voitti haasteen! {pName(failReveal.winner)} voitti {failReveal.n} {kk(failReveal.n)}.</span>
-            <span style={{ background: '#f8f2e6', borderRadius: 5, padding: '2px 8px', fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: 16, color: isRed(failReveal.card.s) ? '#b83030' : '#1a1a2e' }}>{failReveal.card.r}{failReveal.card.s}</span>
+            <span style={{ background: '#f8f2e6', borderRadius: 5, padding: '2px 8px', fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: 16, color: SUIT_COLOR[failReveal.card.s] }}>{failReveal.card.r}{failReveal.card.s}</span>
           </div>
         )}
       </div>
@@ -420,7 +503,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
                 <span style={{
                   background: '#f8f2e6', borderRadius: 4, padding: '1px 4px',
                   fontSize: 11, fontWeight: 700, lineHeight: 1.3,
-                  color: isRed(flipAnim.card.s) ? '#b83030' : '#1a1a2e',
+                  color: SUIT_COLOR[flipAnim.card.s],
                 }}>
                   {flipAnim.card.r}{flipAnim.card.s}
                 </span>
@@ -432,7 +515,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
             {center.length > 2 && <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: '#f0eadc', border: '1px solid #ccc', transform: 'rotate(-5deg)', transformOrigin: 'bottom center', zIndex: 0 }} />}
             {top2.length > 1 && (
               <div style={{ position: 'absolute', top: 18, left: 2, width: 82, height: 112, borderRadius: 9, background: C.card, border: `2px solid ${isMatch ? C.red + 'bb' : '#bbb'}`, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: 6, zIndex: 1 }}>
-                <div style={{ textAlign: 'center', color: isRed(top2[1].s) ? '#b83030' : '#1a1a2e', fontFamily: 'Georgia,serif', lineHeight: 1, opacity: 0.7 }}>
+                <div style={{ textAlign: 'center', color: SUIT_COLOR[top2[1].s], fontFamily: 'Georgia,serif', lineHeight: 1, opacity: 0.7 }}>
                   <div style={{ fontSize: 16, fontWeight: 700 }}>{top2[1].r}</div>
                   <div style={{ fontSize: 18 }}>{top2[1].s}</div>
                 </div>
@@ -440,7 +523,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
             )}
             {center.length > 0
               ? <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: C.card, border: `2px solid ${isMatch ? C.red : '#aaa'}`, boxShadow: isMatch ? `0 0 22px ${C.red}88` : '0 2px 8px rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2, animation: isMatch ? 'cardMatch 0.4s ease infinite' : 'none' }}>
-                <div style={{ textAlign: 'center', color: isRed(center[0].s) ? '#b83030' : '#1a1a2e', fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
+                <div style={{ textAlign: 'center', color: SUIT_COLOR[center[0].s], fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: 24, fontWeight: 700 }}>{center[0].r}</div>
                   <div style={{ fontSize: 28 }}>{center[0].s}</div>
                 </div>
@@ -499,7 +582,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,26,26,0.5)', background: i === 0 ? 'rgba(200,50,30,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#dd9988' : C.dim, fontFamily: 'sans-serif', lineHeight: 1.5 }}>{e.m}</span>
+                <span style={{ fontSize: 12, color: i === 0 ? '#dd9988' : C.dim, fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
               </div>
             ))}
           </div>
@@ -523,6 +606,15 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         }
         button:active{transform:scale(0.96)}
       `}</style>
+
+      <MomentFeedback
+        moment={currentMoment}
+        onClose={() => setCurrentMoment(null)}
+        onRate={() => {
+          addLog('💾 Momentti tallennettu! Loistava reaktio!');
+          setCurrentMoment(null);
+        }}
+      />
     </div>
   );
 }

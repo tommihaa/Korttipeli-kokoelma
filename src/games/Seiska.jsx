@@ -1,12 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
-import { C, suitColor } from '../shared/colors.js';
+import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, SUITS, RANKS, VAL } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
+import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 // ── Seiska ─────────────────────────────────────────────────────
+const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
+const coloredSuit = s => `<span style="color:${SUIT_COLOR[s]}">${s}</span>`;
 const SUIT_SYMS = ['♠', '♥', '♦', '♣'];
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
@@ -117,7 +120,7 @@ function sortHand(hand) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
+export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(3);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -131,6 +134,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const [pakaAnim, setPakaAnim] = useState(false);
   const [jpId, setJP] = useState(null);
   const [shuffling, setShuffling] = useState(false);
+  const [currentMoment, setCurrentMoment] = useState(null);
 
   const gRef   = useRef(null);
   const aiTmr  = useRef(null);
@@ -175,11 +179,11 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const g = mkInitState(nP);
     logRef.current = []; setLog([]); setSel([]); setPakaAnim(false);
     setGS(g);
-    addLog(`Seiska alkaa! Päällimmäinen: ${lbl(g.discardTop)}.`);
+    addLog(`Seiska alkaa! Päällimmäinen: ${lblColored(g.discardTop)}.`);
     setScreen('game');
     setShuffling(true);
     if (g.players[0].isHuman) {
-      addLog(`Sinun vuorosi — lyö ${g.discardTop.s}-maa tai ${g.discardTop.r}.`);
+      addLog(`Sinun vuorosi — lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`);
     } else {
       aiTmr.current = setTimeout(() => runAI(g), 3100);
     }
@@ -193,7 +197,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       if (i === fromIdx || g2.finished.includes(i)) return p;
       if (!deck.length) return p;
       const drawn = deck.shift();
-      addLog(`${p.isHuman ? 'Sinä nostat' : `${p.name} nostaa`} ässärangaistuksena ${lbl(drawn)}.`);
+      addLog(`${p.isHuman ? 'Sinä nostat' : `${p.name} nostaa`} ässärangaistuksena ${lblColored(drawn)}.`);
       return { ...p, hand: [...p.hand, drawn] };
     });
     return { ...g2, players, deck };
@@ -229,8 +233,8 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       aiTmr.current = setTimeout(() => runAI(g3), 1200 + Math.random() * 400);
     } else if (hints) {
       const cl = g3.reqSuit
-        ? `Vaadittu maa: ${g3.reqSuit} — lyö ${g3.reqSuit}-maa tai nosta.`
-        : `Lyö ${g3.discardTop.s}-maa tai ${g3.discardTop.r}-arvo tai nosta.`;
+        ? `Vaadittu maa: ${coloredSuit(g3.reqSuit)} — lyö ${coloredSuit(g3.reqSuit)}-maa tai nosta.`
+        : `Lyö ${coloredSuit(g3.discardTop.s)}-maa tai ${g3.discardTop.r}-arvo tai nosta.`;
       addLog(`Sinun vuorosi — ${cl}`);
     }
   }
@@ -242,7 +246,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const isH   = p.isHuman;
 
     if (sndRef.current) SFX.flip();
-    addLog(`${isH ? 'Sinä' : p.name}: ${cards.map(lbl).join(', ')}`);
+    addLog(`${isH ? 'Sinä' : p.name}: ${cards.map(lblColored).join(', ')}`);
 
     // Poista kädestä
     let players = g.players.map((pl, i) => i !== playerIdx ? pl
@@ -498,31 +502,35 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
   // ── Select ──────────────────────────────────────────────────
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 13, letterSpacing: 8, color: C.gold, opacity: 0.6, marginBottom: 8 }}>♠ ♥ ♦ ♣</div>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center', marginBottom: 24 }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>7️⃣</div>
         <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>SEISKA</h1>
-        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', marginTop: 8 }}>UNO-tyyppinen shedding-peli · 7 korttia käteen</p>
-      </div>
-      <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>UNO-tyyppinen shedding-peli · 7 korttia käteen</p>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 44, height: 44, borderRadius: 10, cursor: 'pointer', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginTop: 10, opacity: 0.6 }}>Hero + {nP - 1} tekoäly{nP === 2 ? '' : 'ä'}</p>
       </div>
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 380, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.9 }}>
-        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt</span><br />
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.9, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
+        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
         Lyö sama maa (1 kerralla) TAI sama arvo (useampi kerralla)<br />
         Ei sovi → nosta enintään 3 korttia, pelaa jos löytyy<br />
-        <span style={{ color: C.blue }}>7</span> → valitse vaadittu maa · seiskaa ei seiskan päälle<br />
-        <span style={{ color: C.red }}>A</span> → bonusvuoro saman maan kortilla · jos ei jatka, muut nostavat kortin<br />
-        1 kortti → sano <strong>LAPPU</strong> tai +5 · jos nostat, Lappu täytyy sanoa uudelleen<br />
-        <span style={{ color: C.gold }}>Ei voi voittaa seiskalla · Tyhjennä käsi ensimmäisenä</span>
+        <span style={{ color: C.blue }}>7</span> → valitse vaadittu maa<br />
+        <span style={{ color: C.red }}>A</span> → bonusvuoro saman maan kortilla<br />
+        1 kortti → sano LAPPU tai +5
       </div>
-      <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      <div style={{ textAlign: 'center' }}>
+        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      </div>
     </div>
   );
 
@@ -568,9 +576,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viesti */}
-      <div style={{ background: 'rgba(13,33,24,0.95)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 18, flexShrink: 0, color: C.gold }}>7</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{msg}</p>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       {/* Pelaajastatus */}
@@ -631,7 +639,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         {G.reqSuit && (
           <div style={{ padding: '10px 18px', borderRadius: 12, background: 'rgba(201,168,76,0.1)', border: `2px solid ${C.gold}66`, textAlign: 'center' }}>
             <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, marginBottom: 4, letterSpacing: 1.5 }}>VAADITTU MAA</div>
-            <div style={{ fontSize: 48, color: suitColor(G.reqSuit), lineHeight: 1 }}>{G.reqSuit}</div>
+            <div style={{ fontSize: 48, color: SUIT_COLOR[G.reqSuit], lineHeight: 1 }}>{G.reqSuit}</div>
           </div>
         )}
         {G.drawsThisTurn > 0 && (
@@ -648,7 +656,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
           <div style={{ display: 'flex', gap: 10 }}>
             {SUIT_SYMS.map(s => (
               <button key={s} onClick={() => humanChooseSuit(s)}
-                style={{ width: 52, height: 52, fontSize: 26, borderRadius: 10, cursor: 'pointer', background: 'rgba(255,255,255,0.04)', border: `2px solid ${C.gold}55`, color: suitColor(s), transition: 'all 0.15s' }}>
+                style={{ width: 52, height: 52, fontSize: 26, borderRadius: 10, cursor: 'pointer', background: 'rgba(255,255,255,0.04)', border: `2px solid ${C.gold}55`, color: SUIT_COLOR[s], transition: 'all 0.15s' }}>
                 {s}
               </button>
             ))}
@@ -659,7 +667,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       {/* Ässä-bonusvuoro */}
       {G.aceBonus !== null && G.activePlayer === 0 && (
         <div style={{ background: 'rgba(91,168,212,0.1)', border: `1px solid ${C.blue}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontSize: 30, color: suitColor(G.aceBonus), lineHeight: 1 }}>{G.aceBonus}</span>
+          <span style={{ fontSize: 30, color: SUIT_COLOR[G.aceBonus], lineHeight: 1 }}>{G.aceBonus}</span>
           <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.text, flex: 1 }}>Ässä! Voit jatkaa {G.aceBonus}-maalla tai lopettaa vuoron.</span>
           <button onClick={humanSkipAceBonus} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 8, padding: '7px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Lopeta</button>
         </div>
@@ -762,12 +770,22 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#c8e0d0' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{e.m}</span>
+                <span style={{ fontSize: 12, color: i === 0 ? '#c8e0d0' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      <MomentFeedback
+        moment={currentMoment}
+        onClose={() => setCurrentMoment(null)}
+        onRate={() => {
+          setMsg_('💾 Momentti tallennettu! Loistava peli!');
+          setCurrentMoment(null);
+        }}
+      />
+
       <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}`}</style>
     </div>
   );

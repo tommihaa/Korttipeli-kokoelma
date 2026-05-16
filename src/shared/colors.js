@@ -1,8 +1,8 @@
 export const C = {
-  bg: '#0d2118',
+  bg: '#1f5a3f',
   gold: '#c9a84c',
   text: '#f0e6cc',
-  dim: '#6a8a72',
+  dim: '#a8b8a0',
   red: '#e05c3b',
   blue: '#5ba8d4',
   panelBorder: '#2a4a32',
@@ -16,8 +16,8 @@ export const C = {
 export const SUIT_COLOR = {
   '♠': '#1a1a1a',
   '♥': '#cc2222',
-  '♦': '#1a5fb4',
-  '♣': '#2a7a2a',
+  '♦': '#ff8c42',
+  '♣': '#4caf7d',
 };
 
 export const suitColor = s => SUIT_COLOR[s] || '#1a1a2e';

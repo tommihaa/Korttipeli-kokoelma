@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
-import { C, suitColor } from '../shared/colors.js';
+import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
+import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 // ── Moska (Durak) ─────────────────────────────────────────────
 // A=14 kaikissa taisteluvertailuissa
+const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 const MV = c => c.r === 'A' ? 14 : c.v;
 
 function canBeat(atk, def, ts) {
@@ -73,7 +75,7 @@ function initGame(nP) {
       const t2 = own.hand.find(c => c.r === '2' && c.s === ts);
       own.hand = [...own.hand.filter(c => c.id !== t2.id), { ...trumpCard }];
       tc = { ...t2 };
-      exchangeMsg = `💫 ${own.name}: 2${ts} ↔ ${lbl(trumpCard)} (valttivaihto)`;
+      exchangeMsg = `💫 ${own.name}: 2${ts} ↔ ${lblColored(trumpCard)} (valttivaihto)`;
     }
   }
 
@@ -141,7 +143,7 @@ function getAddable(g, playerIdx) {
 }
 
 // ── Komponentti ───────────────────────────────────────────────
-export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
+export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(2);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -161,6 +163,10 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const [selDefTarget, setSelDefTarget] = useState(null); // pöytäkortti jota kaataa
   const [selPass, setSelPass] = useState([]);      // siirtokortti
   const [selAdd, setSelAdd] = useState([]);        // lisäyskortti
+
+  // Momentti-palaute
+  const [currentMoment, setCurrentMoment] = useState(null);
+  const momentsRef = useRef([]);
 
   const gRef    = useRef(null);
   const aiTmr   = useRef(null);
@@ -191,6 +197,96 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
   function setGS(g) { setG(g); gRef.current = g; }
 
+  // Momenttien havaitseminen — onko tämä erikoinen hetkki?
+  function detectMoment(eventType, context, deckGone) {
+    if (eventType === 'defender_won') {
+      const difficulty = context.unbeatenCount || 0;
+      let momentType = 'defense_success';
+      let title = '🛡️ Onnistunut puolustus';
+      let description = `Puolustaja onnistui kaatamaan ${difficulty} hyökkäyskortin.`;
+      let rarity = 'uncommon'; // Uncommon by default
+
+      // Epic: Vaikea tilanne (4+ korttia lyötävänä)
+      if (difficulty >= 4) {
+        momentType = 'difficult_defense';
+        title = '⚔️ Epic Puolustus!';
+        description = `Puolustaja kaatoi ${difficulty} hyökkäyskortin isoilla valteilla. Herkulline pelastus!`;
+        rarity = 'epic';
+      }
+
+      // Legendary: Pakka ehtyi juuri kun puolustaja voitti! (~0.3% todennäköisyys)
+      if (deckGone && Math.random() < 0.003) {
+        momentType = 'legendary_defense';
+        title = '🟠 LEGENDARY! Pakka loppui juuri oikeaan aikaan!';
+        description = `Pakka ehtyi juuri kun puolustaja kaatoi kaikki kortit. Täydellinen ajoitus!`;
+        rarity = 'legendary';
+      }
+
+      const moment = {
+        type: momentType,
+        game: 'Moska',
+        title,
+        description,
+        context,
+        timestamp: new Date().toISOString(),
+        rarity,
+      };
+
+      // Vain Legendary-momentit näyttävät popupin, muut tallennetaan silenceerilla
+      if (rarity === 'legendary') {
+        setCurrentMoment(moment);
+      } else {
+        saveMomentSilently(moment);
+      }
+
+      return moment;
+    }
+  }
+
+  function saveMomentSilently(moment) {
+    const feedback = {
+      momentType: moment.type,
+      game: moment.game,
+      rarity: moment.rarity,
+      comment: '',
+      timestamp: moment.timestamp,
+      context: moment.context,
+    };
+
+    const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
+    stored.push(feedback);
+    localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
+
+    if (hints) {
+      addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
+    }
+  }
+
+  function saveMomentFeedback(feedback) {
+    momentsRef.current.push(feedback);
+    if (hints) {
+      addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
+    }
+  }
+
+  const M = {
+    gameStart: (primaryAtk, defender, trump) => `Moska alkaa! Valtti: ${trump}. ${primaryAtk}, ${defender}.`,
+    defenderWon: (defender) => `${defender} onnistuneesti!`,
+    defenderTook: (defender, count) => `${defender} ${kortin(count)}.`,
+    playerDrew: (player, count) => `${player} ${kortin(count)}.`,
+    playerFinished: (player, rank) => `${player} kortista! Sija ${rank}.`,
+    moska: (name) => `${name} on Moska! 🐟`,
+    nextRound: (nextAtk, nextDef) => `${nextAtk} → ${nextDef}.`,
+    attack: (player, cards) => `${player}: ${cards}.`,
+    beat: (defName, defCard, atkCard) => `${defName}: ${defCard} kaataa ${atkCard}.`,
+    cannotPass: 'Ei voi siirtää enempää.',
+    pass: (defender, cards, nextDef) => `${defender} (${cards}) → ${nextDef}.`,
+    add: (player, cards) => `${player}: ${cards}.`,
+    defendHuman: (count) => `Sinun puolustettava — ${korttia(count)} lyömättä. Valitse ensin pöytäkortti, jonka haluat kaataa, ja sitten käsikorttisi, jolla haluat kaataa.`,
+    defendAI: (name) => `${name} puolustaa...`,
+  };
+
+
   // ── Pelin aloitus ─────────────────────────────────────────
   function startGame() {
     clearTimeout(aiTmr.current);
@@ -199,7 +295,10 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     setSelAtk([]); setSelDefTarget(null); setSelPass([]); setSelAdd([]); setPakaAnim(false);
     setGS(g);
     if (g.exchangeMsg) addLog(g.exchangeMsg);
-    addLog(`Moska alkaa! Valtti: ${g.ts}. ${act(g.players[g.primaryAtk], 'hyökkäät', 'hyökkää')}, ${act(g.players[g.defender], 'puolustat', 'puolustaa')}.`);
+    const attMsg = act(g.players[g.primaryAtk], 'hyökkäät', 'hyökkää');
+    const defMsg = act(g.players[g.defender], 'puolustat', 'puolustaa');
+    const trumpSpan = `<span style="color:${SUIT_COLOR[g.ts]}">${g.ts}</span>`;
+    addLog(`Moska alkaa! Valtti: ${trumpSpan}. ${attMsg}, ${defMsg}.`);
     setScreen('game');
     setShuffling(true);
     if (!g.players[g.primaryAtk].isHuman) {
@@ -239,6 +338,18 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         }
         deck = d2; tc = t2;
       }
+    }
+
+    // Havaitse erikoismoment JOS puolustaja voitti
+    if (defWon) {
+      const unbeatenCount = g.table.length; // Montako korttia oli pöydällä
+      // Tarkista onko pakka ehtyä JUURI NYTÄ
+      const willDeckGone = deck.length === 0 && tc === null;
+      detectMoment('defender_won', {
+        defender: defPlayer.name,
+        unbeatenCount,
+        attackerCount: g.attackers.length,
+      }, willDeckGone);
     }
 
     // Tarkista valmistuneet (pakkaa ei enää, käsi tyhjä)
@@ -315,7 +426,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const atkCard = g.table.find(t => t.atk.id === atkId)?.atk;
     const newTable = g.table.map(t => t.atk.id === atkId ? { ...t, def: defCard } : t);
     const players = g.players.map((p, i) => i === g.defender ? { ...p, hand: newHand } : p);
-    addLog(`${def.name}: ${lbl(defCard)} kaataa ${lbl(atkCard)}.`);
+    addLog(`${def.name}: ${lblColored(defCard)} kaataa ${lblColored(atkCard)}.`);
     if (sndRef.current) SFX.capture();
     return { ...g, players, table: newTable };
   }
@@ -524,7 +635,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   function humanBeatWithCard(card) {
     if (!G || G.phase !== 'defend' || G.defender !== 0 || !selDefTarget) return;
     if (!canBeat(selDefTarget.atk, card, G.ts)) {
-      addLog(`${lbl(card)} ei kaada ${lbl(selDefTarget.atk)}.`);
+      addLog(`${lblColored(card)} ei kaada ${lblColored(selDefTarget.atk)}.`);
       return;
     }
     const g = gRef.current;
@@ -549,7 +660,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     if (!G || G.phase !== 'defend' || G.defender !== 0) return;
     if (G.table.some(t => t.def)) { addLog('Ei voi siirtää — olet jo kaanut kortteja.'); return; }
     const atkRanks = new Set(G.table.map(t => t.atk.r));
-    if (!atkRanks.has(card.r)) { addLog(`${lbl(card)} ei sovi siirtoon.`); return; }
+    if (!atkRanks.has(card.r)) { addLog(`${lblColored(card)} ei sovi siirtoon.`); return; }
     setSelPass(prev => {
       const has = prev.find(c => c.id === card.id);
       return has ? prev.filter(c => c.id !== card.id) : [...prev, card];
@@ -591,30 +702,32 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
   // ── Näkymät ───────────────────────────────────────────────
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 13, letterSpacing: 8, color: C.gold, opacity: 0.6, marginBottom: 8 }}>♠ ♥ ♦ ♣</div>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center', marginBottom: 24 }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>⚔️</div>
         <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>MOSKA</h1>
-        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', marginTop: 8 }}>Hyökkää ja puolusta — viimeinen on Moska</p>
-      </div>
-      <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>Hyökkää ja puolusta — viimeinen on Moska</p>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 44, height: 44, borderRadius: 10, cursor: 'pointer', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginTop: 10, opacity: 0.6 }}>Hero + {nP - 1} tekoäly{nP === 2 ? '' : 'ä'}</p>
       </div>
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 380, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.8 }}>
-        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt</span> — <span style={{ color: C.dim, fontSize: 11 }}>Perevodnoy Durak / Переводной дурак</span><br />
-        Hyökkää saman-arvoisilla (enintään 6) · Kaada saman maan isommalla tai valtilla<br />
-        <span style={{ color: C.gold }}>Siirrä hyökkäys eteenpäin</span> samanarvoisella — jos pöydässä vain samanarvoisia<br />
-        ja hänellä on vähintään yksi samanarvoinen käteen · Ota jos et pysty puolustamaan<br />
-        Muut voivat lisätä saman-arvoisia · Pääse kortista ensimmäisenä<br />
-        <span style={{ color: C.red }}>Viimeinen on Moska 🐟</span>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
+        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
+        Hyökkää samanarvoisilla · Puolusta isommalla tai valtilla<br />
+        Pääse kortista ensimmäisenä · Viimeinen on Moska
       </div>
-      <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      <div style={{ textAlign: 'center' }}>
+        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      </div>
     </div>
   );
 
@@ -668,31 +781,28 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
+      <MomentFeedback
+        moment={currentMoment}
+        onClose={() => setCurrentMoment(null)}
+        onRate={saveMomentFeedback}
+      />
+
       {/* Viestikupla */}
-      <div style={{ background: 'linear-gradient(135deg,#150808,#0e0505)', border: `1px solid #7a2020`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, height: 72, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>♠</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: '#e8c8c8' }}>{msg}</p>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
-      {/* Yläpalkki: valtti + pelaajat */}
+      {/* Yläpalkki: valtti + pakkatiedot */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 10px', borderRadius: 20, border: `1px solid ${C.trump}55`, background: `${C.trump}0d` }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>VALTTI</span>
-          <span style={{ fontSize: 18, color: isRed(G.ts) ? suitColor(G.ts) : C.trump, fontWeight: 700 }}>{G.ts}</span>
+          <span style={{ fontSize: 18, color: SUIT_COLOR[G.ts], fontWeight: 700 }}>{G.ts}</span>
           {G.trumpCard && <Card card={G.trumpCard} small backStyle={BACKS[cardBack]} />}
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10,
-            color: G.deck.length + (G.trumpCard ? 1 : 0) === 0 ? C.red : C.dim,
-            fontWeight: G.deck.length + (G.trumpCard ? 1 : 0) === 0 ? 700 : 400,
-            animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
-            {G.deck.length + (G.trumpCard ? 1 : 0) === 0 ? 'TYHJÄ!' : `${G.deck.length + (G.trumpCard ? 1 : 0)}k`}
-          </span>
         </div>
-        {G.players.map((p, i) => (
-          <div key={p.id} style={{ padding: '3px 10px', borderRadius: 20, fontFamily: 'sans-serif', fontSize: 11, background: i === G.primaryAtk ? 'rgba(224,92,59,0.1)' : i === G.defender ? 'rgba(91,168,212,0.1)' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === G.primaryAtk ? '#e05c3b55' : i === G.defender ? C.blue + '55' : C.panelBorder}`, color: i === G.primaryAtk ? C.red : i === G.defender ? C.blue : C.dim, opacity: p.rank !== null ? 0.4 : 1 }}>
-            {p.name} {i === G.primaryAtk ? '⚔' : i === G.defender ? '🛡' : ''}
-            {p.rank !== null ? ` ${p.rank}.` : ` ${p.hand.length}k`}
-          </div>
-        ))}
+        <div style={{ padding: '3px 10px', borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: `1px solid ${G.deck.length === 0 ? C.red + '55' : C.panelBorder}`, fontFamily: 'sans-serif', fontSize: 12, color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
+          {G.deck.length === 0 ? 'PAKKA TYHJÄ' : `Pakassa kortteja jäljellä ${G.deck.length} kpl`}
+        </div>
       </div>
 
       {/* AI-pelaajien kädet */}
@@ -755,7 +865,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           {isMyDef && !selDefTarget && !selPass.length && (canPassNow
             ? 'Valitse ensin pöytäkortti jonka haluat kaataa — tai klikkaa saman-arvoista korttiasi siirtääksesi hyökkäyksen eteenpäin.'
             : 'Valitse ensin pöytäkortti, jonka haluat kaataa, ja seuraavaksi käsikorttisi.')}
-          {isMyDef && selDefTarget && `${lbl(selDefTarget.atk)} kohteena — valitse nyt käsikortti, jolla haluat kaataa.`}
+          {isMyDef && selDefTarget && `${lblColored(selDefTarget.atk)} kohteena — valitse nyt käsikortti, jolla haluat kaataa.`}
           {isMyDef && selPass.length > 0 && `Siirto: ${selPass.map(lbl).join(',')} — klikkaa Siirrä tai peruuta.`}
           {isMyAdd && `Voit lisätä kortit (${humanAddable.map(lbl).join(', ')}) tai Ohita.`}
         </div>
@@ -845,10 +955,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
-          ⚔ hyökkääjä · 🛡 puolustaja · Valtti: {G.ts} · Sija {G.rankings.length + 1}/{G.players.length}
-        </span>
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+        {G.players.map((p, i) => (
+          <div key={p.id} style={{ fontFamily: 'sans-serif', fontSize: 11, padding: '4px 10px', borderRadius: 16, border: `1px solid ${G.primaryAtk === i ? C.red + '55' : G.defender === i ? C.blue + '55' : C.panelBorder}`, color: G.primaryAtk === i ? C.red : G.defender === i ? C.blue : C.dim, background: G.primaryAtk === i ? C.red + '08' : G.defender === i ? C.blue + '08' : 'transparent' }}>
+            {p.name} {G.primaryAtk === i ? '⚔' : G.defender === i ? '🛡' : ''}
+          </div>
+        ))}
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
             {soundOn ? '🔊' : '🔇'}
           </button>
@@ -869,7 +981,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(224,92,59,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#e8d0c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{e.m}</span>
+                <span style={{ fontSize: 12, color: i === 0 ? '#e8d0c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
               </div>
             ))}
           </div>

@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { C } from '../shared/colors.js';
+import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { isRed, lbl, SUITS, RANKS, VAL, shuffle } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
+import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
+const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames() {
@@ -40,11 +42,11 @@ const M = {
   peekOne:   'Hyvä! Kurkkaa vielä toinen kortti.',
   peekDone:  'Pelaajat katsoivat kaksi korttiaan. Peli voi alkaa.',
   yourTurn:  'Sinun vuorosi — nosta kortti pakasta tai poistopakasta. Voit koputtaa ennen nostoa, jos uskot pisteidesi olevan pienimmät.',
-  drawn:     c => `Nostit ${lbl(c)} (${c.v} p). Vaihda se johonkin pöytäkorteistasi tai heitä poistopakkaan.`,
-  drawnD:    c => `Nostit ${lbl(c)} (${c.v} p) poistopakasta. Vaihda pöytäkorttiin vai heitä takaisin?`,
-  swapped:   c => `Vaihdoit — ${lbl(c)} siirtyi poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
-  discarded: c => `Heitit ${lbl(c)} poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
-  reactQ:    c => `${lbl(c)} on poistopakassa — onko sinulla samanvahvuinen pöytäkortti? Klikkaa sitä nopeasti!`,
+  drawn:     c => `Nostit ${lblColored(c)} (${c.v} p). Vaihda se johonkin pöytäkorteistasi tai heitä poistopakkaan.`,
+  drawnD:    c => `Nostit ${lblColored(c)} (${c.v} p) poistopakasta. Vaihda pöytäkorttiin vai heitä takaisin?`,
+  swapped:   c => `Vaihdoit — ${lblColored(c)} siirtyi poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
+  discarded: c => `Heitit ${lblColored(c)} poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
+  reactQ:    c => `${lblColored(c)} on poistopakassa — onko sinulla samanvahvuinen pöytäkortti? Klikkaa sitä nopeasti!`,
   reactWin:  () => 'Muistit oikein, pöytäkorttimääräsi vähenee.',
   reactWrong: 'Väärä kortti! Menetät sen poistopakkaan ja nostat kaksi rangaistuskorttia (max 4 pöytäkorttia).',
   reactEnd:  'Reaktioaika umpeutui — kukaan ei reagoinut.',
@@ -55,10 +57,10 @@ const M = {
   knocked:   n => `${n} koputtaa! Peli päättyy kunkin pelattua vuoronsa.`,
   gameOver:  'Peli päättyi! Pienin pistesumma voittaa.',
   aiTurn:    n => `${n} miettii...`,
-  aiSwapped: (n, c) => `${n} vaihtoi pöytäkortin — ${lbl(c)} poistopakkaan.`,
-  aiDiscard: (n, c) => `${n} heitti ${lbl(c)} poistopakkaan.`,
+  aiSwapped: (n, c) => `${n} vaihtoi pöytäkortin — ${lblColored(c)} poistopakkaan.`,
+  aiDiscard: (n, c) => `${n} heitti ${lblColored(c)} poistopakkaan.`,
   aiKnock:   n => `${n} koputtaa — luottaa käteensä!`,
-  aiReact:   (n, c) => `${n} reagoi lyömällä ${lbl(c)} — kortti poistuu!`,
+  aiReact:   (n, c) => `${n} reagoi lyömällä ${lblColored(c)} — kortti poistuu!`,
 };
 
 function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle }) {
@@ -96,7 +98,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(3);
   const [G, setG]               = useState(null);
@@ -119,6 +121,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const cardBack = 'ilves';
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
+  const [currentMoment, setCurrentMoment] = useState(null);
 
   const logRef     = useRef([]);
   const gRef       = useRef(null);
@@ -137,6 +140,51 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     logRef.current = [entry, ...logRef.current].slice(0, 40);
     setLog([...logRef.current]);
   };
+
+  function detectMoment(eventType, context) {
+    if (eventType === 'legendary_reaction' && context.isLastCard && Math.random() < 0.003) {
+      const moment = {
+        type: 'legendary_reaction',
+        game: 'Koputus',
+        title: '🟠 LEGENDARY! Viimeinen reaktio!',
+        description: '1 kortti jäljellä ja osasit lyödä samanarvoisella? Täydellinen ajoitus!',
+        timestamp: new Date().toISOString(),
+        rarity: 'legendary',
+        context,
+      };
+      setCurrentMoment(moment);
+    } else if (eventType === 'epic_knock') {
+      const moment = {
+        type: 'epic_knock',
+        game: 'Koputus',
+        title: '⚔️ EPIC! Koputus laukaistaan!',
+        description: 'Kopautit — nyt seuraavat kierrokset ovat kireät ja draamallisia!',
+        timestamp: new Date().toISOString(),
+        rarity: 'epic',
+        context,
+      };
+      saveMomentSilently(moment);
+    }
+  }
+
+  function saveMomentSilently(moment) {
+    const feedback = {
+      momentType: moment.type,
+      game: moment.game,
+      rarity: moment.rarity,
+      comment: '',
+      timestamp: moment.timestamp,
+      context: moment.context,
+    };
+
+    const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
+    stored.push(feedback);
+    localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
+
+    if (hints) {
+      setMsg(`💾 Momentti tallennettu: ${feedback.rarity}`);
+    }
+  }
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { knockRef.current = knockedBy; }, [knockedBy]);
@@ -220,6 +268,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   }
   function humanKnock() {
     if (knockRef.current !== null) return;
+    detectMoment('epic_knock', { knockedBy: 'Hero' });
     setKB(0); knockRef.current = 0;
     const lr = new Set(gRef.current.players.filter((_, i) => i !== 0).map(p => p.id));
     setLR(lr); lrRef.current = lr;
@@ -369,6 +418,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       });
       const newG = { ...g, players }; setG(newG); gRef.current = newG;
       if (isLastCard) {
+        detectMoment('legendary_reaction', { cardIdx, discardCard: top });
         if (soundOn) SFX.lastCardWin();
         setMsg('Löit viimeisen korttisi — peli päättyy sinulle! Erinomainen!');
         setTimeout(() => endGame(newG), 2200);
@@ -450,21 +500,31 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   };
 
   if (screen === 'select') return (
-    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 32, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 13, letterSpacing: 8, color: C.gold, opacity: 0.6, marginBottom: 10 }}>♠ ♥ ♦ ♣</div>
+    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center', marginBottom: 24 }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>🤜</div>
         <h1 style={{ fontSize: 54, letterSpacing: 14, margin: 0, background: 'linear-gradient(135deg,#e8c96a,#c9a84c,#a07830)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KOPUTUS</h1>
-        <p style={{ color: C.dim, fontSize: 14, fontStyle: 'italic', margin: '10px 0 0' }}>Muistinko oikein</p>
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 12, marginBottom: 14, letterSpacing: 2 }}>PELAAJIA</p>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+        <p style={{ color: C.dim, fontSize: 14, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>Muistinko oikein</p>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 12, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 52, height: 52, borderRadius: 10, cursor: 'pointer', fontSize: 19, fontWeight: 700, fontFamily: 'Georgia,serif', transition: 'all 0.2s', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim }}>{n}</button>
           ))}
         </div>
       </div>
-      <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita peli →</button>
+      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
+        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
+        Muista mihin kortteihin muut pelaajat koskettivat. Kun joku koputaa, araa jos kohde oli oikea vai väärä.
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita peli →</button>
+      </div>
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
     </div>
   );
@@ -528,9 +588,9 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: 16, maxWidth: 560, margin: '0 auto', paddingBottom: 40 }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
-      <div style={{ background: 'linear-gradient(135deg,#09192a,#071420)', border: `1px solid ${C.blue}40`, borderRadius: 14, padding: '13px 17px', marginBottom: 14, display: 'flex', gap: 12, alignItems: 'flex-start', height: 78, overflow: 'hidden' }}>
-        <span style={{ fontSize: 17, flexShrink: 0, marginTop: 1 }}>🎓</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.65, color: '#b5d5e5', overflow: 'hidden' }}>{msg}</p>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ fontSize: 17, flexShrink: 0 }}>🎓</span>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
       <div style={{ height: 32, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {knockedBy !== null && <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>🤜 Koputettu — viimeinen kierros!</div>}
@@ -592,7 +652,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
             {!discardTop
               ? <div style={{ width: 82, height: 112, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
               : <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: '#f8f2e6', border: `2px solid ${isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ color: isRed(discardTop.s) ? '#b83030' : '#1a1a2e', fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
+                <div style={{ color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: 22, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: 26 }}>{discardTop.s}</div>
                 </div>
@@ -652,12 +712,22 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '5px 14px', borderBottom: '1px solid rgba(42,74,50,0.3)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{e.m}</span>
+                <span style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      <MomentFeedback
+        moment={currentMoment}
+        onClose={() => setCurrentMoment(null)}
+        onRate={() => {
+          setMsg('💾 Momentti tallennettu! Hyvä peli!');
+          setCurrentMoment(null);
+        }}
+      />
+
       <style>{`
         @keyframes rpulse{0%{transform:scale(1);box-shadow:0 0 22px rgba(224,92,59,0.4)}40%{transform:scale(1.13);box-shadow:0 0 32px rgba(224,92,59,0.7)}100%{transform:scale(1);box-shadow:0 0 22px rgba(224,92,59,0.4)}}
         @keyframes slotFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9),0 0 18px rgba(201,168,76,0.6)}60%{box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 0 10px rgba(201,168,76,0.3)}100%{box-shadow:none}}
