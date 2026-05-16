@@ -26,7 +26,7 @@ const GAMES = [
   { id: 'koputus',    name: 'Koputus',    emoji: '🤜',  desc: 'Muistipeli yllätysmomentein: pelaa täsmäävä pöytäkorttisi pöydän keskelle tai muuta koputtaneen suunnitelmat vaihtamalla hänelle kuvakortti!', players: '2–4', diff: 'Keskitaso', diffColor: '#e0a93b', component: Koputus,    maxWidth: 560, pakka: 'taydennetty' },
   { id: 'maija',      name: 'Maija',      emoji: '♠',   desc: 'Osittainen kaato on torjuntavoitto',        players: '2–4', diff: 'Keskitaso', diffColor: '#e0a93b', component: Maija,      maxWidth: 560, pakka: 'taydennetty' },
   { id: 'paskahousu', name: 'Paskahousu', emoji: '🃏',  desc: <>Lähes se perinteinen paskahousu kuudella kortilla. <span style={{color:SUIT_COLOR['♦']}}>2♦</span> <span style={{color:SUIT_COLOR['♥']}}>2♥</span>{' arvo 2 · '}<span style={{color:SUIT_COLOR['♠']}}>2♠</span> <span style={{color:SUIT_COLOR['♣']}}>2♣</span>{' kovia'}</>, players: '2–4', diff: 'Keskitaso', diffColor: '#e0a93b', component: Paskahousu, maxWidth: 580, pakka: 'taydennetty', suosikki: true },
-  { id: 'moska',      name: 'Moska',      emoji: '⚔️', desc: 'Moskassa tulee lyödä lyötyä',  players: '2–4', diff: 'Vaativa',   diffColor: '#e05c3b', component: Moska,      maxWidth: 580, pakka: 'taydennetty' },
+  { id: 'moska',      name: 'Moska',      emoji: '⚔️', desc: 'Totaalinen korttisota: hyökkää, siirrä, puolusta ja muista iskeä kylkeen.',  players: '2–4', diff: 'Vaativa',   diffColor: '#e05c3b', component: Moska,      maxWidth: 580, pakka: 'taydennetty' },
 ];
 
 const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));
