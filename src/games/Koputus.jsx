@@ -510,11 +510,13 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
           <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
           <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
         </div>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 12, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-          {[2, 3, 4].map(n => (
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 12 }}>
+          <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 12, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 52, height: 52, borderRadius: 10, cursor: 'pointer', fontSize: 19, fontWeight: 700, fontFamily: 'Georgia,serif', transition: 'all 0.2s', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim }}>{n}</button>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
       <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
