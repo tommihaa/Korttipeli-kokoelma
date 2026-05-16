@@ -164,6 +164,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const [selPass, setSelPass] = useState([]);      // siirtokortti
   const [selAdd, setSelAdd] = useState([]);        // lisäyskortti
   const [awaitingPlayerContinue, setAwaitingPlayerContinue] = useState(false); // odottaa seuraavaa kierrosta
+  const [pendingDraw, setPendingDraw] = useState(null); // odottaa nostojen tekemistä
 
   // Momentti-palaute
   const [currentMoment, setCurrentMoment] = useState(null);
@@ -328,21 +329,27 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     }
 
     // Nosto: hyökkääjät ensin, puolustaja viimeisenä (vain jos voitti)
+    // Mutta älä tee sitä heti, jos ihminen on osallisena - anna hänen katsoa kierroksen tulosta ensin
     const drawOrder = defWon
       ? [...g.attackers, g.defender]
       : [...g.attackers];
     let deck = [...g.deck], tc = g.trumpCard;
 
-    for (const idx of drawOrder) {
-      if (players[idx].rank !== null) continue;
-      const need = Math.max(0, 6 - players[idx].hand.length);
-      if (need > 0) {
-        const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
-        if (drawn.length) {
-          players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-          addLog(`${act(players[idx], 'nostit', 'nosti')} ${kortin(drawn.length)}.`);
+    const playerWasInvolved = g.attackers.includes(0) || g.defender === 0 || (g.addQueue && g.addQueue.includes(0));
+
+    // Jos ihminen ei ollut osallisena, tee nosto heti
+    if (!playerWasInvolved) {
+      for (const idx of drawOrder) {
+        if (players[idx].rank !== null) continue;
+        const need = Math.max(0, 6 - players[idx].hand.length);
+        if (need > 0) {
+          const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
+          if (drawn.length) {
+            players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
+            addLog(`${act(players[idx], 'nostit', 'nosti')} ${kortin(drawn.length)}.`);
+          }
+          deck = d2; tc = t2;
         }
-        deck = d2; tc = t2;
       }
     }
 
@@ -410,11 +417,10 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     setGS(g2);
     addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
 
-    // Tarkista oliko ihminen osallisena juuri päättyneessä kierroksessa
-    const playerWasInvolved = g.attackers.includes(0) || g.defender === 0 || (g.addQueue && g.addQueue.includes(0));
-
     if (playerWasInvolved) {
-      // Odota ihmisen jatkamista ennen seuraavaa kierrosta
+      // Odota ihmisen jatkamista ennen seuraavaa kierrosta ja nosto
+      // Tallenna nostojen tarpeet seuraavaa kierrosta varten
+      setPendingDraw({ drawOrder, deck, tc, players, nextAtk, nextDef, g2 });
       setAwaitingPlayerContinue(true);
     } else if (!players[nextAtk].isHuman) {
       // AI hyökkää seuraavaksi
@@ -769,11 +775,42 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
   function continueToNextRound() {
     setAwaitingPlayerContinue(false);
-    const g = gRef.current;
-    if (!g || g.phase !== 'attack') return;
-    // Aloita seuraava kierros
-    if (!g.players[g.primaryAtk].isHuman) {
-      aiTmr.current = setTimeout(() => runAI(g), 1600 + Math.random() * 600);
+
+    if (pendingDraw) {
+      // Tee nostojen jäljelle jääneet logiikka
+      const { drawOrder, deck: initialDeck, tc: initialTc, players, nextAtk, g2 } = pendingDraw;
+      let deck = initialDeck, tc = initialTc;
+
+      // Tee nosto
+      for (const idx of drawOrder) {
+        if (players[idx].rank !== null) continue;
+        const need = Math.max(0, 6 - players[idx].hand.length);
+        if (need > 0) {
+          const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
+          if (drawn.length) {
+            players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
+            addLog(`${act(players[idx], 'nostit', 'nosti')} ${kortin(drawn.length)}.`);
+          }
+          deck = d2; tc = t2;
+        }
+      }
+
+      // Päivitä g2:n deck ja tc
+      const g2Updated = { ...g2, deck, trumpCard: tc };
+      setGS(g2Updated);
+      setPendingDraw(null);
+
+      // Aloita seuraava kierros
+      if (!g2Updated.players[g2Updated.primaryAtk].isHuman) {
+        aiTmr.current = setTimeout(() => runAI(g2Updated), 1600 + Math.random() * 600);
+      }
+    } else {
+      const g = gRef.current;
+      if (!g || g.phase !== 'attack') return;
+      // Aloita seuraava kierros
+      if (!g.players[g.primaryAtk].isHuman) {
+        aiTmr.current = setTimeout(() => runAI(g), 1600 + Math.random() * 600);
+      }
     }
   }
 
