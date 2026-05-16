@@ -518,8 +518,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         borderRadius:14, padding:'14px 18px', maxWidth:320,
         fontFamily:'sans-serif', fontSize:12, color:C.dim, lineHeight:1.7, marginBottom:20, marginLeft:'auto', marginRight:'auto' }}>
         <span style={{ color:C.gold, fontWeight:700 }}>Säännöt lyhyesti</span><br/>
-        Patakuningatar <span style={{ color:C.maija, fontWeight:700 }}>♛</span> ei kelpaa kaatokortiksi.
-        Ensimmäisestä eroon päässyt voittaa.
+        Patakuningatar <span style={{ color:C.maija, fontWeight:700 }}>♛</span> ei kelpaa kaatokortiksi eikä sitä voi kaataakaan. Se on nostettava.
       </div>
       <div style={{ textAlign:'center' }}>
         <button onClick={startGame} style={{ background:`linear-gradient(135deg,${C.gold},#a07830)`,
