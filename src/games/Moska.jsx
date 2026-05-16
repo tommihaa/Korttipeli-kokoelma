@@ -163,6 +163,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const [selDefTarget, setSelDefTarget] = useState(null); // pöytäkortti jota kaataa
   const [selPass, setSelPass] = useState([]);      // siirtokortti
   const [selAdd, setSelAdd] = useState([]);        // lisäyskortti
+  const [awaitingPlayerContinue, setAwaitingPlayerContinue] = useState(false); // odottaa seuraavaa kierrosta
 
   // Momentti-palaute
   const [currentMoment, setCurrentMoment] = useState(null);
@@ -409,7 +410,14 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     setGS(g2);
     addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
 
-    if (!players[nextAtk].isHuman) {
+    // Tarkista oliko ihminen osallisena juuri päättyneessä kierroksessa
+    const playerWasInvolved = g.attackers.includes(0) || g.defender === 0 || (g.addQueue && g.addQueue.includes(0));
+
+    if (playerWasInvolved) {
+      // Odota ihmisen jatkamista ennen seuraavaa kierrosta
+      setAwaitingPlayerContinue(true);
+    } else if (!players[nextAtk].isHuman) {
+      // AI hyökkää seuraavaksi
       aiTmr.current = setTimeout(() => runAI(g2), 1600 + Math.random() * 600);
     }
   }
@@ -759,6 +767,16 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     processAddQueue(g2);
   }
 
+  function continueToNextRound() {
+    setAwaitingPlayerContinue(false);
+    const g = gRef.current;
+    if (!g || g.phase !== 'attack') return;
+    // Aloita seuraava kierros
+    if (!g.players[g.primaryAtk].isHuman) {
+      aiTmr.current = setTimeout(() => runAI(g), 1600 + Math.random() * 600);
+    }
+  }
+
   // ── Näkymät ───────────────────────────────────────────────
   if (screen === 'select') return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
@@ -1011,6 +1029,14 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
               Ohita
             </button>
           </>
+        )}
+
+        {/* Seuraavaan kierrokseen -nappi */}
+        {awaitingPlayerContinue && (
+          <button onClick={continueToNextRound}
+            style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '12px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', alignSelf: 'stretch', marginTop: 8 }}>
+            Seuraava kierros →
+          </button>
         )}
       </div>
 
