@@ -814,6 +814,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       </div>
 
       {/* Loki */}
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 10, padding: '10px 14px', marginBottom: 12, fontFamily: 'sans-serif', fontSize: 10, color: C.dim, lineHeight: 1.6 }}>
+        <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> 16p · 10♦=2p · 2♠=1p · kukin ässä=1p · eniten kortteja=1p · eniten patoja=1p · mökki=1p
+      </div>
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
