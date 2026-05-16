@@ -891,7 +891,8 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
               selDefTarget ? canBeatTarget : (canDef || isMyAtk || isAddable || canPassCard)
             );
             const dimmed = (isMyAdd && !isAddable && !isAddSel)
-              || (isMyDef && !!selDefTarget && !canBeatTarget && !isPassSel);
+              || (isMyDef && !!selDefTarget && !canBeatTarget && !isPassSel)
+              || (isMyAtk && selAtk.length > 0 && selAtk[0].r !== c.r);
             return (
               <Card key={c.id} card={c} large                 selected={!!(isAtkSel || isPassSel || isAddSel)}
                 highlight={!!hlght}
