@@ -415,7 +415,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 520, margin: '0 auto', paddingBottom: 32 }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: '12px 16px', marginBottom: 12, minHeight: 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: '12px 16px', marginBottom: 12, height: 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>{isMatch ? '👋' : '🃏'}</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
