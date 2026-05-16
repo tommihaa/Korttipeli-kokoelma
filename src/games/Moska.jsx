@@ -518,10 +518,18 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       if (g.players[idx].rank !== null) continue;
       if (getAddable(g, idx).length > 0) queue.push(idx);
     }
-    // Jos ei ole ketään joka voi lisätä, tarkista onko kaikki pöydän kortit kaadettu
+    // Jos ei ole ketään joka voi lisätä (tai lisää ei-sallittu)
     if (!queue.length) {
       const unbeaten = g.table.filter(t => !t.def).length;
-      resolveRound(g, unbeaten === 0);
+      // Jos puolustajalla on vielä lyömättömiä kortteja, anna hänelle vuoro kaataa ne
+      if (unbeaten > 0) {
+        const g2 = { ...g, phase: 'defend' };
+        setGS(g2);
+        goDefend(g2);
+        return;
+      }
+      // Kaikki kaadettu - kierros onnistui
+      resolveRound(g, true);
       return;
     }
 
@@ -538,7 +546,15 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     // Kun lisäysvaiheen jono on tyhjä, tarkista onko kaikki pöydän kortit kaadettu
     if (!g.addQueue?.length) {
       const unbeaten = g.table.filter(t => !t.def).length;
-      resolveRound(g, unbeaten === 0);
+      // Jos puolustajalla on vielä lyömättömiä kortteja, anna hänelle vuoro kaataa ne
+      if (unbeaten > 0) {
+        const g2 = { ...g, phase: 'defend' };
+        setGS(g2);
+        goDefend(g2);
+        return;
+      }
+      // Kaikki kaadettu - kierros onnistui
+      resolveRound(g, true);
       return;
     }
     const next = g.addQueue[0];
