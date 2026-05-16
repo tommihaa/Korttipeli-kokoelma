@@ -712,7 +712,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
           <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
         </div>
-        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>Hyökkää ja puolusta — viimeinen on Moska</p>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
           {[2, 3, 4].map(n => (

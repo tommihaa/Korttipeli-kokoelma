@@ -510,7 +510,6 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
           <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
           <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
         </div>
-        <p style={{ color: C.dim, fontSize: 14, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>Muistinko oikein</p>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 12, marginBottom: 12, letterSpacing: 2 }}>PELAAJIA</p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
           {[2, 3, 4].map(n => (
