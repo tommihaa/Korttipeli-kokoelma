@@ -800,8 +800,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
 
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
-          Tavoite: 16p · 10♦=2p · 2♠=1p · eniten kortteja=1p · eniten patoja=1p · mökki=1p
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
+          <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> 16p · <span style={{ color: SUIT_COLOR['♦'], fontWeight: 700 }}>10♦</span>=2p · <span style={{ color: SUIT_COLOR['♠'], fontWeight: 700 }}>2♠</span>=1p · kukin ässä=1p · eniten kortteja=1p · eniten patoja=1p · mökki=1p
         </span>
         <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
@@ -814,9 +814,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       </div>
 
       {/* Loki */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 10, padding: '10px 14px', marginBottom: 12, fontFamily: 'sans-serif', fontSize: 10, color: C.dim, lineHeight: 1.6 }}>
-        <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> 16p · <span style={{ color: SUIT_COLOR['♦'], fontWeight: 700 }}>10♦</span>=2p · <span style={{ color: SUIT_COLOR['♠'], fontWeight: 700 }}>2♠</span>=1p · kukin ässä=1p · eniten kortteja=1p · eniten patoja=1p · mökki=1p
-      </div>
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
