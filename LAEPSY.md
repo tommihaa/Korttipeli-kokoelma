@@ -47,7 +47,7 @@ Tasapelitilanteet (kaksi läpsäävät samanaikaisesti) ratkaistaan sekuntilasku
 
 AI:n pelilogiikka:
 1. Nosta kortti pakasta ajanmukaisesti
-2. Läpsää haastteen mukaisesti (1–4 korttia ennen kuin tulee haaste)
+2. Läpsää haasteen mukaisesti (1–4 korttia ennen kuin tulee haaste)
 3. Nopea reaktio tasapelitilanteissa
 4. Yksinkertainen strategia — enemmän reaktiopelinä kuin strategiapelinä
 

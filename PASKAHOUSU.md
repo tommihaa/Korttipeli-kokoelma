@@ -42,7 +42,7 @@ Tavoite: pääste kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on ko
 
 ### Ässä (A)
 - Lyö **kuvakortit (J, Q, K)** päälle
-- **Ei voi lyödä kolikosta (< 7) päälle**
+- **Ei muita kortteja lyödä kuvakortin päälle ennen ässää**
 
 ### Neljä samaa
 - Kun kasaan tulee **neljäs saman arvoinen kortti** (eri vuoroilla tai yhdellä kertaa) → **kasa kaatuu roskiin**
