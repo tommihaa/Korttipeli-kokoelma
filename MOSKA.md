@@ -4,7 +4,7 @@
 
 Jokaiselle jaetaan 6 käsikorttia. Pakan pohjakortti osoittaa valttimaan ja jää näkyville pakan alle.
 
-Tavoite: pääse kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on kortit on **Moska**.
+Tavoite: päästä korteista eroon ensimmäisenä, sen jälkeen kun pakka on tyhjä. Viimeinen pelaaja jolla on kortit on **Moska**.
 
 ## Vuoron kulku
 
@@ -16,7 +16,7 @@ Tavoite: pääse kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on kor
 1. Puolustaja **kaataa** jokaisen kortin:
    - Saman maan **suuremmalla** kortilla **tai**
    - **Valttimalla** (maa ei merkitse)
-2. **Seuraavassa pelaajassa** tulee **uusi puolustaja**, joka hänkin voi tehdä saman
+2. **Jos hyökkäyksen siirtää, niin seuraava  pelaaja voi tehdä samoin, jolloin hänestä seuraavasta** tulee **uusi puolustaja**, joka hänkin voi tehdä saman
 
 ### Hyökkäyksen jatkaminen
 - Kuka tahansa hyökkääjä voi **lisätä samoja vahvuuksia** mitä puolustuksessa on käytetty
@@ -29,7 +29,7 @@ Tavoite: pääse kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on kor
 - Vaihto tapahtuu **automaattisesti** pelin alussa — dramaattinen hetki!
 
 ### Nostorutiini
-1. Nostopakka käydessä vähiin pelaajat miettivät taktikointia
+1. Nostopakan käydessä vähiin pelaajat miettivät taktikointia
 2. Oma käsi täydennetään **kuuteen** vasta **puolustusyrityksen päätyttyä**
 3. **Puolustus onnistuu** → pöydän kortit poistopakkaan, hyökkääjät nostavat ensin (hyökkäysjarjestys), puolustaja viimeisenä
 4. **Hyökkäys onnistuu** → puolustaja nostaa kaikki pöydän kortit, ei nosta pakasta
@@ -37,7 +37,7 @@ Tavoite: pääse kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on kor
 ## Pisteet ja ranking
 
 Pelin lopussa muodostuu ranking:
-1. Ensimmäinen joka pääsi kortista eroon
+1. Ensimmäinen joka pääsi korteista eroon
 2. Toinen, kolmas jne.
 3. **Viimeinen jolla on kortit on Moska** — häviää
 
@@ -59,12 +59,11 @@ Pelin lopussa muodostuu ranking:
 
 ### AI:n puolustus
 1. **Priorisoi**: sama maa suuremmalla → valtti
-2. Kaata pienimmällä voittavalla kortilla (säästää valtteja)
-3. Jos ei voi kaataa → nosta kaikki pöydän kortit
+2. Kaada pienimmällä voittavalla kortilla (säästää valtteja)
+3. Jos ei voi kaataa → nostaa kaikki pöydän kortit
 
 ### AI:n siirretyn puolustajan logiikka
-1. Arvio: pystynkö kaatamaan paremmin kuin nykyinen puolustaja?
-2. Siirry vain jos näet paremmat mahdollisuudet
+1. Yleensä kannattaa siirtää 
 
 ### AI:n lisäämisen logiikka
 1. Lisää vain saman vahvuuksia joita puolustus on käyttänyt
@@ -85,4 +84,4 @@ Moska on **vaativin peli** kokoelmassa. Se yhdistää:
 - **Psykologia** — mitä kortteja näytetään, milloin siirretään
 - **Dramaattisuus** — valttikakkosen vaihto ja viimeinen pelaaja (Moska)
 
-Valttikakkosen automaattinen vaihto on pelin keskeinen "plot twist" — voi vaihtaa pelin dynamiikkaa täysin.
+

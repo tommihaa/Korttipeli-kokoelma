@@ -4,7 +4,7 @@
 
 Jokaiselle jaetaan 7 käsikorttia. Loput muodostavat nostopakan — pakan päällimmäinen käännetään näkyviin lyöntipakan pohjaksi.
 
-Tavoite: pääse kortit käsistä ensimmäisenä. Voittaa korteista pikimmiten eroon päässyt.
+Tavoite: pääse eroon käsikorteista ensimmäisenä
 
 ## Vuoron kulku
 
@@ -21,12 +21,13 @@ Tavoite: pääse kortit käsistä ensimmäisenä. Voittaa korteista pikimmiten e
 
 ### Ässä (A)
 - Lyödessä ässää kaikki **muut pelaajat nostavat pakasta yhden kortin**
-- Ässää ei voi lyödä toisen ässän päälle
+- Sama pelaaja ei saa lyödä Ässää toisen ässän päälle, seuraava voi
+- Ässää ei voi lyödä viimeisenä korttina
 
 ### Seiska (7)
 - **Villikortti** — pelaaja saa **valita seuraavan maan vapaasti**
-- Seiskaa **ei voi lyödä toisen seiskan päälle**
-- **Rajoitus**: seiskaa **ei voi lyödä viimeisenä kortilla** — on lyötävä ennen sitä
+- Jos seuraava pelaaja lyö toisen Seiskan toisen seiskan päälle, niin vaadittu maa on sen toisen seiskan maa
+- **Rajoitus**: seiskaa **ei voi lyödä viimeisenä korttina** — on lyötävä ennen sitä
 
 ## Lappu-sääntö
 
@@ -44,8 +45,7 @@ Seiskasta voidaan pelata **pisteillä useamman erän yli**:
 
 ## Pelin loppu
 
-- Ensimmäinen pelaaja joka **tyhjentää kätensä** (ei seiskalla!) **voittaa**
-- Jos seiskaa jää käteen, se on lyötävä ennen viimeistä korttia
+- Ensimmäinen pelaaja joka **tyhjentää kätensä** (ei seiskalla, eikä ässällä!) **voittaa**
 
 ## Pelaajien näkyvyys
 
@@ -59,8 +59,8 @@ Seiskasta voidaan pelata **pisteillä useamman erän yli**:
 
 ### AI:n pelaamislogiikka
 1. **Priorisoi**: sama arvo useampana — ei tarvitse nostaa
-2. **Seiskat viimeisenä**: älä lyö seiskaa viimeisenä korttina
-3. **Ässien käyttö**: varoksi — kaikki muut nostavat kortin
+2. **Seiskat ettei tarvitse nostaa**: älä lyö seiskaa viimeisenä korttina
+3. **Ässien käyttö**: aina kun mahdollista — kaikki muut nostavat kortin
 
 ### AI:n seiskan logiikka
 - Valitse maa strategisesti:
@@ -69,7 +69,7 @@ Seiskasta voidaan pelata **pisteillä useamman erän yli**:
 
 ### AI:n nostamislogiikka
 - Nosta 3 korttia tai kunnes kelpaa
-- Passu jos 3 kortin jälkeen ei kelpaa
+- Passaa jos 3 kortin jälkeen ei kelpaa
 
 ## Pelin luonne
 

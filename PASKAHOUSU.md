@@ -23,29 +23,27 @@ Tavoite: pääste kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on ko
 1. Aloittaja lyö (aloitukseen käy mikä tahansa kortti)
 2. Jokainen pelaaja vuorollaan lyö **yhtä vahva tai vahvempi** kortti
 3. Voit lyödä **useamman saman arvoisen** kortin **yhdellä kertaa** (esim. kaksi kolmosta)
-4. Jos et pysty tai halua lyödä → **passaa**
-5. Kun **kaikki passaavat** → kasa menee **roskiin** (poistuu pelistä) ja **viimeksi lyönyt aloittaa** uuden kierroksen
+4. Jos et voi lyödä → **kokeile lyömällä pakasta kortti**
+5. Jos se ei käy, niin nosta kasa
 
 ## Erityiskortit ja säännöt
 
 ### Mustat kakkoset (♠2, ♣2) — "Kova kortti"
 - **Lyö minkä tahansa kortin päälle** (arvo ≥ mikä tahansa)
-- **Tyhjälle pöydälle lyödessä** → seuraavan pelaajan on **nostettava se käteensä** ja vuoro siirtyy (ei passausta!)
+- **Tyhjälle pöydälle lyödessä** → seuraavan pelaajan on **nostettava se käteensä, jos ei ole toista kovaa kakkosta** ja vuoro siirtyy (ei passausta!)
 
 ### Seiska (7)
 - Seiskan jälkeen on lyötävä **kuvakortti (J, Q tai K)**
-- **Kutoselta tai alle kuvia ei voi lyödä**
+- **Kutosen tai alle kortin päälle kuvia ei voi lyödä**
 
 ### Kymppi (10)
-- Kympin jälkeen on lyötävä **pieni kortti (6 tai alle)**
-- Esim. jos 10 on pöydässä, seuraava kortti on oltava 2, 3, 4, 5 tai 6
+- Kymppi on kaatokortti, joka kaataa kasan, jonka päällimmäinen 2-9
 
 ### Ässä (A)
-- Lyö **kuvakortit (J, Q, K)** päälle
-- **Ei muita kortteja lyödä kuvakortin päälle ennen ässää**
+- Ässä on kaatokortti, joka kaataa kasan, jossa päällimmäinen J,Q tai K
 
 ### Neljä samaa
-- Kun kasaan tulee **neljäs saman arvoinen kortti** (eri vuoroilla tai yhdellä kertaa) → **kasa kaatuu roskiin**
+- Kun kasaan tulee **neljäs saman arvoinen kortti** (eri vuoroilla tai yhdellä kertaa) → **kasa kaatuu pelistä pois**
 - **Sama pelaaja aloittaa uuden** kierroksen
 
 ## Pelin loppu
@@ -66,22 +64,15 @@ Tavoite: pääste kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on ko
 
 ### AI:n pelaamisen prioriteetti
 
-1. **Vältä 10 ja A tuntemattomille** — ne ovat loukkaavia kortteja
-   - 10 pakottaa pienen kortin (3–6) — haittaa pelaajille
-   - A pakottaa kuvan (J, Q, K) — haittaa pelaajille
+1. **Vältä nostamista, joten käytä 10 ja A kaatoihin**
 2. **Käytä normaaleja kortteja** (3–9, ennen 7:ää)
 3. **Kova kortti (2) vain välttämättä** — säästä lopusta
 
 ### AI:n kovan kortin (2) logiikka
-- Priorisoi: 10/A-loukka > samanarvoisen suojan > defensiivinen käyttö
 - Älä hukkaa kovaa korttia turhan aikaisesti
 
-### AI:n passauslogiikka
-- Passaa jos ei voi lyödä laillisesti
-- Älä lyö turhaan — säästä vahvempia
-
 ### AI:n tyhjälle pöydälle aloitus
-- Aloita pienellä (3–6) — säästä vahvempia
+- Aloita pienellä (2–6) — säästä vahvempia
 - Kova kortti vain jos pakko
 
 ## Pakkakoko ja kierrosten määrä
@@ -93,8 +84,8 @@ Tavoite: pääste kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on ko
 ## Pelin luonne
 
 Paskahousu on **loukkaava ja taktiikkapeli** jossa:
-- **Yksinkertainen säännöt** mutta **taktinen syvyys**
-- **Kova kortti (2)** ja **loukkaavat kortit (10, A, 7)** luovat **psykologista painetta**
+- **Yksinkertaiset säännöt** mutta **taktinen syvyys**
+- **Kova kortti (2)** ja **kaato kortit (10, A)** sekä kynnyskortti 7 luovat **psykologista painetta**
 - **Neljän samaa kaatava -sääntö** lisää **dramaattisuutta**
 - **Viimeinen pelaaja (Paskahousu)** — häviäjä on selkeä
 

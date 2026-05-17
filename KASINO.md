@@ -4,7 +4,7 @@
 
 Kaikille jaetaan 4 korttia, pöytään avataan 4 korttia näkyviin. Käsikorttien loppuessa jaetaan uudet 4 per pelaaja — pöytään ei enää jaeta.
 
-Tavoite: saada eniten pisteitä. **Pisteraja: 21** — ensimmäinen 21 pistettä saanut voittaa (tasapeli mahdollinen).
+Tavoite: saada eniten pisteitä. **Pisteraja: 16* — ensimmäinen 16 pistettä saanut voittaa (tasapeli mahdollinen).
 
 ## Vuoron kulku
 
@@ -20,7 +20,7 @@ Tavoite: saada eniten pisteitä. **Pisteraja: 21** — ensimmäinen 21 pistettä
 - Rakennelma **on kaapattava seuraavalla vuorolla**
 
 ### Jättäminen (Trail)
-- Jos et kaappaa eikä rakenna → laskea kortin pöytään
+- Jos et kaappaa eikä rakenna → lyö joki käsikorteistasi  pöytään
 
 ## Pisteet
 
@@ -35,39 +35,45 @@ Pelin lopussa lasketaan:
 
 ## Pelin loppu
 
-1. Kierros päättyy kun käsikorttien pakka loppuu
+1. Kierros päättyy kun käsikorttien pakka on jaettu ja pelaajien kortit on pelattu
 2. Lasketaan pisteen yllä olevan kaavan mukaisesti
-3. Pelin voittaa ensimmäinen **21 pistettä** saavuttava pelaaja
-4. **Tasapeli on mahdollinen** (molemmat saavat 21 samalla kierroksella)
+3. Pelin voittaa ensimmäinen **16 pistettä** saavuttava pelaaja
+4. **Tasapeli on mahdollinen** (molemmat saavat 16 pistettä samalla kierroksella)
 
 ## Pelaajien näkyvyys
 
 - Jokainen pelaaja näkee **oman kätensä** koko ajan
 - Pöydän kortit ovat **näkyvät kaikille**
 - Muiden pelaajien kädet ovat **piilossa**
-- Voittosalkkojen sisältö on **näkyvä** (lasketaan pisteen loppussa)
-- Pakassa jäljellä olevien korttien **koko on näkyvä**
+- Pelaajien voittamien kasojen sisältö on **näkyvä** (lasketaan pisteen loppussa)
+- Pakassa jäljellä olevien korttien **määrä on näkyvä**
 
 ## AI-strategia
 
-AI:n kaappauslogiikka:
-1. Etsi yksinkertaisia kaappausmahdollisuuksia (1:1 tai pieni summa)
-2. Priorisoi **Ruutu kymppi** ja **Pata kakkonen**
-3. Kaappaa aggressiivisesti jäljellä olevista korteista
-4. Arvioi, missä vaiheessa pelistä olet
+### AI näkee ja laskee:
+1. **Erityiskortit** — mitkä on pelattu (Pata 2, Ruutu 10, Ässä)
+2. **Patoja** — seuraa eniten patoja -pistettä
+3. Pöydän kortit ja oman käden
+
+### AI ei aktiivisesti laske:
+- Kerättyjen korttien kokonaismäärää
+- Muiden voitto-kasojen sisältöä
+- Pitkäaikaista strategista muistia
+
+### Päätöksenteko:
+1. Etsi yksinkertaisia kaappausmahdollisuuksia
+2. Priorisoi erityiskortit (Pata 2, Ruutu 10)
+3. Jätä heikot kortit jos ei voi kaapata
 
 AI:n rakentamislogiikka (2 pelaajaa):
 - Käytä rakentamista strategisesti
 - Ei rakenna jos vastustaja voi helposti varastaa
 
-AI:n jättämislogiikka:
-- Jätä heikoimpia kortteja (tai kortteja joista ei ole muuta käyttöä)
-
 ## Pelin luonne
 
-Kasino on **strateginen peli** jossa pistelaskenta on olennainen. Tikkien hankkiminen (pöydän täydellinen tyhjennys) on dramaattinen hetki ja voi ratkaista pelin. Rakentaminen (2 pelaajaa) lisää psykologista elementtiä.
+Kasino on **strateginen peli** jossa pistelaskenta on olennainen. Mökkien hankkiminen (pöydän täydellinen tyhjennys) on dramaattinen hetki ja voi ratkaista pelin. Rakentaminen (2 pelaajaa) lisää psykologista elementtiä.
 
 ## Erityistapaus
 
-- Kunhan pakka loppuu, kierros päättyy heti
-- Tasapelit on mahdollisia (molemmat pelaajat saavat 21 pistettä)
+- Kierros päättyy kun käsikorttien pakka on jaettu ja pelaajien kortit on pelattu
+- Tasapelit on mahdollisia (molemmat pelaajat saavat 16 pistettä)

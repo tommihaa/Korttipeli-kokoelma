@@ -36,8 +36,8 @@ A
 2. **Sallitut kortit**:
    - Mikä tahansa **7** (avaa uuden maan, jos pöytä tyhjä)
    - Jatko **olemassa olevaan jonoon** (esim. jos ♣8 on pöydässä, voi lyödä ♣9)
-3. Passaus on **sallittu milloin vain** — mutta **voi lyödä vain yhden kortin per vuoro**
-4. Vuoro siirtyy **myötäpäivään**
+3. Passaus on **sallittu vain jos ei käy** — mutta **voi lyödä vain yhden kortin per vuoro**
+
 
 ## Erityissäännöt ja kiusanteko
 
@@ -45,12 +45,11 @@ Ristiseiskan juoni on **kiusanteko-elementti**:
 
 - **5 vaatii 8 ensin**: et voi lyödä 5:tä ennen kuin 8 on pöydässä (ala-pino lukittu)
 - **8 vaatii 6 ensin**: et voi lyödä 8:ta (ylös) ennen kuin 6 on pöydässä (käänteis-rajoitus!)
+- **6 vaatii 7 ensin**: et voi lyödä 6:ta (alas) ennen kuin 7 on pöydässä
 
 **Bonusvuorot:**
-- **A kaataa ala-pinon** (1–6) → saat yhden **bonusvuoron**
-- **K kaataa ylä-pinon** (8–13) → saat yhden **bonusvuoron**
-
-Kaadettaessa pöytä avautuu — voit pelata muihin maihin.
+- **A kaataa ala-pinon** (1–6) → saat yhden, ei pakollisen **bonusvuoron**
+- **K kaataa ylä-pinon** (8–13) → saat yhden, ei pakollisen **bonusvuoron**
 
 ## Pelin loppu
 
@@ -75,18 +74,17 @@ Kaadettaessa pöytä avautuu — voit pelata muihin maihin.
 3. **Pelaa pienin arvo muista**: 2, 3, 4, 5, 9, 10, J, Q, K, A
 
 ### AI:n bonusvuorojen hyödyntäminen
-- A ja K bonusvuorot: käytä strategisesti pinon avauksia
+- A ja K bonusvuorot: kaada aina kun voit, jatkaminen ei ole aina paras idea
 
-### Passulogiikka
+### Passauslogiikka
 - Passaa jos ei ole sallittua peliä
-- Kiusanteko: älä auta vastustajia — säästä siirrot
 
 ## Pelin luonne
 
 Ristiseiska on **nerokas kiusantekopeli** jossa:
 - Pöydän rakentaminen on **osittain säännellty** mutta avoin
-- Kiusanteko-elementit (5 vaatii 8, 8 vaatii 6) luovat **strategista syvyyttä**
+- Kiusanteko-elementit (saman maan 5 vaatii 8, 8 vaatii 6, 6 vaatii 7) luovat **strategista syvyyttä**
 - Bonusvuorot (A, K) antavat **kontrolli- ja palkkiota**
-- Peli vaatii **linjaa ja muistia** — mitä kortteja muilla on
+- Peli vaatii suunnitelmaa järjestyksestä, missä käyttää korttejaan. Monesti  sitä mahdollisuutta ei ole vaan pelaamainen on pakotettua.
 
-Ristiseiska on **keskitason strateginen peli** jossa muistin, suunnittelun ja kiusanteon balanssi on olennaista.
+Ristiseiska on **keskitason strateginen peli** jossa muistin, suunnittelun ja maan panttauksen balanssi on olennaista.

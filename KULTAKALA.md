@@ -6,7 +6,7 @@ Jokaiselle jaetaan 1 tuntematon + 5 pöytäkorttia.
 
 Yrität saada omiin pöytäkortteihisi mahdollisimman pieniä, A = 1 … K = 13.
 
-Nosta vuorollasi kortti pakasta tai poistopakasta. Voit vaihtaa sen paikalle 5 päähän, sitten paljastuneen kortin paikan 4 korttiin jne. Tuntematon ei ole vaihdettavissa ja paljastuu vasta pelin lopussa, kun korttien pisteet lasketaan yhteen. Pienin summa voittaa.
+Nosta vuorollasi kortti pakasta tai poistopakasta. Voit vaihtaa sen paikalle 5 rivin oikeaan päähän, sitten paljastuneen kortin paikan 4 korttiin jne. Tuntematon ei ole vaihdettavissa ja paljastuu vasta pelin lopussa, kun korttien pisteet lasketaan yhteen. Pienin summa voittaa.
 
 ## Pelaajakohtainen näkyvyys
 
@@ -37,7 +37,7 @@ AI **ei voi nähdä**:
 - Tuntemattomia kortteja
 
 **Päätöslogiikka:**
-1. Jos noustettu kortti on parempi kuin pahin tunnettu kortti → vaihda
+1. Jos nostettu kortti on parempi kuin pahin tunnettu kortti → vaihda
 2. Muuten: jos kortti on hyvä (arvo ≤ kynnys), vaihda tuntemattomaan paikkaan
    - Kynnys riippuu kierrosten määrästä (myöhäispelissä aggressiivisempi)
 3. Muuten heitä poistopakkaan
