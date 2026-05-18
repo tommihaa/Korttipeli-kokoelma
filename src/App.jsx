@@ -262,7 +262,7 @@ export default function App() {
       <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 460, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <InfoBox title="Tommin kokoelma">
           <p style={{ margin: '0 0 8px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Moi, tässä on lahjani sinulle seurapelien ystävälle, lisää korttipelejä.
+            Moi, tässä on lahjani sinulle seurapelien ystävälle — mahdollisuus treenata korttipelejä omalla ruudulla.
           </p>
           <p style={{ margin: 0, color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
             Yritin opettaa tälle sääntöjä, mut kun joku menee vikaan, niin laita mailia{' '}
