@@ -227,20 +227,20 @@ export default function App() {
       gap: isMobile ? 10 : 16, padding: isMobile ? '16px 12px' : '32px 24px',
       fontFamily: 'Georgia,serif', color: C.text,
     }}>
-      <div style={{ textAlign: 'center', marginBottom: 4 }}>
-        <div style={{ fontSize: 11, letterSpacing: 8, opacity: 0.55, marginBottom: 8, display: 'flex', gap: 8, justifyContent: 'center' }}>
-          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
-          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
-          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
-          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
-        </div>
+      <div style={{ textAlign: 'center', marginBottom: 4, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: isMobile ? 8 : 14 }}>
         <h1 style={{
           fontSize: isMobile ? 32 : 48, letterSpacing: isMobile ? 6 : 12, margin: 0,
           background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`,
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
         }}>
-          JAKO
+          JAKO<span style={{ fontSize: isMobile ? 15 : 22, verticalAlign: 'super', letterSpacing: 2 }}>52</span>
         </h1>
+        <span style={{ display: 'flex', gap: isMobile ? 4 : 6, fontSize: isMobile ? 14 : 20, opacity: 0.85 }}>
+          <span style={{ color: '#d0cfc8' }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </span>
       </div>
 
       <div style={{
@@ -261,8 +261,28 @@ export default function App() {
 
       <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 460, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <InfoBox title="Tommin kokoelma">
-          <p style={{ margin: 0, color: C.dim, fontSize: 12, fontStyle: 'italic', lineHeight: 1.6, fontFamily: 'sans-serif' }}>
-            Tommin valinnat korttipeleiksi päiväkahveilta illanistujaisiin. Näillä neuvoin ja toistoin opit pelimekaniikat pienenkin ruudun ääressä.
+          <p style={{ margin: '0 0 10px', color: C.dim, fontSize: 12, fontStyle: 'italic', lineHeight: 1.7, fontFamily: 'sans-serif' }}>
+            Moi,{' '}
+            tässä on lahjani teille korttipelien ystäville.
+          </p>
+          <p style={{ margin: '0 0 10px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
+            Olinpa kerran internet-intoilija, oikeastaan siitä lähtien kun tapasimme 1993. Tekoälystä pohdin 7/9 pisteen arvoisesti vuotta aikaisemmin reaalin psykologian plus-kysymyksessä.
+            Olinpa kerran ohjelmoija 11 vuotta. Mulle se oli yhtä suossa tarpomista puolipisteiden, aaltosulkujen ja loputtomien kirjastojen mahdollisuuksien ymmärtämistä.
+          </p>
+          <p style={{ margin: '0 0 10px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
+            Jako52 on korttipeli-projekti, josta tuli seurapeli-projekti. Voi sanoa, että se heräsi mielessäni kun näin Windows NT Hertan — tehdä syntiä internetissä!
+            Rakastan Backgammonia ja sen kautta opin käyttämään monia koneälyjä — jellyfish, gnu, snowie ja extremegammon — pelin paremmin ymmärtämisessä.
+            Alunperin ajattelin tehdä Kasino-korttipelistä tai Superjatsi-muunnoksista aina valmis vastus.
+          </p>
+          <p style={{ margin: '0 0 10px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
+            Kiitos Kontiolahden kuntouttavan työtoiminnan — opin kivasti vanhoja korttipelejä eri säännöillä ja uusia korttipelejä ja monia muita pelejä.
+            Huitsin paljon tapoja pitää hauskaa eräällä tapaa vertaisten seurassa. Se oli kivaa.
+            Olen aika erakko, mutta rakastan seurapelejä hyvässä seurassa.
+          </p>
+          <p style={{ margin: 0, color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
+            Yritin opettaa tolle sääntöjä, mut kun joku menee vikaan, niin laita mailia{' '}
+            <a href="mailto:no.jopas@gmail.com" style={{ color: C.gold }}>no.jopas@gmail.com</a>
+            {' '}— T. Tommi Haanranta
           </p>
         </InfoBox>
 

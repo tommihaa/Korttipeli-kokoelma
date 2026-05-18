@@ -1,0 +1,1 @@
+Stage all modified tracked files and new files in src/, public/, and index.html. Ask the user for a short commit message if they haven't provided one as an argument, then commit and push to origin main. Report the commit hash and confirm the push succeeded. Remind the user that Vercel will auto-deploy in ~30 seconds.

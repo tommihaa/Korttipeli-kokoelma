@@ -653,30 +653,46 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           </div>
         </div>
       )}
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>🐟</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: isMobile ? 12 : 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       {ais.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 4 : 6, marginBottom: isMobile ? 6 : 12 }}>
-          {ais.map((p, i) => {
-            const pi = i + 1, isActive = curIdx === pi;
-            return (
-              <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '8px 10px' }}>
-                <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
-                <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
-                <div style={{ display: 'flex', gap: 2 }}>
-                  {p.row.map((c, ci) => (
-                    <div key={ci} style={{ borderRadius: 6, border: teachMode && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: teachMode && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: teachMode && p.known.has(ci) ? 2 : 0 }}>
-                      <KaCard card={c} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
-                    </div>
-                  ))}
+        isMobile ? (
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 6 }}>
+            {ais.map((p, i) => {
+              const pi = i + 1, isActive = curIdx === pi;
+              const cardCount = 1 + p.row.length; // tuntematon + rivi
+              return (
+                <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 20, background: isActive ? C.gold + '14' : 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '66' : C.panelBorder}` }}>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim }}>
+                    {isActive ? '► ' : '🤖 '}{p.name} — {cardCount}k
+                  </span>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+            {ais.map((p, i) => {
+              const pi = i + 1, isActive = curIdx === pi;
+              return (
+                <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px' }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
+                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                  <div style={{ display: 'flex', gap: 2 }}>
+                    {p.row.map((c, ci) => (
+                      <div key={ci} style={{ borderRadius: 6, border: teachMode && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: teachMode && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: teachMode && p.known.has(ci) ? 2 : 0 }}>
+                        <KaCard card={c} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
       )}
 
       {/* Pakka-alue */}

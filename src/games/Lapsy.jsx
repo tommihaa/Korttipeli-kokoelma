@@ -55,8 +55,10 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const [cardBackState]      = [cardBack];
   const [aiNames]            = useState(() => shuffledAINames(playerNames));
   const [currentMoment, setCurrentMoment] = useState(null);
+  const [finishOrder, setFinishOrder] = useState([]); // eliminointijärjestys, ensin poistunut ensin
 
-  const pilesRef     = useRef([]);
+  const pilesRef       = useRef([]);
+  const finishOrderRef = useRef([]);
   const centerRef    = useRef([]);
   const phaseRef     = useRef('idle');
   const curRef       = useRef(0);
@@ -152,6 +154,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setPhase('idle'); phaseRef.current = 'idle';
     setCh(null); chRef.current = null;
     setSR(null);
+    finishOrderRef.current = []; setFinishOrder([]);
     logRef.current = []; setLog([]);
     addLog(M.gameStart);
     setScreen('game');
@@ -330,10 +333,23 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     doFlip(0, pilesRef.current, centerRef.current);
   }
 
+  function recordEliminated(newPiles) {
+    const alreadyOut = finishOrderRef.current;
+    const newlyOut = newPiles
+      .map((p, i) => i)
+      .filter(i => newPiles[i].length === 0 && !alreadyOut.includes(i));
+    if (newlyOut.length > 0) {
+      const updated = [...alreadyOut, ...newlyOut];
+      finishOrderRef.current = updated;
+      setFinishOrder(updated);
+    }
+  }
+
   function giveCenter(winnerIdx, curPiles, curCenter) {
     recentMatch.current = true;
     setTimeout(() => { recentMatch.current = false; }, 800);
     const newPiles = curPiles.map((p, i) => i === winnerIdx ? [...p, ...[...curCenter].reverse()] : p);
+    recordEliminated(newPiles);
     setPiles(newPiles); pilesRef.current = newPiles;
     setCenter([]); centerRef.current = [];
     setCh(null); chRef.current = null;
@@ -389,19 +405,29 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     </div>
   );
 
-  if (screen === 'gameover') return (
+  if (screen === 'gameover') {
+    const winnerIdx = piles.findIndex(p => p.length > 0);
+    // Rakenna sijoituslista: voittaja ensin, sitten eliminointijärjestys käänteisesti
+    const ranked = [
+      winnerIdx >= 0 ? winnerIdx : null,
+      ...[...finishOrder].reverse(),
+    ].filter(i => i !== null);
+    const medals = ['🥇', '🥈', '🥉', '4️⃣'];
+
+    return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
       <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
-        {piles.map((p, i) => {
-          const isWinner = p.length > 0;
+        {ranked.map((playerIdx, rank) => {
+          const isWinner = rank === 0;
+          const p = piles[playerIdx];
           return (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 12, background: isWinner ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${isWinner ? C.gold + '55' : C.panelBorder}` }}>
-              <span style={{ fontSize: 20 }}>{isWinner ? '🏆' : '💀'}</span>
-              <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: isWinner ? C.gold : C.dim }}>{pName(i)}</span>
+            <div key={playerIdx} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 12, background: isWinner ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${isWinner ? C.gold + '55' : C.panelBorder}` }}>
+              <span style={{ fontSize: 20, minWidth: 28 }}>{medals[rank] || '💀'}</span>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: isWinner ? C.gold : C.dim }}>{pName(playerIdx)}</span>
               {isWinner
                 ? <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, fontWeight: 700 }}>VOITTO — {p.length} korttia</span>
-                : <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>0 korttia</span>
+                : <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>sija {rank + 1}</span>
               }
             </div>
           );
@@ -413,6 +439,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       </div>
     </div>
   );
+  }
 
   if (!piles.length) return null;
 
