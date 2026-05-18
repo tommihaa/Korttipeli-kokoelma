@@ -261,28 +261,13 @@ export default function App() {
 
       <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 460, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <InfoBox title="Tommin kokoelma">
-          <p style={{ margin: '0 0 10px', color: C.dim, fontSize: 12, fontStyle: 'italic', lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Moi,{' '}
-            tässä on lahjani teille korttipelien ystäville.
-          </p>
-          <p style={{ margin: '0 0 10px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Olinpa kerran internet-intoilija, oikeastaan siitä lähtien kun tapasimme 1993. Tekoälystä pohdin 7/9 pisteen arvoisesti vuotta aikaisemmin reaalin psykologian plus-kysymyksessä.
-            Olinpa kerran ohjelmoija 11 vuotta. Mulle se oli yhtä suossa tarpomista puolipisteiden, aaltosulkujen ja loputtomien kirjastojen mahdollisuuksien ymmärtämistä.
-          </p>
-          <p style={{ margin: '0 0 10px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Jako52 on korttipeli-projekti, josta tuli seurapeli-projekti. Voi sanoa, että se heräsi mielessäni kun näin Windows NT Hertan — tehdä syntiä internetissä!
-            Rakastan Backgammonia ja sen kautta opin käyttämään monia koneälyjä — jellyfish, gnu, snowie ja extremegammon — pelin paremmin ymmärtämisessä.
-            Alunperin ajattelin tehdä Kasino-korttipelistä tai Superjatsi-muunnoksista aina valmis vastus.
-          </p>
-          <p style={{ margin: '0 0 10px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Kiitos Kontiolahden kuntouttavan työtoiminnan — opin kivasti vanhoja korttipelejä eri säännöillä ja uusia korttipelejä ja monia muita pelejä.
-            Huitsin paljon tapoja pitää hauskaa eräällä tapaa vertaisten seurassa. Se oli kivaa.
-            Olen aika erakko, mutta rakastan seurapelejä hyvässä seurassa.
+          <p style={{ margin: '0 0 8px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
+            Moi, tässä on lahjani sinulle seurapelien ystävälle, lisää korttipelejä.
           </p>
           <p style={{ margin: 0, color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Yritin opettaa tolle sääntöjä, mut kun joku menee vikaan, niin laita mailia{' '}
+            Yritin opettaa tälle sääntöjä, mut kun joku menee vikaan, niin laita mailia{' '}
             <a href="mailto:no.jopas@gmail.com" style={{ color: C.gold }}>no.jopas@gmail.com</a>
-            {' '}— T. Tommi Haanranta
+            {' '}— T. Tommi H
           </p>
         </InfoBox>
 
