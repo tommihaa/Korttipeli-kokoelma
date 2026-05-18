@@ -1,0 +1,18 @@
+{
+  "name": "Jako — Tommin kokoelma",
+  "short_name": "Jako",
+  "description": "Tommin korttipelikokoelma",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d2118",
+  "theme_color": "#0d2118",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

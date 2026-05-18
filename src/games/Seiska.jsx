@@ -13,8 +13,8 @@ const coloredSuit = s => `<span style="color:${SUIT_COLOR[s]}">${s}</span>`;
 const SUIT_SYMS = ['♠', '♥', '♦', '♣'];
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames() {
-  const a = [...AI_NAMES];
+function shuffledAINames(pool) {
+  const a = [...(pool || AI_NAMES)];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -52,8 +52,8 @@ function validSingles(hand, discardTop, reqSuit) {
   return hand.filter(c => canSingle(c, discardTop, reqSuit, hand.length === 1));
 }
 
-function mkInitState(nP) {
-  const aiNames = shuffledAINames();
+function mkInitState(nP, pool) {
+  const aiNames = shuffledAINames(pool);
   let deck = mkDeck();
   const players = Array.from({ length: nP }, (_, i) => ({
     id: i, name: i === 0 ? 'Hero' : aiNames[i - 1],
@@ -120,15 +120,15 @@ function sortHand(hand) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
+export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
   const [screen,   setScreen]  = useState('select');
-  const [nP,       setNP]      = useState(3);
+  const [nP,       setNP]      = useState(4);
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G,        setG]       = useState(null);
   const [msg,      setMsg_]    = useState('');
   const [log,      setLog]     = useState([]);
-  const [logOpen,  setLO]      = useState(hints);
+  const [logOpen,  setLO]      = useState(isMobile ? false : hints);
   const [selected, setSel]     = useState([]);
   const [debugOpen,setDebug]   = useState(initSeeAll);
   const [pakaAnim, setPakaAnim] = useState(false);
@@ -176,7 +176,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   function startGame() {
     clearTimeout(aiTmr.current);
     prevRCRef.current = 0;
-    const g = mkInitState(nP);
+    const g = mkInitState(nP, playerNames);
     logRef.current = []; setLog([]); setSel([]); setPakaAnim(false);
     setGS(g);
     addLog(`Seiska alkaa! Päällimmäinen: ${lblColored(g.discardTop)}.`);
@@ -573,17 +573,17 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const showLappu  = human.hand.length === 1 && !G.lappuSaid.has(0) && G.pendingLappu === 0 && G.phase === 'play';
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viesti */}
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 18, flexShrink: 0, color: C.gold }}>7</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       {/* Pelaajastatus */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         {G.players.map((p, i) => {
           const isActive = G.activePlayer === i;
           const isDone   = G.finished.includes(i);
@@ -598,30 +598,45 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
       {/* AI-kädet */}
       {G.players.filter((_, i) => i !== 0).length > 0 && (
-        <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
-          {G.players.filter((_, i) => i !== 0).map(p => {
-            const isActive = G.activePlayer === p.id;
-            const isDone   = G.finished.includes(p.id);
-            return (
-              <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: isDone ? 0.35 : 1 }}>
-                <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 4 }}>
-                  {isActive ? '► ' : '🤖 '}{p.name}
-                  {G.lappuSaid.has(p.id) && p.hand.length === 1 && <span style={{ color: C.red, marginLeft: 4 }}>LAPPU</span>}
+        isMobile ? (
+          <div style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
+            {G.players.filter((_, i) => i !== 0).map(p => {
+              const isActive = G.activePlayer === p.id;
+              const isDone   = G.finished.includes(p.id);
+              const hasLappu = G.lappuSaid.has(p.id) && p.hand.length === 1;
+              return (
+                <div key={p.id} style={{ padding: '3px 8px', borderRadius: 8, fontFamily: 'sans-serif', fontSize: 11, background: isActive ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, color: isActive ? C.gold : C.dim, opacity: isDone ? 0.4 : 1 }}>
+                  {isActive ? '► ' : '🤖 '}{p.name} — {p.hand.length}k{hasLappu ? <span style={{ color: C.red }}> LAPPU</span> : ''}
                 </div>
-                <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-                  {debugOpen
-                    ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
-                    : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
-                  }
+              );
+            })}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
+            {G.players.filter((_, i) => i !== 0).map(p => {
+              const isActive = G.activePlayer === p.id;
+              const isDone   = G.finished.includes(p.id);
+              return (
+                <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: isDone ? 0.35 : 1 }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 4 }}>
+                    {isActive ? '► ' : '🤖 '}{p.name}
+                    {G.lappuSaid.has(p.id) && p.hand.length === 1 && <span style={{ color: C.red, marginLeft: 4 }}>LAPPU</span>}
+                  </div>
+                  <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    {debugOpen
+                      ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
+                      : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
+                    }
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )
       )}
 
       {/* Pakka + lyöntipakka */}
-      <div style={{ display: 'flex', gap: 16, marginBottom: 12, alignItems: 'center', padding: '12px 16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 16, marginBottom: isMobile ? 6 : 12, alignItems: 'center', padding: isMobile ? '8px 10px' : '12px 16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, flexWrap: 'wrap' }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
           <div style={{ width: 60, height: 82, borderRadius: 7, background: BACKS[cardBack].bg, border: `2px solid ${BACKS[cardBack].border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -683,12 +698,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       )}
 
       {/* Oma käsi */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10, transition: 'border-color 0.2s' }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
           👤 Hero{human.hand.length > 0 ? ` — ${korttia(human.hand.length)} kädessä` : ' — tyhjä! 🏆'}
           {G.lappuSaid.has(0) && human.hand.length === 1 && <span style={{ color: C.gold, marginLeft: 8 }}>LAPPU</span>}
         </div>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', minHeight: 216 }}>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', minHeight: isMobile ? 90 : 216 }}>
           {sortHand(human.hand).map(c => {
             const isSel   = !!selected.find(s => s.id === c.id);
             const single  = canAct && (G.aceBonus !== null
@@ -702,7 +717,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
             const hl      = !isSel && (selected.length > 0 ? multi : (single || multi));
             const dimmed  = canAct && !isSel && (selected.length > 0 ? !multi : (!single && !multi));
             return (
-              <Card key={c.id} card={c} large
+              <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
                 dim={!!dimmed}
@@ -715,7 +730,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       </div>
 
       {/* Toiminnot */}
-      <div style={{ minHeight: 52, display: 'flex', gap: 8, marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+      <div style={{ minHeight: isMobile ? 36 : 52, display: 'flex', gap: 8, marginBottom: isMobile ? 4 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
         {canAct && (
           <>
             {selected.length > 0 && (
@@ -744,7 +759,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       </div>
 
       {/* Tilapalkki */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
           <span style={{
             color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : 'inherit',

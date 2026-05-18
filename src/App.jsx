@@ -11,6 +11,9 @@ import Ristiseiska from './games/Ristiseiska.jsx';
 import Paskahousu from './games/Paskahousu.jsx';
 import Admin from './Admin.jsx';
 
+const LAITURI_SPECIAL = ['Antti','Arto','Janus','Jens','Jokke','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Rebekka','Sanna','Sari','Simo','Tarja','Teemu'];
+const ONNEN_JUMALAT   = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
+
 const PAKKA = {
   jaettu:     { badge: 'Kaikki jaetaan',  label: 'Kaikki kortit jaetaan käsikorteiksi',                              icon: '🃏', color: '#4caf7d' },
   taydennetty:{ badge: 'Täydennetään',    label: 'Käsikortteja täydennetään',                                        icon: '📦', color: '#c9a84c' },
@@ -31,6 +34,37 @@ const GAMES = [
 
 const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));
 
+function InfoBox({ title, defaultOpen = false, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div style={{
+      width: '100%',
+      border: `1px solid ${C.panelBorder}`,
+      borderRadius: 12,
+      background: 'rgba(255,255,255,0.02)',
+      overflow: 'hidden',
+    }}>
+      <button
+        onClick={() => setOpen(v => !v)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '10px 14px', background: 'transparent', border: 'none',
+          cursor: 'pointer', color: C.dim, fontFamily: 'Georgia,serif', fontSize: 13,
+          textAlign: 'left',
+        }}
+      >
+        <span>{title}</span>
+        <span style={{ fontSize: 10, opacity: 0.6, marginLeft: 8 }}>{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div style={{ padding: '0 14px 12px' }}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function StatBadge({ s }) {
   if (!s || s.played === 0) return null;
   const pct = Math.round(s.wins / s.played * 100);
@@ -43,33 +77,48 @@ function StatBadge({ s }) {
 }
 
 function GameBtn({ g, stats, onSelect }) {
-  const p = g.pakka ? PAKKA[g.pakka] : null;
+  const [showDesc, setShowDesc] = useState(false);
   return (
-    <button
-      onClick={() => onSelect(g.id)}
-      style={{
-        background: 'rgba(255,255,255,0.03)',
-        border: `1px solid ${C.panelBorder}`,
-        borderRadius: 14, padding: '16px 20px',
-        display: 'flex', alignItems: 'center', gap: 16,
-        cursor: 'pointer', textAlign: 'left',
-        transition: 'background 0.15s, border-color 0.15s',
-        width: '100%',
-      }}
-      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.06)'; e.currentTarget.style.borderColor = C.gold + '55'; }}
-      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = C.panelBorder; }}
-    >
-      <span style={{ fontSize: 28, flexShrink: 0, minWidth: 36, textAlign: 'center' }}>{g.emoji}</span>
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 3 }}>{g.name}</div>
-        <div style={{ fontSize: 12, color: C.dim, fontFamily: 'sans-serif' }}>{g.desc}</div>
-        <StatBadge s={stats[g.id]} />
-      </div>
-      <div style={{ textAlign: 'right', flexShrink: 0 }}>
-        <div style={{ fontSize: 11, color: g.diffColor, fontFamily: 'sans-serif', marginBottom: 2 }}>{g.diff}</div>
-        <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif' }}>{g.players} pelaajaa</div>
-      </div>
-    </button>
+    <div style={{
+      background: 'rgba(255,255,255,0.03)',
+      border: `1px solid ${C.panelBorder}`,
+      borderRadius: 14,
+      overflow: 'hidden',
+    }}>
+      <button
+        onClick={() => onSelect(g.id)}
+        style={{
+          background: 'transparent', border: 'none',
+          padding: '14px 12px 14px 16px',
+          display: 'flex', alignItems: 'center', gap: 12,
+          cursor: 'pointer', textAlign: 'left', width: '100%',
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.06)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+      >
+        <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 }}>{g.name}</div>
+          <StatBadge s={stats[g.id]} />
+        </div>
+        <button
+          onClick={e => { e.stopPropagation(); setShowDesc(v => !v); }}
+          style={{
+            flexShrink: 0, background: 'transparent', border: `1px solid ${C.panelBorder}`,
+            borderRadius: 6, width: 24, height: 24, fontSize: 11, cursor: 'pointer',
+            color: showDesc ? C.gold : C.dim, fontFamily: 'sans-serif', lineHeight: 1,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          ℹ
+        </button>
+      </button>
+      {showDesc && (
+        <div style={{ padding: '0 16px 10px 60px', fontSize: 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.5 }}>
+          {g.desc}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -84,12 +133,15 @@ export default function App() {
   const [showPlayHints, setShowPlayHints] = useState(true);
   const [teachMode, setTeachMode]   = useState(true);
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
+  const [playerGroup, setPlayerGroup] = useState('laituri');
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const playerPool = playerGroup === 'laituri' ? LAITURI_SPECIAL : ONNEN_JUMALAT;
 
   function recordResult(gameId, heroWon) {
     setStats(prev => ({
@@ -98,25 +150,16 @@ export default function App() {
     }));
   }
 
-  // Admin dashboard
   if (showAdmin) {
     return (
       <div>
         <button
           onClick={() => setShowAdmin(false)}
           style={{
-            position: 'fixed',
-            top: 12,
-            left: 12,
-            zIndex: 300,
-            background: 'rgba(13,33,24,0.92)',
-            border: '1px solid #2a4a32',
-            color: C.dim,
-            padding: '6px 14px',
-            borderRadius: 9,
-            fontSize: 12,
-            fontFamily: 'Georgia,serif',
-            cursor: 'pointer',
+            position: 'fixed', top: 12, left: 12, zIndex: 300,
+            background: 'rgba(13,33,24,0.92)', border: '1px solid #2a4a32',
+            color: C.dim, padding: '6px 14px', borderRadius: 9,
+            fontSize: 12, fontFamily: 'Georgia,serif', cursor: 'pointer',
           }}
         >
           ← Päävalikko
@@ -168,6 +211,8 @@ export default function App() {
           showCounts={showCounts}
           showPlayHints={showPlayHints}
           teachMode={teachMode}
+          isMobile={isMobile}
+          playerNames={playerPool}
           onResult={(heroWon) => recordResult(active, heroWon)}
         />
       </div>
@@ -176,99 +221,107 @@ export default function App() {
 
   return (
     <div style={{
-      background: C.bg, minHeight: '100vh',
+      background: '#0d2118', minHeight: '100vh',
       display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
-      gap: isMobile ? 16 : 32, padding: isMobile ? '20px 12px' : '40px 24px',
+      alignItems: 'center',
+      gap: isMobile ? 10 : 16, padding: isMobile ? '16px 12px' : '32px 24px',
       fontFamily: 'Georgia,serif', color: C.text,
     }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 11, letterSpacing: 8, opacity: 0.55, marginBottom: 10, display: 'flex', gap: 8, justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center', marginBottom: 4 }}>
+        <div style={{ fontSize: 11, letterSpacing: 8, opacity: 0.55, marginBottom: 8, display: 'flex', gap: 8, justifyContent: 'center' }}>
           <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
           <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
           <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
           <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
         </div>
         <h1 style={{
-          fontSize: isMobile ? 36 : 48, letterSpacing: isMobile ? 6 : 12, margin: 0,
+          fontSize: isMobile ? 32 : 48, letterSpacing: isMobile ? 6 : 12, margin: 0,
           background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`,
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
         }}>
           JAKO
         </h1>
-        <p style={{ color: C.dim, fontSize: isMobile ? 11 : 13, fontStyle: 'italic', marginTop: 8, lineHeight: 1.6 }}>
-          Tommin valinnat korttipeleiksi<br />päiväkahveilta illanistujaisiin.<br />Näillä neuvoin ja toistoin opit<br />pelimekaniikat pienenkin ruudun ääressä.
-        </p>
       </div>
 
       <div style={{
-        width: '100%', maxWidth: isMobile ? '100%' : 460,
-        background: 'rgba(255,255,255,0.02)',
-        border: `1px solid ${C.panelBorder}`,
-        borderRadius: 12,
-        padding: isMobile ? '8px 12px' : '12px 18px',
-      }}>
-        <p style={{ margin: '0 0 8px', fontSize: 10, color: C.dim, fontFamily: 'sans-serif', opacity: 0.5, letterSpacing: 0.5 }}>
-          Oletukset — muutettavissa pelin aikana.
-        </p>
-        {[
-          { label: 'Tapahtumaloki auki',                                                   val: showLog,    set: setShowLog },
-          { label: 'Äänet',                                                                 val: soundOn,    set: setSoundOn },
-          { label: 'Läpinäkyvä pöytä (Hero näkee kaikki pöytä- ja käsikortit)',            val: seeAll,     set: setSeeAll },
-          { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',             val: showCounts, set: setShowCounts },
-          { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                   val: showPlayHints, set: setShowPlayHints },
-          { label: 'Opastava tila (strategiatippejä)',                                       val: teachMode, set: setTeachMode },
-        ].map(({ label, val, set }) => (
-          <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: 'pointer' }}>
-            <input
-              type="checkbox" checked={val} onChange={() => set(v => !v)}
-              style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
-            />
-            <span style={{ fontSize: isMobile ? 11 : 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
-          </label>
-        ))}
-      </div>
-
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-        gap: 10,
+        background: '#1a3a28',
+        borderRadius: 16,
+        padding: isMobile ? '14px 12px' : '20px 20px',
         width: '100%',
         maxWidth: isMobile ? '100%' : 900,
       }}>
-        {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={setActive} />)}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+          gap: 8,
+        }}>
+          {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={setActive} />)}
+        </div>
       </div>
 
-      <div style={{
-        marginTop: 20,
-        padding: '12px 16px',
-        background: 'rgba(201, 168, 76, 0.08)',
-        border: `1px solid ${C.gold}44`,
-        borderRadius: 8,
-        textAlign: 'center',
-      }}>
-        <button
-          onClick={() => setShowAdmin(true)}
-          style={{
-            background: `${C.gold}22`,
-            border: `1px solid ${C.gold}`,
-            color: C.gold,
-            padding: '8px 16px',
-            borderRadius: 6,
-            fontSize: 12,
-            fontFamily: 'Georgia,serif',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            width: '100%',
-          }}
-        >
-          ✨ Admin Momentit
-        </button>
+      <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 460, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <InfoBox title="Tommin kokoelma">
+          <p style={{ margin: 0, color: C.dim, fontSize: 12, fontStyle: 'italic', lineHeight: 1.6, fontFamily: 'sans-serif' }}>
+            Tommin valinnat korttipeleiksi päiväkahveilta illanistujaisiin. Näillä neuvoin ja toistoin opit pelimekaniikat pienenkin ruudun ääressä.
+          </p>
+        </InfoBox>
+
+        <InfoBox title="Oletusasetukset ⚙" defaultOpen={false}>
+          <p style={{ margin: '0 0 8px', fontSize: 10, color: C.dim, fontFamily: 'sans-serif', opacity: 0.5, letterSpacing: 0.5 }}>
+            Muutettavissa myös pelin aikana.
+          </p>
+          {[
+            { label: 'Tapahtumaloki auki',                                                   val: showLog,    set: setShowLog },
+            { label: 'Äänet',                                                                 val: soundOn,    set: setSoundOn },
+            { label: 'Läpinäkyvä pöytä (Hero näkee kaikki pöytä- ja käsikortit)',            val: seeAll,     set: setSeeAll },
+            { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',             val: showCounts, set: setShowCounts },
+            { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                   val: showPlayHints, set: setShowPlayHints },
+            { label: 'Opastava tila (strategiatippejä)',                                       val: teachMode, set: setTeachMode },
+          ].map(({ label, val, set }) => (
+            <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: 'pointer' }}>
+              <input
+                type="checkbox" checked={val} onChange={() => set(v => !v)}
+                style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
+              />
+              <span style={{ fontSize: isMobile ? 11 : 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
+            </label>
+          ))}
+        </InfoBox>
+
+        <InfoBox title="Pelaajat 👥" defaultOpen={false}>
+          <p style={{ margin: '0 0 10px', fontSize: 11, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.4 }}>
+            Vastustajat arvotaan valitusta ryhmästä.
+          </p>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            {[
+              { key: 'laituri', label: '🏖 Laituri-special', pool: LAITURI_SPECIAL },
+              { key: 'jumalat', label: '⚡ Onnen jumalat', pool: ONNEN_JUMALAT },
+            ].map(({ key, label, pool }) => (
+              <button
+                key={key}
+                onClick={() => setPlayerGroup(key)}
+                style={{
+                  flex: 1, padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
+                  fontFamily: 'sans-serif', fontSize: 12,
+                  background: playerGroup === key ? `${C.gold}22` : 'transparent',
+                  border: `1px solid ${playerGroup === key ? C.gold : C.panelBorder}`,
+                  color: playerGroup === key ? C.gold : C.dim,
+                  transition: 'all 0.15s',
+                }}
+              >
+                {label}
+                <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{pool.length} nimeä</div>
+              </button>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.8, opacity: 0.7 }}>
+            {playerPool.join(' · ')}
+          </div>
+        </InfoBox>
       </div>
 
-      <p style={{ color: C.dim, fontSize: 11, fontFamily: 'sans-serif', opacity: 0.5, letterSpacing: 1 }}>
-        Hero + tekoäly
-      </p>
+      {/* Admin Momentit — piilotettu toistaiseksi */}
+
     </div>
   );
 }

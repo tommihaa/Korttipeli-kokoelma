@@ -43,8 +43,8 @@ function nextActive(players, from) {
 }
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames() {
-  const a = [...AI_NAMES];
+function shuffledAINames(pool) {
+  const a = [...(pool || AI_NAMES)];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -53,8 +53,8 @@ function shuffledAINames() {
 }
 
 // ── Alustus ───────────────────────────────────────────────────
-function initGame(nP) {
-  const aiNames = shuffledAINames();
+function initGame(nP, pool) {
+  const aiNames = shuffledAINames(pool);
   const raw = mkDeck();
   const trumpCard = raw.pop();
   const ts = trumpCard.s;
@@ -143,15 +143,15 @@ function getAddable(g, playerIdx) {
 }
 
 // ── Komponentti ───────────────────────────────────────────────
-export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
+export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
   const [screen, setScreen] = useState('select');
-  const [nP, setNP] = useState(2);
+  const [nP, setNP] = useState(4);
   const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(hints);
+  const [logOpen, setLO] = useState(isMobile ? false : hints);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
@@ -292,7 +292,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   // ── Pelin aloitus ─────────────────────────────────────────
   function startGame() {
     clearTimeout(aiTmr.current);
-    const g = initGame(nP);
+    const g = initGame(nP, playerNames);
     logRef.current = []; setLog([]);
     setSelAtk([]); setSelDefTarget(null); setSelPass([]); setSelAdd([]); setPakaAnim(false);
     setGS(g);
@@ -414,17 +414,36 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       primaryAtk: nextAtk, defender: nextDef, attackers: [nextAtk],
       phase: 'attack', passChain: [], addQueue: [],
     };
-    setGS(g2);
-    addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
 
     if (playerWasInvolved) {
       // Odota ihmisen jatkamista ennen seuraavaa kierrosta ja nosto
-      // Tallenna nostojen tarpeet seuraavaa kierrosta varten
+      // Päivitä pelaajat ja ranking, mutta pidä pöytä näkyvissä
+      // Tyhjennä addQueue ja passChain jotta myTurn tulee falseksi (ei näytetä interaktio-elementtejä)
+      const gShowResults = { ...g, players, rankings, addQueue: [], passChain: [] };
+      setGS(gShowResults);
+
+      // Jos ihminen puolusti, näytä puolustuksen tulos Viesti-kentässä (älä näytä vielä seuraavan kierroksen tietoja)
+      if (g.defender === 0) {
+        if (defWon) {
+          setMsg_('✅ Puolustus onnistui!');
+        } else {
+          setMsg_('❌ Puolustus epäonnistui!');
+        }
+      } else {
+        // Ihminen hyökkäsi, näytä seuraava kierros
+        addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
+      }
+
       setPendingDraw({ drawOrder, deck, tc, players, nextAtk, nextDef, g2 });
       setAwaitingPlayerContinue(true);
-    } else if (!players[nextAtk].isHuman) {
-      // AI hyökkää seuraavaksi
-      aiTmr.current = setTimeout(() => runAI(g2), 1600 + Math.random() * 600);
+    } else {
+      // Ihminen ei ollut osallisena - päivitä pelitilanteen ja jatka
+      addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
+      setGS(g2);
+      if (!players[nextAtk].isHuman) {
+        // AI hyökkää seuraavaksi
+        aiTmr.current = setTimeout(() => runAI(g2), 1600 + Math.random() * 600);
+      }
     }
   }
 
@@ -892,7 +911,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const humanAddable = isMyAdd ? getAddable(G, 0) : [];
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
@@ -903,13 +922,13 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       />
 
       {/* Viestikupla */}
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>♠</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       {/* Yläpalkki: valtti + pakkatiedot */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 10px', borderRadius: 20, border: `1px solid ${C.trump}55`, background: `${C.trump}0d` }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>VALTTI</span>
           <span style={{ fontSize: 18, color: SUIT_COLOR[G.ts], fontWeight: 700 }}>{G.ts}</span>
@@ -922,9 +941,9 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
       {/* AI-pelaajien kädet */}
       {G.players.filter((_, i) => i !== 0).length > 0 && (
-        <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
           {G.players.filter((_, i) => i !== 0).map(p => (
-            <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.id === G.defender ? C.blue + '55' : p.id === G.primaryAtk ? '#e05c3b55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: p.rank !== null ? 0.35 : 1 }}>
+            <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.id === G.defender ? C.blue + '55' : p.id === G.primaryAtk ? '#e05c3b55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '7px 10px', textAlign: 'center', opacity: p.rank !== null ? 0.35 : 1 }}>
               <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: p.id === G.primaryAtk ? C.red : p.id === G.defender ? C.blue : C.dim, marginBottom: 4 }}>
                 {p.id === G.primaryAtk ? '⚔' : p.id === G.defender ? '🛡' : '🤖'} {p.name}
                 {p.rank !== null ? ` — sija ${p.rank}` : ''}
@@ -941,7 +960,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       )}
 
       {/* Pöytä */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${G.table.length > 0 ? '#e05c3b33' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10, minHeight: 200 }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${G.table.length > 0 ? '#e05c3b33' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 130 : 200 }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5 }}>
           PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : `${G.table.length} paria`}
           {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>✓ {defBeaten} kaadettu</span>}
@@ -980,14 +999,14 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           {isMyDef && !selDefTarget && !selPass.length && (canPassNow
             ? 'Valitse ensin pöytäkortti jonka haluat kaataa — tai klikkaa saman-arvoista korttiasi siirtääksesi hyökkäyksen eteenpäin.'
             : 'Valitse ensin pöytäkortti, jonka haluat kaataa, ja seuraavaksi käsikorttisi.')}
-          {isMyDef && selDefTarget && `${lblColored(selDefTarget.atk)} kohteena — valitse nyt käsikortti, jolla haluat kaataa.`}
+          {isMyDef && selDefTarget && <span dangerouslySetInnerHTML={{ __html: `${lblColored(selDefTarget.atk)} kohteena — valitse nyt käsikortti, jolla haluat kaataa.` }} />}
           {isMyDef && selPass.length > 0 && `Siirto: ${selPass.map(lbl).join(',')} — klikkaa Siirrä tai peruuta.`}
           {isMyAdd && `Voit lisätä kortit (${humanAddable.map(lbl).join(', ')}) tai Ohita.`}
         </div>
       )}
 
       {/* Ihmispelaajan käsi */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${myTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10, transition: 'border-color 0.2s' }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${myTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: myTurn ? C.gold : C.dim, marginBottom: 8 }}>
           👤 Hero {G.primaryAtk === 0 ? '⚔' : G.defender === 0 ? '🛡' : ''}
           {human.rank !== null ? <span style={{ color: C.gold, marginLeft: 6 }}>Sija {human.rank}</span> : ` — ${korttia(human.hand.length)} kädessä`}
@@ -1008,7 +1027,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
               || (isMyDef && !!selDefTarget && !canBeatTarget && !isPassSel)
               || (isMyAtk && selAtk.length > 0 && selAtk[0].r !== c.r);
             return (
-              <Card key={c.id} card={c} large                 selected={!!(isAtkSel || isPassSel || isAddSel)}
+              <Card key={c.id} card={c} large={!isMobile} small={isMobile}                 selected={!!(isAtkSel || isPassSel || isAddSel)}
                 highlight={!!hlght}
                 dim={!!dimmed}
                 onClick={
@@ -1045,10 +1064,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
                 Siirrä ({selPass.map(lbl).join(',')}) →
               </button>
             )}
-            <button onClick={humanTake}
-              style={{ background: 'rgba(224,92,59,0.1)', border: `1px solid #e05c3b55`, borderRadius: 10, padding: '10px 18px', color: C.red, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-              Ota kortit ({G.table.length})
-            </button>
+            {!awaitingPlayerContinue && (
+              <button onClick={humanTake}
+                style={{ background: 'rgba(224,92,59,0.1)', border: `1px solid #e05c3b55`, borderRadius: 10, padding: '10px 18px', color: C.red, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
+                Ota kortit ({G.table.length})
+              </button>
+            )}
             {(selDefTarget || selPass.length > 0) && (
               <button onClick={() => { setSelDefTarget(null); setSelPass([]); }}
                 style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>

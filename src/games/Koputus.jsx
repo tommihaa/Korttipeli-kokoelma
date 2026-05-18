@@ -11,8 +11,8 @@ const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames() {
-  const a = [...AI_NAMES];
+function shuffledAINames(pool) {
+  const a = [...(pool || AI_NAMES)];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -24,8 +24,8 @@ function newDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));
 }
 
-function initGame(n) {
-  const aiNames = shuffledAINames();
+function initGame(n, pool) {
+  const aiNames = shuffledAINames(pool);
   const deck = newDeck();
   return {
     players: Array.from({ length: n }, (_, i) => ({
@@ -98,9 +98,9 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
   const [screen, setScreen]     = useState('select');
-  const [nP, setNP]             = useState(3);
+  const [nP, setNP]             = useState(4);
   const [G, setG]               = useState(null);
   const [phase, setPhase]       = useState('idle');
   const [curIdx, setCurIdx]     = useState(0);
@@ -117,7 +117,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const [specState, setSS]      = useState(null);
   const [lastSwap, setLastSwap] = useState(null);
   const [soundOn, setSoundOn]   = useState(initSoundOn);
-  const [logOpen, setLogOpen]   = useState(hints);
+  const [logOpen, setLogOpen]   = useState(isMobile ? false : hints);
   const cardBack = 'ilves';
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
@@ -200,7 +200,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
 
   function startGame() {
     clearTimeout(aiTmr.current); clearInterval(reactInt.current);
-    const g = initGame(nP);
+    const g = initGame(nP, playerNames);
     setG(g); gRef.current = g;
     setPhase('peeking'); setCurIdx(0); setPD(0); setTP(new Set());
     setDrawn(null); setMsg(M.peekStart); setKB(null); knockRef.current = null;
@@ -587,9 +587,9 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const showDrawn = ['drawn', 'spec_j', 'spec_q_own', 'spec_q_tgt', 'spec_k', 'spec_k_decide', 'spec_k_confirm'].includes(phase);
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: 16, maxWidth: 560, margin: '0 auto', paddingBottom: 40 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : 16, maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 40 }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, height: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 17, flexShrink: 0 }}>🎓</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
@@ -597,7 +597,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         {knockedBy !== null && <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>🤜 Koputettu — viimeinen kierros!</div>}
       </div>
       {ais.length > 0 && (
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 6 : 12 }}>
           {ais.map((ai, i) => {
             const pi = i + 1;
             const selectMode = phase === 'spec_k_decide' || phase === 'spec_k_confirm' || phase === 'spec_q_tgt';
@@ -619,7 +619,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       )}
 
       {/* Pakka-alue */}
-      <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', padding: '14px 16px', background: 'rgba(255,255,255,0.013)', border: '1px solid #1a3a22', borderRadius: 14, marginBottom: 12 }}>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', padding: isMobile ? '8px 10px' : '14px 16px', background: 'rgba(255,255,255,0.013)', border: '1px solid #1a3a22', borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>NOSTOPAKKA</div>
           <div onClick={isHuman && phase === 'draw' && G.deck.length ? humanDrawDeck : undefined}
@@ -663,13 +663,13 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         </div>
       </div>
 
-      <div style={{ marginBottom: 12 }}>
+      <div style={{ marginBottom: isMobile ? 6 : 12 }}>
         <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={debugOpen} backStyle={BACKS[cardBack]}
           clickableSet={ownClickable()} onCardClick={onOwnCard} peekSet={tempPeek}
           lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} />
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: drawn && showDrawn ? 'rgba(255,255,255,0.022)' : 'transparent', border: `1px solid ${drawn && showDrawn ? '#2a4a32' : 'transparent'}`, borderRadius: 10, marginBottom: 12, minHeight: 50, transition: 'background 0.2s' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: drawn && showDrawn ? 'rgba(255,255,255,0.022)' : 'transparent', border: `1px solid ${drawn && showDrawn ? '#2a4a32' : 'transparent'}`, borderRadius: 10, marginBottom: isMobile ? 4 : 12, minHeight: isMobile ? 36 : 50, transition: 'background 0.2s' }}>
         {drawn && showDrawn
           ? <><span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flexShrink: 0 }}>Nostettu:</span><Card card={drawn} faceUp small /><span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{drawn.r}{drawn.s} — <span style={{ color: C.gold, fontWeight: 700 }}>{drawn.v} p</span></span></>
           : <span style={{ color: 'transparent', userSelect: 'none' }}>·</span>}
@@ -682,7 +682,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 10, minHeight: 44, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 36 : 44, alignItems: 'center' }}>
         {isHuman && phase === 'drawn' && <Btn label="Heitä poistopakkaan ›" onClick={humanDiscard} color={C.gold} />}
         {isHuman && phase === 'draw' && knockedBy === null && <Btn label="🤜 Koputan!" onClick={humanKnock} color={C.red} outline />}
         {phase === 'spec_q_tgt' && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; setTimeout(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}

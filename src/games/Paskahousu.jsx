@@ -9,8 +9,8 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames() {
-  const a = [...AI_NAMES];
+function shuffledAINames(pool) {
+  const a = [...(pool || AI_NAMES)];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -88,8 +88,8 @@ function pileClears(cards, top, pile) {
 
 function emptyPenalty(card) { return card.r === '10' || card.r === 'A'; }
 
-function mkGame(nP) {
-  const aiNames = shuffledAINames();
+function mkGame(nP, pool) {
+  const aiNames = shuffledAINames(pool);
   const deck    = mkDeck();
   const players = Array.from({ length: nP }, (_, i) => ({
     id: i, name: i === 0 ? 'Hero' : aiNames[i - 1],
@@ -165,7 +165,7 @@ function aiCards(hand, top, pile) {
 
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
-export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
+export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(4);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -173,7 +173,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const [G,        setG]       = useState(null);
   const [msg,      setMsg_]    = useState('');
   const [log,      setLog]     = useState([]);
-  const [logOpen,  setLO]      = useState(hints);
+  const [logOpen,  setLO]      = useState(isMobile ? false : hints);
   const [jpIds,    setJP]      = useState(new Set());
   const [lastPlay, setLP]      = useState(null);
   const [selected, setSel]     = useState([]);
@@ -214,7 +214,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   function startGame() {
     clearTimeout(aiTmr.current);
     setSel([]); setPakaAnim(false);
-    const g = mkGame(nP);
+    const g = mkGame(nP, playerNames);
     logRef.current = []; setLog([]);
     setGS(g);
     const s = g.players[g.turn];
@@ -681,18 +681,18 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const selValid   = selected.length > 0 && canPlay(selected[0], G.top);
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viesti */}
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 56, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 40 : 56, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>💩</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       {/* Pelaajastatus */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         {G.players.map((p, i) => {
           const isActive = G.turn === i && (G.phase === 'play' || G.phase === 'swap_offer');
           const isDone   = G.finished.includes(i);
@@ -710,25 +710,39 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
       {/* AI-kädet */}
       {G.players.filter((_, i) => i !== 0).length > 0 && (
-        <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
-          {G.players.filter((_, i) => i !== 0).map(p => {
-            const isActive = G.turn === p.id && G.phase === 'play';
-            const isDone   = G.finished.includes(p.id);
-            return (
-              <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: isDone ? 0.35 : 1 }}>
-                <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 4 }}>
-                  {isActive ? '► ' : '🤖 '}{p.name}
+        isMobile ? (
+          <div style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
+            {G.players.filter((_, i) => i !== 0).map(p => {
+              const isActive = G.turn === p.id && G.phase === 'play';
+              const isDone   = G.finished.includes(p.id);
+              return (
+                <div key={p.id} style={{ padding: '3px 8px', borderRadius: 8, fontFamily: 'sans-serif', fontSize: 11, background: isActive ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, color: isActive ? C.gold : C.dim, opacity: isDone ? 0.4 : 1 }}>
+                  {isActive ? '► ' : '🤖 '}{p.name} — {p.hand.length}k
                 </div>
-                <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-                  {debugOpen
-                    ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
-                    : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
-                  }
+              );
+            })}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
+            {G.players.filter((_, i) => i !== 0).map(p => {
+              const isActive = G.turn === p.id && G.phase === 'play';
+              const isDone   = G.finished.includes(p.id);
+              return (
+                <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: isDone ? 0.35 : 1 }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 4 }}>
+                    {isActive ? '► ' : '🤖 '}{p.name}
+                  </div>
+                  <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    {debugOpen
+                      ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
+                      : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
+                    }
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )
       )}
 
       {/* Viimeisin lyönti -badge — kiinteä korkeus, ei nytkähtelyä */}
@@ -751,7 +765,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       </div>
 
       {/* Pino */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${G.top ? C.gold + '33' : C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 10, minHeight: 130, animation: kasaAnim === 'quad' ? 'kasaQuad 2s ease forwards' : kasaAnim === 'clear' ? 'kasaClear 1.4s ease forwards' : kasaAnim === 'take' ? 'kasaTake 0.85s ease forwards' : undefined }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${G.top ? C.gold + '33' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 16px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 90 : 130, animation: kasaAnim === 'quad' ? 'kasaQuad 2s ease forwards' : kasaAnim === 'clear' ? 'kasaClear 1.4s ease forwards' : kasaAnim === 'take' ? 'kasaTake 0.85s ease forwards' : undefined }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ color: C.dim }}>KASA — {G.pile.length === 0 ? 'tyhjä' : `${G.pile.length} korttia`}</span>
           <span style={{
@@ -835,7 +849,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
               {G.swapData.eligible.map(c => {
                 const isSel = !!selected.find(s => s.id === c.id);
                 return (
-                  <Card key={c.id} card={c} large
+                  <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                     selected={isSel} highlight={!isSel}
                     justPlaced={jpIds.has(c.id)}
                     onClick={() => toggleCard(c)}
@@ -871,7 +885,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
             const hl       = isMyTurn && !mustSkip && playable && !isSel && (selected.length === 0 || sameRank);
             const dimmed   = (isMyTurn && !mustSkip && !playable && !isSel) || (isSwapPhase && !isSel);
             return (
-              <Card key={c.id} card={c} large
+              <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
                 dim={!!dimmed}

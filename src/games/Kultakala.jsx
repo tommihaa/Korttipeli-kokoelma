@@ -8,8 +8,8 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames() {
-  const a = [...AI_NAMES];
+function shuffledAINames(pool) {
+  const a = [...(pool || AI_NAMES)];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -55,8 +55,8 @@ const M = {
   tieBreaker: 'Tasatilanne — noppafanaali!',
 };
 
-function initGame(nPlayers) {
-  const aiNames = shuffledAINames();
+function initGame(nPlayers, pool) {
+  const aiNames = shuffledAINames(pool);
   const deck = newDeck();
   const players = Array.from({ length: nPlayers }, (_, i) => ({
     id: i, name: i === 0 ? 'Hero' : aiNames[i - 1], isHuman: i === 0,
@@ -153,9 +153,9 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
+export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
   const [screen, setScreen]   = useState('select');
-  const [nP, setNP]           = useState(3);
+  const [nP, setNP]           = useState(4);
   const [soundOn, setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG]             = useState(null);
@@ -165,7 +165,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const [swapIdx, setSwapIdx] = useState(null);
   const [msg, setMsg_]        = useState('');
   const [log, setLog]         = useState([]);
-  const [logOpen, setLO]      = useState(hints);
+  const [logOpen, setLO]      = useState(isMobile ? false : hints);
   const [revealed, setRevealed] = useState(false);
   const [drawnFromDeck, setFromDeck] = useState(false);
   const [debugOpen, setDebug] = useState(initSeeAll);
@@ -240,7 +240,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
 
   function startGame() {
     clearTimeout(aiTmr.current);
-    const g = initGame(nP);
+    const g = initGame(nP, playerNames);
     setG(g); gRef.current = g;
     setCur(0); curRef.current = 0;
     setPhase('drawing'); phaseRef.current = 'drawing';
@@ -642,7 +642,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const canStop    = curIdx === 0 && !!held && (phase === 'swapping' || canDiscard);
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       {kohahdus && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, pointerEvents: 'none' }}>
@@ -653,17 +653,17 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           </div>
         </div>
       )}
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, height: 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>🐟</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       {ais.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 4 : 6, marginBottom: isMobile ? 6 : 12 }}>
           {ais.map((p, i) => {
             const pi = i + 1, isActive = curIdx === pi;
             return (
-              <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px' }}>
+              <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '8px 10px' }}>
                 <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
                 <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
                 <div style={{ display: 'flex', gap: 2 }}>
@@ -680,7 +680,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       )}
 
       {/* Pakka-alue */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '12px 16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, marginBottom: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: isMobile ? '8px 10px' : '12px 16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>NOSTOPAKKA</div>
           <div onClick={canDraw ? () => humanDraw(false) : undefined}>
@@ -721,7 +721,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
 
       {/* Ihmispelaajan tuntematon + jono */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10 }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: curIdx === 0 ? C.gold : C.dim, marginBottom: 8 }}>
           👤 Hero {curIdx === 0 ? '●' : ''}
         </div>
@@ -747,7 +747,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
 
       {/* Toimintopainikkeet */}
-      <div style={{ minHeight: 44, display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10, flexWrap: 'wrap' }}>
+      <div style={{ minHeight: isMobile ? 36 : 44, display: 'flex', gap: 10, alignItems: 'center', marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         {canSwapRow && swapIdx !== null && (
           <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}>
             {`Vaihda ${lbl(held)} paikan ${swapIdx + 1} korttiin`}
@@ -761,7 +761,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
 
       {/* Tilarivi */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
         {G.players.map((p, i) => (
           <div key={p.id} style={{ fontFamily: 'sans-serif', fontSize: 11, padding: '4px 10px', borderRadius: 16, border: `1px solid ${curIdx === i ? C.gold + '55' : C.panelBorder}`, color: curIdx === i ? C.gold : C.dim, background: curIdx === i ? C.gold + '08' : 'transparent' }}>
             {p.name}{curIdx === i ? ' ●' : ''}

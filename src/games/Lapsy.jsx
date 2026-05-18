@@ -9,8 +9,8 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames() {
-  const a = [...AI_NAMES];
+function shuffledAINames(pool) {
+  const a = [...(pool || AI_NAMES)];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -33,9 +33,9 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true }) {
+export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
   const [screen, setScreen] = useState('select');
-  const [nP, setNP]         = useState(3);
+  const [nP, setNP]         = useState(4);
   const [soundOn, setSnd]   = useState(initSoundOn);
   const [phase, setPhase]   = useState('idle');
   const [center, setCenter] = useState([]);
@@ -45,7 +45,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const [msg, setMsg]       = useState('');
   const [log, setLog]       = useState([]);
   const cardBack = 'ilves';
-  const [logOpen, setLO]    = useState(hints);
+  const [logOpen, setLO]    = useState(isMobile ? false : hints);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [shuffling, setShuffling] = useState(false);
   const [slapResult, setSR]   = useState(null);
@@ -53,7 +53,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const [failReveal, setFR]  = useState(null);
   const [flipAnim,  setFA]   = useState(null); // { playerIdx, card }
   const [cardBackState]      = [cardBack];
-  const [aiNames]            = useState(() => shuffledAINames());
+  const [aiNames]            = useState(() => shuffledAINames(playerNames));
   const [currentMoment, setCurrentMoment] = useState(null);
 
   const pilesRef     = useRef([]);
@@ -160,6 +160,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   function nextTurn(fromIdx, newPiles, newCenter, ch) {
+    const activeNow = newPiles.filter(p => p.length > 0);
+    if (activeNow.length <= 1) { checkGameOver(newPiles); return; }
     if (ch) {
       const target = ch.targetIdx;
       if (newPiles[target].length === 0) {
@@ -378,7 +380,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         <span style={{ color: C.gold, fontWeight: 700 }}>Pelitapa</span><br />
         Kortit jaetaan tasan. Pelaajat kääntävät vuorotellen pinonsa päällimmäisen pöydälle kasaan, mutta sitten voi tapahtua kaksi asiaa.<br /><br />
         <strong style={{ fontSize: 11 }}>1. Täsmäys:</strong> Kaksi päällimmäistä korttia oli samanarvoisia → nopein läpsääjä voittaa kasan.<br /><br />
-        <strong style={{ fontSize: 11 }}>2. Erityiskortit (J, Q, K, A):</strong> Puolustajalla on 1–4 mahdollisuutta vetää erityiskortti. Jos epäonnistuu → haastaja voittaa. Jos onnistuu → haastaa seuraavan. Voi sattua myös täsmäys → nopein voittaa.
+        <strong style={{ fontSize: 11 }}>2. Erityiskortit (J, Q, K, A):</strong> Puolustajalla on 1–4 mahdollisuutta vetää erityiskortti. Jos epäonnistuu → haastaja voittaa. Jos onnistuu → haastaa seuraavan. Voi sattua myös täsmäys → nopein voittaa.<br /><br />
+        <strong style={{ fontSize: 11, color: C.gold }}>Voittaja:</strong> Se pelaaja, jolla on kortit kun muilla ei ole.
       </div>
       <div style={{ textAlign: 'center' }}>
         <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.red},#8a1500)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: C.text, fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
@@ -390,13 +393,19 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
       <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
-        {piles.map((p, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 12, background: p.length > 0 ? C.red + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${p.length > 0 ? C.red + '55' : C.panelBorder}` }}>
-            <span style={{ fontSize: 20 }}>{p.length > 0 ? '🏆' : '💀'}</span>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1 }}>{pName(i)}</span>
-            <span style={{ color: C.gold, fontWeight: 700, fontFamily: 'sans-serif' }}>{p.length} korttia</span>
-          </div>
-        ))}
+        {piles.map((p, i) => {
+          const isWinner = p.length > 0;
+          return (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 12, background: isWinner ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${isWinner ? C.gold + '55' : C.panelBorder}` }}>
+              <span style={{ fontSize: 20 }}>{isWinner ? '🏆' : '💀'}</span>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: isWinner ? C.gold : C.dim }}>{pName(i)}</span>
+              {isWinner
+                ? <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, fontWeight: 700 }}>VOITTO — {p.length} korttia</span>
+                : <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>0 korttia</span>
+              }
+            </div>
+          );
+        })}
       </div>
       <div style={{ display: 'flex', gap: 12 }}>
         <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.red},#8a1500)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: C.text, fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
@@ -414,14 +423,14 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const ch = challenge;
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 520, margin: '0 auto', paddingBottom: 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 520, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: '12px 16px', marginBottom: 12, height: 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>{isMatch ? '👋' : '🃏'}</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: isMobile ? 6 : 12, flexWrap: 'wrap' }}>
         {piles.slice(1).map((pile, i) => {
           const pi = i + 1;
           return (
@@ -448,7 +457,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         })}
       </div>
 
-      <div style={{ height: 36, marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+      <div style={{ height: isMobile ? 28 : 36, marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
         {bestMs !== null && (
           <div style={{ fontFamily: 'monospace', fontSize: 11, color: C.gold, opacity: 0.7, letterSpacing: 1 }}>
             ⚡ paras {bestMs} ms
@@ -462,7 +471,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         )}
       </div>
 
-      <div style={{ height: 46, marginBottom: 10 }}>
+      <div style={{ height: isMobile ? 34 : 46, marginBottom: isMobile ? 4 : 10 }}>
         {failReveal && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 14px', background: 'rgba(224,92,59,0.08)', border: `1px solid ${C.red}44`, borderRadius: 10, animation: 'fadeIn 0.25s ease' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.red, flexShrink: 0 }}>{pName(failReveal.winner)} voitti haasteen! {pName(failReveal.winner)} voitti {failReveal.n} {kk(failReveal.n)}.</span>
@@ -471,7 +480,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 28, marginBottom: 16, padding: '14px 0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: isMobile ? 16 : 28, marginBottom: isMobile ? 8 : 16, padding: isMobile ? '6px 0' : '14px 0' }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 8, letterSpacing: 1.5 }}>KASA — {center.length} kpl</div>
           <div style={{ position: 'relative', width: 82, height: 130, margin: '0 auto' }}>
@@ -524,12 +533,12 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-          <button onClick={humanSlap} style={{ width: 108, height: 108, borderRadius: 54, background: isMatch ? `radial-gradient(circle at 40% 35%,${C.red}dd,#7a1500)` : `radial-gradient(circle at 40% 35%,#2a4a32,#0d2118)`, border: `3px solid ${isMatch ? C.red : C.panelBorder}`, color: isMatch ? C.text : C.dim, fontSize: 32, cursor: 'pointer', boxShadow: isMatch ? `0 0 32px ${C.red}88` : '0 4px 14px rgba(0,0,0,0.4)', transition: 'all 0.15s', animation: isMatch ? 'slapPulse 0.7s ease infinite' : 'none' }}>👋</button>
+          <button onClick={humanSlap} style={{ width: isMobile ? 80 : 108, height: isMobile ? 80 : 108, borderRadius: isMobile ? 40 : 54, background: isMatch ? `radial-gradient(circle at 40% 35%,${C.red}dd,#7a1500)` : `radial-gradient(circle at 40% 35%,#2a4a32,#0d2118)`, border: `3px solid ${isMatch ? C.red : C.panelBorder}`, color: isMatch ? C.text : C.dim, fontSize: isMobile ? 24 : 32, cursor: 'pointer', boxShadow: isMatch ? `0 0 32px ${C.red}88` : '0 4px 14px rgba(0,0,0,0.4)', transition: 'all 0.15s', animation: isMatch ? 'slapPulse 0.7s ease infinite' : 'none' }}>👋</button>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isMatch ? C.red : C.dim, letterSpacing: 1.5, fontWeight: isMatch ? 700 : 400 }}>{isMatch ? 'LÄPSÄÄ!' : 'läpsää'}</span>
         </div>
       </div>
 
-      <div style={{ height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
+      <div style={{ height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: isMobile ? 4 : 8 }}>
         {slapResult && (
           <div style={{ padding: '4px 16px', background: '#4caf7d22', border: `1px solid #4caf7d66`, borderRadius: 20, fontFamily: 'sans-serif', fontSize: 12, color: '#88cc88' }}>
             {`${pName(slapResult.winner)} läpsäsi nopeiten${slapResult.ms ? ` (${slapResult.ms} ms)` : ''} — voitti ${slapResult.n || ''} korttia!`}
@@ -537,7 +546,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         )}
       </div>
 
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `2px solid ${humanTurn ? C.red + '66' : C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'border-color 0.2s' }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `2px solid ${humanTurn ? C.red + '66' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'border-color 0.2s' }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: humanTurn ? C.red : C.dim, marginBottom: 6 }}>👤 Hero{curTurn === 0 ? ' ●' : ''}</div>
           <div>
@@ -553,7 +562,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>Käännä →</button>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
           {phase === 'match' ? '⚡ Täsmäys!' : ch ? `📣 Haaste (${ch.cardsLeft})` : `Vuoro: ${pName(curTurn)}`}
         </span>

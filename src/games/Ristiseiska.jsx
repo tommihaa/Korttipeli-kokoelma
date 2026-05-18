@@ -15,8 +15,8 @@ import MomentFeedback from '../shared/MomentFeedback.jsx';
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames() {
-  const a = [...AI_NAMES];
+function shuffledAINames(pool) {
+  const a = [...(pool || AI_NAMES)];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -64,8 +64,8 @@ function initRows() {
   return rows;
 }
 
-function initGame(nP) {
-  const aiNames = shuffledAINames();
+function initGame(nP, pool) {
+  const aiNames = shuffledAINames(pool);
   const deck = mkDeck();
   const per  = Math.floor(52 / nP);
   const players = Array.from({ length: nP }, (_, i) => ({
@@ -133,7 +133,7 @@ function aiBestCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true }) {
+export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, isMobile = false, playerNames }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(4);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -141,7 +141,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const [G,        setG]       = useState(null);
   const [msg,      setMsg_]    = useState('');
   const [log,      setLog]     = useState([]);
-  const [logOpen,  setLO]      = useState(hints);
+  const [logOpen,  setLO]      = useState(isMobile ? false : hints);
   const [selCard,  setSel]     = useState(null);
   const [debugOpen,setDebug]   = useState(initSeeAll);
   const [shuffling, setShuffling] = useState(false);
@@ -178,7 +178,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
   function startGame() {
     clearTimeout(aiTmr.current);
-    const g = initGame(nP);
+    const g = initGame(nP, playerNames);
     logRef.current = []; setLog([]); setSel(null); setLastPlay(null);
     setGS(g);
     const s = g.players[g.activePlayer];
@@ -241,18 +241,18 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       return;
     }
 
-    // A kaataa ala-pinon, K kaataa ylä-pinon → jatkaa
-    const gaveBonus = v === 1 || v === 13;
+    // A kaataa ala-pinon, K kaataa ylä-pinon → jatkaa (ei bonusta jos kortit loppuivat)
+    const gaveBonus = (v === 1 || v === 13) && !finished.includes(playerIdx);
     const g2 = { ...g, players, rows, finished, bonusTurn: gaveBonus ? playerIdx : null };
     if (gaveBonus) {
       setGS(g2);
-      const suitName = { '♠': 'Pata', '♥': 'Sydän', '♦': 'Ruutu', '♣': 'Risti' }[card.s];
+      const suitGen = { '♠': 'Padan', '♥': 'Hertan', '♦': 'Ruudun', '♣': 'Ristin' }[card.s];
       const pileName = v === 1 ? 'ala-pinon' : 'ylä-pinon';
       if (!p.isHuman) {
-        addLog(`${p.name}: Kaatoi ${suitName}n ${pileName} — voi jatkaa!`);
+        addLog(`${p.name}: Kaatoi ${suitGen} ${pileName} — voi jatkaa!`);
         aiTmr.current = setTimeout(() => runAI(g2), 900);
       } else {
-        addLog(`Kaadoit ${suitName}n ${pileName}. Saat jatkaa - jos voit ja haluat.`);
+        addLog(`Kaadoit ${suitGen} ${pileName}. Saat jatkaa — jos voit ja haluat.`);
       }
       return;
     }
@@ -450,6 +450,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
   const StackRow = ({ suit, showPlayHints }) => {
     const row = G.rows[suit];
+    const cW = isMobile ? 46 : 60;
+    const cH = isMobile ? 66 : 85;
     const sc  = suitColor(suit);
     // ♠ = #1a1a1a on näkymätön tummalla taustalla → käytetään vaalempaa mustaa
     const tc  = suit === '♠' ? '#333333' : sc;
@@ -473,10 +475,10 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
     // Näytä ala-pino (pelattuna tai seisova)
     const lowerPile = lowerActive ? (
-      <div style={{ position: 'relative', width: 60, height: 85, flexShrink: 0 }}>
+      <div style={{ position: 'relative', width: cW, height: cH, flexShrink: 0 }}>
         {/* Pino näkyy pinnalla olevana korttina */}
         <div style={{
-          position: 'absolute', width: 60, height: 85, borderRadius: 6,
+          position: 'absolute', width: cW, height: cH, borderRadius: 6,
           background: lowerComplete ? BACKS[cardBack].bg : '#f8f2e6',
           border: `2px solid ${lowerComplete ? BACKS[cardBack].border : tc}`,
           left: 0, top: 0,
@@ -492,7 +494,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         </div>
       </div>
     ) : (
-      <div style={{ width: 60, height: 85, flexShrink: 0, borderRadius: 6, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.gold}44`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia,serif', fontWeight: 700, color: `${C.gold}33`, opacity: 0.5, boxShadow: lowerPlayable ? `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88` : undefined }}>
+      <div style={{ width: cW, height: cH, flexShrink: 0, borderRadius: 6, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.gold}44`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia,serif', fontWeight: 700, color: `${C.gold}33`, opacity: 0.5, boxShadow: lowerPlayable ? `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88` : undefined }}>
         <div style={{ fontSize: 16 }}>6</div>
         <div style={{ fontSize: 12 }}>{suit}</div>
       </div>
@@ -500,9 +502,9 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
     // Näytä ylä-pino (pelattuna tai seisova)
     const upperPile = upperActive ? (
-      <div style={{ position: 'relative', width: 60, height: 85, flexShrink: 0 }}>
+      <div style={{ position: 'relative', width: cW, height: cH, flexShrink: 0 }}>
         <div style={{
-          position: 'absolute', width: 60, height: 85, borderRadius: 6,
+          position: 'absolute', width: cW, height: cH, borderRadius: 6,
           background: upperComplete ? BACKS[cardBack].bg : '#f8f2e6',
           border: `2px solid ${upperComplete ? BACKS[cardBack].border : tc}`,
           left: 0, top: 0,
@@ -518,7 +520,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         </div>
       </div>
     ) : (
-      <div style={{ width: 60, height: 85, flexShrink: 0, borderRadius: 6, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.gold}44`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia,serif', fontWeight: 700, color: `${C.gold}33`, opacity: 0.5, boxShadow: upperPlayable ? `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88` : undefined }}>
+      <div style={{ width: cW, height: cH, flexShrink: 0, borderRadius: 6, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.gold}44`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia,serif', fontWeight: 700, color: `${C.gold}33`, opacity: 0.5, boxShadow: upperPlayable ? `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88` : undefined }}>
         <div style={{ fontSize: 16 }}>8</div>
         <div style={{ fontSize: 12 }}>{suit}</div>
       </div>
@@ -599,7 +601,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
           {upperPile}
           {row.active ? (
             <div style={{
-              width: 60, height: 85, flexShrink: 0, borderRadius: 6,
+              width: cW, height: cH, flexShrink: 0, borderRadius: 6,
               background: '#f8f2e6',
               border: `2px solid ${tc}`,
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -612,7 +614,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
             </div>
           ) : (
             <div style={{
-              width: 60, height: 85, flexShrink: 0, borderRadius: 6,
+              width: cW, height: cH, flexShrink: 0, borderRadius: 6,
               background: 'rgba(255,255,255,0.02)',
               border: `1px dashed ${C.gold}44`,
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -640,18 +642,18 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   };
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: '14px 16px', maxWidth: 620, margin: '0 auto', paddingBottom: 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 620, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viesti */}
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '12px 16px', marginBottom: 12, minHeight: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0, color: C.gold }}>♣</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
       {/* Pelaajastatus */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         {G.players.map((p, i) => {
           const isActive = G.activePlayer === i;
           const isDone   = G.finished.includes(i);
@@ -666,33 +668,47 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
       {/* AI-kädet */}
       {G.players.filter((_, i) => i !== 0).length > 0 && (
-        <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
-          {G.players.filter((_, i) => i !== 0).map(p => {
-            const isActive = G.activePlayer === p.id;
-            const isDone   = G.finished.includes(p.id);
-            return (
-              <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: isDone ? 0.35 : 1 }}>
-                <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 4 }}>
-                  {isActive ? '► ' : '🤖 '}{p.name}
+        isMobile ? (
+          <div style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
+            {G.players.filter((_, i) => i !== 0).map(p => {
+              const isActive = G.activePlayer === p.id;
+              const isDone   = G.finished.includes(p.id);
+              return (
+                <div key={p.id} style={{ padding: '3px 8px', borderRadius: 8, fontFamily: 'sans-serif', fontSize: 11, background: isActive ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, color: isActive ? C.gold : C.dim, opacity: isDone ? 0.4 : 1 }}>
+                  {isActive ? '► ' : '🤖 '}{p.name} — {p.hand.length}k
                 </div>
-                <div style={{ display: 'flex', gap: 2, justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
-                  {debugOpen
-                    ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
-                    : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, flexShrink: 0 }} />)
-                  }
+              );
+            })}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
+            {G.players.filter((_, i) => i !== 0).map(p => {
+              const isActive = G.activePlayer === p.id;
+              const isDone   = G.finished.includes(p.id);
+              return (
+                <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: isDone ? 0.35 : 1 }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 4 }}>
+                    {isActive ? '► ' : '🤖 '}{p.name}
+                  </div>
+                  <div style={{ display: 'flex', gap: 2, justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
+                    {debugOpen
+                      ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
+                      : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, flexShrink: 0 }} />)
+                    }
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )
       )}
 
       {/* Pöytä: pinot */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 16px', marginBottom: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '14px 16px', marginBottom: isMobile ? 4 : 10 }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, marginBottom: 12 }}>
           PÖYTÄ · ala-pino [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; ylä-pino [8→K]
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? 6 : 16 }}>
           {SUITS.map(s => <StackRow key={s} suit={s} showPlayHints={showPlayHints} />)}
         </div>
       </div>
@@ -765,7 +781,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
               ? () => humanGiveCard(c)
               : (isMyTurn || isBonusTurn) ? () => humanSelect(c) : undefined;
             return (
-              <Card key={c.id} card={c} large
+              <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
                 dim={!!dimmed}
