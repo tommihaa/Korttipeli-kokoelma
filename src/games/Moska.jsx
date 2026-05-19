@@ -139,7 +139,13 @@ function getAddable(g, playerIdx) {
   const byLimit   = 6 - g.table.length;           // hyökkäyskortteja enintään 6 yhteensä
   const maxAdd = Math.min(byDefHand, byLimit);
   if (maxAdd <= 0 || !tableRanks.size) return [];
-  return g.players[playerIdx].hand.filter(c => tableRanks.has(c.r)).slice(0, maxAdd);
+  return g.players[playerIdx].hand.filter(c => tableRanks.has(c.r));
+}
+
+function getMaxAdd(g) {
+  const def = g.players[g.defender];
+  const unbeaten = g.table.filter(t => !t.def).length;
+  return Math.min(def.hand.length - unbeaten, 6 - g.table.length);
 }
 
 // ── Komponentti ───────────────────────────────────────────────
@@ -776,11 +782,15 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
   function humanToggleAdd(card) {
     if (!G || G.phase !== 'add' || G.addQueue?.[0] !== 0) return;
-    const addable = getAddable(gRef.current, 0);
+    const g = gRef.current;
+    const addable = getAddable(g, 0);
     if (!addable.find(c => c.id === card.id)) return;
+    const maxAdd = getMaxAdd(g);
     setSelAdd(prev => {
       const has = prev.find(c => c.id === card.id);
-      return has ? prev.filter(c => c.id !== card.id) : [...prev, card];
+      if (has) return prev.filter(c => c.id !== card.id);
+      if (prev.length >= maxAdd) return prev;
+      return [...prev, card];
     });
   }
 

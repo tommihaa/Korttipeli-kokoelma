@@ -119,17 +119,50 @@ function sortHand(hand) {
   });
 }
 
-// AI: seiskat ensin, sitten vältä porttikortteja (6 ja 8) kiusaamiseksi,
+// Montako korttia käsikorteista on samaa maata kuin annettu kortti
+function suitCount(hand, suit) { return hand.filter(c => c.s === suit).length; }
+
+// Kuinka monen kortin päässä kortti on pelattavaksi (0 = pelattavissa nyt)
+function distanceToPlay(card, rows) {
+  const row = rows[card.s];
+  if (!row.active) return 99;
+  const v = rv(card);
+  if (v < row.low) return row.low - v;
+  if (v > row.high) return v - row.high;
+  return 0;
+}
+
+// AI: seiskat ensin (priorisoi maa jossa on eniten omia kortteja),
+// porttikortteja (6 ja 8) pihdetään vain jos samaa maata on kädessä 1 kpl,
 // muuten pienin arvo.
 function aiBestCard(hand, rows) {
   const valid = hand.filter(c => isPlayable(c, rows));
   if (!valid.length) return null;
+
   const sevens = valid.filter(c => c.r === '7');
-  if (sevens.length) return sevens[0];
-  const nonGates = valid.filter(c => c.r !== '6' && c.r !== '8');
+  if (sevens.length) {
+    return sevens.sort((a, b) => suitCount(hand, b.s) - suitCount(hand, a.s))[0];
+  }
+
+  // Porttikorttia (6 tai 8) ei pidätellä jos samaa maata on useampi kortti kädessä
+  const nonGates = valid.filter(c => {
+    if (c.r !== '6' && c.r !== '8') return true;
+    return suitCount(hand, c.s) <= 1;
+  });
+
   const pool = nonGates.length ? nonGates : valid;
   pool.sort((a, b) => rv(a) - rv(b));
   return pool[0];
+}
+
+// Korttipanttiin annetaan huonoin kortti: kauimpana pelattavuudesta,
+// toissijainen kriteeri: maa jossa on vähiten omia kortteja (yksinäinen kortti)
+function aiWorstCard(hand, rows) {
+  return [...hand].sort((a, b) => {
+    const da = distanceToPlay(a, rows), db = distanceToPlay(b, rows);
+    if (db !== da) return db - da;
+    return suitCount(hand, a.s) - suitCount(hand, b.s);
+  })[0];
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
@@ -202,7 +235,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     if (!g.players[nextIdx].isHuman) {
       aiTmr.current = tm(() => runAI(g2), 1100 + Math.random() * 400);
     } else {
-      addLog('Sinun vuorosi.');
+      const canPlay = hasAnyPlay(g.players[nextIdx].hand, g2.rows);
+      addLog(canPlay ? 'Sinun vuorosi.' : 'Sinun vuorosi. Mikään korttisi ei käy, joten Passaa.');
     }
   }
 
@@ -286,8 +320,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     let players = g.players;
     if (giverIdx !== -1) {
       const giver    = g.players[giverIdx];
-      const unusable = giver.hand.filter(c => !isPlayable(c, g.rows));
-      const toGive   = unusable.length ? unusable[unusable.length - 1] : giver.hand[giver.hand.length - 1];
+      const toGive = aiWorstCard(giver.hand, g.rows);
       players = g.players.map((pl, i) => {
         if (i === giverIdx)  return { ...pl, hand: pl.hand.filter(c => c.id !== toGive.id) };
         if (i === playerIdx) return { ...pl, hand: [...pl.hand, toGive] };
@@ -727,32 +760,16 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         )}
       </div>
 
-      {/* Jatkavuoro-banneri */}
-      {isBonusTurn && (
-        <div style={{ background: 'rgba(201,168,76,0.1)', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontSize: 20 }}>⭐</span>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.gold, flex: 1 }}>Voit jatkaa! Pelaa vielä yksi kortti tai lopeta.</span>
-          <button onClick={humanEndBonusTurn} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 8, padding: '7px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Lopeta</button>
-        </div>
-      )}
 
       {/* Kortinanto-banneri */}
       {isGiving && (
         <div style={{ background: 'rgba(224,92,59,0.1)', border: `1px solid ${C.red}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 8 }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.red }}>
-            {G.players[G.givingCardTo].name} passaa — klikkaa kortti jonka haluat antaa.
+            {G.players[G.givingCardTo].name} passaa — valitse annettava kortti.
           </span>
         </div>
       )}
 
-      {/* Ohje */}
-      {isMyTurn && !isBonusTurn && !isGiving && (
-        <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, marginBottom: 8, fontStyle: 'italic' }}>
-          {iCanPlay
-            ? 'Valitse pelattava kortti (kultareuniset paikat) ja klikkaa Lyö.'
-            : 'Sinun vuorosi, mutta mikään korttisi ei käy, joten Passaa.'}
-        </div>
-      )}
 
       {/* Oma käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn || isGiving ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10, transition: 'border-color 0.2s' }}>
@@ -769,7 +786,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
               ? () => humanGiveCard(c)
               : (isMyTurn || isBonusTurn) ? () => humanSelect(c) : undefined;
             return (
-              <Card key={c.id} card={c} large={!isMobile} small={isMobile}
+              <Card key={c.id} card={c} small
                 selected={isSel}
                 highlight={!!hl}
                 dim={!!dimmed}
@@ -794,6 +811,9 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
                 style={{ background: iCanPass ? 'rgba(224,92,59,0.1)' : 'rgba(255,255,255,0.02)', border: `1px solid ${iCanPass ? C.red + '55' : C.panelBorder}`, borderRadius: 10, padding: '10px 18px', color: iCanPass ? C.red : C.dim, fontSize: 13, cursor: iCanPass ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
                 Passaa
               </button>
+            )}
+            {isBonusTurn && (
+              <button onClick={humanEndBonusTurn} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 10, padding: '10px 16px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Lopeta</button>
             )}
             {selCard && (
               <button onClick={() => setSel(null)} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
