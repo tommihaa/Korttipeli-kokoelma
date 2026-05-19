@@ -11,8 +11,10 @@ import Ristiseiska from './games/Ristiseiska.jsx';
 import Paskahousu from './games/Paskahousu.jsx';
 import Admin from './Admin.jsx';
 
-const LAITURI_SPECIAL = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu'];
-const ONNEN_JUMALAT   = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
+const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu'];
+const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
+const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
+const KANSA            = ['Astraalitason tirehtööri','Boomer','Jonne','Justiina','Karen','Kukkahattutäti','Lumihiutale','NPC','Rane','Random','Setämies','Veeti'];
 
 const PAKKA = {
   jaettu:     { badge: 'Kaikki jaetaan',  label: 'Kaikki kortit jaetaan käsikorteiksi',                              icon: '🃏', color: '#4caf7d' },
@@ -152,7 +154,10 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePop);
   }, []);
 
-  const playerPool = playerGroup === 'laituri' ? LAITURI_SPECIAL : ONNEN_JUMALAT;
+  const playerPool = playerGroup === 'laituri' ? LAITURI_SPECIAL
+    : playerGroup === 'jumalat'  ? ONNEN_JUMALAT
+    : playerGroup === 'puolue'   ? IHMISTEN_PUOLUE
+    : KANSA;
 
   function recordResult(gameId, heroWon) {
     setStats(prev => ({
@@ -310,8 +315,10 @@ export default function App() {
           </p>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
             {[
-              { key: 'laituri', label: '🏖 Laituri-special', pool: LAITURI_SPECIAL },
-              { key: 'jumalat', label: '⚡ Onnen jumalat', pool: ONNEN_JUMALAT },
+              { key: 'laituri', label: '🏖 Laituri-special',    pool: LAITURI_SPECIAL  },
+              { key: 'jumalat', label: '⚡ Onnen jumalat',       pool: ONNEN_JUMALAT    },
+              { key: 'puolue',  label: '🗳 Ihmisten puolue',     pool: IHMISTEN_PUOLUE  },
+              { key: 'kansa',   label: '🧑‍🤝‍🧑 Kansa',              pool: KANSA            },
             ].map(({ key, label, pool }) => (
               <button
                 key={key}
