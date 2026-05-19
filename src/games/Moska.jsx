@@ -151,7 +151,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const [G, setG] = useState(null);
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(isMobile ? false : hints);
+  const [logOpen, setLO] = useState(hints);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
@@ -1122,7 +1122,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (
-          <div style={{ maxHeight: 200, overflowY: 'auto' }}>
+          <div>
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(224,92,59,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>

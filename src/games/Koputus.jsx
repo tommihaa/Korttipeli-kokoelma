@@ -117,7 +117,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const [specState, setSS]      = useState(null);
   const [lastSwap, setLastSwap] = useState(null);
   const [soundOn, setSoundOn]   = useState(initSoundOn);
-  const [logOpen, setLogOpen]   = useState(isMobile ? false : hints);
+  const [logOpen, setLogOpen]   = useState(hints);
   const cardBack = 'ilves';
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
@@ -709,7 +709,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
           <span style={{ fontSize: 14, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (
-          <div style={{ maxHeight: 280, overflowY: 'auto' }}>
+          <div>
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '5px 14px', borderBottom: '1px solid rgba(42,74,50,0.3)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>

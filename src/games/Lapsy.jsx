@@ -45,7 +45,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const [msg, setMsg]       = useState('');
   const [log, setLog]       = useState([]);
   const cardBack = 'ilves';
-  const [logOpen, setLO]    = useState(isMobile ? false : hints);
+  const [logOpen, setLO]    = useState(hints);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [shuffling, setShuffling] = useState(false);
   const [slapResult, setSR]   = useState(null);
@@ -605,7 +605,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (
-          <div style={{ maxHeight: 280, overflowY: 'auto' }}>
+          <div>
             {log.map((e, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,26,26,0.5)', background: i === 0 ? 'rgba(200,50,30,0.04)' : 'transparent' }}>
                 <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>

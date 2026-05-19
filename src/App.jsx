@@ -11,7 +11,7 @@ import Ristiseiska from './games/Ristiseiska.jsx';
 import Paskahousu from './games/Paskahousu.jsx';
 import Admin from './Admin.jsx';
 
-const LAITURI_SPECIAL = ['Antti','Arto','Janus','Jens','Jokke','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Rebekka','Sanna','Sari','Simo','Tarja','Teemu'];
+const LAITURI_SPECIAL = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu'];
 const ONNEN_JUMALAT   = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
 
 const PAKKA = {
@@ -126,7 +126,7 @@ export default function App() {
   const [active, setActive]         = useState(null);
   const [showAdmin, setShowAdmin]   = useState(false);
   const [stats, setStats]           = useState(mkStats);
-  const [showLog, setShowLog]       = useState(true);
+  const [showLog, setShowLog]       = useState(() => window.innerWidth >= 600);
   const [soundOn, setSoundOn]       = useState(true);
   const [seeAll, setSeeAll]         = useState(false);
   const [showCounts, setShowCounts] = useState(true);
