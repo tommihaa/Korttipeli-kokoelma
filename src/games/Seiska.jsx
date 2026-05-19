@@ -142,10 +142,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const sndRef = useRef(true);
   const prevDeckRef = useRef(null);
   const prevRCRef   = useRef(0);
+  const tmrs   = useRef(new Set());
+  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => clearTimeout(aiTmr.current), []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
 
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
@@ -185,7 +187,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     if (g.players[0].isHuman) {
       addLog(`Sinun vuorosi — lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`);
     } else {
-      aiTmr.current = setTimeout(() => runAI(g), 3100);
+      aiTmr.current = tm(() => runAI(g), 3100);
     }
   }
 
@@ -230,7 +232,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const g3 = { ...g2, activePlayer: nextIdx, drawsThisTurn: 0 };
     setGS(g3);
     if (!g3.players[nextIdx].isHuman) {
-      aiTmr.current = setTimeout(() => runAI(g3), 1200 + Math.random() * 400);
+      aiTmr.current = tm(() => runAI(g3), 1200 + Math.random() * 400);
     } else if (hints) {
       const cl = g3.reqSuit
         ? `Vaadittu maa: ${coloredSuit(g3.reqSuit)} — lyö ${coloredSuit(g3.reqSuit)}-maa tai nosta.`
@@ -278,7 +280,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     }
 
     setJP(card.id);
-    setTimeout(() => setJP(null), 2200);
+    tm(() => setJP(null), 2200);
 
     // Seiska: valitse maa
     if (card.r === '7') {
@@ -314,7 +316,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       }
       addLog(`Ässä! ${isH ? 'Sinä voit' : `${p.name} voi`} jatkaa ${card.s}-maalla.`);
       setGS(g2);
-      if (!p.isHuman) aiTmr.current = setTimeout(() => runAI(gRef.current), 1600);
+      if (!p.isHuman) aiTmr.current = tm(() => runAI(gRef.current), 1600);
       return;
     }
 
@@ -328,7 +330,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         g2 = { ...g2, pendingLappu: playerIdx };
         setGS(g2);
         // Anna ihmiselle 3 s aikaa sanoa Lappu ennen sakotusta
-        setTimeout(() => advanceTurn(gRef.current, playerIdx), 3000);
+        tm(() => advanceTurn(gRef.current, playerIdx), 3000);
       }
     } else {
       advanceTurn(g2, playerIdx);
@@ -362,13 +364,13 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       const pName = g2.players[playerIdx].name;
       if (valid) {
         addLog(`${pName} nostaa.`);
-        aiTmr.current = setTimeout(() => doPlay(gRef.current, playerIdx, [drawn], null), 700);
+        aiTmr.current = tm(() => doPlay(gRef.current, playerIdx, [drawn], null), 700);
       } else if (draws < 3) {
         addLog(`${pName}: Nosto ei auta.`);
-        aiTmr.current = setTimeout(() => doDraw(gRef.current, playerIdx), 700);
+        aiTmr.current = tm(() => doDraw(gRef.current, playerIdx), 700);
       } else {
         addLog(`${pName}: Nostot eivät auttaneet.`);
-        aiTmr.current = setTimeout(() => advanceTurn(gRef.current, playerIdx), 700);
+        aiTmr.current = tm(() => advanceTurn(gRef.current, playerIdx), 700);
       }
     } else {
       addLog(`Nostat ${lbl(drawn)}.`);
@@ -376,7 +378,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         addLog(`${lbl(drawn)} on pelattavissa! Lyö se tai nosta uudelleen (${3 - draws} jäljellä).`);
       } else if (draws >= 3) {
         addLog('3 nostoa käytetty — vuoro päättyy automaattisesti.');
-        setTimeout(() => advanceTurn(gRef.current, playerIdx), 900);
+        tm(() => advanceTurn(gRef.current, playerIdx), 900);
       } else {
         addLog(`${lbl(drawn)} ei käy. Nosta uudelleen (${3 - draws} jäljellä) tai lopeta vuoro.`);
       }
@@ -462,7 +464,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     if (newHand.length === 1 && !g2.lappuSaid.has(0)) {
       const g3 = { ...g2, pendingLappu: 0 };
       setGS(g3);
-      setTimeout(() => advanceTurn(gRef.current, 0), 3000);
+      tm(() => advanceTurn(gRef.current, 0), 3000);
     } else {
       advanceTurn(g2, 0);
     }
@@ -476,7 +478,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     if (newHand.length === 1 && !g.lappuSaid.has(0)) {
       const g2 = { ...g, reqSuit: suit, phase: 'play', pendingLappu: 0 };
       setGS(g2);
-      setTimeout(() => advanceTurn(gRef.current, 0), 3000);
+      tm(() => advanceTurn(gRef.current, 0), 3000);
     } else {
       advanceTurn({ ...g, reqSuit: suit, phase: 'play' }, 0);
     }
@@ -585,57 +587,39 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
-      {/* Pelaajastatus */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
-        {G.players.map((p, i) => {
-          const isActive = G.activePlayer === i;
-          const isDone   = G.finished.includes(i);
-          const rank     = isDone ? G.finished.indexOf(i) + 1 : null;
-          return (
-            <div key={i} style={{ padding: '4px 10px', borderRadius: 20, fontFamily: 'sans-serif', fontSize: 11, background: isActive ? 'rgba(201,168,76,0.1)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, color: isActive ? C.gold : C.dim, opacity: isDone ? 0.5 : 1 }}>
-              {isActive ? '► ' : ''}{p.name}{isDone ? ` (${rank}.)` : ` — ${p.hand.length}k`}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* AI-kädet */}
+      {/* AI-kädet — viuhka */}
       {G.players.filter((_, i) => i !== 0).length > 0 && (
-        isMobile ? (
-          <div style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
-            {G.players.filter((_, i) => i !== 0).map(p => {
-              const isActive = G.activePlayer === p.id;
-              const isDone   = G.finished.includes(p.id);
-              const hasLappu = G.lappuSaid.has(p.id) && p.hand.length === 1;
-              return (
-                <div key={p.id} style={{ padding: '3px 8px', borderRadius: 8, fontFamily: 'sans-serif', fontSize: 11, background: isActive ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, color: isActive ? C.gold : C.dim, opacity: isDone ? 0.4 : 1 }}>
-                  {isActive ? '► ' : '🤖 '}{p.name} — {p.hand.length}k{hasLappu ? <span style={{ color: C.red }}> LAPPU</span> : ''}
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
-            {G.players.filter((_, i) => i !== 0).map(p => {
-              const isActive = G.activePlayer === p.id;
-              const isDone   = G.finished.includes(p.id);
-              return (
-                <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: isDone ? 0.35 : 1 }}>
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 4 }}>
-                    {isActive ? '► ' : '🤖 '}{p.name}
-                    {G.lappuSaid.has(p.id) && p.hand.length === 1 && <span style={{ color: C.red, marginLeft: 4 }}>LAPPU</span>}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: isMobile ? 4 : 8 }}>
+          {G.players.filter((_, i) => i !== 0).map(p => {
+            const isActive = G.activePlayer === p.id;
+            const isDone   = G.finished.includes(p.id);
+            const rank     = isDone ? G.finished.indexOf(p.id) + 1 : null;
+            const hasLappu = G.lappuSaid.has(p.id) && p.hand.length === 1;
+            const count = p.hand.length;
+            const cw = 20, ch = 30, ov = 10;
+            const fanW = count > 0 ? cw + Math.max(0, count - 1) * ov : cw;
+            return (
+              <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 70, flexShrink: 0 }}>
+                  {isActive ? '► ' : '🤖 '}{p.name}
+                  {hasLappu && <span style={{ color: C.red, marginLeft: 4 }}>LAPPU</span>}
+                  {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
+                </span>
+                {debugOpen ? (
+                  <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                    {p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)}
                   </div>
-                  <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-                    {debugOpen
-                      ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
-                      : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
-                    }
+                ) : isDone ? null : count === 0 ? null : (
+                  <div style={{ position: 'relative', width: fanW, height: ch, flexShrink: 0 }}>
+                    {Array.from({ length: count }).map((_, i) => (
+                      <div key={i} style={{ position: 'absolute', left: i * ov, top: 0, width: cw, height: ch, borderRadius: 3, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, zIndex: i, boxShadow: i === count - 1 ? '0 1px 4px rgba(0,0,0,0.4)' : 'none' }} />
+                    ))}
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
 
       {/* Pakka + lyöntipakka */}
@@ -772,9 +756,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
           </span>
           {' · '}{G.reqSuit ? `Vaadittu: ${G.reqSuit}` : `Päällimmäinen: ${lbl(G.discardTop)}`}
         </span>
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
         </div>
       </div>
 

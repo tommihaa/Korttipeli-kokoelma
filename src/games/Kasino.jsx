@@ -184,12 +184,14 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const aiTmr   = useRef(null);
   const logRef  = useRef([]);
   const sndRef  = useRef(false);
+  const tmrs    = useRef(new Set());
+  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => clearTimeout(aiTmr.current), []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -303,7 +305,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       const g3 = doLeave(g2, 0, p.hand[0]);
       setG(g3); gRef.current = g3;
       addLog(M.forcedLeave);
-      aiTmr.current = setTimeout(() => advance(g3, 0), 1200);
+      aiTmr.current = tm(() => advance(g3, 0), 1200);
       return;
     }
 
@@ -316,7 +318,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       addLog(M.yourTurn(korttia(p.hand.length), hint));
     } else {
       addLog(M.aiThinking(p.name));
-      aiTmr.current = setTimeout(() => runAI(next, g2), 1200 + Math.random() * 400);
+      aiTmr.current = tm(() => runAI(next, g2), 1200 + Math.random() * 400);
     }
   }
 
@@ -412,7 +414,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
 
     const newG = { ...g, players, table: newTable, lastCapture: playerIdx };
     if (sndRef.current) SFX.capture();
-    if (isMökki && sndRef.current) setTimeout(() => SFX.tikki(), 200);
+    if (isMökki && sndRef.current) tm(() => SFX.tikki(), 200);
     if (!silent) {
       const who = playerIdx === 0 ? 'Kaappasit' : `${g.players[playerIdx].name} kaappasi`;
       const groups = findGroups(tableCards, handVal(handCard));
@@ -431,7 +433,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     );
     const newG = { ...g, players, table: [...g.table, handCard] };
     setJP(handCard.id);
-    setTimeout(() => setJP(null), 2200);
+    tm(() => setJP(null), 2200);
     if (sndRef.current) SFX.leave();
     const who = playerIdx === 0 ? 'Jätit' : `${g.players[playerIdx].name} jätti`;
     addLog(M.humanLeave(who, lblColored(handCard)));
@@ -466,7 +468,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         const capturedStr = best.tableCards.map(lbl).join('+');
         addLog(M.warning(lblColored(best.handCard), capturedStr));
       }
-      setTimeout(() => advance(g2, 0), 600);
+      tm(() => advance(g2, 0), 600);
       return;
     }
     if (!isValidCapture(card, selTable)) {
@@ -478,7 +480,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     setCaptureAnim({ handCard: card, tableCards: captured });
     setSelTable([]);
     setPhase('idle'); phaseRef.current = 'idle';
-    aiTmr.current = setTimeout(() => {
+    aiTmr.current = tm(() => {
       setCaptureAnim(null);
       const g2 = doCapture(gRef.current, 0, card, captured);
       setG(g2); gRef.current = g2;
@@ -527,7 +529,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       addLog(M.aiCapture(p.name, lblColored(bestCapture.handCard), captureStr, bestCapture.isMokki));
       setCaptureAnim({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       setAiSel({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
-      aiTmr.current = setTimeout(() => {
+      aiTmr.current = tm(() => {
         setCaptureAnim(null);
         setAiSel({ handCard: null, tableCards: [] });
         const g2 = gRef.current;
@@ -539,11 +541,11 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
       const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
       const toLeave = [...leavePool].sort((a, b) => a.v - b.v)[0];
-      aiTmr.current = setTimeout(() => {
+      aiTmr.current = tm(() => {
         const g2 = gRef.current;
         const g3 = doLeave(g2, playerIdx, toLeave);
         setG(g3); gRef.current = g3;
-        setTimeout(() => advance(g3, playerIdx), 600);
+        tm(() => advance(g3, playerIdx), 600);
       }, 700 + Math.random() * 400);
     }
   }
@@ -811,12 +813,12 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
           <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> 16p · <span style={{ color: SUIT_COLOR['♦'], fontWeight: 700 }}>10♦</span>=2p · <span style={{ color: SUIT_COLOR['♠'], fontWeight: 700 }}>2♠</span>=1p · kukin ässä=1p · eniten kortteja=1p · eniten patoja=1p · kukin mökki=1p
         </span>
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-            {soundOn ? '🔊' : '🔇'}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+            {soundOn ? '🔊' : '🔇'} Ääni
           </button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-            {debugOpen ? '🙈' : '🔍'}
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+            {debugOpen ? '🙈' : '🔍'} Kortit
           </button>
         </div>
       </div>

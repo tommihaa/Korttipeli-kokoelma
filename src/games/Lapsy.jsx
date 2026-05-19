@@ -70,6 +70,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const aiSlapTmrs   = useRef([]);
   const failTmr      = useRef(null);
   const logRef       = useRef([]);
+  const tmrs         = useRef(new Set());
+  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { pilesRef.current = piles; }, [piles]);
   useEffect(() => { centerRef.current = center; }, [center]);
@@ -77,7 +79,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   useEffect(() => { curRef.current = curTurn; }, [curTurn]);
   useEffect(() => { chRef.current = challenge; }, [challenge]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => { clearTimeout(aiTmr.current); clearTimeout(failTmr.current); aiSlapTmrs.current.forEach(clearTimeout); }, []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(failTmr.current); aiSlapTmrs.current.forEach(clearTimeout); }, []);
 
   const addLog = useCallback(m => {
     const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
@@ -159,7 +161,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     addLog(M.gameStart);
     setScreen('game');
     setShuffling(true);
-    setTimeout(() => maybeAIFlip(0, initPiles, [], null), 2300);
+    tm(() => maybeAIFlip(0, initPiles, [], null), 2300);
   }
 
   function nextTurn(fromIdx, newPiles, newCenter, ch) {
@@ -173,7 +175,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         return;
       }
       setCur(target); curRef.current = target;
-      setTimeout(() => maybeAIFlip(target, newPiles, newCenter, ch), 100 + Math.random() * 80);
+      tm(() => maybeAIFlip(target, newPiles, newCenter, ch), 100 + Math.random() * 80);
       return;
     }
     const n = newPiles.length;
@@ -181,7 +183,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     while (newPiles[next].length === 0 && tries < n) { next = (next + 1) % n; tries++; }
     if (tries >= n) { checkGameOver(newPiles); return; }
     setCur(next); curRef.current = next;
-    setTimeout(() => maybeAIFlip(next, newPiles, newCenter, null), 500);
+    tm(() => maybeAIFlip(next, newPiles, newCenter, null), 500);
   }
 
   function maybeAIFlip(idx, piles, center, ch) {
@@ -189,7 +191,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     if (idx === 0) return;
     if (piles[idx].length === 0) { nextTurn(idx, piles, center, chRef.current); return; }
     const delay = ch ? 1000 : 800 + Math.random() * 100;
-    setTimeout(() => doFlip(idx, piles, center), delay);
+    tm(() => doFlip(idx, piles, center), delay);
   }
 
   function doFlip(playerIdx, curPiles, curCenter) {
@@ -201,7 +203,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     const newPiles = curPiles.map((p, i) => i === playerIdx ? pile : p);
     if (sndRef.current) SFX.flip();
     setFA({ playerIdx, card });
-    setTimeout(() => setFA(null), 1900);
+    tm(() => setFA(null), 1900);
     setPiles(newPiles); pilesRef.current = newPiles;
     setCenter(newCenter); centerRef.current = newCenter;
 
@@ -233,7 +235,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
           setCh(null); chRef.current = null;
           setFR({ card, winner: ch.byIdx, n: newCenter.length });
           clearTimeout(failTmr.current);
-          failTmr.current = setTimeout(() => { setFR(null); giveCenter(ch.byIdx, newPiles, newCenter, null); }, 1600);
+          failTmr.current = tm(() => { setFR(null); giveCenter(ch.byIdx, newPiles, newCenter, null); }, 1600);
         } else {
           const newCh = { ...ch, cardsLeft: left };
           setCh(newCh); chRef.current = newCh;
@@ -274,7 +276,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     aiSlapTmrs.current = piles.map((pile, i) => {
       if (i === 0 || pile.length === 0) return null;
       const delay = 600 + Math.random() * 2400;
-      return setTimeout(() => {
+      return tm(() => {
         if (phaseRef.current !== 'match') return;
         const ms = Math.round(performance.now() - matchTimeRef.current);
         doSlap(i, pilesRef.current, centerRef.current, ms);
@@ -298,14 +300,14 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       nextTurn(playerIdx, newPiles, newCenter, chRef.current);
       return;
     }
-    if (sndRef.current) { SFX.slap(); setTimeout(() => SFX.winPile(), 200); }
+    if (sndRef.current) { SFX.slap(); tm(() => SFX.winPile(), 200); }
     const n = curCenter.length;
     addLog(M.correctSlap(pName(playerIdx), ms, n));
     if (playerIdx === 0 && ms) {
       setBestMs(prev => prev === null || ms < prev ? ms : prev);
       if (ms < 400) detectMoment('epic_fast_slap', { ms });
     }
-    setSR({ winner: playerIdx, ms, n }); setTimeout(() => setSR(null), 2000);
+    setSR({ winner: playerIdx, ms, n }); tm(() => setSR(null), 2000);
     giveCenter(playerIdx, curPiles, curCenter, ms);
   }
 
@@ -347,7 +349,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
   function giveCenter(winnerIdx, curPiles, curCenter) {
     recentMatch.current = true;
-    setTimeout(() => { recentMatch.current = false; }, 800);
+    tm(() => { recentMatch.current = false; }, 800);
     const newPiles = curPiles.map((p, i) => i === winnerIdx ? [...p, ...[...curCenter].reverse()] : p);
     recordEliminated(newPiles);
     setPiles(newPiles); pilesRef.current = newPiles;
@@ -356,7 +358,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setPhase('idle'); phaseRef.current = 'idle';
     if (checkGameOver(newPiles)) return;
     setCur(winnerIdx); curRef.current = winnerIdx;
-    setTimeout(() => maybeAIFlip(winnerIdx, newPiles, [], null), 800);
+    tm(() => maybeAIFlip(winnerIdx, newPiles, [], null), 800);
   }
 
   function checkGameOver(piles) {
@@ -366,7 +368,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       const winner = piles.findIndex(p => p.length > 0);
       addLog(M.gameOver(winner >= 0 ? pName(winner) : null));
       onResult?.(winner === 0);
-      setTimeout(() => setScreen('gameover'), 1800);
+      tm(() => setScreen('gameover'), 1800);
       return true;
     }
     return false;
@@ -402,7 +404,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         <strong style={{ fontSize: 11, color: C.gold }}>Voittaja:</strong> Se pelaaja, jolla on kortit kun muilla ei ole.
       </div>
       <div style={{ textAlign: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.red},#8a1500)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: C.text, fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={startGame} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
       </div>
     </div>
   );
@@ -591,14 +593,9 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>Käännä →</button>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
-          {phase === 'match' ? '⚡ Täsmäys!' : ch ? `📣 Haaste (${ch.cardsLeft})` : `Vuoro: ${pName(curTurn)}`}
-        </span>
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
       </div>
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>

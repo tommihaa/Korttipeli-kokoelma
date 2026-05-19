@@ -140,13 +140,15 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   const logRef = useRef([]);
   const sndRef = useRef(false);
   const finRef = useRef([]);
+  const tmrs   = useRef(new Set());
+  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { tableRef.current = table; }, [table]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { finRef.current = finished; }, [finished]);
-  useEffect(() => () => clearTimeout(aiTmr.current), []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -232,7 +234,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     addLog(M.gameStart(g.trumpCard, g.players[g.attackerIdx].name, g.players[g.defenderIdx].name));
     setScreen('game');
     setShuffling(true);
-    aiTmr.current = setTimeout(() => maybeAIAttack(g), 3100 + Math.random() * 400);
+    aiTmr.current = tm(() => maybeAIAttack(g), 3100 + Math.random() * 400);
   }
 
   function drawHand(g, playerIdx) {
@@ -263,7 +265,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       onResult?.(active.length === 0 || active[0].id !== 0);
       setPhase('gameover'); phaseRef.current = 'gameover';
       setFinished(newFin); finRef.current = newFin;
-      setTimeout(() => setScreen('gameover'), 1800);
+      tm(() => setScreen('gameover'), 1800);
       return { done:true, fin:newFin };
     }
     return { done:false, fin:newFin };
@@ -293,7 +295,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     setPhase('attacking'); phaseRef.current = 'attacking';
     setFinished(fin); finRef.current = fin;
     addLog(M.newAttack(g4.players[newAtt].name, g4.players[newDef].name));
-    aiTmr.current = setTimeout(() => maybeAIAttack(g4), 1800);
+    aiTmr.current = tm(() => maybeAIAttack(g4), 1800);
   }
 
   function resolveDefenseWin(g, tbl, fin) {
@@ -325,7 +327,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     if (!g) g = gRef.current;
     if (!g || phaseRef.current !== 'attacking') return;
     if (g.players[g.attackerIdx].isHuman) return;
-    aiTmr.current = setTimeout(() => {
+    aiTmr.current = tm(() => {
       const g2 = gRef.current;
       const hand = g2.players[g2.attackerIdx].hand;
       const defHandSize = g2.players[g2.defenderIdx].hand.length;
@@ -370,14 +372,14 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     if (tbl.some(r => isMaija(r.att))) {
       addLog(M.maijaWarning);
     }
-    aiTmr.current = setTimeout(() => maybeAIDefend(g2, tbl), 1000 + Math.random() * 400);
+    aiTmr.current = tm(() => maybeAIDefend(g2, tbl), 1000 + Math.random() * 400);
   }
 
   function maybeAIDefend(g, tbl) {
     if (!g) g = gRef.current;
     if (!g || phaseRef.current !== 'defending') return;
     if (g.players[g.defenderIdx].isHuman) return;
-    aiTmr.current = setTimeout(() => {
+    aiTmr.current = tm(() => {
       const g2 = gRef.current;
       const tbl2 = tableRef.current;
       const defender = g2.players[g2.defenderIdx];
@@ -416,14 +418,14 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         }
         addLog(M.defenderWinRound(defName.id === 0 ? null : defName.name));
         if (sndRef.current) SFX.win();
-        setTimeout(() => resolveDefenseWin({ ...g2, players }, newTbl, finRef.current), 2200);
+        tm(() => resolveDefenseWin({ ...g2, players }, newTbl, finRef.current), 2200);
       } else {
         const n = g2.players[g2.defenderIdx];
         const msg = n.id===0
           ? M.defenderCannotWin(null, unbeaten.length)
           : `${n.name} kaataa ${newTbl.length - unbeaten.length}/${newTbl.length} — nostaa ${kortin(unbeaten.length)}.`;
         addLog(msg);
-        setTimeout(() => resolveDefenseLoss({ ...g2, players }, newTbl, finRef.current), 1500);
+        tm(() => resolveDefenseLoss({ ...g2, players }, newTbl, finRef.current), 1500);
       }
     }, 1000 + Math.random() * 400);
   }
@@ -478,7 +480,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     if (newTbl.every(r => r.def)) {
       addLog(M.defenderWinRoundNext);
       if (sndRef.current) SFX.win();
-      setTimeout(() => resolveDefenseWin(g2, newTbl, finRef.current), 1200);
+      tm(() => resolveDefenseWin(g2, newTbl, finRef.current), 1200);
     }
   }
 
@@ -630,7 +632,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
 
       {/* Pöytä */}
       <div style={{ background:'rgba(255,255,255,0.02)', border:`1px solid ${C.panelBorder}`,
-        borderRadius:14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 12, height: isMobile ? 140 : 200, overflow:'hidden' }}>
+        borderRadius:14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 12, minHeight: isMobile ? 170 : 220 }}>
         <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, marginBottom:8, letterSpacing:1.5 }}>
           PÖYTÄ — {phase==='attacking' ? 'hyökkäys' : 'puolustus'}
         </div>
@@ -739,27 +741,17 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
 
       {/* Tilarivi */}
       <div style={{ display:'flex', gap:6, flexWrap:'wrap', paddingTop:10,
-        borderTop:`1px solid ${C.panelBorder}`, alignItems:'center', marginBottom:12 }}>
-        {G.players.map((p, i) => (
-          <div key={p.id} style={{ fontFamily:'sans-serif', fontSize:11, padding:'4px 10px', borderRadius:16,
-            border:`1px solid ${G.attackerIdx===i ? C.red+'55' : G.defenderIdx===i ? C.blue+'55' : C.panelBorder}`,
-            color:G.attackerIdx===i ? C.red : G.defenderIdx===i ? C.blue : C.dim,
-            background:G.attackerIdx===i ? C.red+'08' : G.defenderIdx===i ? C.blue+'08' : 'transparent' }}>
-            {p.name} {G.attackerIdx===i ? '⚔' : G.defenderIdx===i ? '🛡' : ''}
-          </div>
-        ))}
-        <div style={{ marginLeft:'auto', display:'flex', gap:4, alignItems:'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize:10, padding:'3px 8px', borderRadius:12,
-            border:`1px solid ${soundOn ? C.gold+'55' : C.panelBorder}`,
-            background:'transparent', color:soundOn ? C.gold : C.dim, cursor:'pointer', fontFamily:'sans-serif' }}>
-            {soundOn ? '🔊' : '🔇'}
-          </button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize:10, padding:'3px 8px', borderRadius:12,
-            border:'1px solid #2a4a32', background:'transparent', color:C.dim,
-            cursor:'pointer', fontFamily:'sans-serif' }}>
-            {debugOpen ? '🙈' : '🔍'}
-          </button>
-        </div>
+        borderTop:`1px solid ${C.panelBorder}`, alignItems:'center', marginBottom:12, justifyContent:'flex-end' }}>
+        <button onClick={() => setSnd(s => !s)} style={{ fontSize:11, padding:'5px 10px', borderRadius:12,
+          border:`1px solid ${soundOn ? C.gold+'55' : C.panelBorder}`,
+          background:'transparent', color:soundOn ? C.gold : C.dim, cursor:'pointer', fontFamily:'sans-serif' }}>
+          {soundOn ? '🔊' : '🔇'} Ääni
+        </button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize:11, padding:'5px 10px', borderRadius:12,
+          border:`1px solid ${debugOpen ? C.gold+'55' : '#2a4a32'}`, background:'transparent',
+          color:debugOpen ? C.gold : C.dim, cursor:'pointer', fontFamily:'sans-serif' }}>
+          {debugOpen ? '🙈' : '🔍'} Kortit
+        </button>
       </div>
 
       {/* Loki */}

@@ -175,10 +175,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const logRef  = useRef([]);
   const sndRef  = useRef(false);
   const prevDeckRef = useRef(null);
+  const tmrs        = useRef(new Set());
+  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => clearTimeout(aiTmr.current), []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
 
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
@@ -304,7 +306,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     setScreen('game');
     setShuffling(true);
     if (!g.players[g.primaryAtk].isHuman) {
-      aiTmr.current = setTimeout(() => runAI(g), 3300);
+      aiTmr.current = tm(() => runAI(g), 3300);
     }
   }
 
@@ -430,8 +432,13 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           setMsg_('❌ Puolustus epäonnistui!');
         }
       } else {
-        // Ihminen hyökkäsi, näytä seuraava kierros
-        addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
+        // Ihminen hyökkäsi — näytä kierroksen tulos ennen seuraavaa kierrosta
+        const defName = players[g.defender].name;
+        if (defWon) {
+          setMsg_(`🛡️ ${defName} kaatoi kaikki!`);
+        } else {
+          setMsg_(`⚔️ Hyökkäys onnistui! ${defName} otti kortit.`);
+        }
       }
 
       setPendingDraw({ drawOrder, deck, tc, players, nextAtk, nextDef, g2 });
@@ -442,7 +449,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       setGS(g2);
       if (!players[nextAtk].isHuman) {
         // AI hyökkää seuraavaksi
-        aiTmr.current = setTimeout(() => runAI(g2), 1600 + Math.random() * 600);
+        aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 600);
       }
     }
   }
@@ -457,7 +464,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     if (sndRef.current) SFX.leave();
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
-    setTimeout(() => setJustPlaced(new Set()), 1800);
+    tm(() => setJustPlaced(new Set()), 1800);
     const g2 = { ...g, players, table: newTable, attackers: [atkIdx], phase: 'defend' };
     setGS(g2);
     goDefend(g2);
@@ -513,7 +520,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     addLog(`${act(p, 'lisäsit', 'lisäsi')}: ${cards.map(lblColored).join(', ')}.`);
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
-    setTimeout(() => setJustPlaced(new Set()), 1800);
+    tm(() => setJustPlaced(new Set()), 1800);
     const rest = (g.addQueue || []).slice(1);
     const g2 = {
       ...g, players, table: newTable,
@@ -522,7 +529,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     };
     setGS(g2);
     // Jatka lisäysvaiheen jonoa seuraavalle pelaajalle (phase pysyy 'add')
-    aiTmr.current = setTimeout(() => processAddQueue(gRef.current), 600);
+    aiTmr.current = tm(() => processAddQueue(gRef.current), 600);
   }
 
   // ── Puolustuskierros ──────────────────────────────────────
@@ -542,7 +549,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         ? `${def.name} puolustaa... (pöydällä: ${unbeatenCards.join(', ')})`
         : `${def.name} puolustaa...`;
       addLog(msg);
-      aiTmr.current = setTimeout(() => runAI(g), 1400 + Math.random() * 500);
+      aiTmr.current = tm(() => runAI(g), 1400 + Math.random() * 500);
     }
   }
 
@@ -602,7 +609,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       const rest = g.addQueue.slice(1);
       const g2 = { ...g, addQueue: rest };
       setGS(g2);
-      aiTmr.current = setTimeout(() => processAddQueue(g2), 200);
+      aiTmr.current = tm(() => processAddQueue(g2), 200);
       return;
     }
     if (p.isHuman) {
@@ -615,7 +622,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       if (shouldAdd) {
         const toAdd = addable.slice(0, 1);
         addLog(`${p.name} voi lisätä: ${addable.map(lblColored).join(', ')}`);
-        aiTmr.current = setTimeout(() => {
+        aiTmr.current = tm(() => {
           doAdd(gRef.current, next, toAdd);
         }, 900 + Math.random() * 300);
       } else {
@@ -623,7 +630,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         const rest = g.addQueue.slice(1);
         const g2 = { ...g, addQueue: rest };
         setGS(g2);
-        aiTmr.current = setTimeout(() => processAddQueue(g2), 600);
+        aiTmr.current = tm(() => processAddQueue(g2), 600);
       }
     }
   }
@@ -652,7 +659,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         const atkRanks = new Set(table.map(t => t.atk.r));
         const passCard = p.hand.find(c => atkRanks.has(c.r) && c.s !== ts);
         if (passCard && players.filter(pl => pl.rank === null).length > 2) {
-          aiTmr.current = setTimeout(() => {
+          aiTmr.current = tm(() => {
             doPass(gRef.current, [passCard]);
           }, 1000);
           return;
@@ -672,16 +679,16 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       }
 
       if (canBeatAll) {
-        aiTmr.current = setTimeout(() => {
+        aiTmr.current = tm(() => {
           let cur = gRef.current;
           for (const { atkId, defCard } of beats) {
             cur = doBeat(cur, atkId, defCard);
           }
           setGS(cur);
-          aiTmr.current = setTimeout(() => startAddPhase(cur), 700);
+          aiTmr.current = tm(() => startAddPhase(cur), 700);
         }, 900);
       } else {
-        aiTmr.current = setTimeout(() => {
+        aiTmr.current = tm(() => {
           resolveRound(gRef.current, false);
         }, 900 + Math.random() * 300);
       }
@@ -736,7 +743,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const stillUnbeaten = g2.table.filter(t => !t.def).length;
     if (stillUnbeaten === 0) {
       setGS(g2);
-      aiTmr.current = setTimeout(() => startAddPhase(gRef.current), 500);
+      aiTmr.current = tm(() => startAddPhase(gRef.current), 500);
     } else {
       setGS(g2);
     }
@@ -819,16 +826,20 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       setGS(g2Updated);
       setPendingDraw(null);
 
+      // Näytä seuraavan kierroksen viesti
+      const { nextDef } = pendingDraw;
+      addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
+
       // Aloita seuraava kierros
       if (!g2Updated.players[g2Updated.primaryAtk].isHuman) {
-        aiTmr.current = setTimeout(() => runAI(g2Updated), 1600 + Math.random() * 600);
+        aiTmr.current = tm(() => runAI(g2Updated), 1600 + Math.random() * 600);
       }
     } else {
       const g = gRef.current;
       if (!g || g.phase !== 'attack') return;
       // Aloita seuraava kierros
       if (!g.players[g.primaryAtk].isHuman) {
-        aiTmr.current = setTimeout(() => runAI(g), 1600 + Math.random() * 600);
+        aiTmr.current = tm(() => runAI(g), 1600 + Math.random() * 600);
       }
     }
   }
@@ -1102,20 +1113,13 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       </div>
 
       {/* Tilarivi */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
-        {G.players.map((p, i) => (
-          <div key={p.id} style={{ fontFamily: 'sans-serif', fontSize: 11, padding: '4px 10px', borderRadius: 16, border: `1px solid ${G.primaryAtk === i ? C.red + '55' : G.defender === i ? C.blue + '55' : C.panelBorder}`, color: G.primaryAtk === i ? C.red : G.defender === i ? C.blue : C.dim, background: G.primaryAtk === i ? C.red + '08' : G.defender === i ? C.blue + '08' : 'transparent' }}>
-            {p.name} {G.primaryAtk === i ? '⚔' : G.defender === i ? '🛡' : ''}
-          </div>
-        ))}
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-            {soundOn ? '🔊' : '🔇'}
-          </button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-            {debugOpen ? '🙈' : '🔍'}
-          </button>
-        </div>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10, justifyContent: 'flex-end' }}>
+        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+          {soundOn ? '🔊' : '🔇'} Ääni
+        </button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+          {debugOpen ? '🙈' : '🔍'} Kortit
+        </button>
       </div>
 
       {/* Loki */}

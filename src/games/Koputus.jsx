@@ -132,6 +132,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const stopReact = useRef(false);
   const reactInt  = useRef(null);
   const aiTmr     = useRef(null);
+  const tmrs      = useRef(new Set());
+  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
 
   const setMsg = m => {
     setMsg_(m);
@@ -190,7 +192,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   useEffect(() => { knockRef.current = knockedBy; }, [knockedBy]);
   useEffect(() => { lrRef.current = lastRound; }, [lastRound]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
-  useEffect(() => () => { clearTimeout(aiTmr.current); clearInterval(reactInt.current); }, []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearInterval(reactInt.current); }, []);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -217,16 +219,16 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     setTP(prev => new Set([...prev, idx]));
     const newG = { ...gRef.current, players: gRef.current.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p) };
     setG(newG); gRef.current = newG;
-    setTimeout(() => setTP(prev => { const n = new Set(prev); n.delete(idx); return n; }), 2500);
+    tm(() => setTP(prev => { const n = new Set(prev); n.delete(idx); return n; }), 2500);
     if (next === 1) setMsg(M.peekOne);
     else {
       setMsg(M.peekDone);
-      setTimeout(() => {
+      tm(() => {
         setPhase('draw');
         const si = 1 % nP;
         setCurIdx(si); curRef.current = si;
         if (si === 0) setMsg(M.yourTurn);
-        else { setMsg(M.aiTurn(newG.players[si].name)); aiTmr.current = setTimeout(() => runAI(si, gRef.current), 600); }
+        else { setMsg(M.aiTurn(newG.players[si].name)); aiTmr.current = tm(() => runAI(si, gRef.current), 600); }
       }, 1600);
     }
   }
@@ -243,7 +245,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     setPhase('draw'); setDrawn(null);
     const np = gState.players[next];
     if (np.isHuman) setMsg(M.yourTurn);
-    else { setMsg(M.aiTurn(np.name)); aiTmr.current = setTimeout(() => runAI(next, gState), 600); }
+    else { setMsg(M.aiTurn(np.name)); aiTmr.current = tm(() => runAI(next, gState), 600); }
   }
 
   function endGame(gState) {
@@ -277,7 +279,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
 
   function flashSlot(pIdx, cIdx) {
     setLastSwap({ pIdx, cIdx });
-    setTimeout(() => setLastSwap(null), 2200);
+    tm(() => setLastSwap(null), 2200);
   }
 
   function humanSwap(cardIdx) {
@@ -293,7 +295,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     setG(newG); gRef.current = newG;
     setMsg(M.swapped(oldCard));
     stopReact.current = false;
-    setTimeout(() => openReaction(newG, oldCard, 0), 600);
+    tm(() => openReaction(newG, oldCard, 0), 600);
   }
   function humanDiscard() {
     const g = gRef.current;
@@ -302,16 +304,16 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     if (drawn.r === 'J') { setPhase('spec_j'); setMsg(M.jackMsg); return; }
     if (drawn.r === 'Q') { setPhase('spec_q_own'); setMsg(M.queenMsg); setSS({ type: 'Q', ownIdx: null }); return; }
     if (drawn.r === 'K') { setPhase('spec_k'); setMsg(M.kingMsg); setSS({ type: 'K', ownIdx: null }); return; }
-    setTimeout(() => openReaction(newG, drawn, 0), 200);
+    tm(() => openReaction(newG, drawn, 0), 200);
   }
 
   function handleJ(idx) {
     const g = gRef.current, card = g.players[0].cards[idx];
-    setTP(new Set([idx])); setTimeout(() => setTP(new Set()), 2500);
+    setTP(new Set([idx])); tm(() => setTP(new Set()), 2500);
     const players = g.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p);
     const newG = { ...g, players }; setG(newG); gRef.current = newG;
     setMsg(`Kurkkasit ${lbl(card)} (${card.v} p) — muista se!`);
-    setTimeout(() => openReaction(newG, drawn, 0), 2800);
+    tm(() => openReaction(newG, drawn, 0), 2800);
   }
   function handleQOwn(idx) {
     stopReact.current = true; clearInterval(reactInt.current);
@@ -329,7 +331,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     const newG = { ...g, players }; setG(newG); gRef.current = newG; setSS(null);
     setMsg('Vaihto tehty — kukaan ei nähnyt kortteja!');
     stopReact.current = false;
-    setTimeout(() => openReaction(newG, drawn, 0), 800);
+    tm(() => openReaction(newG, drawn, 0), 800);
   }
   function handleKPeek(idx) {
     stopReact.current = true; clearInterval(reactInt.current);
@@ -359,12 +361,12 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     const newG = { ...g, players }; setG(newG); gRef.current = newG;
     setTP(new Set()); setSS(null); stopReact.current = false;
     setMsg('Vaihto tehty!');
-    setTimeout(() => openReaction(newG, drawn, 0), 1200);
+    tm(() => openReaction(newG, drawn, 0), 1200);
   }
   function handleKSkip() {
     setTP(new Set()); setSS(null); stopReact.current = false;
     setMsg('Ohitettu — vuoro jatkuu.');
-    setTimeout(() => openReaction(gRef.current, drawn, 0), 800);
+    tm(() => openReaction(gRef.current, drawn, 0), 800);
   }
 
   function openReaction(gState, card, byIdx) {
@@ -384,7 +386,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       const mi = [...p.known].find(ki => p.cards[ki]?.r === card.r);
       if (mi !== undefined) {
         const delay = 2000 + Math.random() * 2500;
-        setTimeout(() => {
+        tm(() => {
           if (stopReact.current) return;
           stopReact.current = true; clearInterval(reactInt.current); setRO(false);
           setMsg(M.aiReact(p.name, p.cards[mi]));
@@ -396,7 +398,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
             return { ...pl, cards, known: kn };
           });
           const newG = { ...cur, players }; setG(newG); gRef.current = newG;
-          setTimeout(() => advance(newG, byIdx), 900);
+          tm(() => advance(newG, byIdx), 900);
         }, delay);
       }
     });
@@ -421,11 +423,11 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         detectMoment('legendary_reaction', { cardIdx, discardCard: top });
         if (soundOn) SFX.lastCardWin();
         setMsg('Löit viimeisen korttisi — peli päättyy sinulle! Erinomainen!');
-        setTimeout(() => endGame(newG), 2200);
+        tm(() => endGame(newG), 2200);
       } else {
         if (soundOn) SFX.reactWin();
         setMsg(M.reactWin());
-        setTimeout(() => advance(newG, curRef.current), 2000);
+        tm(() => advance(newG, curRef.current), 2000);
       }
     } else {
       if (soundOn) SFX.reactWrong();
@@ -439,7 +441,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       const players = g.players.map((p, i) => i === 0 ? { ...p, cards: withPenalty, known: newKn } : p);
       const newG = { ...g, players, deck: newDeck, discard: [...g.discard, lostCard] };
       setG(newG); gRef.current = newG;
-      setTimeout(() => advance(newG, curRef.current), 2200);
+      tm(() => advance(newG, curRef.current), 2200);
     }
   }
 
@@ -459,8 +461,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     const worstKn = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
       .sort((a, b) => gState.players[playerIdx].cards[b].v - gState.players[playerIdx].cards[a].v)[0];
     const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
-    setTimeout(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); }, 1600);
-    setTimeout(() => {
+    tm(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); }, 1600);
+    tm(() => {
       let card, deck, discard;
       if (drawFromDiscard) {
         card = dt; deck = gState.deck; discard = gState.discard.slice(0, -1);
@@ -480,11 +482,11 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         const updG = { ...gState, players, deck, discard: [...discard, old] };
         setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
         flashSlot(playerIdx, wo);
-        setTimeout(() => openReaction(updG, old, playerIdx), 1200);
+        tm(() => openReaction(updG, old, playerIdx), 1200);
       } else {
         const updG = { ...gState, deck, discard: [...discard, card] };
         setG(updG); gRef.current = updG; setMsg(M.aiDiscard(p.name, card));
-        setTimeout(() => openReaction(updG, card, playerIdx), 1200);
+        tm(() => openReaction(updG, card, playerIdx), 1200);
       }
     }, 3600);
   }
@@ -621,18 +623,19 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       )}
 
       {/* Pakka-alue */}
-      <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', padding: isMobile ? '8px 10px' : '14px 16px', background: 'rgba(255,255,255,0.013)', border: '1px solid #1a3a22', borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
+      {(() => { const cw = isMobile ? 62 : 82; const ch = isMobile ? 88 : 112; return (
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', padding: isMobile ? '6px 8px' : '14px 16px', background: 'rgba(255,255,255,0.013)', border: '1px solid #1a3a22', borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>NOSTOPAKKA</div>
           <div onClick={isHuman && phase === 'draw' && G.deck.length ? humanDrawDeck : undefined}
-            style={{ cursor: isHuman && phase === 'draw' && G.deck.length ? 'pointer' : 'default', position: 'relative', width: 82, height: 112 }}>
+            style={{ cursor: isHuman && phase === 'draw' && G.deck.length ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {G.deck.length === 0
-              ? <div style={{ width: 82, height: 112, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.3 }} />
+              ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.3 }} />
               : <>
-                {G.deck.length > 2 && <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-5deg) translate(-4px,3px)', transformOrigin: 'bottom center', opacity: 0.55, zIndex: 0 }}>{BACKS[cardBack].render(82, 112)}</div>}
-                {G.deck.length > 1 && <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-2.5deg) translate(-2px,1.5px)', transformOrigin: 'bottom center', opacity: 0.75, zIndex: 1 }}>{BACKS[cardBack].render(82, 112)}</div>}
-                <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, overflow: 'hidden', background: BACKS[cardBack].bg, border: `2px solid ${isHuman && phase === 'draw' ? C.gold : BACKS[cardBack].border}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.4)', zIndex: 2 }}>
-                  {BACKS[cardBack].render(82, 112)}
+                {G.deck.length > 2 && <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-5deg) translate(-4px,3px)', transformOrigin: 'bottom center', opacity: 0.55, zIndex: 0 }}>{BACKS[cardBack].render(cw, ch)}</div>}
+                {G.deck.length > 1 && <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-2.5deg) translate(-2px,1.5px)', transformOrigin: 'bottom center', opacity: 0.75, zIndex: 1 }}>{BACKS[cardBack].render(cw, ch)}</div>}
+                <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, overflow: 'hidden', background: BACKS[cardBack].bg, border: `2px solid ${isHuman && phase === 'draw' ? C.gold : BACKS[cardBack].border}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.4)', zIndex: 2 }}>
+                  {BACKS[cardBack].render(cw, ch)}
                 </div>
               </>}
           </div>
@@ -640,35 +643,36 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
             {G.deck.length === 0 ? 'TYHJÄ!' : `${G.deck.length} kpl`}
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 72, flexShrink: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: isMobile ? 52 : 72, flexShrink: 0 }}>
           {reactionOpen
-            ? <div style={{ width: 64, height: 64, borderRadius: 32, border: `3px solid ${C.red}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 22px ${C.red}44`, animation: 'rpulse 1s ease infinite' }}>
-              <span style={{ fontSize: 22, fontWeight: 700, color: C.red, lineHeight: 1, fontFamily: 'monospace' }}>{reactionSec}</span>
+            ? <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, borderRadius: 32, border: `3px solid ${C.red}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 22px ${C.red}44`, animation: 'rpulse 1s ease infinite' }}>
+              <span style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, color: C.red, lineHeight: 1, fontFamily: 'monospace' }}>{reactionSec}</span>
               <span style={{ fontSize: 9, color: C.dim, fontFamily: 'sans-serif', letterSpacing: 1 }}>SEK</span>
             </div>
-            : <div style={{ width: 64, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, opacity: 0.12 }}>⚡</div>}
+            : <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, opacity: 0.12 }}>⚡</div>}
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
           <div onClick={isHuman && phase === 'draw' && discardTop ? humanDrawDiscard : undefined}
-            style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: 82, height: 112 }}>
+            style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {!discardTop
-              ? <div style={{ width: 82, height: 112, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
-              : <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: '#f8f2e6', border: `2px solid ${isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
+              : <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: '#f8f2e6', border: `2px solid ${isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
-                  <div style={{ fontSize: 22, fontWeight: 700 }}>{discardTop.r}</div>
-                  <div style={{ fontSize: 26 }}>{discardTop.s}</div>
+                  <div style={{ fontSize: isMobile ? 17 : 22, fontWeight: 700 }}>{discardTop.r}</div>
+                  <div style={{ fontSize: isMobile ? 20 : 26 }}>{discardTop.s}</div>
                 </div>
               </div>}
           </div>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 6 }}>{G.discard.length} kpl</div>
         </div>
       </div>
+      ); })()}
 
       <div style={{ marginBottom: isMobile ? 6 : 12 }}>
         <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={debugOpen} backStyle={BACKS[cardBack]}
           clickableSet={ownClickable()} onCardClick={onOwnCard} peekSet={tempPeek}
-          lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} />
+          lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} small={isMobile} />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: drawn && showDrawn ? 'rgba(255,255,255,0.022)' : 'transparent', border: `1px solid ${drawn && showDrawn ? '#2a4a32' : 'transparent'}`, borderRadius: 10, marginBottom: isMobile ? 4 : 12, minHeight: isMobile ? 36 : 50, transition: 'background 0.2s' }}>
@@ -687,22 +691,15 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 36 : 44, alignItems: 'center' }}>
         {isHuman && phase === 'drawn' && <Btn label="Heitä poistopakkaan ›" onClick={humanDiscard} color={C.gold} />}
         {isHuman && phase === 'draw' && knockedBy === null && <Btn label="🤜 Koputan!" onClick={humanKnock} color={C.red} outline />}
-        {phase === 'spec_q_tgt' && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; setTimeout(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
+        {phase === 'spec_q_tgt' && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
         {phase === 'spec_k_decide' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
         {phase === 'spec_k_confirm' && <Btn label="✓ Vaihda tähän" onClick={handleKSwap} color={C.gold} />}
         {phase === 'spec_k_confirm' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
       </div>
 
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
-        {G.players.map((p, i) => (
-          <div key={p.id} style={{ fontFamily: 'sans-serif', fontSize: 11, padding: '4px 10px', borderRadius: 16, border: `1px solid ${curIdx === i ? C.gold + '55' : '#1a3a22'}`, color: curIdx === i ? C.gold : C.dim, background: curIdx === i ? C.gold + '08' : 'transparent', transition: 'all 0.2s' }}>
-            {p.name}{curIdx === i ? ' ●' : ''}
-          </div>
-        ))}
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
-          <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
-        </div>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center', justifyContent: 'flex-end' }}>
+        <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
       </div>
 
       <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>

@@ -153,10 +153,13 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const lastPlayTmr = useRef(null);
   const logRef     = useRef([]);
   const sndRef     = useRef(true);
+  const tmrs       = useRef(new Set());
+  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => () => {
+    tmrs.current.forEach(clearTimeout);
     clearTimeout(aiTmr.current);
     clearTimeout(lastPlayTmr.current);
   }, []);
@@ -171,7 +174,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   function showLastPlay(name, card, isHuman = false) {
     setLastPlay({ name, card, isHuman });
     clearTimeout(lastPlayTmr.current);
-    lastPlayTmr.current = setTimeout(() => setLastPlay(null), 2200);
+    lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
   }
 
   function setGS(g) { setG(g); gRef.current = g; }
@@ -185,7 +188,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     addLog(`Ristiseiska alkaa! ${s.name} aloittaa ${lblColored({ r: '7', s: '♣' })}:llä.`);
     setScreen('game');
     setShuffling(true);
-    if (!s.isHuman) aiTmr.current = setTimeout(() => runAI(g), 3100);
+    if (!s.isHuman) aiTmr.current = tm(() => runAI(g), 3100);
   }
 
   // ── Vuoron vaihto ───────────────────────────────────────────
@@ -197,7 +200,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const g2 = { ...g, activePlayer: nextIdx, turnCount, firstRoundDone };
     setGS(g2);
     if (!g.players[nextIdx].isHuman) {
-      aiTmr.current = setTimeout(() => runAI(g2), 1100 + Math.random() * 400);
+      aiTmr.current = tm(() => runAI(g2), 1100 + Math.random() * 400);
     } else {
       addLog('Sinun vuorosi.');
     }
@@ -250,7 +253,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       const pileName = v === 1 ? 'ala-pinon' : 'ylä-pinon';
       if (!p.isHuman) {
         addLog(`${p.name}: Kaatoi ${suitGen} ${pileName} — voi jatkaa!`);
-        aiTmr.current = setTimeout(() => runAI(g2), 900);
+        aiTmr.current = tm(() => runAI(g2), 900);
       } else {
         addLog(`Kaadoit ${suitGen} ${pileName}. Saat jatkaa — jos voit ja haluat.`);
       }
@@ -655,55 +658,37 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
-      {/* Pelaajastatus */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
-        {G.players.map((p, i) => {
-          const isActive = G.activePlayer === i;
-          const isDone   = G.finished.includes(i);
-          const rank     = isDone ? G.finished.indexOf(i) + 1 : null;
-          return (
-            <div key={i} style={{ padding: '4px 10px', borderRadius: 20, fontFamily: 'sans-serif', fontSize: 11, background: isActive ? 'rgba(201,168,76,0.1)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, color: isActive ? C.gold : C.dim, opacity: isDone ? 0.5 : 1 }}>
-              {isActive ? '► ' : ''}{p.name}{isDone ? ` (${rank}.)` : ` — ${p.hand.length}k`}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* AI-kädet */}
+      {/* AI-kädet — viuhka */}
       {G.players.filter((_, i) => i !== 0).length > 0 && (
-        isMobile ? (
-          <div style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
-            {G.players.filter((_, i) => i !== 0).map(p => {
-              const isActive = G.activePlayer === p.id;
-              const isDone   = G.finished.includes(p.id);
-              return (
-                <div key={p.id} style={{ padding: '3px 8px', borderRadius: 8, fontFamily: 'sans-serif', fontSize: 11, background: isActive ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, color: isActive ? C.gold : C.dim, opacity: isDone ? 0.4 : 1 }}>
-                  {isActive ? '► ' : '🤖 '}{p.name} — {p.hand.length}k
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
-            {G.players.filter((_, i) => i !== 0).map(p => {
-              const isActive = G.activePlayer === p.id;
-              const isDone   = G.finished.includes(p.id);
-              return (
-                <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', opacity: isDone ? 0.35 : 1 }}>
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, marginBottom: 4 }}>
-                    {isActive ? '► ' : '🤖 '}{p.name}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: isMobile ? 4 : 8 }}>
+          {G.players.filter((_, i) => i !== 0).map(p => {
+            const isActive = G.activePlayer === p.id;
+            const isDone   = G.finished.includes(p.id);
+            const rank     = isDone ? G.finished.indexOf(p.id) + 1 : null;
+            const count = p.hand.length;
+            const cw = 20, ch = 30, ov = 10;
+            const fanW = count > 0 ? cw + Math.max(0, count - 1) * ov : cw;
+            return (
+              <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 70, flexShrink: 0 }}>
+                  {isActive ? '► ' : '🤖 '}{p.name}
+                  {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
+                </span>
+                {debugOpen ? (
+                  <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                    {p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)}
                   </div>
-                  <div style={{ display: 'flex', gap: 2, justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
-                    {debugOpen
-                      ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
-                      : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, flexShrink: 0 }} />)
-                    }
+                ) : isDone ? null : count === 0 ? null : (
+                  <div style={{ position: 'relative', width: fanW, height: ch, flexShrink: 0 }}>
+                    {Array.from({ length: count }).map((_, i) => (
+                      <div key={i} style={{ position: 'absolute', left: i * ov, top: 0, width: cw, height: ch, borderRadius: 3, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, zIndex: i, boxShadow: i === count - 1 ? '0 1px 4px rgba(0,0,0,0.4)' : 'none' }} />
+                    ))}
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
 
       {/* Pöytä: pinot */}
@@ -820,12 +805,11 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       {/* Tilapalkki */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
-          Jäljellä: {G.players.filter(p => p.hand.length > 0).length} pelaajaa ·
           Avaukset: {SUITS.filter(s => G.rows[s].active).length}/4
         </span>
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
         </div>
       </div>
 

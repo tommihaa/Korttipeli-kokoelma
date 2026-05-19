@@ -115,7 +115,7 @@ function DiceRoll({ players, onDone, soundOn }) {
       players.forEach(p => { r[p.id] = Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)); });
       setRolls(r);
     }, 120);
-    setTimeout(() => {
+    tm(() => {
       clearInterval(interval);
       const finalRolls = {};
       players.forEach(p => { finalRolls[p.id] = Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)); });
@@ -182,19 +182,21 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const logRef      = useRef([]);
   const sndRef      = useRef(true);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
+  const tmrs         = useRef(new Set());
+  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => clearTimeout(aiTmr.current), []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
 
 
   const korttia = n => n === 1 ? '1 kortti' : `${n} korttia`;
 
   function triggerKohahdus(card) {
     setKohahdus(card);
-    setTimeout(() => setKohahdus(null), 1800);
+    tm(() => setKohahdus(null), 1800);
   }
 
   function addLog(m) {
@@ -249,7 +251,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     addLog(M.gameStart);
     setScreen('game');
     setShuffling(true);
-    setTimeout(() => maybeAI(0, g), 2500);
+    tm(() => maybeAI(0, g), 2500);
   }
 
   function advance(g, fromIdx) {
@@ -257,7 +259,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     const next = (fromIdx + 1) % g.players.length;
     if (g.deck.length === 0) {
       addLog(M.deckEmpty);
-      setTimeout(() => doReveal(g), 800);
+      tm(() => doReveal(g), 800);
       return;
     }
     setCur(next); curRef.current = next;
@@ -265,13 +267,13 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
     const p = g.players[next];
     addLog(p.id === 0 ? M.yourTurn : M.aiThinking(p));
-    aiTmr.current = setTimeout(() => maybeAI(next, g), 600);
+    aiTmr.current = tm(() => maybeAI(next, g), 600);
   }
 
   function maybeAI(idx, g) {
     if (phaseRef.current === 'gameover') return;
     if (idx === 0) return;
-    setTimeout(() => aiTurn(idx, gRef.current), 900 + Math.random() * 600);
+    tm(() => aiTurn(idx, gRef.current), 900 + Math.random() * 600);
   }
 
   function aiTurn(idx, g) {
@@ -335,14 +337,14 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       addLog(M.aiDrawDiscard(p));
       setG(newG); gRef.current = newG;
       if (sndRef.current) SFX.flip();
-      setTimeout(() => aiDoSwap(idx, gRef.current, card, worstKnownIdx), 1000);
+      tm(() => aiDoSwap(idx, gRef.current, card, worstKnownIdx), 1000);
     } else {
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
       addLog(M.aiDrawDeck(p));
       setG(newG); gRef.current = newG;
       if (sndRef.current) SFX.flip();
-      setTimeout(() => {
+      tm(() => {
         const g2 = gRef.current, p2 = g2.players[idx];
         const playerCount = g2.players.length;
         const maxSwapValue = playerCount; // 4-pel: A-4, 3-pel: A-3, 2-pel: A-2
@@ -441,7 +443,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           const swapChain = swaps.map(s => `paikka ${s.pos}: ${lblColored(s.card)}`).join(' → ');
           addLog(`${g2.players[idx].name} vaihtaa: ${swapChain}, ${lblColored(held)} poistopakkaan.`);
 
-          setTimeout(() => advance(newG, idx), 700);
+          tm(() => advance(newG, idx), 700);
         } else {
           // Ei vaihtoja - discardata kortti suoraan
           aiDoDiscard(idx, g2, card);
@@ -460,14 +462,14 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     if (sndRef.current) SFX.swap();
     addLog(M.aiSwapRow(g.players[idx], rowIdx, card, old));
     if (rowIdx === 0 && old.v <= 2) triggerKohahdus(old);
-    setTimeout(() => advance(newG, idx), 700);
+    tm(() => advance(newG, idx), 700);
   }
 
   function aiDoDiscard(idx, g, card) {
     const newG = { ...g, discard: [...g.discard, card] };
     setG(newG); gRef.current = newG;
     addLog(M.aiDiscard(g.players[idx], card));
-    setTimeout(() => advance(newG, idx), 600);
+    tm(() => advance(newG, idx), 600);
   }
 
   function humanDraw(fromDiscard) {
@@ -524,7 +526,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       if (old.v <= 2) triggerKohahdus(old);
       setHeld(null); setSwapIdx(null);
       setPhase('drawing'); phaseRef.current = 'drawing';
-      setTimeout(() => advance(finalG, 0), 500);
+      tm(() => advance(finalG, 0), 500);
     } else {
       // Displaced card goes to KÄDESSÄ for possible continued chain
       const newG = { ...g, players };
@@ -545,7 +547,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     addLog(M.humanDiscard(held));
     setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
     setPhase('drawing'); phaseRef.current = 'drawing';
-    setTimeout(() => advance(newG, 0), 300);
+    tm(() => advance(newG, 0), 300);
   }
 
   function doReveal(g) {
@@ -558,7 +560,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     onResult?.(scores[0].total === minScore);
     const tied = scores.filter(s => s.total === minScore);
     addLog(M.gameOverScores(scores));
-    setTimeout(() => {
+    tm(() => {
       if (tied.length > 1) {
         addLog(M.tieBreaker);
         setTiedPlayers(tied); setShowDice(true);
@@ -779,16 +781,9 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
 
       {/* Tilarivi */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
-        {G.players.map((p, i) => (
-          <div key={p.id} style={{ fontFamily: 'sans-serif', fontSize: 11, padding: '4px 10px', borderRadius: 16, border: `1px solid ${curIdx === i ? C.gold + '55' : C.panelBorder}`, color: curIdx === i ? C.gold : C.dim, background: curIdx === i ? C.gold + '08' : 'transparent' }}>
-            {p.name}{curIdx === i ? ' ●' : ''}
-          </div>
-        ))}
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'}</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 12, border: '1px solid #2a4a32', background: 'transparent', color: C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'}</button>
-        </div>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10, justifyContent: 'flex-end' }}>
+        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
       </div>
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
