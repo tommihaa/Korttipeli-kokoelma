@@ -141,6 +141,17 @@ export default function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    if (active) window.history.pushState(null, '');
+    window.scrollTo(0, 0);
+  }, [active]);
+
+  useEffect(() => {
+    const handlePop = () => setActive(null);
+    window.addEventListener('popstate', handlePop);
+    return () => window.removeEventListener('popstate', handlePop);
+  }, []);
+
   const playerPool = playerGroup === 'laituri' ? LAITURI_SPECIAL : ONNEN_JUMALAT;
 
   function recordResult(gameId, heroWon) {

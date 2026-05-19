@@ -488,9 +488,11 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   // ── Pelaajien valinta ────────────────────────────────────────────
+  useEffect(() => { window.scrollTo(0, 0); }, [screen]);
+
   if (screen === 'select') return (
     <div style={{ background:C.bg, minHeight:'100vh', display:'flex', flexDirection:'column',
-      padding:24, fontFamily:'Georgia,serif', color:C.text }}>
+      padding:isMobile ? '24px 12px' : 24, fontFamily:'Georgia,serif', color:C.text }}>
       <div style={{ textAlign:'center', marginBottom:24 }}>
         <div style={{ fontSize:48, marginBottom:8 }}>🂭</div>
         <h1 style={{ fontSize:52, letterSpacing:12, margin:0,
@@ -540,7 +542,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     }).sort((a,b) => a.rank - b.rank);
     return (
       <div style={{ background:C.bg, minHeight:'100vh', display:'flex', flexDirection:'column',
-        alignItems:'center', justifyContent:'center', gap:20, padding:24,
+        alignItems:'center', justifyContent:'center', gap:20, padding:isMobile ? '24px 12px' : 24,
         fontFamily:'Georgia,serif', color:C.text }}>
         <h1 style={{ fontSize:28, letterSpacing:8, color:C.gold, margin:0 }}>PELI PÄÄTTYI</h1>
         <div style={{ width:'100%', maxWidth:440, display:'flex', flexDirection:'column', gap:8 }}>
@@ -558,7 +560,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
             </div>
           ))}
         </div>
-        <div style={{ display:'flex', gap:12 }}>
+        <div style={{ display:'flex', gap:12, flexWrap:'wrap', justifyContent:'center' }}>
           <button onClick={startGame} style={{ background:`linear-gradient(135deg,${C.gold},#a07830)`,
             border:'none', borderRadius:12, padding:'12px 32px', color:'#0d2118',
             fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'Georgia,serif' }}>Uusi peli →</button>

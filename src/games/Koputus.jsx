@@ -499,11 +499,13 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     );
   };
 
+  useEffect(() => { window.scrollTo(0, 0); }, [screen]);
+
   if (screen === 'select') return (
-    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>🤜</div>
-        <h1 style={{ fontSize: 54, letterSpacing: 14, margin: 0, background: 'linear-gradient(135deg,#e8c96a,#c9a84c,#a07830)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KOPUTUS</h1>
+        <h1 style={{ fontSize: isMobile ? 36 : 54, letterSpacing: isMobile ? 8 : 14, margin: 0, background: 'linear-gradient(135deg,#e8c96a,#c9a84c,#a07830)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KOPUTUS</h1>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
           <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
           <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
@@ -533,7 +535,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   if (screen === 'gameover' && G) {
     const sorted = [...G.players].sort((a, b) => pScore(a) - pScore(b));
     return (
-      <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: 24, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
         <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
         <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {sorted.map((p, i) => (
@@ -549,7 +551,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
             </div>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
           <Btn label="Uusi peli →" onClick={startGame} color={C.gold} />
           <Btn label="← Vaihda pelaajia" onClick={() => setScreen('select')} color={C.gold} outline />
         </div>
