@@ -61,6 +61,11 @@ const M = {
   aiDiscard: (n, c) => `${n} heitti ${lblColored(c)} poistopakkaan.`,
   aiKnock:   n => `${n} koputtaa — luottaa käteensä!`,
   aiReact:   (n, c) => `${n} reagoi lyömällä ${lblColored(c)} — kortti poistuu!`,
+  tipKnock:  (n, est) => `💡 ${n} koputti — arvioitu pistemäärä ≤${est}, pienin kädessä!`,
+  tipTakeDiscard: (n, card, old) => `💡 ${n} ottaa ${card} poistopakasta — parempi kuin käden ${old}`,
+  tipDrawDeck: n => `💡 ${n} nostaa pakasta — poistopakan kortti ei paranna käsiä`,
+  tipSwap:   (n, newC, oldC) => `💡 ${n} vaihtaa ${oldC} → ${newC} — pienentää pistelukua`,
+  tipDiscard: (n, c) => `💡 ${n} heittää ${c} — nostamasi kortti ei paranna käsiä`,
 };
 
 function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle }) {
@@ -132,6 +137,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const stopReact = useRef(false);
   const reactInt  = useRef(null);
   const aiTmr     = useRef(null);
+  const teachRef  = useRef(teachMode);
   const tmrs      = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
@@ -451,16 +457,24 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     if (knockRef.current === null) {
       const ks = [...p.known].reduce((s, i) => s + (p.cards[i]?.v || 0), 0);
       const uk = p.cards.filter(c => c !== null).length - p.known.size;
-      if (ks + uk * 5 <= 8) {
+      const est = ks + uk * 5;
+      if (est <= 8) {
         setKB(playerIdx); knockRef.current = playerIdx;
         const lr = new Set(gState.players.filter((_, i) => i !== playerIdx).map(pl => pl.id));
         setLR(lr); lrRef.current = lr; setMsg(M.aiKnock(p.name));
+        if (teachRef.current) tm(() => setMsg(M.tipKnock(p.name, est)), 400);
       }
     }
     const dt = gState.discard[gState.discard.length - 1];
     const worstKn = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
       .sort((a, b) => gState.players[playerIdx].cards[b].v - gState.players[playerIdx].cards[a].v)[0];
     const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
+    if (teachRef.current) {
+      tm(() => {
+        if (drawFromDiscard) setMsg(M.tipTakeDiscard(p.name, lblColored(dt), lblColored(p.cards[worstKn])));
+        else setMsg(M.tipDrawDeck(p.name));
+      }, 800);
+    }
     tm(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); }, 1600);
     tm(() => {
       let card, deck, discard;
@@ -481,11 +495,13 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         });
         const updG = { ...gState, players, deck, discard: [...discard, old] };
         setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
+        if (teachRef.current) setMsg(M.tipSwap(p.name, lblColored(card), lblColored(old)));
         flashSlot(playerIdx, wo);
         tm(() => openReaction(updG, old, playerIdx), 1200);
       } else {
         const updG = { ...gState, deck, discard: [...discard, card] };
         setG(updG); gRef.current = updG; setMsg(M.aiDiscard(p.name, card));
+        if (teachRef.current) setMsg(M.tipDiscard(p.name, lblColored(card)));
         tm(() => openReaction(updG, card, playerIdx), 1200);
       }
     }, 3600);

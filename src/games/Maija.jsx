@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle } from '../shared/helpers.js';
 import { BACKS } from '../shared/BACKS.jsx';
-import { tone, noise } from '../shared/audio.js';
+import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 
@@ -25,13 +25,6 @@ function canBeat(attCard, defCard, trump) {
   return false;
 }
 
-const SFX = {
-  play:  () => { noise(0.04,0.07,1200); tone(600,0.05,0.1,'sine'); },
-  beat:  () => { tone(440,0.08,0.2,'triangle'); tone(660,0.12,0.18,'triangle',0.06); },
-  take:  () => { tone(200,0.3,0.18,'sawtooth'); noise(0.2,0.12,500,0.05); },
-  maija: () => { [180,150,120].forEach((f,i) => tone(f,0.5,0.2,'sawtooth',i*0.2)); },
-  win:   () => { [523,659,784,1047].forEach((f,i) => tone(f,i===3?0.5:0.1,0.22,'triangle',i*0.11)); },
-};
 
 // ── Kortti ──────────────────────────────────────────────────────────
 function Card({ card, small, highlight, dim, selected, onClick, backStyle, faceDown }) {
@@ -138,7 +131,8 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   const tableRef = useRef([]);
   const aiTmr = useRef(null);
   const logRef = useRef([]);
-  const sndRef = useRef(false);
+  const sndRef     = useRef(false);
+  const teachRef   = useRef(teachMode);
   const finRef = useRef([]);
   const tmrs   = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
@@ -220,6 +214,10 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     maijaNotValid: 'Patakuningatar ei kelpaa kaatokortiksi!',
     cardTooSmall: (defCard, attCard) => `${defCard} ei kaada ${attCard} — liian pieni tai väärä maa.`,
     beatWith: (attCard, defCard) => `Kaadoit ${attCard} kortilla ${defCard}.`,
+    tipAttackSuit: (name, count, suit) => `💡 ${name} lyö ${count} samaa maata — vaikea puolustaa eri maita`,
+    tipDefendMin:  (name, def, atk) => `💡 ${name} kaataa ${atk} pienimmällä — säästää isot kortit`,
+    tipDefendAll:  name => `💡 ${name} kaataa kaikki — erinomainen puolustus!`,
+    tipCannotAll:  name => `💡 ${name} ei pysty kaatamaan kaikkia — ottaa kortit`,
   };
 
   function startGame() {
@@ -349,6 +347,10 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         toPlay = hand.filter(c => c.s === '♠').slice(0, defHandSize);
       }
       if (!toPlay.length) { toPlay = maija ? [maija] : [hand[0]]; }
+      if (teachRef.current && toPlay.length > 1) {
+        const suitSpan = `<span style="color:${SUIT_COLOR[toPlay[0].s]}">${toPlay[0].s}</span>`;
+        addLog(M.tipAttackSuit(g2.players[g2.attackerIdx].name, toPlay.length, suitSpan));
+      }
       doAttack(g2, toPlay);
     }, 1200 + Math.random() * 400);
   }
@@ -416,11 +418,19 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         if (g2.defenderIdx === 0 && beaten >= 4) {
           detectMoment('epic_defense_win', { unbeatenCount: beaten });
         }
+        if (teachRef.current && !defName.isHuman) {
+          if (beaten >= 2) addLog(M.tipDefendAll(defName.name));
+          else {
+            const row = newTbl.find(r => r.def);
+            if (row) addLog(M.tipDefendMin(defName.name, lblColored(row.def), lblColored(row.att)));
+          }
+        }
         addLog(M.defenderWinRound(defName.id === 0 ? null : defName.name));
-        if (sndRef.current) SFX.win();
+        if (sndRef.current) SFX.fanfare();
         tm(() => resolveDefenseWin({ ...g2, players }, newTbl, finRef.current), 2200);
       } else {
         const n = g2.players[g2.defenderIdx];
+        if (teachRef.current && !n.isHuman) addLog(M.tipCannotAll(n.name));
         const msg = n.id===0
           ? M.defenderCannotWin(null, unbeaten.length)
           : `${n.name} kaataa ${newTbl.length - unbeaten.length}/${newTbl.length} — nostaa ${kortin(unbeaten.length)}.`;
@@ -479,7 +489,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     setSelDefTargetIdx(null);
     if (newTbl.every(r => r.def)) {
       addLog(M.defenderWinRoundNext);
-      if (sndRef.current) SFX.win();
+      if (sndRef.current) SFX.fanfare();
       tm(() => resolveDefenseWin(g2, newTbl, finRef.current), 1200);
     }
   }

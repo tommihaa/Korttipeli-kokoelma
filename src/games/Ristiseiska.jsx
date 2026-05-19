@@ -186,6 +186,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const lastPlayTmr = useRef(null);
   const logRef     = useRef([]);
   const sndRef     = useRef(true);
+  const teachRef   = useRef(teachMode);
   const tmrs       = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
@@ -227,6 +228,9 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     badCard:    'Tämä kortti ei käy tähän — valitse toinen.',
     cantPass:   'Sinulla on pelattavissa oleva kortti — passata ei voi.',
     humanGives: (card, receiver) => `Sinä annat ${card} pelaajalle ${receiver}.`,
+    tipSeven:   (name, suit) => `💡 ${name} avaa pöydän — ${suit}:ssa eniten kortteja kädessä`,
+    tipHoldGate:(name, card, suit) => `💡 ${name} pidättää ${card} — avaa portin vasta kun lisää ${suit}-kortteja`,
+    tipGiveWorst:(name, card) => `💡 ${name} antaa ${card} panttiin — kaukaisin kortti pelattavuudesta`,
   };
 
   function startGame() {
@@ -344,6 +348,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         return pl;
       });
       addLog(M.passGive(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
+      if (teachRef.current && !giver.isHuman) addLog(M.tipGiveWorst(giver.name, lblColored(toGive)));
     } else {
       addLog(M.passOnly(isH, p.name));
     }
@@ -368,8 +373,28 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     }
 
     const card = aiBestCard(p.hand, rows);
-    if (card) doPlay(gRef.current, activePlayer, card);
-    else      doPass(gRef.current, activePlayer);
+    if (card) {
+      if (teachRef.current) {
+        if (card.r === '7') {
+          const bestSuit = SUITS.reduce((a, b) =>
+            suitCount(p.hand, a) >= suitCount(p.hand, b) ? a : b);
+          const suitSpan = `<span style="color:${SUIT_COLOR[bestSuit]}">${bestSuit}</span>`;
+          addLog(M.tipSeven(p.name, suitSpan));
+        } else {
+          const heldGates = p.hand.filter(c =>
+            (c.r === '6' || c.r === '8') && isPlayable(c, rows) && suitCount(p.hand, c.s) > 1
+          );
+          if (heldGates.length > 0) {
+            const hg = heldGates[0];
+            const suitSpan = `<span style="color:${SUIT_COLOR[hg.s]}">${hg.s}</span>`;
+            addLog(M.tipHoldGate(p.name, lblColored(hg), suitSpan));
+          }
+        }
+      }
+      doPlay(gRef.current, activePlayer, card);
+    } else {
+      doPass(gRef.current, activePlayer);
+    }
   }
 
   // ── Ihmistoiminnot ──────────────────────────────────────────

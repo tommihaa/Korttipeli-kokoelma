@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
-import { tone, noise } from '../shared/audio.js';
+import { SFX } from '../shared/audio.js';
 import { isRed, lbl, SUITS, RANKS, VAL, shuffle } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -26,12 +26,6 @@ function newDeck() {
   return shuffle(deck);
 }
 
-const SFX = {
-  flip:     () => { noise(0.04, 0.06, 1200); tone(800, 0.03, 0.08, 'sine'); },
-  swap:     () => { noise(0.06, 0.1, 900); tone(400, 0.08, 0.15, 'triangle'); },
-  reveal:   () => { tone(440, 0.15, 0.2, 'triangle'); tone(554, 0.15, 0.2, 'triangle', 0.15); tone(659, 0.4, 0.25, 'triangle', 0.3); },
-  fanfare:  () => { [523, 659, 784, 1047].forEach((f, i) => tone(f, i === 3 ? 0.6 : 0.12, 0.25, 'triangle', i * 0.12)); },
-};
 
 // Värilliset kortit lokeissa
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
@@ -46,6 +40,10 @@ const M = {
   aiSwapRow: (p, idx, newCard, oldCard) => `${p.name} vaihtaa: paikka ${idx + 1}: ${lblColored(newCard)} (${newCard.v} p) sisään, ${lblColored(oldCard)} poistopakkaan.`,
   aiDiscard: (p, c) => `${p.name} heittää ${lblColored(c)} poistopakkaan.`,
   aiCannotForceSwap: (p, c, reason) => `${p.name} ei voi vaihtaa ${lblColored(c)} pakosta: ${reason}`,
+  tipTakeDiscard: (name, card, old) => `💡 ${name} ottaa ${card} poistopakasta — parempi kuin käden ${old}`,
+  tipDrawDeck:    name => `💡 ${name} nostaa pakasta — poistopakka ei paranna käsiä`,
+  tipSwap:        (name, newC, oldC) => `💡 ${name} vaihtaa ${oldC} → ${newC} — pienentää pistelukua`,
+  tipNoSwap:      name => `💡 ${name} ei vaihda — nostettu kortti on huonompi kuin käden kortit`,
   humanDrawDiscard: (c, v) => `Nostit ${lblColored(c)} (${v} p) poistopakasta — pakollinen vaihto. Klikkaa pöytäkorttia.`,
   humanDrawDeck: (c, v) => `Nostit ${lblColored(c)} (${v} p). Jos haluat sen pöytäkortteihisi, niin Vaihda se tai Heitä poistopakkaan.`,
   humanSwappedEnd: (idx, c, v, oldName) => `Paikka ${idx + 1}: ${lblColored(c)} (${v} p) sisään, ${oldName} poistopakkaan.`,
@@ -181,6 +179,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const aiTmr       = useRef(null);
   const logRef      = useRef([]);
   const sndRef      = useRef(true);
+  const teachRef    = useRef(teachMode);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
   const tmrs         = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
@@ -335,6 +334,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;
       addLog(M.aiDrawDiscard(p));
+      if (teachRef.current) addLog(M.tipTakeDiscard(p.name, lblColored(top), lblColored(p.row[worstKnownIdx])));
       setG(newG); gRef.current = newG;
       if (sndRef.current) SFX.flip();
       tm(() => aiDoSwap(idx, gRef.current, card, worstKnownIdx), 1000);
@@ -342,6 +342,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
       addLog(M.aiDrawDeck(p));
+      if (teachRef.current) addLog(M.tipDrawDeck(p.name));
       setG(newG); gRef.current = newG;
       if (sndRef.current) SFX.flip();
       tm(() => {
@@ -442,10 +443,12 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
           const swapChain = swaps.map(s => `paikka ${s.pos}: ${lblColored(s.card)}`).join(' → ');
           addLog(`${g2.players[idx].name} vaihtaa: ${swapChain}, ${lblColored(held)} poistopakkaan.`);
+          if (teachRef.current) addLog(M.tipSwap(g2.players[idx].name, lblColored(swaps[swaps.length - 1].card), lblColored(held)));
 
           tm(() => advance(newG, idx), 700);
         } else {
           // Ei vaihtoja - discardata kortti suoraan
+          if (teachRef.current) addLog(M.tipNoSwap(g2.players[idx].name));
           aiDoDiscard(idx, g2, card);
         }
       }, 1000);

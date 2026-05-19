@@ -179,7 +179,8 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const gRef    = useRef(null);
   const aiTmr   = useRef(null);
   const logRef  = useRef([]);
-  const sndRef  = useRef(false);
+  const sndRef     = useRef(false);
+  const teachRef   = useRef(teachMode);
   const prevDeckRef = useRef(null);
   const tmrs        = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
@@ -309,6 +310,11 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     cantBeat:       (card, target) => `${card} ei kaada ${target}.`,
     noPassAfterBeat:'Ei voi siirtää — olet jo kaanut kortteja.',
     badPassCard:    card => `${card} ei sovi siirtoon.`,
+    tipAttackSmall: (name, card) => `💡 ${name} hyökkää ${card}:lla — pienin kortti testaa puolustusta`,
+    tipDefendMin:   (name, def, atk) => `💡 ${name} käyttää ${def} kaataakseen ${atk} — säästää isot kortit jatkoon`,
+    tipDefendTrump: (name, def, atk) => `💡 ${name} pakko käyttää valttia ${def} — ei muuta vaihtoehtoa`,
+    tipPass:        (name, card) => `💡 ${name} siirtää hyökkäyksen ${card}:lla — samaa arvoa kädessä`,
+    tipTakeAll:     name => `💡 ${name} ei pysty kaatamaan kaikkia — ottaa kortit`,
   };
 
 
@@ -661,6 +667,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       if (p.isHuman) return;
       const cards = aiPickAttack(p, players[defender].hand.length, ts);
       if (!cards.length) { resolveRound(g, true); return; }
+      if (teachRef.current) addLog(M.tipAttackSmall(p.name, lblColored(cards[0])));
       doAttack(g, primaryAtk, cards);
     }
 
@@ -674,6 +681,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         const atkRanks = new Set(table.map(t => t.atk.r));
         const passCard = p.hand.find(c => atkRanks.has(c.r) && c.s !== ts);
         if (passCard && players.filter(pl => pl.rank === null).length > 2) {
+          if (teachRef.current) addLog(M.tipPass(p.name, lblColored(passCard)));
           aiTmr.current = tm(() => {
             doPass(gRef.current, [passCard]);
           }, 1000);
@@ -694,6 +702,15 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       }
 
       if (canBeatAll) {
+        if (teachRef.current) {
+          beats.forEach(({ atkId, defCard }) => {
+            const atkSlot = table.find(t => t.atk.id === atkId);
+            if (atkSlot) {
+              if (defCard.s === ts) addLog(M.tipDefendTrump(p.name, lblColored(defCard), lblColored(atkSlot.atk)));
+              else addLog(M.tipDefendMin(p.name, lblColored(defCard), lblColored(atkSlot.atk)));
+            }
+          });
+        }
         aiTmr.current = tm(() => {
           let cur = gRef.current;
           for (const { atkId, defCard } of beats) {
@@ -703,6 +720,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           aiTmr.current = tm(() => startAddPhase(cur), 700);
         }, 900);
       } else {
+        if (teachRef.current) addLog(M.tipTakeAll(p.name));
         aiTmr.current = tm(() => {
           resolveRound(gRef.current, false);
         }, 900 + Math.random() * 300);

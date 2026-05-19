@@ -153,6 +153,9 @@ const M = {
   warning: (card, captured) => `⚠ Huom: ${card} olisi kaapattu ${captured} — klikkaa pöytäkortit ennen käsikorttia.`,
   invalidMove: (card) => `${card} ei kaappaa valittuja kortteja — tarkista valintasi tai peruuta.`,
   aiCapture: (name, handCard, captureStr, isMokki) => `${name}: ${handCard} ← ${captureStr}${isMokki ? ' 🏠' : ''}`,
+  tipMokki:   name => `💡 ${name} tekee MOKIN — kaappaa koko pöydän kerralla!`,
+  tipSpecial: (name, card) => `💡 ${name} kohdistaa ${card}:hin — arvokkain kaappaus!`,
+  tipLeave:   (name, card) => `💡 ${name} jättää pienen ${card} pöydälle — ei paljasta arvokorttia`,
 };
 
 export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
@@ -183,7 +186,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const curRef  = useRef(0);
   const aiTmr   = useRef(null);
   const logRef  = useRef([]);
-  const sndRef  = useRef(false);
+  const sndRef     = useRef(false);
+  const teachRef   = useRef(teachMode);
   const tmrs    = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
@@ -526,6 +530,13 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         ? groups.map(grp => grp.map(id => lbl(bestCapture.tableCards.find(c => c.id === id))).join('+')).join(' ja ')
         : bestCapture.tableCards.map(lbl).join('+');
       addLog(M.aiCapture(p.name, lblColored(bestCapture.handCard), captureStr, bestCapture.isMokki));
+      if (teachRef.current) {
+        if (bestCapture.isMokki) addLog(M.tipMokki(p.name));
+        else {
+          const special = bestCapture.tableCards.find(c => isRuutuKymppi(c) || isPataKakkonen(c));
+          if (special) addLog(M.tipSpecial(p.name, lblColored(special)));
+        }
+      }
       setCaptureAnim({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       setAiSel({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       aiTmr.current = tm(() => {
@@ -538,6 +549,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
       const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
       const toLeave = [...leavePool].sort((a, b) => a.v - b.v)[0];
+      if (teachRef.current) addLog(M.tipLeave(p.name, lblColored(toLeave)));
       aiTmr.current = tm(() => {
         const g2 = gRef.current;
         const g3 = doLeave(g2, playerIdx, toLeave);

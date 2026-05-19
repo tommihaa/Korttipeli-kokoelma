@@ -140,6 +140,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const aiTmr  = useRef(null);
   const logRef = useRef([]);
   const sndRef = useRef(true);
+  const teachRef = useRef(teachMode);
   const prevDeckRef = useRef(null);
   const prevRCRef   = useRef(0);
   const tmrs   = useRef(new Set());
@@ -197,6 +198,10 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     drawnNoGood:  (card, left) => `${card} ei käy. Nosta uudelleen (${left} jäljellä) tai lopeta vuoro.`,
     wrongSuit:    'Valitse sama maa kuin ässä.',
     badCards:     'Nämä kortit eivät käy.',
+    tipMultiPlay: (name, count) => `💡 ${name} lyö ${count} samanarvoiset — jatkaa vuoroaan!`,
+    tipSaveSeven: (name, suit) => `💡 ${name} valitsee ${suit} — eniten kortteja siinä maassa`,
+    tipDraw:      name => `💡 ${name} nostaa — ei sopivaa korttia kädessä`,
+    tipPassAfterDraws: name => `💡 ${name} lopettaa nostelun 3 jälkeen — vuoro siirtyy`,
     suitSelected: suit => `Valitsit maan: ${suit}`,
     lappuSelf:    'Lappu! Sinulla on yksi kortti jäljellä.',
   };
@@ -436,10 +441,16 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       const suit = play[0].r === '7'
         ? aiSuit(p.hand.filter(c => c.id !== play[0].id))
         : null;
+      if (teachRef.current) {
+        if (play.length > 1) addLog(M.tipMultiPlay(p.name, play.length));
+        else if (play[0].r === '7' && suit) addLog(M.tipSaveSeven(p.name, coloredSuit(suit)));
+      }
       doPlay(gRef.current, activePlayer, play, suit);
     } else if (drawsThisTurn < 3) {
+      if (teachRef.current) addLog(M.tipDraw(p.name));
       doDraw(gRef.current, activePlayer);
     } else {
+      if (teachRef.current) addLog(M.tipPassAfterDraws(p.name));
       advanceTurn(gRef.current, activePlayer);
     }
   }

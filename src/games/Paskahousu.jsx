@@ -188,7 +188,8 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const aiTmr   = useRef(null);
   const swapTmr = useRef(null);
   const logRef  = useRef([]);
-  const sndRef  = useRef(true);
+  const sndRef     = useRef(true);
+  const teachRef   = useRef(teachMode);
   const tmrs    = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
@@ -231,6 +232,10 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     aiSwaps:      name => `${name} vaihtaa!`,
     aiStuck:      name => `${name}: ei pysty tekemään mitään.`,
     badCard:      'Kortti ei kelpaa tähän.',
+    tipQuad:      (name, rank) => `💡 ${name} täydentää nelosen (${rank}) — kaataa kasan!`,
+    tipSaveSpecial:(name, card) => `💡 ${name} säästää ${card} — erityiskortti hätävaraus`,
+    tipPlaySmall: (name, cards) => `💡 ${name} lyö pienimmät kortit — pois hankalimmista`,
+    tipSwap:      name => `💡 ${name} vaihtaa poistopakasta — sai edullisemman kortin`,
   };
 
   function triggerKasaAnim(type) {
@@ -558,6 +563,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       beneficial.forEach(c => { (ranked[c.r] = ranked[c.r] || []).push(c); });
       const bestGroup = Object.values(ranked).reduce((a, b) => a[0].v <= b[0].v ? a : b);
       addLog(M.aiSwaps(g.players[pidx].name));
+      if (teachRef.current) addLog(M.tipSwap(g.players[pidx].name));
       applySwap(g, bestGroup);
     } else {
       skipSwap(g);
@@ -580,7 +586,19 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     if (g.skipNext === turn) { applySkip(gRef.current, turn); return; }
 
     const cards = aiCards(p.hand, top, g.pile);
-    if (cards)           { applyPlay(gRef.current, turn, cards); return; }
+    if (cards) {
+      if (teachRef.current) {
+        const isQuad = cards.length >= 4 || (g.pile.length > 0 &&
+          g.pile.slice().reverse().findIndex(c => c.r !== cards[0].r) === 0 &&
+          (g.pile.filter(c => c.r === cards[0].r).length + cards.length) >= 4);
+        const isSpecial = cards[0].r === '10' || cards[0].r === 'A';
+        const hadNormal = p.hand.some(c => c.r !== '10' && c.r !== 'A' && canPlay(c, top));
+        if (isQuad) addLog(M.tipQuad(p.name, cards[0].r));
+        else if (isSpecial && hadNormal) addLog(M.tipSaveSpecial(p.name, lblColored(cards[0])));
+        else if (!isSpecial && cards.length > 0) addLog(M.tipPlaySmall(p.name, cards.map(lblColored).join(', ')));
+      }
+      applyPlay(gRef.current, turn, cards); return;
+    }
     if (draw.length)     { applyKnock(gRef.current, turn);       return; }
     if (g.pile.length)   { applyTakePile(gRef.current, turn);    return; }
 
