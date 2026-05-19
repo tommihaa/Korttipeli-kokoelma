@@ -71,7 +71,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const failTmr      = useRef(null);
   const logRef       = useRef([]);
   const tmrs         = useRef(new Set());
-  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
+  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { pilesRef.current = piles; }, [piles]);
   useEffect(() => { centerRef.current = center; }, [center]);

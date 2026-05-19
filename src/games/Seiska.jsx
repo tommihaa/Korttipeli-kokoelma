@@ -143,7 +143,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const prevDeckRef = useRef(null);
   const prevRCRef   = useRef(0);
   const tmrs   = useRef(new Set());
-  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
+  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);

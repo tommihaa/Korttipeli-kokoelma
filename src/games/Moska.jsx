@@ -176,7 +176,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const sndRef  = useRef(false);
   const prevDeckRef = useRef(null);
   const tmrs        = useRef(new Set());
-  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
+  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);

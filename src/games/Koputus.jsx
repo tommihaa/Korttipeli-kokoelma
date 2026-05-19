@@ -133,7 +133,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const reactInt  = useRef(null);
   const aiTmr     = useRef(null);
   const tmrs      = useRef(new Set());
-  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
+  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   const setMsg = m => {
     setMsg_(m);

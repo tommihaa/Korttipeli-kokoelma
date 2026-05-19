@@ -141,7 +141,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   const sndRef = useRef(false);
   const finRef = useRef([]);
   const tmrs   = useRef(new Set());
-  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
+  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);

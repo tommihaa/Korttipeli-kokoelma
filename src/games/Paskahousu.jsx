@@ -190,7 +190,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const logRef  = useRef([]);
   const sndRef  = useRef(true);
   const tmrs    = useRef(new Set());
-  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
+  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; },         [G]);
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);

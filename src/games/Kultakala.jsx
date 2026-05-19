@@ -183,7 +183,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const sndRef      = useRef(true);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
   const tmrs         = useRef(new Set());
-  const tm = (fn, ms) => { const id = tm(fn, ms); tmrs.current.add(id); return id; };
+  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
