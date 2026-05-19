@@ -280,20 +280,35 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   const M = {
-    gameStart: (primaryAtk, defender, trump) => `Moska alkaa! Valtti: ${trump}. ${primaryAtk}, ${defender}.`,
-    defenderWon: (defender) => `${defender} onnistuneesti!`,
-    defenderTook: (defender, count) => `${defender} ${kortin(count)}.`,
-    playerDrew: (player, count) => `${player} ${kortin(count)}.`,
-    playerFinished: (player, rank) => `${player} kortista! Sija ${rank}.`,
-    moska: (name) => `${name} on Moska! 🐟`,
-    nextRound: (nextAtk, nextDef) => `${nextAtk} → ${nextDef}.`,
-    attack: (player, cards) => `${player}: ${cards}.`,
-    beat: (defName, defCard, atkCard) => `${defName}: ${defCard} kaataa ${atkCard}.`,
-    cannotPass: 'Ei voi siirtää enempää.',
-    pass: (defender, cards, nextDef) => `${defender} (${cards}) → ${nextDef}.`,
-    add: (player, cards) => `${player}: ${cards}.`,
-    defendHuman: (count) => `On vuorosi puolustautua.`,
-    defendAI: (name) => `${name} puolustaa...`,
+    gameStart:      (trump, att, def) => `Moska alkaa! Valtti: ${trump}. ${att}, ${def}.`,
+    defenderWon:    (player, table) => `${player} onnistuneesti! Pöydällä: ${table}`,
+    defenderTook:   (player, count, table) => `${player} ${count}. Pöydällä oli: ${table}`,
+    playerDrew:     (player, count) => `${player} ${count}.`,
+    won:            player => `${player} voiton! 🏆🎉`,
+    out:            player => `${player} pelistä pois.`,
+    lost:           player => `${player} tällä kertaa tappion.`,
+    nextRound:      (att, def) => `${att} → ${def}.`,
+    attack:         (player, cards) => `${player}: ${cards}.`,
+    beat:           (defName, defCard, atkCard, status) => `${defName}: ${defCard} kaataa ${atkCard}. ${status}`,
+    cannotPass:     'Ei voi siirtää enempää.',
+    pass:           (def, cards, nextDef) => `${def} (${cards}) → ${nextDef}.`,
+    add:            (player, cards) => `${player}: ${cards}.`,
+    defendHuman:    (unbeaten, cards, beaten) => unbeaten > 0
+      ? `On vuorosi puolustautua. Pöydällä: ${cards} (${beaten}🛡️/${unbeaten}⚔️).`
+      : 'On vuorosi puolustautua.',
+    defendAI:       (name, unbeaten, cards) => unbeaten > 0
+      ? `${name} puolustaa... (pöydällä: ${cards})`
+      : `${name} puolustaa...`,
+    addPhase:       cards => `═══ LISÄYSVAIHE ═══ Pöydällä: ${cards}`,
+    canAdd:         (name, cards) => `${name}: Voit lisätä sivusta: ${cards} — tai Ohita.`,
+    aiCanAdd:       (name, cards) => `${name} voi lisätä: ${cards}`,
+    aiSkips:        name => `${name} ohittaa.`,
+    badSameRank:    'Hyökkäykseen vain saman vahvuisia kortteja.',
+    tooManyCards:   'Kerralla enintään 6 korttia.',
+    tooManyVsDef:   count => `Liikaa — puolustajalla vain ${count}.`,
+    cantBeat:       (card, target) => `${card} ei kaada ${target}.`,
+    noPassAfterBeat:'Ei voi siirtää — olet jo kaanut kortteja.',
+    badPassCard:    card => `${card} ei sovi siirtoon.`,
   };
 
 
@@ -308,7 +323,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const attMsg = act(g.players[g.primaryAtk], 'hyökkäät', 'hyökkää');
     const defMsg = act(g.players[g.defender], 'puolustat', 'puolustaa');
     const trumpSpan = `<span style="color:${SUIT_COLOR[g.ts]}">${g.ts}</span>`;
-    addLog(`Moska alkaa! Valtti: ${trumpSpan}. ${attMsg}, ${defMsg}.`);
+    addLog(M.gameStart(trumpSpan, attMsg, defMsg));
     setScreen('game');
     setShuffling(true);
     if (!g.players[g.primaryAtk].isHuman) {
@@ -327,12 +342,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     ).join(', ');
 
     if (defWon) {
-      addLog(`${act(defPlayer, 'puolustit', 'puolusti')} onnistuneesti! Pöydällä: ${tableDesc}`);
+      addLog(M.defenderWon(act(defPlayer, 'puolustit', 'puolusti'), tableDesc));
       if (sndRef.current) SFX.capture();
     } else {
       const taken = g.table.flatMap(t => [t.atk, t.def].filter(Boolean));
       players[g.defender] = { ...players[g.defender], hand: [...players[g.defender].hand, ...taken] };
-      addLog(`${act(defPlayer, 'otit', 'otti')} ${kortin(taken.length)}. Pöydällä oli: ${tableDesc}`);
+      addLog(M.defenderTook(act(defPlayer, 'otit', 'otti'), kortin(taken.length), tableDesc));
       if (sndRef.current) SFX.leave();
     }
 
@@ -354,7 +369,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
           if (drawn.length) {
             players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-            addLog(`${act(players[idx], 'nostit', 'nosti')} ${kortin(drawn.length)}.`);
+            addLog(M.playerDrew(act(players[idx], 'nostit', 'nosti'), kortin(drawn.length)));
           }
           deck = d2; tc = t2;
         }
@@ -383,9 +398,9 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         rankings = [...rankings, i];
         // Eri viesti riippuen sijoituksesta
         if (rank === 1) {
-          addLog(`${act(p, 'Veit', 'Vei')} voiton! 🏆🎉`);
+          addLog(M.won(act(p, 'Veit', 'Vei')));
         } else {
-          addLog(`${act(p, 'Pääsit', 'Pääsi')} pelistä pois.`);
+          addLog(M.out(act(p, 'Pääsit', 'Pääsi')));
         }
       }
     });
@@ -398,7 +413,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           const rank = rankings.length + 1;
           players[p.id] = { ...p, rank };
           rankings = [...rankings, p.id];
-          addLog(`${act(p, 'Kärsit', 'Kärsi')} tällä kertaa tappion.`);
+          addLog(M.lost(act(p, 'Kärsit', 'Kärsi')));
         }
       });
       onResult?.(rankings[0] === 0);
@@ -451,7 +466,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       setAwaitingPlayerContinue(true);
     } else {
       // Ihminen ei ollut osallisena - päivitä pelitilanteen ja jatka
-      addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
+      addLog(M.nextRound(act(players[nextAtk], 'hyökkäät', 'hyökkää'), act(players[nextDef], 'puolustat', 'puolustaa')));
       setGS(g2);
       if (!players[nextAtk].isHuman) {
         // AI hyökkää seuraavaksi
@@ -466,7 +481,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = cards.map(c => ({ atk: c, def: null, atkBy: atkIdx }));
     const players = g.players.map((pl, i) => i === atkIdx ? { ...pl, hand: newHand } : pl);
-    addLog(`${act(p, 'hyökkäsit', 'hyökkäsi')}: ${cards.map(lblColored).join(', ')}.`);
+    addLog(M.attack(act(p, 'hyökkäsit', 'hyökkäsi'), cards.map(lblColored).join(', ')));
     if (sndRef.current) SFX.leave();
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
@@ -488,7 +503,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const beaten = newTable.filter(t => t.def).length;
     const statusMsg = unbeaten > 0 ? `(${beaten}🛡️/${unbeaten}⚔️ pöydällä)` : '(kaikki kaadettu)';
 
-    addLog(`${def.name}: ${lblColored(defCard)} kaataa ${lblColored(atkCard)}. ${statusMsg}`);
+    addLog(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
     if (sndRef.current) SFX.capture();
     return { ...g, players, table: newTable };
   }
@@ -501,13 +516,13 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       nextDef = nextActive(g.players, nextDef);
     }
     if (nextDef === g.primaryAtk || g.passChain.includes(nextDef)) {
-      addLog('Ei voi siirtää enempää.');
+      addLog(M.cannotPass);
       return;
     }
     const newHand = def.hand.filter(c => !passCards.find(pc => pc.id === c.id));
     const newTable = [...g.table, ...passCards.map(c => ({ atk: c, def: null, atkBy: g.defender }))];
     const players = g.players.map((p, i) => i === g.defender ? { ...p, hand: newHand } : p);
-    addLog(`${act(def, 'siirrit', 'siirsi')} (${passCards.map(lblColored).join(',')}) → ${act(g.players[nextDef], 'puolustat', 'puolustaa')}.`);
+    addLog(M.pass(act(def, 'siirrit', 'siirsi'), passCards.map(lblColored).join(','), act(g.players[nextDef], 'puolustat', 'puolustaa')));
     const g2 = {
       ...g, players, table: newTable, defender: nextDef,
       passChain: [...g.passChain, g.defender],
@@ -523,7 +538,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = [...g.table, ...cards.map(c => ({ atk: c, def: null, atkBy: playerIdx }))];
     const players = g.players.map((pl, i) => i === playerIdx ? { ...pl, hand: newHand } : pl);
-    addLog(`${act(p, 'lisäsit', 'lisäsi')}: ${cards.map(lblColored).join(', ')}.`);
+    addLog(M.add(act(p, 'lisäsit', 'lisäsi'), cards.map(lblColored).join(', ')));
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
     tm(() => setJustPlaced(new Set()), 1800);
@@ -546,15 +561,9 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const beaten = g.table.filter(t => t.def).length;
 
     if (def.isHuman) {
-      const msg = unbeaten > 0
-        ? `On vuorosi puolustautua. Pöydällä: ${unbeatenCards.join(', ')} (${beaten}🛡️/${unbeaten}⚔️).`
-        : 'On vuorosi puolustautua.';
-      addLog(msg);
+      addLog(M.defendHuman(unbeaten, unbeatenCards.join(', '), beaten));
     } else {
-      const msg = unbeaten > 0
-        ? `${def.name} puolustaa... (pöydällä: ${unbeatenCards.join(', ')})`
-        : `${def.name} puolustaa...`;
-      addLog(msg);
+      addLog(M.defendAI(def.name, unbeaten, unbeatenCards.join(', ')));
       aiTmr.current = tm(() => runAI(g), 1400 + Math.random() * 500);
     }
   }
@@ -586,7 +595,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
     // Näytä lisäysvaiheen alku
     const tableCards = g.table.map(t => lblColored(t.atk)).join(', ');
-    addLog(`═══ LISÄYSVAIHE ═══ Pöydällä: ${tableCards}`);
+    addLog(M.addPhase(tableCards));
 
     const g2 = { ...g, phase: 'add', addQueue: queue };
     setGS(g2);
@@ -619,7 +628,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       return;
     }
     if (p.isHuman) {
-      addLog(`${p.name}: Voit lisätä sivusta: ${addable.map(lblColored).join(', ')} — tai Ohita.`);
+      addLog(M.canAdd(p.name, addable.map(lblColored).join(', ')));
       setSelAdd([]);
     } else {
       // AI lisää jos puolustajalla paljon kortteja jäljellä, muuten ohittaa
@@ -627,12 +636,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       const shouldAdd = def.hand.length >= 3 || g.table.length <= 2;
       if (shouldAdd) {
         const toAdd = addable.slice(0, 1);
-        addLog(`${p.name} voi lisätä: ${addable.map(lblColored).join(', ')}`);
+        addLog(M.aiCanAdd(p.name, addable.map(lblColored).join(', ')));
         aiTmr.current = tm(() => {
           doAdd(gRef.current, next, toAdd);
         }, 900 + Math.random() * 300);
       } else {
-        addLog(`${p.name} ohittaa.`);
+        addLog(M.aiSkips(p.name));
         const rest = g.addQueue.slice(1);
         const g2 = { ...g, addQueue: rest };
         setGS(g2);
@@ -708,7 +717,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       const has = prev.find(c => c.id === card.id);
       if (has) return prev.filter(c => c.id !== card.id);
       if (prev.length > 0 && prev[0].r !== card.r) {
-        addLog('Hyökkäykseen vain saman vahvuisia kortteja.');
+        addLog(M.badSameRank);
         return prev;
       }
       return [...prev, card];
@@ -719,11 +728,11 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     if (!selAtk.length) return;
     const g = gRef.current;
     if (selAtk.length > 6) {
-      addLog('Kerralla enintään 6 korttia.');
+      addLog(M.tooManyCards);
       return;
     }
     if (selAtk.length > g.players[g.defender].hand.length) {
-      addLog(`Liikaa — puolustajalla vain ${korttia(g.players[g.defender].hand.length)}.`);
+      addLog(M.tooManyVsDef(korttia(g.players[g.defender].hand.length)));
       return;
     }
     const cards = [...selAtk];
@@ -740,7 +749,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   function humanBeatWithCard(card) {
     if (!G || G.phase !== 'defend' || G.defender !== 0 || !selDefTarget) return;
     if (!canBeat(selDefTarget.atk, card, G.ts)) {
-      addLog(`${lblColored(card)} ei kaada ${lblColored(selDefTarget.atk)}.`);
+      addLog(M.cantBeat(lblColored(card), lblColored(selDefTarget.atk)));
       return;
     }
     const g = gRef.current;
@@ -763,9 +772,9 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
   function humanTogglePass(card) {
     if (!G || G.phase !== 'defend' || G.defender !== 0) return;
-    if (G.table.some(t => t.def)) { addLog('Ei voi siirtää — olet jo kaanut kortteja.'); return; }
+    if (G.table.some(t => t.def)) { addLog(M.noPassAfterBeat); return; }
     const atkRanks = new Set(G.table.map(t => t.atk.r));
-    if (!atkRanks.has(card.r)) { addLog(`${lblColored(card)} ei sovi siirtoon.`); return; }
+    if (!atkRanks.has(card.r)) { addLog(M.badPassCard(lblColored(card))); return; }
     setSelPass(prev => {
       const has = prev.find(c => c.id === card.id);
       return has ? prev.filter(c => c.id !== card.id) : [...prev, card];
@@ -825,7 +834,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
           if (drawn.length) {
             players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-            addLog(`${act(players[idx], 'nostit', 'nosti')} ${kortin(drawn.length)}.`);
+            addLog(M.playerDrew(act(players[idx], 'nostit', 'nosti'), kortin(drawn.length)));
           }
           deck = d2; tc = t2;
         }
@@ -838,7 +847,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
       // Näytä seuraavan kierroksen viesti
       const { nextDef } = pendingDraw;
-      addLog(`${act(players[nextAtk], 'hyökkäät', 'hyökkää')} → ${act(players[nextDef], 'puolustat', 'puolustaa')}.`);
+      addLog(M.nextRound(act(players[nextAtk], 'hyökkäät', 'hyökkää'), act(players[nextDef], 'puolustat', 'puolustaa')));
 
       // Aloita seuraava kierros
       if (!g2Updated.players[g2Updated.primaryAtk].isHuman) {

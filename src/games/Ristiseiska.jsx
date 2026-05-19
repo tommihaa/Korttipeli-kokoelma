@@ -212,13 +212,30 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
   function setGS(g) { setG(g); gRef.current = g; }
 
+  const M = {
+    gameStart:  (starter, card) => `Ristiseiska alkaa! ${starter} aloittaa ${card}:llä.`,
+    yourTurn:   canPlay => canPlay ? 'Sinun vuorosi.' : 'Sinun vuorosi. Mikään korttisi ei käy, joten Passaa.',
+    played:     (isH, name, card) => `${isH ? 'Sinä' : name}: ${card}`,
+    won:        (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
+    aiBonus:    (name, suit, pile) => `${name}: Kaatoi ${suit} ${pile} — voi jatkaa!`,
+    humanBonus: (suit, pile) => `Kaadoit ${suit} ${pile}. Saat jatkaa — jos voit ja haluat.`,
+    passFirst:  (isH, name) => `${isH ? 'Sinä passaat' : `${name} passaa`} (1. kierros — ei rangaistusta).`,
+    passGiveMe: (isH, name) => `${isH ? 'Sinä passaat' : `${name} passaa`} — valitse kortti annettavaksi.`,
+    passGive:   (isH, name, giverH, giverName, card) =>
+      `${isH ? 'Sinä passaat' : `${name} passaa`} — ${giverH ? 'sinä annat' : `${giverName} antaa`} ${card}.`,
+    passOnly:   (isH, name) => `${isH ? 'Sinä passaat' : `${name} passaa`}.`,
+    badCard:    'Tämä kortti ei käy tähän — valitse toinen.',
+    cantPass:   'Sinulla on pelattavissa oleva kortti — passata ei voi.',
+    humanGives: (card, receiver) => `Sinä annat ${card} pelaajalle ${receiver}.`,
+  };
+
   function startGame() {
     clearTimeout(aiTmr.current);
     const g = initGame(nP, playerNames);
     logRef.current = []; setLog([]); setSel(null); setLastPlay(null);
     setGS(g);
     const s = g.players[g.activePlayer];
-    addLog(`Ristiseiska alkaa! ${s.name} aloittaa ${lblColored({ r: '7', s: '♣' })}:llä.`);
+    addLog(M.gameStart(s.name, lblColored({ r: '7', s: '♣' })));
     setScreen('game');
     setShuffling(true);
     if (!s.isHuman) aiTmr.current = tm(() => runAI(g), 3100);
@@ -236,7 +253,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       aiTmr.current = tm(() => runAI(g2), 1100 + Math.random() * 400);
     } else {
       const canPlay = hasAnyPlay(g.players[nextIdx].hand, g2.rows);
-      addLog(canPlay ? 'Sinun vuorosi.' : 'Sinun vuorosi. Mikään korttisi ei käy, joten Passaa.');
+      addLog(M.yourTurn(canPlay));
     }
   }
 
@@ -247,7 +264,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const v   = rv(card);
 
     if (sndRef.current) SFX.flip();
-    addLog(`${isH ? 'Sinä' : p.name}: ${lblColored(card)}`);
+    addLog(M.played(isH, p.name, lblColored(card)));
     showLastPlay(isH ? 'Sinä' : p.name, card, isH);
 
     const rows = { ...g.rows };
@@ -266,7 +283,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     let finished = [...g.finished];
     if (players[playerIdx].hand.length === 0 && !finished.includes(playerIdx)) {
       finished = [...finished, playerIdx];
-      addLog(`${isH ? 'Veit voiton' : `${p.name} vei voiton`}! 🏆🎉`);
+      addLog(M.won(isH, p.name));
       if (sndRef.current) SFX.capture();
     }
 
@@ -286,10 +303,10 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       const suitGen = { '♠': 'Padan', '♥': 'Hertan', '♦': 'Ruudun', '♣': 'Ristin' }[card.s];
       const pileName = v === 1 ? 'ala-pinon' : 'ylä-pinon';
       if (!p.isHuman) {
-        addLog(`${p.name}: Kaatoi ${suitGen} ${pileName} — voi jatkaa!`);
+        addLog(M.aiBonus(p.name, suitGen, pileName));
         aiTmr.current = tm(() => runAI(g2), 900);
       } else {
-        addLog(`Kaadoit ${suitGen} ${pileName}. Saat jatkaa — jos voit ja haluat.`);
+        addLog(M.humanBonus(suitGen, pileName));
       }
       return;
     }
@@ -303,7 +320,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const isH = p.isHuman;
 
     if (!g.firstRoundDone) {
-      addLog(`${isH ? 'Sinä passaat' : `${p.name} passaa`} (1. kierros — ei rangaistusta).`);
+      addLog(M.passFirst(isH, p.name));
       advanceTurnRS({ ...g }, playerIdx);
       return;
     }
@@ -313,7 +330,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     if (giverIdx !== -1 && g.players[giverIdx].isHuman) {
       const g2 = { ...g, givingCardTo: playerIdx, givingPlayerIdx: giverIdx };
       setGS(g2);
-      addLog(`${isH ? 'Sinä passaat' : `${p.name} passaa`} — valitse kortti annettavaksi.`);
+      addLog(M.passGiveMe(isH, p.name));
       return;
     }
 
@@ -326,9 +343,9 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         if (i === playerIdx) return { ...pl, hand: [...pl.hand, toGive] };
         return pl;
       });
-      addLog(`${isH ? 'Sinä passaat' : `${p.name} passaa`} — ${giver.isHuman ? 'sinä annat' : `${giver.name} antaa`} ${lblColored(toGive)}.`);
+      addLog(M.passGive(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
     } else {
-      addLog(`${isH ? 'Sinä passaat' : `${p.name} passaa`}.`);
+      addLog(M.passOnly(isH, p.name));
     }
 
     advanceTurnRS({ ...g, players }, playerIdx);
@@ -365,7 +382,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     if (!selCard || !G) return;
     const g = { ...gRef.current, bonusTurn: null };
     if (!isPlayable(selCard, g.rows)) {
-      addLog('Tämä kortti ei käy tähän — valitse toinen.');
+      addLog(M.badCard);
       return;
     }
     const card = selCard; setSel(null);
@@ -375,7 +392,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   function humanPass() {
     if (!G || G.phase !== 'play' || G.activePlayer !== 0) return;
     if (hasAnyPlay(G.players[0].hand, G.rows)) {
-      addLog('Sinulla on pelattavissa oleva kortti — passata ei voi.');
+      addLog(M.cantPass);
       return;
     }
     setSel(null);
@@ -398,7 +415,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       if (i === receiverIdx) return { ...pl, hand: [...pl.hand, card] };
       return pl;
     });
-    addLog(`Sinä annat ${lblColored(card)} pelaajalle ${g.players[receiverIdx].name}.`);
+    addLog(M.humanGives(lblColored(card), g.players[receiverIdx].name));
     const g2 = { ...g, players, givingCardTo: null, givingPlayerIdx: null };
     advanceTurnRS(g2, receiverIdx);
   }

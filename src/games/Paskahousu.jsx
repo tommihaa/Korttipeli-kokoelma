@@ -208,6 +208,31 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
   function setGS(g) { setG(g); gRef.current = g; }
 
+  const M = {
+    gameStart:    (isH, name, lowest) => `Paskahousu alkaa! ${isH
+      ? `Kellään ei ole pienempää kuin ${lowest}, joten sinä aloitat. Voit lyödä useammankin samanarvoisen kerralla.`
+      : `${name} aloittaa (pienin kortti).`}`,
+    played:       (isH, name, cards) => `${isH ? 'Sinä' : name}: ${cards}`,
+    won:          (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
+    loser:        (isH, name) => `${isH ? 'Sinä olet' : `${name} on`} Paskahousu! 💩`,
+    swept:        (isH, name) => `${isH ? 'Sinä kaadat kasan' : `${name} kaataa kasan`}! Jatkaa.`,
+    yourTurn:     'On vuorosi.',
+    yourTurnCont: 'Sinä jatkat vuoroasi.',
+    emptyPenalty: (card, nextName) => `${card} tyhjälle — ${nextName} nostaa ja menettää vuoronsa!`,
+    emptyPenalty2:(card, nextName) => `${card} tyhjälle — ${nextName} menettää vuoronsa!`,
+    blindSwept:   (isH, name, card) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — kaato! ${isH ? 'Jatkat.' : 'Jatkaa.'}`,
+    blindGood:    (isH, name, card) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — kortti kävi!`,
+    blindBad:     (isH, name, card) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — ei käynyt, nosta kasa!`,
+    tookPile:     (isH, name, count) => `${isH ? 'Sinä nostat kasan' : `${name} nostaa kasan`} (${count}k).`,
+    skipCard:     (isH, name, card) => `${isH ? 'Sinä nostat' : `${name} nostaa`} (${card}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`,
+    skipNoCard:   (isH, name) => `${isH ? 'Sinä menetät' : `${name} menettää`} vuoronsa.`,
+    swapped:      (isH, name, cards) => `${isH ? 'Sinä vaihdat' : `${name} vaihtaa`}! ${cards} kasaan.`,
+    swapSwept:    (isH, name) => `${isH ? 'Sinä kaadat kasan vaihdolla! Jatkat.' : `${name} kaataa kasan vaihdolla! Jatkaa.`}`,
+    aiSwaps:      name => `${name} vaihtaa!`,
+    aiStuck:      name => `${name}: ei pysty tekemään mitään.`,
+    badCard:      'Kortti ei kelpaa tähän.',
+  };
+
   function triggerKasaAnim(type) {
     setKasaAnim(type);
     tm(() => setKasaAnim(null), type === 'quad' ? 2000 : type === 'clear' ? 1400 : 850);
@@ -221,7 +246,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g);
     const s = g.players[g.turn];
     const lowestCard = s.hand.reduce((a, b) => a.v <= b.v ? a : b);
-    addLog(`Paskahousu alkaa! ${s.isHuman ? `Kellään ei ole pienempää kuin ${lblColored(lowestCard)}, joten sinä aloitat. Voit lyödä useammankin samanarvoisen kerralla.` : `${s.name} aloittaa (pienin kortti).`}`);
+    addLog(M.gameStart(s.isHuman, s.name, lblColored(lowestCard)));
     setScreen('game');
     setShuffling(true);
     if (!s.isHuman) aiTmr.current = tm(() => runAI(g), 4100);
@@ -238,7 +263,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     const ids      = new Set(cards.map(c => c.id));
 
     p.hand = p.hand.filter(c => !ids.has(c.id));
-    addLog(`${isH ? 'Sinä' : p.name}: ${cards.map(lblColored).join(', ')}`);
+    addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
     if (sndRef.current) SFX.flip();
     setJP(ids);
     setLP({ name: isH ? 'Sinä' : p.name, cards, isHuman: isH });
@@ -257,7 +282,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     let finished = [...g.finished];
     if (p.hand.length === 0 && !finished.includes(pidx)) {
       finished = [...finished, pidx];
-      addLog(`${isH ? 'Veit voiton' : `${p.name} vei voiton`}! 🏆🎉`);
+      addLog(M.won(isH, p.name));
       if (sndRef.current) SFX.capture();
     }
 
@@ -267,14 +292,14 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const f = [...finished];
       remaining.forEach(pl => { if (!f.includes(pl.id)) f.push(pl.id); });
       const loser = players[f[f.length - 1]];
-      addLog(`${loser.isHuman ? 'Sinä olet' : `${loser.name} on`} Paskahousu! 💩`);
+      addLog(M.loser(loser.isHuman, loser.name));
       onResult?.(f[0] === 0);
       return setGS({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
     }
 
     // Kaato? → kaataja jatkaa (uusi vuoro)
     if (pileClears(cards, topBefore, pile)) {
-      addLog(`${isH ? 'Sinä kaadat kasan' : `${p.name} kaataa kasan`}! Jatkaa.`);
+      addLog(M.swept(isH, p.name));
       if (sndRef.current) SFX.capture();
       const isQuad = cards[0].r !== '10' && cards[0].r !== 'A';
       triggerKasaAnim(isQuad ? 'quad' : 'clear');
@@ -283,7 +308,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       setGS(g2);
       if (players[contP] && !players[contP].isHuman)
         aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-      else addLog('Sinä jatkat vuoroasi.');
+      else addLog(M.yourTurnCont);
       return;
     }
 
@@ -293,7 +318,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const nextP = nextActive(players, pidx, finished);
       if (nextP !== -1) {
         skipNext = nextP;
-        addLog(`${lblColored(cards[0])} tyhjälle — ${players[nextP].name} nostaa ja menettää vuoronsa!`);
+        addLog(M.emptyPenalty(lblColored(cards[0]), players[nextP].name));
       }
     }
 
@@ -327,7 +352,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else addLog('On vuorosi.');
+    else addLog(M.yourTurn);
   }
 
   // ── applyKnock ────────────────────────────────────────────────────────────
@@ -354,7 +379,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       let finished = [...g.finished];
       if (p.hand.length === 0 && !finished.includes(pidx)) {
         finished = [...finished, pidx];
-        addLog(`${isH ? 'Veit voiton' : `${p.name} vei voiton`}! 🏆🎉`);
+        addLog(M.won(isH, p.name));
         if (sndRef.current) SFX.capture();
       }
 
@@ -363,13 +388,13 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         const f = [...finished];
         remaining.forEach(pl => { if (!f.includes(pl.id)) f.push(pl.id); });
         const loserK = players[f[f.length - 1]];
-        addLog(`${loserK.isHuman ? 'Sinä olet' : `${loserK.name} on`} Paskahousu! 💩`);
+        addLog(M.loser(loserK.isHuman, loserK.name));
         onResult?.(f[0] === 0);
         return setGS({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
       }
 
       if (pileClears([knocked], topBefore, pile)) {
-        addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lblColored(knocked)} pakasta — kaato! ${isH ? 'Jatkat.' : 'Jatkaa.'}`);
+        addLog(M.blindSwept(isH, p.name, lblColored(knocked)));
         if (sndRef.current) SFX.capture();
         triggerKasaAnim('clear');
         const contP = finished.includes(pidx) ? nextActive(players, pidx, finished) : pidx;
@@ -377,18 +402,18 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         setGS(g2);
         if (players[contP] && !players[contP].isHuman)
           aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-        else addLog('Sinä jatkat vuoroasi.');
+        else addLog(M.yourTurnCont);
         return;
       }
 
-      addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lblColored(knocked)} pakasta — kortti kävi!`);
+      addLog(M.blindGood(isH, p.name, lblColored(knocked)));
 
       let skipNext = g.skipNext;
       if (!topBefore && emptyPenalty(knocked)) {
         const nextP = nextActive(players, pidx, finished);
         if (nextP !== -1) {
           skipNext = nextP;
-          addLog(`${lblColored(knocked)} tyhjälle — ${players[nextP].name} menettää vuoronsa!`);
+          addLog(M.emptyPenalty2(lblColored(knocked), players[nextP].name));
         }
       }
 
@@ -397,9 +422,9 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       setGS(g2);
       if (players[advTurn] && !players[advTurn].isHuman)
         aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-      else addLog('On vuorosi.');
+      else addLog(M.yourTurn);
     } else {
-      addLog(`${isH ? 'Sinä vedät sokkona' : `${p.name} veti sokkona`} ${lblColored(knocked)} pakasta — ei käynyt, nosta kasa!`);
+      addLog(M.blindBad(isH, p.name, lblColored(knocked)));
       triggerKasaAnim('take');
       p.hand = [...p.hand, knocked, ...pile];
       const advTurn = nextActive(players, pidx, g.finished);
@@ -407,7 +432,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       setGS(g2);
       if (players[advTurn] && !players[advTurn].isHuman)
         aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-      else addLog('On vuorosi.');
+      else addLog(M.yourTurn);
     }
   }
 
@@ -416,7 +441,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     if (!g.pile.length) return;
     let players = g.players.map(p => ({ ...p, hand: [...p.hand] }));
     const isH = players[pidx].isHuman;
-    addLog(`${isH ? 'Sinä nostat kasan' : `${players[pidx].name} nostaa kasan`} (${g.pile.length}k).`);
+    addLog(M.tookPile(isH, players[pidx].name, g.pile.length));
     triggerKasaAnim('take');
     players[pidx].hand = [...players[pidx].hand, ...g.pile];
     const advTurn = nextActive(players, pidx, g.finished);
@@ -424,7 +449,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else addLog('On vuorosi.');
+    else addLog(M.yourTurn);
   }
 
   // ── applySkip ─────────────────────────────────────────────────────────────
@@ -442,13 +467,13 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const penaltyCard = pile.pop();
       newTop = pile.length > 0 ? pile[pile.length - 1] : null;
       players[pidx].hand.push(penaltyCard);
-      addLog(`${isH ? 'Sinä nostat' : `${pname} nostaa`} (${lblColored(penaltyCard)}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`);
+      addLog(M.skipCard(isH, pname, lblColored(penaltyCard)));
     } else if (draw.length) {
       const drawn = draw.shift();
       players[pidx].hand.push(drawn);
-      addLog(`${isH ? 'Sinä nostat' : `${pname} nostaa`} (${lblColored(drawn)}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`);
+      addLog(M.skipCard(isH, pname, lblColored(drawn)));
     } else {
-      addLog(`${isH ? 'Sinä menetät' : `${pname} menettää`} vuoronsa.`);
+      addLog(M.skipNoCard(isH, pname));
     }
 
     const nextP = nextActive(players, pidx, g.finished);
@@ -456,7 +481,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (nextP !== -1) {
       if (!players[nextP]?.isHuman) aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-      else addLog('On vuorosi.');
+      else addLog(M.yourTurn);
     }
   }
 
@@ -482,7 +507,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2); setSel([]);
     if (advTurn !== -1 && !g.players[advTurn]?.isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else if (advTurn !== -1) addLog('On vuorosi.');
+    else if (advTurn !== -1) addLog(M.yourTurn);
   }
 
   function applySwap(g, swapCards) {
@@ -495,7 +520,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     const swapIds = new Set(swapCards.map(c => c.id));
     p.hand = p.hand.filter(c => !swapIds.has(c.id));
     p.hand = [...p.hand, ...playedCards];
-    addLog(`${p.isHuman ? 'Sinä vaihdat' : `${p.name} vaihtaa`}! ${swapCards.map(lblColored).join(', ')} kasaan.`);
+    addLog(M.swapped(p.isHuman, p.name, swapCards.map(lblColored).join(', ')));
     if (sndRef.current) SFX.flip();
     setJP(new Set(swapCards.map(c => c.id)));
     tm(() => setJP(new Set()), 2000);
@@ -503,7 +528,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     const newTop  = swapCards[swapCards.length - 1];
     setSel([]);
     if (pileClears(swapCards, prevTop, newPile)) {
-      addLog(`${p.isHuman ? 'Sinä kaadat kasan vaihdolla! Jatkat.' : `${p.name} kaataa kasan vaihdolla! Jatkaa.`}`);
+      addLog(M.swapSwept(p.isHuman, p.name));
       if (sndRef.current) SFX.capture();
       triggerKasaAnim('clear');
       const contP = g.finished.includes(pidx) ? nextActive(players, pidx, g.finished) : pidx;
@@ -511,7 +536,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       setGS(g2);
       if (players[contP] && !players[contP].isHuman)
         aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-      else addLog('Sinä jatkat vuoroasi.');
+      else addLog(M.yourTurnCont);
       return;
     }
     const advTurn = nextActive(players, pidx, g.finished);
@@ -519,7 +544,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else addLog('On vuorosi.');
+    else addLog(M.yourTurn);
   }
 
   function doAISwap(g, pidx) {
@@ -532,7 +557,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const ranked = {};
       beneficial.forEach(c => { (ranked[c.r] = ranked[c.r] || []).push(c); });
       const bestGroup = Object.values(ranked).reduce((a, b) => a[0].v <= b[0].v ? a : b);
-      addLog(`${g.players[pidx].name} vaihtaa!`);
+      addLog(M.aiSwaps(g.players[pidx].name));
       applySwap(g, bestGroup);
     } else {
       skipSwap(g);
@@ -559,13 +584,13 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     if (draw.length)     { applyKnock(gRef.current, turn);       return; }
     if (g.pile.length)   { applyTakePile(gRef.current, turn);    return; }
 
-    addLog(`${p.name}: ei pysty tekemään mitään.`);
+    addLog(M.aiStuck(p.name));
     const nextP = nextActive(players, turn, finished);
     const g2 = { ...g, turn: nextP };
     setGS(g2);
     if (nextP !== -1 && !players[nextP]?.isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else addLog('On vuorosi.');
+    else addLog(M.yourTurn);
   }
 
   // ── Ihmispelaajan kortinvalinta ───────────────────────────────────────────
@@ -596,7 +621,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     if (!selected.length || !G) return;
     const top = G.top;
     if (!canPlay(selected[0], top)) {
-      addLog('Kortti ei kelpaa tähän.');
+      addLog(M.badCard);
       return;
     }
     const cards = [...selected];

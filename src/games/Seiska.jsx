@@ -175,17 +175,43 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
   function setGS(g) { setG(g); gRef.current = g; }
 
+  const M = {
+    gameStart:    card => `Seiska alkaa! Päällimmäinen: ${card}.`,
+    yourTurnSuit: cl => `Sinun vuorosi — ${cl}`,
+    aceDrawn:     (isH, name, card) => `${isH ? 'Sinä nostat' : `${name} nostaa`} ässärangaistuksena ${card}.`,
+    forgotLappu:  (name, count) => `${name} unohti sanoa Lappu — +${count} korttia sakkona!`,
+    played:       (isH, name, cards) => `${isH ? 'Sinä' : name}: ${cards}`,
+    won:          (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
+    sevenPlayed:  (isH, name, suit) => `${isH ? 'Sinä' : name} laittaa seiskan päälle — vaadittu maa: ${suit}`,
+    chooseSuit:   'Valitse vaadittu maa seiskan jälkeen.',
+    suitChosen:   (isH, name, suit) => `${isH ? 'Sinä valitset' : `${name} valitsee`} maan: ${suit}`,
+    lappu:        name => `${name}: Lappu!`,
+    aceBonus:     (isH, name, suit) => `Ässä! ${isH ? 'Sinä voit' : `${name} voi`} jatkaa ${suit}-maalla.`,
+    deckEmpty:    'Pakka tyhjä — vuoro päättyy.',
+    aiDraws:      name => `${name} nostaa.`,
+    aiDrawFail:   name => `${name}: Nosto ei auta.`,
+    aiDrawsGone:  name => `${name}: Nostot eivät auttaneet.`,
+    humanDraws:   card => `Nostat ${card}.`,
+    drawnPlayable:(card, left) => `${card} on pelattavissa! Lyö se tai nosta uudelleen (${left} jäljellä).`,
+    draws3Used:   '3 nostoa käytetty — vuoro päättyy automaattisesti.',
+    drawnNoGood:  (card, left) => `${card} ei käy. Nosta uudelleen (${left} jäljellä) tai lopeta vuoro.`,
+    wrongSuit:    'Valitse sama maa kuin ässä.',
+    badCards:     'Nämä kortit eivät käy.',
+    suitSelected: suit => `Valitsit maan: ${suit}`,
+    lappuSelf:    'Lappu! Sinulla on yksi kortti jäljellä.',
+  };
+
   function startGame() {
     clearTimeout(aiTmr.current);
     prevRCRef.current = 0;
     const g = mkInitState(nP, playerNames);
     logRef.current = []; setLog([]); setSel([]); setPakaAnim(false);
     setGS(g);
-    addLog(`Seiska alkaa! Päällimmäinen: ${lblColored(g.discardTop)}.`);
+    addLog(M.gameStart(lblColored(g.discardTop)));
     setScreen('game');
     setShuffling(true);
     if (g.players[0].isHuman) {
-      addLog(`Sinun vuorosi — lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`);
+      addLog(M.yourTurnSuit(`lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`));
     } else {
       aiTmr.current = tm(() => runAI(g), 3100);
     }
@@ -199,7 +225,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       if (i === fromIdx || g2.finished.includes(i)) return p;
       if (!deck.length) return p;
       const drawn = deck.shift();
-      addLog(`${p.isHuman ? 'Sinä nostat' : `${p.name} nostaa`} ässärangaistuksena ${lblColored(drawn)}.`);
+      addLog(M.aceDrawn(p.isHuman, p.name, lblColored(drawn)));
       return { ...p, hand: [...p.hand, drawn] };
     });
     return { ...g2, players, deck };
@@ -220,7 +246,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       lappuSaid: new Set([...g2.lappuSaid, g.pendingLappu]),
       pendingLappu: null,
     };
-    addLog(`${g.players[g.pendingLappu].name} unohti sanoa Lappu — +${pen.length} korttia sakkona!`);
+    addLog(M.forgotLappu(g.players[g.pendingLappu].name, pen.length));
     return g2;
   }
 
@@ -237,7 +263,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       const cl = g3.reqSuit
         ? `Vaadittu maa: ${coloredSuit(g3.reqSuit)} — lyö ${coloredSuit(g3.reqSuit)}-maa tai nosta.`
         : `Lyö ${coloredSuit(g3.discardTop.s)}-maa tai ${g3.discardTop.r}-arvo tai nosta.`;
-      addLog(`Sinun vuorosi — ${cl}`);
+      addLog(M.yourTurnSuit(cl));
     }
   }
 
@@ -248,7 +274,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const isH   = p.isHuman;
 
     if (sndRef.current) SFX.flip();
-    addLog(`${isH ? 'Sinä' : p.name}: ${cards.map(lblColored).join(', ')}`);
+    addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
 
     // Poista kädestä
     let players = g.players.map((pl, i) => i !== playerIdx ? pl
@@ -260,7 +286,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     let gameOver = false;
     if (newHand.length === 0 && !finished.includes(playerIdx)) {
       finished = [...finished, playerIdx];
-      addLog(`${isH ? 'Veit voiton' : `${p.name} vei voiton`}! 🏆🎉`);
+      addLog(M.won(isH, p.name));
       if (sndRef.current) SFX.capture();
       if (g.players.every((_, i) => finished.includes(i) || i === playerIdx)) {
         g.players.forEach((_, i) => { if (!finished.includes(i)) finished.push(i); });
@@ -289,15 +315,15 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       if (g2.reqSuit !== null) {
         // Seiska seiskan päälle — väri automaattisesti tämän seiskan oma maa
         const suit = card.s;
-        addLog(`${isH ? 'Sinä' : p.name} laittaa seiskan päälle — vaadittu maa: ${suit}`);
+        addLog(M.sevenPlayed(isH, p.name, suit));
         g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
       } else if (!suitChoice && p.isHuman) {
         setGS({ ...newDiscard, phase: 'awaiting_suit', pendingLappu: null });
-        addLog('Valitse vaadittu maa seiskan jälkeen.');
+        addLog(M.chooseSuit);
         return;
       } else {
         const suit = suitChoice || aiSuit(newHand);
-        if (!suitChoice) addLog(`${isH ? 'Sinä valitset' : `${p.name} valitsee`} maan: ${suit}`);
+        if (!suitChoice) addLog(M.suitChosen(isH, p.name, suit));
         g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
       }
     } else {
@@ -309,12 +335,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       g2 = { ...g2, aceBonus: card.s };
       if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
         if (!p.isHuman) {
-          addLog(`${p.name}: Lappu!`);
+          addLog(M.lappu(p.name));
           g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
         }
         // Ihmiselle: ei aseteta pendingLappu vielä — odotetaan bonusvuoron päättymistä
       }
-      addLog(`Ässä! ${isH ? 'Sinä voit' : `${p.name} voi`} jatkaa ${card.s}-maalla.`);
+      addLog(M.aceBonus(isH, p.name, card.s));
       setGS(g2);
       if (!p.isHuman) aiTmr.current = tm(() => runAI(gRef.current), 1600);
       return;
@@ -341,7 +367,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   function doDraw(g, playerIdx) {
     let g2 = reshuffleIfNeeded(g);
     if (!g2.deck.length) {
-      addLog('Pakka tyhjä — vuoro päättyy.');
+      addLog(M.deckEmpty);
       advanceTurn(g2, playerIdx);
       return;
     }
@@ -363,24 +389,24 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     if (!isH2) {
       const pName = g2.players[playerIdx].name;
       if (valid) {
-        addLog(`${pName} nostaa.`);
+        addLog(M.aiDraws(pName));
         aiTmr.current = tm(() => doPlay(gRef.current, playerIdx, [drawn], null), 700);
       } else if (draws < 3) {
-        addLog(`${pName}: Nosto ei auta.`);
+        addLog(M.aiDrawFail(pName));
         aiTmr.current = tm(() => doDraw(gRef.current, playerIdx), 700);
       } else {
-        addLog(`${pName}: Nostot eivät auttaneet.`);
+        addLog(M.aiDrawsGone(pName));
         aiTmr.current = tm(() => advanceTurn(gRef.current, playerIdx), 700);
       }
     } else {
-      addLog(`Nostat ${lbl(drawn)}.`);
+      addLog(M.humanDraws(lbl(drawn)));
       if (valid) {
-        addLog(`${lbl(drawn)} on pelattavissa! Lyö se tai nosta uudelleen (${3 - draws} jäljellä).`);
+        addLog(M.drawnPlayable(lbl(drawn), 3 - draws));
       } else if (draws >= 3) {
-        addLog('3 nostoa käytetty — vuoro päättyy automaattisesti.');
+        addLog(M.draws3Used);
         tm(() => advanceTurn(gRef.current, playerIdx), 900);
       } else {
-        addLog(`${lbl(drawn)} ei käy. Nosta uudelleen (${3 - draws} jäljellä) tai lopeta vuoro.`);
+        addLog(M.drawnNoGood(lbl(drawn), 3 - draws));
       }
     }
   }
@@ -442,13 +468,13 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const g = gRef.current;
     if (g.aceBonus !== null) {
       const card = selected[0];
-      if (card.s !== g.aceBonus) { addLog('Valitse sama maa kuin ässä.'); return; }
+      if (card.s !== g.aceBonus) { addLog(M.wrongSuit); return; }
       setSel([]);
       doPlay({ ...g, aceBonus: null }, 0, [card], null);
       return;
     }
     if (!canGroup(selected, g.discardTop, g.reqSuit, g.players[0].hand.length)) {
-      addLog('Nämä kortit eivät käy.');
+      addLog(M.badCards);
       return;
     }
     const cards = [...selected]; setSel([]);
@@ -473,7 +499,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   function humanChooseSuit(suit) {
     const g = gRef.current;
     if (!g || g.phase !== 'awaiting_suit') return;
-    addLog(`Valitsit maan: ${suit}`);
+    addLog(M.suitSelected(suit));
     const newHand = g.players[0].hand;
     if (newHand.length === 1 && !g.lappuSaid.has(0)) {
       const g2 = { ...g, reqSuit: suit, phase: 'play', pendingLappu: 0 };
@@ -499,7 +525,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const g = gRef.current;
     if (!g) return;
     setGS({ ...g, lappuSaid: new Set([...g.lappuSaid, 0]), pendingLappu: null });
-    addLog('Lappu! Sinulla on yksi kortti jäljellä.');
+    addLog(M.lappuSelf);
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
