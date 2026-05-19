@@ -378,7 +378,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>👋</div>
-        <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e84040,${C.red},#8a1500)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>LÄPSY</h1>
+        <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>LÄPSY</h1>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
           <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
           <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>

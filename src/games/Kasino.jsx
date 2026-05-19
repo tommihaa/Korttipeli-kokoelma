@@ -562,7 +562,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   if (screen === 'select') return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <div style={{ fontSize: 13, letterSpacing: 8, color: C.gold, opacity: 0.6, marginBottom: 8 }}>🂺</div>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>🂺</div>
         <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KASINO</h1>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
           <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
@@ -640,19 +640,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
-
-      {game && (
-        <div style={{ textAlign: 'center', marginBottom: 16 }}>
-          <div style={{ fontSize: 48, marginBottom: 4 }}>{game.emoji}</div>
-          <div style={{ fontSize: 18, marginBottom: 8, letterSpacing: 1 }}>{game.name}</div>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16 }}>
-            <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
-            <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
-            <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
-            <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
-          </div>
-        </div>
-      )}
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
@@ -794,7 +781,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           {sortHand(human.hand).map(c => {
             const valid = isMyTurn && selTable.length > 0 && isValidCapture(c, selTable);
             return (
-              <Card key={c.id} card={c} large={!isMobile} small={isMobile} showBadges
+              <Card key={c.id} card={c} small={isMobile} showBadges
                 highlight={valid}
                 dim={isMyTurn && selTable.length > 0 && !valid}
                 onClick={isMyTurn ? () => humanSelectHand(c) : undefined}
