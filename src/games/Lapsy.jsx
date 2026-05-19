@@ -166,7 +166,15 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
   function nextTurn(fromIdx, newPiles, newCenter, ch) {
     const activeNow = newPiles.filter(p => p.length > 0);
-    if (activeNow.length <= 1) { checkGameOver(newPiles); return; }
+    if (activeNow.length <= 1) {
+      const winnerIdx = newPiles.findIndex(p => p.length > 0);
+      if (newCenter.length > 0 && winnerIdx >= 0) {
+        giveCenter(winnerIdx, newPiles, newCenter);
+      } else {
+        checkGameOver(newPiles);
+      }
+      return;
+    }
     if (ch) {
       const target = ch.targetIdx;
       if (newPiles[target].length === 0) {
@@ -313,7 +321,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
   function humanSlap() {
     if (phaseRef.current !== 'match') {
-      if (recentMatch.current) { addLog(M.heroTooSlow); return; }
+      if (recentMatch.current) { return; }
       if (sndRef.current) SFX.wrongSlap();
       addLog(M.heroSlapNoMatch);
       if (pilesRef.current[0].length === 0) return;
@@ -564,7 +572,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-          <button onClick={humanSlap} style={{ width: isMobile ? 80 : 108, height: isMobile ? 80 : 108, borderRadius: isMobile ? 40 : 54, background: isMatch ? `radial-gradient(circle at 40% 35%,${C.red}dd,#7a1500)` : `radial-gradient(circle at 40% 35%,#2a4a32,#0d2118)`, border: `3px solid ${isMatch ? C.red : C.panelBorder}`, color: isMatch ? C.text : C.dim, fontSize: isMobile ? 24 : 32, cursor: 'pointer', boxShadow: isMatch ? `0 0 32px ${C.red}88` : '0 4px 14px rgba(0,0,0,0.4)', transition: 'all 0.15s', animation: isMatch ? 'slapPulse 0.7s ease infinite' : 'none' }}>👋</button>
+          <button onClick={humanSlap} style={{ width: isMobile ? 110 : 108, height: isMobile ? 110 : 108, borderRadius: isMobile ? 55 : 54, background: isMatch ? `radial-gradient(circle at 40% 35%,${C.red}dd,#7a1500)` : `radial-gradient(circle at 40% 35%,#2a4a32,#0d2118)`, border: `3px solid ${isMatch ? C.red : C.panelBorder}`, color: isMatch ? C.text : C.dim, fontSize: isMobile ? 24 : 32, cursor: 'pointer', boxShadow: isMatch ? `0 0 32px ${C.red}88` : '0 4px 14px rgba(0,0,0,0.4)', transition: 'all 0.15s', animation: isMatch ? 'slapPulse 0.7s ease infinite' : 'none' }}>👋</button>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isMatch ? C.red : C.dim, letterSpacing: 1.5, fontWeight: isMatch ? 700 : 400 }}>{isMatch ? 'LÄPSÄÄ!' : 'läpsää'}</span>
         </div>
       </div>

@@ -72,11 +72,11 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
         {isActive && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>● vuoro</span>}
         {showScore && player.isHuman && <span style={{ marginLeft: 'auto', color: '#a0baa8', fontSize: 12 }}>{pScore(player)} p</span>}
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+      <div style={small ? { display: 'flex', flexDirection: 'row', gap: 4 } : { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
         {player.cards.map((card, i) => {
           const vis = !!(debug || peekSet?.has(i));
           const cl = clickableSet?.has(i) ?? false;
-          const memGlow = player.isHuman && player.known.has(i) && !peekSet?.has(i);
+          const memGlow = player.known.has(i) && !peekSet?.has(i);
           const reactHL = cl && phase === 'reaction';
           const justPlaced = lastSwap === i;
           if (card === null) return <Card key={i} empty small={small} />;
@@ -371,21 +371,21 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
 
   function openReaction(gState, card, byIdx) {
     if (gState.deck.length < 2) { advance(gState, byIdx); return; }
-    stopReact.current = false; setRO(true); setRS(5); setPhase('reaction'); setMsg(M.reactQ(card));
-    let t = 5;
+    stopReact.current = false; setRO(true); setRS(3.5); setPhase('reaction'); setMsg(M.reactQ(card));
+    let t = 3.5;
     clearInterval(reactInt.current);
     reactInt.current = setInterval(() => {
-      t--; setRS(t);
+      t = Math.round((t - 0.5) * 10) / 10; setRS(t);
       if (t <= 0) {
         clearInterval(reactInt.current);
         if (!stopReact.current) { stopReact.current = true; setRO(false); setMsg(M.reactEnd); advance(gState, byIdx); }
       }
-    }, 1000);
+    }, 500);
     gState.players.forEach((p, i) => {
       if (p.isHuman) return;
       const mi = [...p.known].find(ki => p.cards[ki]?.r === card.r);
       if (mi !== undefined) {
-        const delay = 2000 + Math.random() * 2500;
+        const delay = 800 + Math.random() * 2400;
         tm(() => {
           if (stopReact.current) return;
           stopReact.current = true; clearInterval(reactInt.current); setRO(false);
@@ -601,12 +601,12 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         {knockedBy !== null && <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>🤜 Koputettu — viimeinen kierros!</div>}
       </div>
       {ais.length > 0 && (
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 6 : 12 }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 10, flexWrap: isMobile ? 'nowrap' : 'wrap', marginBottom: isMobile ? 6 : 12 }}>
           {ais.map((ai, i) => {
             const pi = i + 1;
             const selectMode = phase === 'spec_k_decide' || phase === 'spec_k_confirm' || phase === 'spec_q_tgt';
             return (
-              <div key={ai.id} style={{ flex: 1, minWidth: selectMode ? 140 : 110 }}>
+              <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: selectMode ? 140 : 110 }}>
                 <PlayerGrid player={ai} isActive={curIdx === pi} small={!selectMode} backStyle={BACKS[cardBack]}
                   phase={phase} debug={debugOpen}
                   lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}

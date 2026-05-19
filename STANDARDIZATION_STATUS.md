@@ -88,7 +88,7 @@ Jokaisen jälkeen testi: 1 peli Hero vs AI.
 
 ## Globaalisti yhtenäistetyt
 ✅ Termistokirjasto: `src/shared/gameTerms.js` luotu  
-✅ AI-nimet: shuffledAINames() (Fortuna, Loki, Tyche)
+✅ AI-nimet: shuffledAINames() (Fortuna, Loki, Tykhe)
 ✅ Kortin rakenne: { s, r, v, id }
 ✅ Värijärjestelmä: SUIT_COLOR
 ✅ SFX-mallit

@@ -769,14 +769,12 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       {/* Toimintopainikkeet */}
       <div style={{ minHeight: isMobile ? 36 : 44, display: 'flex', gap: 10, alignItems: 'center', marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         {canSwapRow && swapIdx !== null && (
-          <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}>
-            {`Vaihda ${lbl(held)} paikan ${swapIdx + 1} korttiin`}
-          </button>
+          <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
+            dangerouslySetInnerHTML={{ __html: `Vaihda ${lblColored(held)} paikan ${swapIdx + 1} korttiin` }} />
         )}
         {canStop && (
-          <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}>
-            {`Heitä ${lbl(held)} poistopakkaan`}
-          </button>
+          <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
+            dangerouslySetInnerHTML={{ __html: `Heitä ${lblColored(held)} poistopakkaan` }} />
         )}
       </div>
 

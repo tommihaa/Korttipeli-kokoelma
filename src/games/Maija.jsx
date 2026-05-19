@@ -437,7 +437,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     if (alreadySel) {
       setSel(prev => prev.filter(c => c.id !== card.id));
     } else if (selectedCards.length === 0) {
-      setSel(hand.filter(c => c.s === card.s));
+      setSel([card]);
     } else if (selectedCards[0].s === card.s) {
       setSel(prev => [...prev, card]);
     }
@@ -639,7 +639,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         {table.length === 0
           ? <div style={{ textAlign:'center', color:C.dim, fontFamily:'sans-serif', fontSize:12,
               opacity:0.5, paddingTop:40 }}>
-              {phase === 'attacking' ? 'Valitse kortit kädestä ja lyö' : 'Odota...'}
+              {isHumanAttacker ? 'Valitse kortit kädestä ja lyö' : 'Odota...'}
             </div>
           : <div style={{ display:'flex', gap:10, flexWrap:'wrap', alignItems:'flex-start' }}>
               {table.map((row, i) => {
@@ -731,7 +731,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
               <button onClick={humanTakeAll} style={{ background:'transparent',
                 border:`1px solid ${C.red}88`, borderRadius:9, padding:'10px 20px',
                 color:C.red, fontSize:13, fontWeight:700, cursor:'pointer',
-                fontFamily:'Georgia,serif', marginLeft:'auto' }}>
+                fontFamily:'Georgia,serif' }}>
                 Ota kaikki 🛡️
               </button>
             )}

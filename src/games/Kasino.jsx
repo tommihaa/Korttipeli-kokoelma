@@ -481,7 +481,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     setSelTable([]);
     setPhase('idle'); phaseRef.current = 'idle';
     aiTmr.current = tm(() => {
-      setCaptureAnim(null);
       const g2 = doCapture(gRef.current, 0, card, captured);
       setG(g2); gRef.current = g2;
       setPendingCapture({ g2, fromIdx: 0 });
@@ -530,8 +529,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       setCaptureAnim({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       setAiSel({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       aiTmr.current = tm(() => {
-        setCaptureAnim(null);
-        setAiSel({ handCard: null, tableCards: [] });
         const g2 = gRef.current;
         const g3 = doCapture(g2, playerIdx, bestCapture.handCard, bestCapture.tableCards, true);
         setG(g3); gRef.current = g3;
@@ -554,6 +551,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     if (!pendingCapture) return;
     const { g2, fromIdx } = pendingCapture;
     setPendingCapture(null);
+    setCaptureAnim(null);
+    setAiSel({ handCard: null, tableCards: [] });
     setPhase('select_table'); phaseRef.current = 'select_table';
     advance(g2, fromIdx);
   }
@@ -706,7 +705,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
               <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curIdx === p.id ? C.gold : C.dim, marginBottom: 4 }}>
                 🤖 {p.name} {curIdx === p.id ? '●' : ''} — {korttia(p.captured.length)} kaapattu
               </div>
-              <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'nowrap', overflow: 'hidden' }}>
                 {debugOpen
                   ? p.hand.map(c => <Card key={c.id} card={c} small showBadges backStyle={BACKS[cardBack]} />)
                   : p.hand.map((_, ci) => <div key={ci} style={{ width: 28, height: 40, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
@@ -718,7 +717,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       )}
 
       {/* Pöytä */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, height: isMobile ? 170 : 250, overflow: 'hidden' }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 200 : 290 }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5 }}>
           PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : korttia(G.table.length)}
           {selTable.length > 0 && (
