@@ -10,6 +10,7 @@ export default function Card({
   card,
   faceUp = true,
   small,
+  xsmall,
   large,
   highlight,
   dim,
@@ -25,8 +26,8 @@ export default function Card({
   showBadges = false,
 }) {
   const [h, setH] = useState(false);
-  const w = large ? 80 : small ? 50 : 66;
-  const ht = large ? 108 : small ? 68 : 90;
+  const w = large ? 80 : xsmall ? 38 : small ? 50 : 66;
+  const ht = large ? 108 : xsmall ? 52 : small ? 68 : 90;
   const back = backStyle || BACKS.ilves;
   const clickable = !!onClick && !disabled;
 

@@ -543,13 +543,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         ? groups.map(grp => grp.map(id => lbl(bestCapture.tableCards.find(c => c.id === id))).join('+')).join(' ja ')
         : bestCapture.tableCards.map(lbl).join('+');
       addLog(M.aiCapture(p.name, lblColored(bestCapture.handCard), captureStr, bestCapture.isMokki));
-      if (teachRef.current) {
-        if (bestCapture.isMokki) addLog(M.tipMokki(p.name));
-        else {
-          const special = bestCapture.tableCards.find(c => isRuutuKymppi(c) || isPataKakkonen(c));
-          if (special) addLog(M.tipSpecial(p.name, lblColored(special)));
-        }
-      }
       setCaptureAnim({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       setAiSel({ handCard: bestCapture.handCard, tableCards: bestCapture.tableCards });
       aiTmr.current = tm(() => {
@@ -562,7 +555,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
       const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
       const toLeave = [...leavePool].sort((a, b) => a.v - b.v)[0];
-      if (teachRef.current) addLog(M.tipLeave(p.name, lblColored(toLeave)));
       aiTmr.current = tm(() => {
         const g2 = gRef.current;
         const g3 = doLeave(g2, playerIdx, toLeave);
@@ -665,26 +657,14 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   }
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viestikupla */}
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 60 : 70, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>🂺</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{renderLogMessage(msg)}</p>
-      </div>
-
-      {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
-        {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
-            {lastPlay.cards.map(c => (
-              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Pisteet + pakka */}
@@ -694,13 +674,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             {p.name}: {p.score}p {curIdx === i ? '●' : ''}
           </div>
         ))}
-        <div style={{ marginLeft: 'auto', padding: '4px 10px', borderRadius: 20, fontFamily: 'sans-serif', fontSize: 11,
-          color: G.deck.length === 0 ? C.red : C.dim,
-          fontWeight: G.deck.length === 0 ? 700 : 400,
-          border: `1px solid ${G.deck.length === 0 ? C.red + '55' : C.panelBorder}`,
-          animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
-          {G.deck.length === 0 ? 'PAKKA TYHJÄ' : `${korttia(G.deck.length)} pakassa`}
-        </div>
       </div>
 
       {/* Kierroksen pisteet */}
@@ -754,11 +727,12 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       )}
 
       {/* Pöytä */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 200 : 290 }}>
-        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5 }}>
-          PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : korttia(G.table.length)}
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 160 : 290 }}>
+        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <span>PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : korttia(G.table.length)}</span>
+          <span style={{ color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>PAKKA — {G.deck.length === 0 ? 'TYHJÄ!' : `${G.deck.length} korttia`}</span>
           {selTable.length > 0 && (
-            <span style={{ color: multiGroupDisplay ? C.gold : C.blue, marginLeft: 8 }}>
+            <span style={{ color: multiGroupDisplay ? C.gold : C.blue }}>
               {multiGroupDisplay
                 ? `Multi: ${multiGroupDisplay}`
                 : `Valittu: ${selTable.map(lbl).join('+')} = ${selSum}`
@@ -776,6 +750,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
                 <Card
                   card={c}
                   showBadges
+                  small={isMobile}
                   selected={!!isSel || !!isAiPick}
                   highlight={isMyTurn && !isSel}
                   justPlaced={c.id === jpId}
@@ -798,17 +773,17 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         </div>
       </div>
 
-      {/* Ohje */}
-      {isMyTurn && (
-        <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, marginBottom: 8, fontStyle: 'italic' }}>
-          {selTable.length === 0
-            ? 'Valitse pöytäkortit ensin, sitten käsikortti. Tai klikkaa käsikorttia suoraan jättääksesi sen pöytään.'
-            : multiGroupDisplay
-              ? `Multi-kaappaus: ${multiGroupDisplay} — klikkaa käsikortti.`
-              : `Valittuna ${selTable.map(lbl).join('+')} = ${selSum} — klikkaa käsikortti.`
-          }
-        </div>
-      )}
+      {/* Viimeisin siirto */}
+      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+        {lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Ihmispelaajan käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
@@ -854,7 +829,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             {soundOn ? '🔊' : '🔇'} Ääni
           </button>
           <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-            {debugOpen ? '🙈' : '🔍'} Kortit
+            {debugOpen ? '🙈' : '🔍'} Cheat Mode
           </button>
         </div>
       </div>

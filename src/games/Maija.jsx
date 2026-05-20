@@ -198,8 +198,10 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       const trumpSpan = `<span style="color:${SUIT_COLOR[trumpCard.s]}">${trumpCard.s}</span>`;
       return `Peli alkaa! Valttimaa: ${trumpSpan}. ${attacker} hyökkää, ${defender} puolustaa.`;
     },
-    finishedGame: (name, rank) => `${name.includes('Pääsit') ? 'Veit voiton' : name.split(' ')[0] + ' vei voiton'}! 🏆🎉`,
-    maija: (name, hadMaija) => `${name} jäi ${hadMaija ? 'patakuningattaren kanssa — ' : ''}Maijana!`,
+    finishedGame: (name, rank) => rank === 1
+      ? `${name.includes('Pääsit') ? 'Veit voiton' : name.split(' ')[0] + ' vei voiton'}! 🏆🎉`
+      : `${name.includes('Pääsit') ? 'Poistuit pelistä' : name.split(' ')[0] + ' poistui pelistä'}. 👏`,
+    maija: (name, hadMaija) => `${name} jäi ${hadMaija ? 'patakuningattaren kanssa — ' : ''}Maijaksi.`,
     newAttack: (attacker, defender) => `${attacker} hyökkää — ${defender} puolustaa.`,
     defendTake: (name, unbeatenCount, detail) => `${name} ${kortin(unbeatenCount)} kaatamatta jääneistä${detail}.`,
     humanAttack: (cards) => `Löit: ${cards}.`,
@@ -605,7 +607,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
 
   return (
     <div style={{ background:C.bg, fontFamily:'Georgia,serif', color:C.text,
-      padding: isMobile ? '6px 8px' : '14px 16px', maxWidth:560, margin:'0 auto', paddingBottom: isMobile ? 8 : 32 }}>
+      padding: isMobile ? '6px 8px' : '14px 16px', maxWidth:560, margin:'0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
@@ -719,6 +721,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
             return (
               <div key={c.id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
                 <Card card={c}
+                  small={isMobile}
                   selected={isSel}
                   highlight={!!canBeatTarget}
                   dim={wrongSuit || !!defDimmed}
@@ -784,7 +787,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         <button onClick={() => setDebug(d => !d)} style={{ fontSize:11, padding:'5px 10px', borderRadius:12,
           border:`1px solid ${debugOpen ? C.gold+'55' : '#2a4a32'}`, background:'transparent',
           color:debugOpen ? C.gold : C.dim, cursor:'pointer', fontFamily:'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Kortit
+          {debugOpen ? '🙈' : '🔍'} Cheat Mode
         </button>
       </div>
 

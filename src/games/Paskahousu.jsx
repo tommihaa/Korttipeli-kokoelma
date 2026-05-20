@@ -215,7 +215,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       : `${name} aloittaa (pienin kortti).`}`,
     played:       (isH, name, cards) => `${isH ? 'Sinä' : name}: ${cards}`,
     won:          (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
-    loser:        (isH, name) => `${isH ? 'Sinä olet' : `${name} on`} Paskahousu! 💩`,
+    loser:        (isH, name) => `${isH ? 'Sinä jäit' : `${name} jäi`} Paskahousuksi.`,
     swept:        (isH, name) => `${isH ? 'Sinä kaadat kasan' : `${name} kaataa kasan`}! Jatkaa.`,
     yourTurn:     'On vuorosi.',
     yourTurnCont: 'Sinä jatkat vuoroasi.',
@@ -566,7 +566,6 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       beneficial.forEach(c => { (ranked[c.r] = ranked[c.r] || []).push(c); });
       const bestGroup = Object.values(ranked).reduce((a, b) => a[0].v <= b[0].v ? a : b);
       addLog(M.aiSwaps(g.players[pidx].name));
-      if (teachRef.current) addLog(M.tipSwap(g.players[pidx].name));
       applySwap(g, bestGroup);
     } else {
       skipSwap(g);
@@ -590,16 +589,6 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     const cards = aiCards(p.hand, top, g.pile);
     if (cards) {
-      if (teachRef.current) {
-        const isQuad = cards.length >= 4 || (g.pile.length > 0 &&
-          g.pile.slice().reverse().findIndex(c => c.r !== cards[0].r) === 0 &&
-          (g.pile.filter(c => c.r === cards[0].r).length + cards.length) >= 4);
-        const isSpecial = cards[0].r === '10' || cards[0].r === 'A';
-        const hadNormal = p.hand.some(c => c.r !== '10' && c.r !== 'A' && canPlay(c, top));
-        if (isQuad) addLog(M.tipQuad(p.name, cards[0].r));
-        else if (isSpecial && hadNormal) addLog(M.tipSaveSpecial(p.name, lblColored(cards[0])));
-        else if (!isSpecial && cards.length > 0) addLog(M.tipPlaySmall(p.name, cards.map(lblColored).join(', ')));
-      }
       applyPlay(gRef.current, turn, cards); return;
     }
     if (draw.length)     { applyKnock(gRef.current, turn);       return; }
@@ -707,7 +696,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
               <div key={pid} style={{ borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: isLast ? 'rgba(224,92,59,0.1)' : i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${isLast ? '#e05c3b55' : i === 0 ? C.gold + '55' : C.panelBorder}` }}>
                 <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : isLast ? '💩' : '🎯'}</span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : isLast ? C.red : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>Sija {i + 1}</span>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: isLast ? C.red : C.dim }}>{isLast ? 'Paskahousu' : `Sija ${i + 1}`}</span>
               </div>
             );
           })}
@@ -732,13 +721,13 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const selValid   = selected.length > 0 && canPlay(selected[0], G.top);
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 40 : 56, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 16, flexShrink: 0 }}>💩</span>
+        <span style={{ fontSize: 16, flexShrink: 0 }}>🃏</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
@@ -964,7 +953,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Kortit
+          {debugOpen ? '🙈' : '🔍'} Cheat Mode
         </button>
       </div>
 

@@ -4,7 +4,38 @@
 Mobile-responsive card game app (React/JSX + Vite). Dark green (#1a3a2a) + gold (#c9a84c) aesthetic.
 Structure: `src/App.jsx` (entry), `src/games/*.jsx` (9 games), `src/shared/` (Card, FanStack, colors, helpers, audio).
 Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS.md`, `LAEPSY.md`, `KULTAKALA.md`, `MAIJA.md`, `KASINO.md`, `MOSKA.md`, `SEISKA.md`, `RISTISEISKA.md`, `PASKAHOUSU.md`. Dev server: `http://localhost:5173/`.
+Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
+
+## Navigation
+Valikko (päävalikko) → Välinäyttö (GameSetup) → Peli
+- Välinäyttö: iso emoji + pelin nimi kultaisena, PELAAJIA [2][3][4], säännöt lyhyesti, Aloita →
+- Ristiseiska: minPlayers=3, [2]-nappi disabled
+
+## Global settings (App.jsx → props to all games)
+| Prop | Default | Selitys |
+|---|---|---|
+| `showLog` | window.innerWidth≥600 | Tapahtumaloki auki |
+| `soundOn` | true | Äänet |
+| `seeAll` | false | Cheat Mode — Hero näkee kaikki kortit |
+| `showCounts` | true | Korttimäärät näkyvillä |
+| `showPlayHints` | true | Pelattavat kortit korostettu |
+| `teachMode` | false | Strategiatippejä (poistettu asetusvalikosta, prop silti olemassa) |
+| `showLastPlay` | true | Kelluva viimeisin siirto -indikaattori |
+
+## Component signature (kaikki 9 peliä)
+```jsx
+export default function PelinNimi({ onResult, hints, soundOn: initSoundOn, seeAll: initSeeAll,
+  showCounts, showPlayHints, teachMode, showLastPlay, isMobile, playerCount, playerNames }) {}
+```
+Huom: `playerCount` välitetään propina, pelit eivät vielä kaikki hyödynnä sitä (wiring kesken).
+
+## Session start
+At the start of every session run `npm run dev` in the background so the dev server is available at http://localhost:5173/ for preview verification during development.
+
+## Deploy
+Production deploy: `npm run build && npx vercel --prod`
+Live URL: https://tommi-jako52.vercel.app
 
 ## Games & Terminology
 Nine games with unified Finnish UI terms:
@@ -39,11 +70,43 @@ Erikoistapaukset (silti yllä olevissa luokissa):
 - **Kasino**: 16 pistettä ensin saanut voittaa; pisteet lasketaan nostopakan ehdyttyä pelatun kierroksen päätyttyä; tasapeli on mahdollinen
 
 ## Modes
-- **Opetustila** – move hints visible, tapahtumaloki auki oletuksena (default), strategiatippejä loggissa
-- **Opastava tila** – teachMode toggle (🎓 / 🃏), näyttää strategiatippejä pelin aikana
-- **Vapaa tila** – ei ohjeviestejä, loki kiinni oletuksena
-- Toggle-napit pelin aikana oikeassa yläkulmassa (menu ← | pelinimi | opastava 🎓/🃏 →)
-- Props: `hints: boolean`, `teachMode: boolean` jokaisessa pelissä
+- **Opetustila** – `hints=true`, move hints visible, tapahtumaloki auki oletuksena
+- **Vapaa tila** – `hints=false`, ei ohjeviestejä, loki kiinni oletuksena
+- Toggle-napit pelin aikana oikeassa yläkulmassa (menu ← | pelinimi)
+- `teachMode` prop on olemassa mutta oletuksena false eikä enää asetusvalikossa
+
+## SFX (`src/shared/audio.js` — `SFX` objekti)
+Korttitoiminnot:
+| Funktio | Käyttötilanne |
+|---|---|
+| `flip` | nosto / käännös |
+| `play` | kortin pelaus, hyökkäys |
+| `capture` | korttien otto pöydältä |
+| `leave` | lasku / syöttö / passi |
+| `swap` | korttien vaihto |
+| `reveal` | piilokorttien paljastus |
+| `take` | pakkootto (tappio) |
+| `beat` | torjunta onnistuu |
+| `build` | rakennus (Kasino) |
+
+Erityistapahtumat:
+| Funktio | Käyttötilanne |
+|---|---|
+| `tikki` | mokki / tikki (Kasino) |
+| `maija` | Maija-kortti (Maija) |
+| `slap` | läpsäys (Läpsy) |
+| `wrongSlap` | väärä läpsäys (Läpsy) |
+| `winPile` | pino voitettu |
+| `challenge` | haaste (Läpsy) |
+| `reactWin` | reaktio onnistui |
+| `reactWrong` | reaktio epäonnistui |
+| `lastCardWin` | viimeinen kortti pelattu voittoon |
+
+Virstanpylväät:
+| Funktio | Käyttötilanne |
+|---|---|
+| `score` | pistemerkki |
+| `fanfare` | voitto |
 
 ## Players
 - Human player: "Hero"

@@ -289,7 +289,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     playerDrew:     (player, count) => `${player} ${count}.`,
     won:            player => `${player} voiton! 🏆🎉`,
     out:            player => `${player} pelistä pois.`,
-    lost:           player => `${player} tällä kertaa tappion.`,
+    lost:           player => `${player} jäi Moskaksi.`,
     nextRound:      (att, def) => `${att} → ${def}.`,
     attack:         (player, cards) => `${player}: ${cards}.`,
     beat:           (defName, defCard, atkCard, status) => `${defName}: ${defCard} kaataa ${atkCard}. ${status}`,
@@ -680,7 +680,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       if (p.isHuman) return;
       const cards = aiPickAttack(p, players[defender].hand.length, ts);
       if (!cards.length) { resolveRound(g, true); return; }
-      if (teachRef.current) addLog(M.tipAttackSmall(p.name, lblColored(cards[0])));
       doAttack(g, primaryAtk, cards);
     }
 
@@ -694,7 +693,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         const atkRanks = new Set(table.map(t => t.atk.r));
         const passCard = p.hand.find(c => atkRanks.has(c.r) && c.s !== ts);
         if (passCard && players.filter(pl => pl.rank === null).length > 2) {
-          if (teachRef.current) addLog(M.tipPass(p.name, lblColored(passCard)));
           aiTmr.current = tm(() => {
             doPass(gRef.current, [passCard]);
           }, 1000);
@@ -715,15 +713,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       }
 
       if (canBeatAll) {
-        if (teachRef.current) {
-          beats.forEach(({ atkId, defCard }) => {
-            const atkSlot = table.find(t => t.atk.id === atkId);
-            if (atkSlot) {
-              if (defCard.s === ts) addLog(M.tipDefendTrump(p.name, lblColored(defCard), lblColored(atkSlot.atk)));
-              else addLog(M.tipDefendMin(p.name, lblColored(defCard), lblColored(atkSlot.atk)));
-            }
-          });
-        }
         aiTmr.current = tm(() => {
           let cur = gRef.current;
           for (const { atkId, defCard } of beats) {
@@ -733,7 +722,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           aiTmr.current = tm(() => startAddPhase(cur), 700);
         }, 900);
       } else {
-        if (teachRef.current) addLog(M.tipTakeAll(p.name));
         aiTmr.current = tm(() => {
           resolveRound(gRef.current, false);
         }, 900 + Math.random() * 300);
@@ -939,7 +927,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
             <div key={p.id} style={{ borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: i === sorted.length - 1 ? 'rgba(224,92,59,0.1)' : i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === sorted.length - 1 ? '#e05c3b55' : i === 0 ? C.gold + '55' : C.panelBorder}` }}>
               <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : i === sorted.length - 1 ? '🐟' : '🎯'}</span>
               <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : i === sorted.length - 1 ? C.red : C.text }}>{p.name}</span>
-              <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>Sija {p.rank}</span>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: i === sorted.length - 1 ? C.red : C.dim }}>{i === sorted.length - 1 ? 'Moska' : `Sija ${p.rank}`}</span>
             </div>
           ))}
         </div>
@@ -975,7 +963,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const humanAddable = isMyAdd ? getAddable(G, 0) : [];
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
@@ -987,7 +975,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 16, flexShrink: 0 }}>♠</span>
+        <span style={{ fontSize: 16, flexShrink: 0 }}>⚔️</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
@@ -1077,7 +1065,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
             : 'Valitse ensin pöytäkortti, jonka haluat kaataa, ja seuraavaksi käsikorttisi.')}
           {isMyDef && selDefTarget && <span dangerouslySetInnerHTML={{ __html: `${lblColored(selDefTarget.atk)} kohteena — valitse nyt käsikortti, jolla haluat kaataa.` }} />}
           {isMyDef && selPass.length > 0 && `Siirto: ${selPass.map(lbl).join(',')} — klikkaa Siirrä tai peruuta.`}
-          {isMyAdd && `Voit lisätä kortit (${humanAddable.map(lbl).join(', ')}) tai Ohita.`}
         </div>
       )}
 
@@ -1120,7 +1107,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       </div>
 
       {/* Toimintopainikkeet */}
-      <div style={{ minHeight: 52, display: 'flex', gap: 8, marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+      <div style={{ minHeight: isMobile ? 36 : 52, display: 'flex', gap: 8, marginBottom: isMobile ? 6 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
         {isMyAtk && (
           <>
             <button onClick={humanConfirmAttack} disabled={!selAtk.length}
@@ -1180,7 +1167,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Kortit
+          {debugOpen ? '🙈' : '🔍'} Cheat Mode
         </button>
       </div>
 

@@ -128,11 +128,11 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     gameStart: 'Peli alkaa! Jokainen kääntää vuorollaan pinonsa päällimmäisen kortin.',
     winChallengeNoRival: (winner, target) => `${winner} voitti kasan — ${target}:lla ei kortteja!`,
     respondedSpecialNoRival: (player, card) => `${player} vastasi ${card}! Ei enää vastustajia — voittaa kasan!`,
-    respondedSpecial: (player, card, target, count, cardStr) => `${player} vastasi ${card}! Haaste siirtyy — ${target}:lla on ${count} ${cardStr} aikaa vastata haasteeseen.`,
+    respondedSpecial: (player, card, target, count, cardStr) => `${player} vastasi haasteeseen ${card}! Haaste siirtyy — Pelaajalla ${target} on ${count} ${cardStr} aikaa vastata haasteeseen.`,
     failedResponse: (player, winner, count, cardStr) => `${player} epäonnistui. ${winner} voitti ${count} ${cardStr}.`,
-    noResponse: (player, left, cardStr) => `${player} ei vastannut — ${left} ${cardStr} jäljellä vastata haasteeseen.`,
+    noResponse: (player, left, cardStr) => `${player} — ${left} ${cardStr} jäljellä vastata haasteeseen.`,
     challengedNoRival: (player, card) => `${player} haastaa ${card}! Ei enää vastustajia — voittaa kasan!`,
-    challenged: (player, card, target, count, cardStr) => `${player} haastaa ${card}! ${target}:lla on ${count} ${cardStr} aikaa vastata haasteeseen.`,
+    challenged: (player, card, target, count, cardStr) => `${player} haastaa ${card}! Pelaajalla ${target} on ${count} ${cardStr} aikaa vastata haasteeseen.`,
     flipped: (player, card) => `${player} kääntää ${card}.`,
     match: (rank) => `TÄSMÄYS! ${rank} — kuka läpsää ensin?`,
     wrongSlap: (player) => `${player} läpsäsi väärin — menettää päällimmäisen!`,
@@ -464,10 +464,10 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const ch = challenge;
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 520, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 520, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 15, flexShrink: 0 }}>{isMatch ? '👋' : '🃏'}</span>
+        <span style={{ fontSize: 15, flexShrink: 0 }}>👋</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
@@ -479,7 +479,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
               <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curTurn === pi ? C.red : C.dim, marginBottom: 5 }}>
                 🤖 {pName(pi)}{curTurn === pi ? ' ●' : ''}
               </div>
-              <div style={{ margin: '0 auto', width: 44 }}>
+              <div style={{ margin: '0 auto' }}>
                 {debugOpen
                   ? <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
                       {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
@@ -605,7 +605,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
       </div>
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>

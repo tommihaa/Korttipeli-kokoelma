@@ -70,11 +70,11 @@ const M = {
 
 function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle }) {
   return (
-    <div style={{ padding: small ? 8 : 14, borderRadius: 12, transition: 'border-color 0.2s', border: `1px solid ${isActive ? 'rgba(201,168,76,0.3)' : 'rgba(42,74,50,0.4)'}`, background: isActive ? 'rgba(201,168,76,0.03)' : 'transparent' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim }}>
+    <div style={{ padding: small ? '4px 8px' : 14, borderRadius: 12, transition: 'border-color 0.2s', border: `1px solid ${isActive ? 'rgba(201,168,76,0.3)' : 'rgba(42,74,50,0.4)'}`, background: isActive ? 'rgba(201,168,76,0.03)' : 'transparent', display: small ? 'flex' : 'block', alignItems: small ? 'center' : undefined, gap: small ? 6 : 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: small ? 4 : 8, marginBottom: small ? 0 : 8, fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, flexShrink: 0 }}>
         <span style={{ fontSize: small ? 12 : 14 }}>{player.isHuman ? '👤' : '🤖'}</span>
         <span style={{ fontWeight: isActive ? 700 : 400, letterSpacing: 0.5 }}>{player.name}</span>
-        {isActive && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>● vuoro</span>}
+        {isActive && !small && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>● vuoro</span>}
         {showScore && player.isHuman && <span style={{ marginLeft: 'auto', color: '#a0baa8', fontSize: 12 }}>{pScore(player)} p</span>}
       </div>
       <div style={small ? { display: 'flex', flexDirection: 'row', gap: 4 } : { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
@@ -250,7 +250,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     }
     const next = (fromIdx + 1) % gState.players.length;
     setCurIdx(next); curRef.current = next;
-    setPhase('draw'); setDrawn(null);
+    setPhase('draw'); setDrawn(null); setSS(null);
     const np = gState.players[next];
     if (np.isHuman) setMsg(M.yourTurn);
     else { setMsg(M.aiTurn(np.name)); aiTmr.current = tm(() => runAI(next, gState), 600); }
@@ -455,6 +455,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
 
   function runAI(playerIdx, gState) {
     if (!gState) gState = gRef.current; if (!gState) return;
+    if (curRef.current !== playerIdx) return;
     const p = gState.players[playerIdx];
     if (knockRef.current === null) {
       const ks = [...p.known].reduce((s, i) => s + (p.cards[i]?.v || 0), 0);
@@ -464,19 +465,12 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         setKB(playerIdx); knockRef.current = playerIdx;
         const lr = new Set(gState.players.filter((_, i) => i !== playerIdx).map(pl => pl.id));
         setLR(lr); lrRef.current = lr; setMsg(M.aiKnock(p.name));
-        if (teachRef.current) tm(() => setMsg(M.tipKnock(p.name, est)), 400);
       }
     }
     const dt = gState.discard[gState.discard.length - 1];
     const worstKn = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
       .sort((a, b) => gState.players[playerIdx].cards[b].v - gState.players[playerIdx].cards[a].v)[0];
     const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
-    if (teachRef.current) {
-      tm(() => {
-        if (drawFromDiscard) setMsg(M.tipTakeDiscard(p.name, lblColored(dt), lblColored(p.cards[worstKn])));
-        else setMsg(M.tipDrawDeck(p.name));
-      }, 800);
-    }
     tm(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); }, 1600);
     tm(() => {
       let card, deck, discard;
@@ -497,13 +491,11 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         });
         const updG = { ...gState, players, deck, discard: [...discard, old] };
         setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
-        if (teachRef.current) setMsg(M.tipSwap(p.name, lblColored(card), lblColored(old)));
         flashSlot(playerIdx, wo);
         tm(() => openReaction(updG, old, playerIdx), 1200);
       } else {
         const updG = { ...gState, deck, discard: [...discard, card] };
         setG(updG); gRef.current = updG; setMsg(M.aiDiscard(p.name, card));
-        if (teachRef.current) setMsg(M.tipDiscard(p.name, lblColored(card)));
         tm(() => openReaction(updG, card, playerIdx), 1200);
       }
     }, 3600);
@@ -609,23 +601,24 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const showDrawn = ['drawn', 'spec_j', 'spec_q_own', 'spec_q_tgt', 'spec_k', 'spec_k_decide', 'spec_k_confirm'].includes(phase);
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : 16, maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 40 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : 16, maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 40, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 17, flexShrink: 0 }}>🎓</span>
+      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 66 : 72, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ fontSize: 17, flexShrink: 0 }}>🤜</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
-      <div style={{ height: 32, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {knockedBy !== null && <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>🤜 Koputettu — viimeinen kierros!</div>}
-      </div>
+      {knockedBy !== null && (
+        <div style={{ marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>🤜 Koputettu — viimeinen kierros!</div>
+        </div>
+      )}
       {ais.length > 0 && (
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 10, flexWrap: isMobile ? 'nowrap' : 'wrap', marginBottom: isMobile ? 6 : 12 }}>
           {ais.map((ai, i) => {
             const pi = i + 1;
-            const selectMode = phase === 'spec_k_decide' || phase === 'spec_k_confirm' || phase === 'spec_q_tgt';
             return (
-              <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: selectMode ? 140 : 110 }}>
-                <PlayerGrid player={ai} isActive={curIdx === pi} small={!selectMode} backStyle={BACKS[cardBack]}
+              <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: 110 }}>
+                <PlayerGrid player={ai} isActive={curIdx === pi} small={true} backStyle={BACKS[cardBack]}
                   phase={phase} debug={debugOpen}
                   lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
                   clickableSet={tgtClickable(pi)}
@@ -709,15 +702,15 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 36 : 44, alignItems: 'center' }}>
         {isHuman && phase === 'drawn' && <Btn label="Heitä poistopakkaan ›" onClick={humanDiscard} color={C.gold} />}
         {isHuman && phase === 'draw' && knockedBy === null && <Btn label="🤜 Koputan!" onClick={humanKnock} color={C.red} outline />}
-        {phase === 'spec_q_tgt' && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
-        {phase === 'spec_k_decide' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
+        {phase === 'spec_q_tgt' && specState && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
+        {phase === 'spec_k_decide' && specState && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
         {phase === 'spec_k_confirm' && <Btn label="✓ Vaihda tähän" onClick={handleKSwap} color={C.gold} />}
         {phase === 'spec_k_confirm' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
       </div>
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center', justifyContent: 'flex-end' }}>
         <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
       </div>
 
       <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>

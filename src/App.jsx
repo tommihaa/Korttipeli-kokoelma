@@ -97,7 +97,7 @@ const GAMES = [
     ],
   },
   {
-    id: 'maija', name: 'Maija', emoji: '♠',
+    id: 'maija', name: 'Maija', emoji: '🂭',
     desc: 'Osittainen kaato — torjuntavoitto. Täyskaato — hyökkäät.',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Keskitaso', diffColor: '#e0a93b',
@@ -174,7 +174,6 @@ function GameBtn({ g, stats, onSelect }) {
         <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 }}>{g.name}</div>
-          <div style={{ fontSize: 10, color: g.diffColor, fontFamily: 'sans-serif', letterSpacing: 0.5, marginBottom: 2, opacity: 0.85 }}>{g.diff}</div>
           <StatBadge s={stats[g.id]} />
         </div>
         <span
@@ -234,7 +233,7 @@ export default function App() {
   const [seeAll, setSeeAll]         = useState(false);
   const [showCounts, setShowCounts] = useState(true);
   const [showPlayHints, setShowPlayHints] = useState(true);
-  const [teachMode, setTeachMode]   = useState(true);
+  const [teachMode, setTeachMode]   = useState(false);
   const [showLastPlay, setShowLastPlay] = useState(true);
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
   const [playerGroup, setPlayerGroup] = useState('laituri');
@@ -328,14 +327,11 @@ export default function App() {
         </div>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Tommin kokoelma</div>
-          <p style={{ margin: '0 0 8px', color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Moi, tässä on lahjani sinulle seurapelien ystävälle — mahdollisuus treenata korttipelejä omalla ruudulla.
-          </p>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Tommin korttipelikokoelma</div>
           <p style={{ margin: 0, color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Yritin opettaa tälle sääntöjä, mut kun joku menee vikaan, niin laita mailia{' '}
-            <a href="mailto:no.jopas@gmail.com" style={{ color: C.gold }}>no.jopas@gmail.com</a>
-            {' '}— T. Tommi H
+            Hei, sinä korttipelien ystävä! Tässä yhdeksän peliä opittavaksi, toistettavaksi ja eiköhän nuo pian luonnistu yhteisen pöydän ääressä. Korttipeleissä kun ei ole tekijänoikeuksia ja hyvin harvoin standardoituja sääntöjä, niin koin opettavan sovelluksen tarpeelliseksi. Yritin opettaa boteille sääntövivahteeni, mutta saattaa joku bugikin olla mukana. Risut ja ruusut{' '}
+            <a href="mailto:no.jopas@gmail.com?subject=Jako52-palaute" style={{ color: C.gold }}>no.jopas@gmail.com</a>
+            {' '}ja otsikkoon Jako52. Kiitos ja kumarrus, Tommi H
           </p>
         </div>
 
@@ -347,10 +343,9 @@ export default function App() {
           {[
             { label: 'Tapahtumaloki auki',                                                   val: showLog,       set: setShowLog       },
             { label: 'Äänet',                                                                 val: soundOn,       set: setSoundOn       },
-            { label: 'Läpinäkyvä pöytä (Hero näkee kaikki pöytä- ja käsikortit)',            val: seeAll,        set: setSeeAll        },
+            { label: 'Cheat Mode (Hero näkee kaikki pöytä- ja käsikortit)',                    val: seeAll,        set: setSeeAll        },
             { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',             val: showCounts,    set: setShowCounts    },
             { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                   val: showPlayHints, set: setShowPlayHints },
-            { label: 'Opastava tila (strategiatippejä)',                                       val: teachMode,     set: setTeachMode     },
             { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                   val: showLastPlay,  set: setShowLastPlay  },
           ].map(({ label, val, set }) => (
             <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: 'pointer' }}>
@@ -370,7 +365,7 @@ export default function App() {
           </p>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
             {[
-              { key: 'laituri', label: '🏖 Laituri-special', pool: LAITURI_SPECIAL  },
+              { key: 'laituri', label: '🏖 Laiturin tyypit',  pool: LAITURI_SPECIAL  },
               { key: 'jumalat', label: '⚡ Onnen jumalat',    pool: ONNEN_JUMALAT    },
               { key: 'puolue',  label: '🗳 Ihmisten puolue',  pool: IHMISTEN_PUOLUE  },
               { key: 'kansa',   label: '🧑‍🤝‍🧑 Kansa',           pool: KANSA            },

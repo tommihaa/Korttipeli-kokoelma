@@ -217,7 +217,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     gameStart:  (starter, card) => `Ristiseiska alkaa! ${starter} aloittaa ${card}:llä.`,
     yourTurn:   canPlay => canPlay ? 'Sinun vuorosi.' : 'Sinun vuorosi. Mikään korttisi ei käy, joten Passaa.',
     played:     (isH, name, card) => `${isH ? 'Sinä' : name}: ${card}`,
-    won:        (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
+    won:        (isH, name, rank) => rank === 1 ? `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉` : `${isH ? 'Tulit' : `${name} tuli`} ${rank}. sijalle.`,
     aiBonus:    (name, suit, pile) => `${name}: Kaatoi ${suit} ${pile} — voi jatkaa!`,
     humanBonus: (suit, pile) => `Kaadoit ${suit} ${pile}. Saat jatkaa — jos voit ja haluat.`,
     passFirst:  (isH, name) => `${isH ? 'Sinä passaat' : `${name} passaa`} (1. kierros — ei rangaistusta).`,
@@ -289,7 +289,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     let finished = [...g.finished];
     if (players[playerIdx].hand.length === 0 && !finished.includes(playerIdx)) {
       finished = [...finished, playerIdx];
-      addLog(M.won(isH, p.name));
+      addLog(M.won(isH, p.name, finished.length));
       if (sndRef.current) SFX.capture();
       if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
     }
@@ -535,7 +535,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const StackRow = ({ suit, showPlayHints }) => {
     const row = G.rows[suit];
     const cW = isMobile ? 46 : 60;
-    const cH = isMobile ? 66 : 85;
+    const cH = isMobile ? 52 : 85;
     const sc  = suitColor(suit);
     // ♠ = #1a1a1a on näkymätön tummalla taustalla → käytetään vaalempaa mustaa
     const tc  = suit === '♠' ? '#333333' : sc;
@@ -726,7 +726,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   };
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 620, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 620, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
@@ -817,7 +817,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
 
       {/* Oma käsi */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn || isGiving ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10, transition: 'border-color 0.2s' }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn || isGiving ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 14px', marginBottom: isMobile ? 6 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn || isGiving ? C.gold : C.dim, marginBottom: 8 }}>
           👤 Hero{human.hand.length === 0 ? ' — tyhjä! 🏆' : ''}
         </div>
@@ -831,7 +831,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
               ? () => humanGiveCard(c)
               : (isMyTurn || isBonusTurn) ? () => humanSelect(c) : undefined;
             return (
-              <Card key={c.id} card={c} small
+              <Card key={c.id} card={c} small={!isMobile} xsmall={isMobile}
                 selected={isSel}
                 highlight={!!hl}
                 dim={!!dimmed}
@@ -844,7 +844,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       </div>
 
       {/* Toiminnot */}
-      <div style={{ minHeight: 52, display: 'flex', gap: 8, marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+      <div style={{ minHeight: isMobile ? 36 : 52, display: 'flex', gap: 8, marginBottom: isMobile ? 6 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
         {(isMyTurn || isBonusTurn) && !isGiving && (
           <>
             <button onClick={humanPlay} disabled={!selCard}
@@ -868,13 +868,13 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       </div>
 
       {/* Tilapalkki */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 6 : 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
           Avaukset: {SUITS.filter(s => G.rows[s].active).length}/4
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
         </div>
       </div>
 

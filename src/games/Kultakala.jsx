@@ -66,9 +66,9 @@ function initGame(nPlayers, pool) {
 }
 
 // Paikallinen Card — tukee "unknown"-tilaa
-function KaCard({ card, faceUp, small, highlight, dim, pulse, unknown, onClick, backStyle }) {
+function KaCard({ card, faceUp, small, mini, highlight, dim, pulse, unknown, onClick, backStyle }) {
   const [h, setH] = useState(false);
-  const w = small ? 44 : 60, ht = small ? 60 : 82;
+  const w = mini ? 30 : small ? 44 : 60, ht = mini ? 42 : small ? 60 : 82;
   const back = backStyle || BACKS.ilves;
   const clickable = !!onClick;
 
@@ -94,8 +94,8 @@ function KaCard({ card, faceUp, small, highlight, dim, pulse, unknown, onClick, 
       {faceUp && card
         ? <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
           <div style={{ textAlign: 'center', color: SUIT_COLOR[card.s], fontFamily: 'Georgia,serif', lineHeight: 1.1 }}>
-            <div style={{ fontSize: small ? 13 : 17, fontWeight: 700 }}>{card.r}</div>
-            <div style={{ fontSize: small ? 14 : 20 }}>{card.s}</div>
+            <div style={{ fontSize: mini ? 11 : small ? 13 : 17, fontWeight: 700 }}>{card.r}</div>
+            <div style={{ fontSize: mini ? 12 : small ? 14 : 20 }}>{card.s}</div>
           </div>
         </div>
         : <>{back.render(w, ht)}</>}
@@ -630,13 +630,10 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
               <span style={{ fontSize: 22, minWidth: 28 }}>{i === 0 ? '🏆' : i === scores.length - 1 ? '🐟' : '🎯'}</span>
               <div style={{ flex: 1 }}>
                 <div style={{ fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? C.gold : C.text, marginBottom: 6 }}>{p.name}</div>
-                <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                    <KaCard card={p.unknown} faceUp small backStyle={BACKS[cardBack]} />
-                    <span style={{ fontSize: 9, color: C.gold, fontFamily: 'sans-serif' }}>?</span>
-                  </div>
-                  <span style={{ color: C.dim, fontSize: 14, margin: '0 2px' }}>+</span>
-                  {p.row.map((c, ci) => <KaCard key={ci} card={c} faceUp small backStyle={BACKS[cardBack]} />)}
+                <div style={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'nowrap' }}>
+                  <KaCard card={p.unknown} faceUp mini backStyle={BACKS[cardBack]} />
+                  <span style={{ color: C.dim, fontSize: 11, margin: '0 1px' }}>+</span>
+                  {p.row.map((c, ci) => <KaCard key={ci} card={c} faceUp mini highlight={!p.isHuman && p.known?.has(ci)} backStyle={BACKS[cardBack]} />)}
                 </div>
               </div>
               <div style={{ fontSize: 20, fontWeight: 700, color: i === 0 ? C.gold : C.dim }}>{p.total}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></div>
@@ -663,7 +660,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const canStop    = curIdx === 0 && !!held && (phase === 'swapping' || canDiscard);
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       {kohahdus && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, pointerEvents: 'none' }}>
@@ -679,29 +676,22 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: isMobile ? 12 : 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
-      {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
-        {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
-            {lastPlay.cards.map(c => (
-              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
-            ))}
-          </div>
-        )}
-      </div>
-
       {ais.length > 0 && (
         isMobile ? (
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 6 }}>
             {ais.map((p, i) => {
               const pi = i + 1, isActive = curIdx === pi;
-              const cardCount = 1 + p.row.length; // tuntematon + rivi
               return (
-                <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 20, background: isActive ? C.gold + '14' : 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '66' : C.panelBorder}` }}>
-                  <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim }}>
-                    {isActive ? '► ' : '🤖 '}{p.name} — {cardCount}k
-                  </span>
+                <div key={p.id} style={{ display: 'flex', gap: 5, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '5px 8px' }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: isActive ? C.gold : C.dim, minWidth: 54, flexShrink: 0 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
+                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                  <div style={{ display: 'flex', gap: 2 }}>
+                    {p.row.map((c, ci) => (
+                      <div key={ci} style={{ borderRadius: 4, border: teachMode && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: teachMode && p.known.has(ci) ? `0 0 6px ${C.gold}66` : 'none', padding: teachMode && p.known.has(ci) ? 1 : 0 }}>
+                        <KaCard card={c} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               );
             })}
@@ -769,6 +759,18 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         )}
       </div>
 
+      {/* Viimeisin siirto */}
+      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+        {lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Ihmispelaajan tuntematon + jono */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10 }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: curIdx === 0 ? C.gold : C.dim, marginBottom: 8 }}>
@@ -810,7 +812,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10, justifyContent: 'flex-end' }}>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
       </div>
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>

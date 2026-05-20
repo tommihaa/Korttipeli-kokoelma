@@ -184,7 +184,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     aceDrawn:     (isH, name, card) => `${isH ? 'Sinä nostat' : `${name} nostaa`} ässärangaistuksena ${card}.`,
     forgotLappu:  (name, count) => `${name} unohti sanoa Lappu — +${count} korttia sakkona!`,
     played:       (isH, name, cards) => `${isH ? 'Sinä' : name}: ${cards}`,
-    won:          (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
+    won:          (isH, name, rank) => rank === 1 ? `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉` : `${isH ? 'Tulit' : `${name} tuli`} ${rank}. sijalle.`,
     sevenPlayed:  (isH, name, suit) => `${isH ? 'Sinä' : name} laittaa seiskan päälle — vaadittu maa: ${suit}`,
     chooseSuit:   'Valitse vaadittu maa seiskan jälkeen.',
     suitChosen:   (isH, name, suit) => `${isH ? 'Sinä valitset' : `${name} valitsee`} maan: ${suit}`,
@@ -303,7 +303,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     let gameOver = false;
     if (newHand.length === 0 && !finished.includes(playerIdx)) {
       finished = [...finished, playerIdx];
-      addLog(M.won(isH, p.name));
+      addLog(M.won(isH, p.name, finished.length));
       if (sndRef.current) SFX.capture();
       if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
       if (g.players.every((_, i) => finished.includes(i) || i === playerIdx)) {
@@ -417,14 +417,14 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         aiTmr.current = tm(() => advanceTurn(gRef.current, playerIdx), 700);
       }
     } else {
-      addLog(M.humanDraws(lbl(drawn)));
+      addLog(M.humanDraws(lblColored(drawn)));
       if (valid) {
-        addLog(M.drawnPlayable(lbl(drawn), 3 - draws));
+        addLog(M.drawnPlayable(lblColored(drawn), 3 - draws));
       } else if (draws >= 3) {
         addLog(M.draws3Used);
         tm(() => advanceTurn(gRef.current, playerIdx), 900);
       } else {
-        addLog(M.drawnNoGood(lbl(drawn), 3 - draws));
+        addLog(M.drawnNoGood(lblColored(drawn), 3 - draws));
       }
     }
   }
@@ -628,25 +628,13 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const showLappu  = human.hand.length === 1 && !G.lappuSaid.has(0) && G.pendingLappu === 0 && G.phase === 'play';
 
   return (
-    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32 }}>
+    <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 18, flexShrink: 0, color: C.gold }}>7</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
-      </div>
-
-      {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
-        {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
-            {lastPlay.cards.map(c => (
-              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* AI-kädet — viuhka */}
@@ -699,12 +687,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>LYÖNTIPAKKA</div>
-          <Card card={G.discardTop} large justPlaced={G.discardTop?.id === jpId} backStyle={BACKS[cardBack]} />
+          <Card card={G.discardTop} large={!isMobile} justPlaced={G.discardTop?.id === jpId} backStyle={BACKS[cardBack]} />
         </div>
         {G.reqSuit && (
           <div style={{ padding: '10px 18px', borderRadius: 12, background: 'rgba(201,168,76,0.1)', border: `2px solid ${C.gold}66`, textAlign: 'center' }}>
             <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, marginBottom: 4, letterSpacing: 1.5 }}>VAADITTU MAA</div>
-            <div style={{ fontSize: 48, color: SUIT_COLOR[G.reqSuit], lineHeight: 1 }}>{G.reqSuit}</div>
+            <div style={{ fontSize: isMobile ? 32 : 48, color: SUIT_COLOR[G.reqSuit], lineHeight: 1 }}>{G.reqSuit}</div>
           </div>
         )}
         {G.drawsThisTurn > 0 && (
@@ -745,6 +733,18 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
           <button onClick={humanLappu} style={{ background: C.red, border: 'none', borderRadius: 8, padding: '8px 16px', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>LAPPU!</button>
         </div>
       )}
+
+      {/* Viimeisin siirto */}
+      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+        {lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Oma käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
@@ -820,7 +820,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Kortit</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
         </div>
       </div>
 
