@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle } from '../shared/helpers.js';
 import { BACKS } from '../shared/BACKS.jsx';
@@ -106,9 +106,9 @@ function initGame(nPlayers, pool) {
 }
 
 // ── Pääkomponentti ──────────────────────────────────────────────────
-export default function Maija({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
+export default function Maija({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
   const [screen, setScreen] = useState('select');
-  const [nP, setNP] = useState(4);
+  const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
@@ -124,6 +124,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
   const [currentMoment, setCurrentMoment] = useState(null);
+  const [lastPlay, setLastPlay] = useState(null);
 
   const gRef = useRef(null);
   const phaseRef = useRef('idle');
@@ -135,6 +136,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   const teachRef   = useRef(teachMode);
   const finRef = useRef([]);
   const tmrs   = useRef(new Set());
+  const lastPlayTmr = useRef(null);
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -142,7 +144,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   useEffect(() => { tableRef.current = table; }, [table]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { finRef.current = finished; }, [finished]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -219,6 +221,15 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     tipDefendAll:  name => `💡 ${name} kaataa kaikki — erinomainen puolustus!`,
     tipCannotAll:  name => `💡 ${name} ei pysty kaatamaan kaikkia — ottaa kortit`,
   };
+
+  function flashLastPlay(name, cards, isHuman = false) {
+    if (!showLastPlay) return;
+    setLastPlay({ name, cards: Array.isArray(cards) ? cards : [cards], isHuman });
+    clearTimeout(lastPlayTmr.current);
+    lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
+  }
+
+  useLayoutEffect(() => { startGame(); }, []);
 
   function startGame() {
     clearTimeout(aiTmr.current);
@@ -360,6 +371,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     const attName = g.players[g.attackerIdx];
     const msg = attName.id===0 ? M.humanAttack(cards.map(lblColored).join(', ')) : M.aiAttack(attName.name, cards.map(lblColored).join(', '));
     addLog(msg);
+    flashLastPlay(attName.id===0 ? 'Sinä' : attName.name, cards, attName.id===0);
     const players = g.players.map((p,i) => i===g.attackerIdx
       ? { ...p, hand:p.hand.filter(c => !cards.find(x => x.id===c.id)) } : p);
     const tbl = cards.map(c => ({ att:c, def:null }));
@@ -605,6 +617,18 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         <p style={{ margin:0, fontFamily:'sans-serif', fontSize:13, lineHeight:1.55, color:C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
+      {/* Viimeisin siirto */}
+      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+        {lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Valtti + pakka */}
       <div style={{ display:'flex', gap:6, marginBottom: isMobile ? 4 : 10, alignItems:'center', flexWrap:'wrap' }}>
         <div style={{ display:'flex', alignItems:'center', gap:6, padding:'3px 10px', borderRadius:20, border:`1px solid ${C.trump}55`, background:`${C.trump}0d` }}>
@@ -800,6 +824,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       <style>{`
         button:active{transform:scale(0.97)}
         @keyframes pakaFlash{0%{opacity:0.4;letter-spacing:1.5px}12%{opacity:1;letter-spacing:3px;text-shadow:0 0 14px rgba(224,92,59,0.9),0 0 30px rgba(224,92,59,0.5)}40%{opacity:1;letter-spacing:2px;text-shadow:0 0 8px rgba(224,92,59,0.5)}70%{opacity:1;letter-spacing:1.5px;text-shadow:none}100%{opacity:1}}
+        @keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}
       `}</style>
     </div>
   );

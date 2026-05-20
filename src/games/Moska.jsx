@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
@@ -149,9 +149,9 @@ function getMaxAdd(g) {
 }
 
 // ── Komponentti ───────────────────────────────────────────────
-export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
+export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
   const [screen, setScreen] = useState('select');
-  const [nP, setNP] = useState(4);
+  const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
@@ -174,6 +174,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
   // Momentti-palaute
   const [currentMoment, setCurrentMoment] = useState(null);
+  const [lastPlay, setLastPlay] = useState(null);
   const momentsRef = useRef([]);
 
   const gRef    = useRef(null);
@@ -183,11 +184,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const teachRef   = useRef(teachMode);
   const prevDeckRef = useRef(null);
   const tmrs        = useRef(new Set());
+  const lastPlayTmr = useRef(null);
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
 
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
@@ -319,6 +321,15 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
 
   // ── Pelin aloitus ─────────────────────────────────────────
+  function flashLastPlay(name, cards, isHuman = false) {
+    if (!showLastPlay) return;
+    setLastPlay({ name, cards: Array.isArray(cards) ? cards : [cards], isHuman });
+    clearTimeout(lastPlayTmr.current);
+    lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
+  }
+
+  useLayoutEffect(() => { startGame(); }, []);
+
   function startGame() {
     clearTimeout(aiTmr.current);
     const g = initGame(nP, playerNames);
@@ -488,6 +499,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const newTable = cards.map(c => ({ atk: c, def: null, atkBy: atkIdx }));
     const players = g.players.map((pl, i) => i === atkIdx ? { ...pl, hand: newHand } : pl);
     addLog(M.attack(act(p, 'hyökkäsit', 'hyökkäsi'), cards.map(lblColored).join(', ')));
+    flashLastPlay(p.isHuman ? 'Sinä' : p.name, cards, p.isHuman);
     if (sndRef.current) SFX.leave();
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
@@ -510,7 +522,8 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const statusMsg = unbeaten > 0 ? `(${beaten}🛡️/${unbeaten}⚔️ pöydällä)` : '(kaikki kaadettu)';
 
     addLog(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
-    if (sndRef.current) SFX.capture();
+    flashLastPlay(def.isHuman ? 'Sinä' : def.name, defCard, def.isHuman);
+    if (sndRef.current) SFX.beat();
     return { ...g, players, table: newTable };
   }
 
@@ -978,6 +991,18 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
+      {/* Viimeisin siirto */}
+      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+        {lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Yläpalkki: valtti + pakkatiedot */}
       <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 10px', borderRadius: 20, border: `1px solid ${C.trump}55`, background: `${C.trump}0d` }}>
@@ -1001,7 +1026,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
               </div>
               <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
                 {debugOpen
-                  ? p.hand.map(c => <Card key={c.id} card={c} small showBadges backStyle={BACKS[cardBack]} />)
+                  ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
                   : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
                 }
               </div>
@@ -1031,7 +1056,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
                   backStyle={BACKS[cardBack]}
                 />
                 {slot.def
-                  ? <Card card={slot.def} small showBadges backStyle={BACKS[cardBack]} />
+                  ? <Card card={slot.def} small backStyle={BACKS[cardBack]} />
                   : <div style={{ width: 50, height: 68, borderRadius: 7, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
                 }
               </div>
@@ -1180,6 +1205,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         button:active{transform:scale(0.97)}
         @keyframes slotFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9),0 0 20px rgba(201,168,76,0.6)}60%{box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 0 10px rgba(201,168,76,0.3)}100%{box-shadow:0 2px 6px rgba(0,0,0,0.3)}}
         @keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}
+        @keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}
       `}</style>
     </div>
   );

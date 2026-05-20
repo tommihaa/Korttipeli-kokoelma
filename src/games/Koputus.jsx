@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
@@ -103,9 +103,9 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
   const [screen, setScreen]     = useState('select');
-  const [nP, setNP]             = useState(4);
+  const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
   const [phase, setPhase]       = useState('idle');
   const [curIdx, setCurIdx]     = useState(0);
@@ -205,6 +205,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     if (prevDeckRef.current !== null && prevDeckRef.current > 0 && cur === 0) setPakaAnim(true);
     prevDeckRef.current = cur;
   }, [G?.deck?.length]);
+
+  useLayoutEffect(() => { startGame(); }, []);
 
   function startGame() {
     clearTimeout(aiTmr.current); clearInterval(reactInt.current);

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
@@ -166,9 +166,9 @@ function aiWorstCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, isMobile = false, playerNames }) {
+export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
   const [screen,   setScreen]  = useState('select');
-  const [nP,       setNP]      = useState(4);
+  const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G,        setG]       = useState(null);
@@ -205,7 +205,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     setLog([...logRef.current]);
   }
 
-  function showLastPlay(name, card, isHuman = false) {
+  function flashLastPlay(name, card, isHuman = false) {
     setLastPlay({ name, card, isHuman });
     clearTimeout(lastPlayTmr.current);
     lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
@@ -232,6 +232,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     tipHoldGate:(name, card, suit) => `💡 ${name} pidättää ${card} — avaa portin vasta kun lisää ${suit}-kortteja`,
     tipGiveWorst:(name, card) => `💡 ${name} antaa ${card} panttiin — kaukaisin kortti pelattavuudesta`,
   };
+
+  useLayoutEffect(() => { startGame(); }, []);
 
   function startGame() {
     clearTimeout(aiTmr.current);
@@ -269,7 +271,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
     if (sndRef.current) SFX.flip();
     addLog(M.played(isH, p.name, lblColored(card)));
-    showLastPlay(isH ? 'Sinä' : p.name, card, isH);
+    flashLastPlay(isH ? 'Sinä' : p.name, card, isH);
 
     const rows = { ...g.rows };
     const row  = rows[card.s];
@@ -289,6 +291,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       finished = [...finished, playerIdx];
       addLog(M.won(isH, p.name));
       if (sndRef.current) SFX.capture();
+      if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
     }
 
     const remaining = players.filter((_, i) => !finished.includes(i));
@@ -778,7 +781,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
       {/* Viimeisin lyönti -badge — kiinteä 36px wrapper, ei nytkähtelyä */}
       <div style={{ height: 36, display: 'flex', alignItems: 'center', marginBottom: 6 }}>
-        {lastPlay && (
+        {showLastPlay && lastPlay && (
           <div key={lastPlay.card.id}
             style={{
               display: 'flex', alignItems: 'center', gap: 8,

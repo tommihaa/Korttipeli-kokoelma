@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
@@ -158,9 +158,9 @@ const M = {
   tipLeave:   (name, card) => `💡 ${name} jättää pienen ${card} pöydälle — ei paljasta arvokorttia`,
 };
 
-export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
+export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
   const [screen, setScreen] = useState('select');
-  const [nP, setNP] = useState(4);
+  const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
@@ -179,6 +179,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const [jpId, setJP] = useState(null);
   const [shuffling, setShuffling] = useState(false);
   const [currentMoment, setCurrentMoment] = useState(null);
+  const [lastPlay, setLastPlay] = useState(null);
 
   const gRef    = useRef(null);
   const phaseRef = useRef('idle');
@@ -189,13 +190,14 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const sndRef     = useRef(false);
   const teachRef   = useRef(teachMode);
   const tmrs    = useRef(new Set());
+  const lastPlayTmr = useRef(null);
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -243,6 +245,15 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
     }
   }
+
+  function flashLastPlay(name, card, isHuman = false) {
+    if (!showLastPlay) return;
+    setLastPlay({ name, cards: [card], isHuman });
+    clearTimeout(lastPlayTmr.current);
+    lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
+  }
+
+  useLayoutEffect(() => { startGame(); }, []);
 
   function startGame() {
     clearTimeout(aiTmr.current);
@@ -419,6 +430,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     const newG = { ...g, players, table: newTable, lastCapture: playerIdx };
     if (sndRef.current) SFX.capture();
     if (isMökki && sndRef.current) tm(() => SFX.tikki(), 200);
+    flashLastPlay(playerIdx === 0 ? 'Sinä' : g.players[playerIdx].name, handCard, playerIdx === 0);
     if (!silent) {
       const who = playerIdx === 0 ? 'Kaappasit' : `${g.players[playerIdx].name} kaappasi`;
       const groups = findGroups(tableCards, handVal(handCard));
@@ -441,6 +453,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     if (sndRef.current) SFX.leave();
     const who = playerIdx === 0 ? 'Jätit' : `${g.players[playerIdx].name} jätti`;
     addLog(M.humanLeave(who, lblColored(handCard)));
+    flashLastPlay(playerIdx === 0 ? 'Sinä' : g.players[playerIdx].name, handCard, playerIdx === 0);
     return newG;
   }
 
@@ -662,6 +675,18 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{renderLogMessage(msg)}</p>
       </div>
 
+      {/* Viimeisin siirto */}
+      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+        {lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Pisteet + pakka */}
       <div style={{ display: 'flex', gap: 8, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap', alignItems: 'center' }}>
         {G.players.map((p, i) => (
@@ -861,7 +886,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         }}
       />
 
-      <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}`}</style>
+      <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>
   );
 }

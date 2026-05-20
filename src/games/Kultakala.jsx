@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
@@ -151,9 +151,9 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
+export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
   const [screen, setScreen]   = useState('select');
-  const [nP, setNP]           = useState(4);
+  const [nP, setNP]           = useState(playerCount);
   const [soundOn, setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG]             = useState(null);
@@ -172,6 +172,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const [tiedPlayers, setTiedPlayers] = useState([]);
   const [kohahdus, setKohahdus] = useState(null);
   const [currentMoment, setCurrentMoment] = useState(null);
+  const [lastPlay, setLastPlay] = useState(null);
 
   const gRef        = useRef(null);
   const phaseRef    = useRef('idle');
@@ -182,13 +183,14 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const teachRef    = useRef(teachMode);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
   const tmrs         = useRef(new Set());
+  const lastPlayTmr  = useRef(null);
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); }, []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
 
 
   const korttia = n => n === 1 ? '1 kortti' : `${n} korttia`;
@@ -238,6 +240,15 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
     }
   }
+
+  function flashLastPlay(name, card, isHuman = false) {
+    if (!showLastPlay) return;
+    setLastPlay({ name, cards: [card], isHuman });
+    clearTimeout(lastPlayTmr.current);
+    lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
+  }
+
+  useLayoutEffect(() => { startGame(); }, []);
 
   function startGame() {
     clearTimeout(aiTmr.current);
@@ -443,6 +454,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
           const swapChain = swaps.map(s => `paikka ${s.pos}: ${lblColored(s.card)}`).join(' → ');
           addLog(`${g2.players[idx].name} vaihtaa: ${swapChain}, ${lblColored(held)} poistopakkaan.`);
+          flashLastPlay(g2.players[idx].name, swaps[0].card, false);
           if (teachRef.current) addLog(M.tipSwap(g2.players[idx].name, lblColored(swaps[swaps.length - 1].card), lblColored(held)));
 
           tm(() => advance(newG, idx), 700);
@@ -464,6 +476,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     setG(newG); gRef.current = newG;
     if (sndRef.current) SFX.swap();
     addLog(M.aiSwapRow(g.players[idx], rowIdx, card, old));
+    flashLastPlay(g.players[idx].name, card, false);
     if (rowIdx === 0 && old.v <= 2) triggerKohahdus(old);
     tm(() => advance(newG, idx), 700);
   }
@@ -516,6 +529,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     }
     const players = g.players.map((pl, i) => i === 0 ? { ...pl, row: newRow, known } : pl);
     if (sndRef.current) SFX.swap();
+    flashLastPlay('Sinä', held, true);
     const wasKnown = p.known.has(rowIdx);
     const oldName = wasKnown ? `${lbl(old)} (${old.v} p)` : `${lbl(old)} (${old.v} p paljastui)`;
     const nextIdx = rowIdx - 1;
@@ -663,6 +677,18 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>🐟</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: isMobile ? 12 : 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+      </div>
+
+      {/* Viimeisin siirto */}
+      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+        {lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
+            ))}
+          </div>
+        )}
       </div>
 
       {ais.length > 0 && (
@@ -817,6 +843,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         @keyframes revealFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9)}100%{box-shadow:none}}
         @keyframes platina{0%,100%{border-color:rgba(200,210,235,0.5);box-shadow:0 0 5px rgba(210,215,255,0.2)}50%{border-color:rgba(235,240,255,1);box-shadow:0 0 14px rgba(220,225,255,0.7)}}
         @keyframes kohahdus{0%{opacity:0;transform:scale(0.55)}15%{opacity:1;transform:scale(1.08)}60%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0.92)}}
+        @keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}
         button:active{transform:scale(0.97)}
       `}</style>
     </div>

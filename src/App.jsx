@@ -158,6 +158,7 @@ function GameBtn({ g, stats, onSelect }) {
       border: `1px solid ${C.panelBorder}`,
       borderRadius: 14,
       overflow: 'hidden',
+      borderLeft: `3px solid ${g.diffColor}44`,
     }}>
       <button
         onClick={() => onSelect(g.id)}
@@ -173,6 +174,7 @@ function GameBtn({ g, stats, onSelect }) {
         <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 }}>{g.name}</div>
+          <div style={{ fontSize: 10, color: g.diffColor, fontFamily: 'sans-serif', letterSpacing: 0.5, marginBottom: 2, opacity: 0.85 }}>{g.diff}</div>
           <StatBadge s={stats[g.id]} />
         </div>
         <span
@@ -547,9 +549,6 @@ export default function App() {
       </div>
 
       <div style={{
-        background: '#1a3a28',
-        borderRadius: 16,
-        padding: isMobile ? '14px 12px' : '20px 20px',
         width: '100%',
         maxWidth: isMobile ? '100%' : 900,
       }}>

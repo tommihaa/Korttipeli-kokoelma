@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
@@ -165,9 +165,9 @@ function aiCards(hand, top, pile) {
 
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
-export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, isMobile = false, playerNames }) {
+export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
   const [screen,   setScreen]  = useState('select');
-  const [nP,       setNP]      = useState(4);
+  const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G,        setG]       = useState(null);
@@ -243,6 +243,8 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     tm(() => setKasaAnim(null), type === 'quad' ? 2000 : type === 'clear' ? 1400 : 850);
   }
 
+  useLayoutEffect(() => { startGame(); }, []);
+
   function startGame() {
     clearTimeout(aiTmr.current);
     setSel([]); setPakaAnim(false);
@@ -289,6 +291,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       finished = [...finished, pidx];
       addLog(M.won(isH, p.name));
       if (sndRef.current) SFX.capture();
+      if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
     }
 
     // Peli ohi?
@@ -776,7 +779,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
       {/* Viimeisin lyönti -badge — kiinteä korkeus, ei nytkähtelyä */}
       <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
-        {lastPlay && (
+        {showLastPlay && lastPlay && (
           <div key={lastPlay.cards[0].id} style={{
             display: 'flex', alignItems: 'center', gap: 8,
             background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`,
