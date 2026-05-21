@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, SUITS, RANKS, VAL } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
@@ -104,7 +104,7 @@ function nextActive(players, from, finished) {
 
 function prevWithCards(players, from, finished) {
   const n = players.length;
-  for (let i = 1; i <= n; i++) {
+  for (let i = 1; i < n; i++) {
     const idx = (from - i + n) % n;
     if (!finished.includes(idx) && players[idx].hand.length > 1) return idx;
   }
@@ -144,15 +144,16 @@ function aiBestCard(hand, rows) {
     return sevens.sort((a, b) => suitCount(hand, b.s) - suitCount(hand, a.s))[0];
   }
 
-  // Porttikorttia (6 tai 8) ei pidätellä jos samaa maata on useampi kortti kädessä
+  // Porttikorttia (6 tai 8) pidätellään jos samaa maata on useampi kädessä:
+  // tavoitteena pakotettu passaus jossa saa antaa heikot korttinsa pantiksi.
+  // (Passata saa vain kun käsikortit eivät käy — tämä on laillinen taktikki.)
   const nonGates = valid.filter(c => {
     if (c.r !== '6' && c.r !== '8') return true;
     return suitCount(hand, c.s) <= 1;
   });
 
   const pool = nonGates.length ? nonGates : valid;
-  pool.sort((a, b) => rv(a) - rv(b));
-  return pool[0];
+  return [...pool].sort((a, b) => rv(a) - rv(b))[0];
 }
 
 // Korttipanttiin annetaan huonoin kortti: kauimpana pelattavuudesta,
@@ -166,7 +167,7 @@ function aiWorstCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
+export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -187,6 +188,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const logRef     = useRef([]);
   const sndRef     = useRef(true);
   const teachRef   = useRef(teachMode);
+  const aiLevelRef = useRef(aiLevel);
+  useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs       = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
@@ -228,7 +231,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     badCard:    'Tämä kortti ei käy tähän — valitse toinen.',
     cantPass:   'Sinulla on pelattavissa oleva kortti — passata ei voi.',
     humanGives: (card, receiver) => `Sinä annat ${card} pelaajalle ${receiver}.`,
-    tipSeven:   (name, suit) => `💡 ${name} avaa pöydän — ${suit}:ssa eniten kortteja kädessä`,
+    tipSeven:   (name, suit) => `💡 ${name} avaa tornin — ${suit}:ssa eniten kortteja kädessä`,
     tipHoldGate:(name, card, suit) => `💡 ${name} pidättää ${card} — avaa portin vasta kun lisää ${suit}-kortteja`,
     tipGiveWorst:(name, card) => `💡 ${name} antaa ${card} panttiin — kaukaisin kortti pelattavuudesta`,
   };
@@ -269,7 +272,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const isH = p.isHuman;
     const v   = rv(card);
 
-    if (sndRef.current) SFX.flip();
+    if (sndRef.current) SFX.play();
     addLog(M.played(isH, p.name, lblColored(card)));
     flashLastPlay(isH ? 'Sinä' : p.name, card, isH);
 
@@ -297,7 +300,10 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const remaining = players.filter((_, i) => !finished.includes(i));
     if (remaining.length <= 1) {
       remaining.forEach(pl => { if (!finished.includes(pl.id)) finished.push(pl.id); });
-      onResult?.(finished[0] === 0);
+      const ranking = finished.map((idx, pos) => ({
+        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman,
+      }));
+      onResult?.({ ranking });
       setGS({ ...g, players, rows, finished, phase: 'gameover' });
       return;
     }
@@ -327,6 +333,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const isH = p.isHuman;
 
     if (!g.firstRoundDone) {
+      if (sndRef.current) SFX.leave();
       addLog(M.passFirst(isH, p.name));
       advanceTurnRS({ ...g }, playerIdx);
       return;
@@ -343,14 +350,19 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
     let players = g.players;
     if (giverIdx !== -1) {
-      const giver    = g.players[giverIdx];
-      const toGive = aiWorstCard(giver.hand, g.rows);
+      const giver = g.players[giverIdx];
+      // Aloittelija-virhe: antaa satunnaisen kortin eikä strategisesti huonointa
+      const toGive = (!giver.isHuman && aiShouldFumble(aiLevelRef.current))
+        ? giver.hand[Math.floor(Math.random() * giver.hand.length)]
+        : aiWorstCard(giver.hand, g.rows);
       players = g.players.map((pl, i) => {
         if (i === giverIdx)  return { ...pl, hand: pl.hand.filter(c => c.id !== toGive.id) };
         if (i === playerIdx) return { ...pl, hand: [...pl.hand, toGive] };
         return pl;
       });
+      if (sndRef.current) SFX.leave();
       addLog(M.passGive(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
+      if (sndRef.current) SFX.take();
       if (teachRef.current && !giver.isHuman) addLog(M.tipGiveWorst(giver.name, lblColored(toGive)));
     } else {
       addLog(M.passOnly(isH, p.name));
@@ -376,7 +388,28 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     }
 
     const card = aiBestCard(p.hand, rows);
-    if (card) {
+    let bestCard = card;
+
+    if (bestCard) {
+      if (bestCard.r === '7') {
+        // Aloittelija-virhe: avaa seiskan väärään maahan — valitsee huonoimman maan
+        if (aiShouldFumble(aiLevelRef.current)) {
+          const sevens = p.hand.filter(c => c.r === '7' && isPlayable(c, rows));
+          if (sevens.length > 1) {
+            bestCard = sevens.sort((a, b) => suitCount(p.hand, a.s) - suitCount(p.hand, b.s))[0];
+          }
+        }
+      } else if (bestCard.r !== '6' && bestCard.r !== '8') {
+        // Aloittelija-virhe: pelaa porttikortin jota älykäs AI pidättelisi
+        if (aiShouldFumble(aiLevelRef.current)) {
+          const allValid = p.hand.filter(c => isPlayable(c, rows));
+          const heldGate = allValid.find(c => (c.r === '6' || c.r === '8') && suitCount(p.hand, c.s) > 1);
+          if (heldGate) bestCard = heldGate;
+        }
+      }
+    }
+
+    if (bestCard) {
       if (teachRef.current) {
         if (card.r === '7') {
           const bestSuit = SUITS.reduce((a, b) =>
@@ -394,7 +427,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
           }
         }
       }
-      doPlay(gRef.current, activePlayer, card);
+      doPlay(gRef.current, activePlayer, bestCard);
     } else {
       doPass(gRef.current, activePlayer);
     }
@@ -463,7 +496,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
           <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
           <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
         </div>
-        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>Rakenna neljä pinoa · Aloita ♣7:llä</p>
+        <p style={{ color: C.dim, fontSize: 13, fontStyle: 'italic', margin: '0', marginBottom: 6 }}>Rakenna neljä tornia · Aloita ♣7:llä</p>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 12 }}>
           <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -772,7 +805,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       {/* Pöytä: pinot */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '14px 16px', marginBottom: isMobile ? 4 : 10 }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, marginBottom: 12 }}>
-          PÖYTÄ · ala-pino [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; ylä-pino [8→K]
+          TORNIT · ala-pino [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; ylä-pino [8→K]
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? 6 : 16 }}>
           {SUITS.map(s => <StackRow key={s} suit={s} showPlayHints={showPlayHints} />)}
@@ -804,16 +837,6 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
           </div>
         )}
       </div>
-
-
-      {/* Kortinanto-banneri */}
-      {isGiving && (
-        <div style={{ background: 'rgba(224,92,59,0.1)', border: `1px solid ${C.red}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 8 }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.red }}>
-            {G.players[G.givingCardTo].name} passaa — valitse annettava kortti.
-          </span>
-        </div>
-      )}
 
 
       {/* Oma käsi */}
@@ -869,8 +892,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
       {/* Tilapalkki */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 6 : 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
-          Avaukset: {SUITS.filter(s => G.rows[s].active).length}/4
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
+          <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> ensimmäinen kortiton voittaa · Avaukset: {SUITS.filter(s => G.rows[s].active).length}/4
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>

@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
 import { C, SUIT_COLOR } from './shared/colors.js';
+import GameResult from './shared/GameResult.jsx';
+
+/* eslint-disable no-undef */
+const APP_VERSION = __APP_VERSION__;
+const BUILD_DATE  = __BUILD_DATE__;
+/* eslint-enable no-undef */
+const MAILTO = `mailto:no.jopas@gmail.com?subject=${encodeURIComponent(`Version ${APP_VERSION}, Deploy ${BUILD_DATE}, Jako52 palaute`)}`;
 import Koputus from './games/Koputus.jsx';
 import Lapsy from './games/Lapsy.jsx';
 import Kultakala from './games/Kultakala.jsx';
@@ -154,11 +161,12 @@ function GameBtn({ g, stats, onSelect }) {
   const [showDesc, setShowDesc] = useState(false);
   return (
     <div style={{
-      background: 'rgba(255,255,255,0.03)',
-      border: `1px solid ${C.panelBorder}`,
+      background: 'rgba(255,255,255,0.05)',
+      border: 'none',
       borderRadius: 14,
       overflow: 'hidden',
-      borderLeft: `3px solid ${g.diffColor}44`,
+      borderLeft: `4px solid ${g.diffColor}`,
+      boxShadow: '0 2px 12px rgba(0,0,0,0.45)',
     }}>
       <button
         onClick={() => onSelect(g.id)}
@@ -187,7 +195,7 @@ function GameBtn({ g, stats, onSelect }) {
         >ℹ</span>
       </button>
       {showDesc && (
-        <div style={{ padding: '0 16px 10px 60px', fontSize: 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.5 }}>
+        <div style={{ padding: '0 16px 10px 60px', fontSize: 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.5 }}>
           {g.desc}
         </div>
       )}
@@ -198,15 +206,15 @@ function GameBtn({ g, stats, onSelect }) {
 function GameHeader({ title, onBack, gearBtn, isMobile }) {
   const btnBase = {
     background: 'rgba(13,33,24,0.92)', borderRadius: 9,
-    padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif',
-    border: '1px solid #2a4a32', color: C.dim, fontSize: 12,
+    padding: isMobile ? '9px 16px' : '10px 20px', cursor: 'pointer', fontFamily: 'Georgia,serif',
+    border: '1px solid #2a4a32', color: C.dim, fontSize: isMobile ? 13 : 14,
   };
   return (
     <div style={{
       position: 'sticky', top: 0, zIndex: 200,
       background: 'rgba(13,33,24,0.95)',
       borderBottom: '1px solid #2a4a32',
-      padding: isMobile ? '8px 8px' : '12px 8px',
+      padding: isMobile ? '10px 8px' : '14px 8px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <button onClick={onBack} style={{ ...btnBase, flexShrink: 0, position: 'absolute', left: 8 }}>
@@ -223,7 +231,6 @@ function GameHeader({ title, onBack, gearBtn, isMobile }) {
 
 export default function App() {
   const [active, setActive]         = useState(null);
-  const [gameSetup, setGameSetup]   = useState(false);
   const [playerCount, setPlayerCount] = useState(4);
   const [showAdmin, setShowAdmin]   = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -235,8 +242,15 @@ export default function App() {
   const [showPlayHints, setShowPlayHints] = useState(true);
   const [teachMode, setTeachMode]   = useState(false);
   const [showLastPlay, setShowLastPlay] = useState(true);
+  const [showNextBtn, setShowNextBtn]   = useState(true);
+  const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard'
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
-  const [playerGroup, setPlayerGroup] = useState('laituri');
+  const [playerGroup, setPlayerGroup] = useState(() => {
+    const groups = ['laituri', 'jumalat', 'puolue', 'kansa'];
+    return groups[Math.floor(Math.random() * groups.length)];
+  });
+  const [resultData, setResultData] = useState(null);   // {ranking, revealCards?, scoreBreakdown?}
+  const [gameKey, setGameKey]       = useState(0);       // increment → remount game
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
@@ -250,7 +264,7 @@ export default function App() {
   }, [active]);
 
   useEffect(() => {
-    const handlePop = () => { setActive(null); setGameSetup(false); };
+    const handlePop = () => setActive(null);
     window.addEventListener('popstate', handlePop);
     return () => window.removeEventListener('popstate', handlePop);
   }, []);
@@ -261,10 +275,7 @@ export default function App() {
     : KANSA;
 
   function selectGame(id) {
-    const g = GAMES.find(x => x.id === id);
     setActive(id);
-    setGameSetup(true);
-    setPlayerCount(g.maxPlayers);
   }
 
   function recordResult(gameId, heroWon) {
@@ -272,6 +283,13 @@ export default function App() {
       ...prev,
       [gameId]: { played: prev[gameId].played + 1, wins: prev[gameId].wins + (heroWon ? 1 : 0) },
     }));
+  }
+
+  function handleGameResult(gameId, result) {
+    // result = {ranking, revealCards?, scoreBreakdown?}
+    const heroWon = result.ranking.find(r => r.isHuman)?.place === 1;
+    recordResult(gameId, heroWon);
+    setResultData(result);
   }
 
   if (showAdmin) {
@@ -298,7 +316,7 @@ export default function App() {
       onClick={() => setShowSettings(v => !v)}
       style={{
         background: 'transparent', border: `1px solid ${showSettings ? C.gold : C.panelBorder}`,
-        color: showSettings ? C.gold : C.dim, borderRadius: 9, padding: '5px 10px',
+        color: showSettings ? C.gold : C.dim, borderRadius: 9, padding: '9px 12px',
         fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
@@ -309,7 +327,7 @@ export default function App() {
   const settingsPanel = showSettings && (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 500, overflowY: 'auto',
-      background: 'rgba(13,33,24,0.97)',
+      background: C.bg,
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       padding: isMobile ? '16px 12px' : '32px 24px',
     }}>
@@ -328,18 +346,24 @@ export default function App() {
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
           <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Tommin korttipelikokoelma</div>
-          <p style={{ margin: 0, color: C.dim, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-            Hei, sinä korttipelien ystävä! Tässä yhdeksän peliä opittavaksi, toistettavaksi ja eiköhän nuo pian luonnistu yhteisen pöydän ääressä. Korttipeleissä kun ei ole tekijänoikeuksia ja hyvin harvoin standardoituja sääntöjä, niin koin opettavan sovelluksen tarpeelliseksi. Yritin opettaa boteille sääntövivahteeni, mutta saattaa joku bugikin olla mukana. Risut ja ruusut{' '}
-            <a href="mailto:no.jopas@gmail.com?subject=Jako52-palaute" style={{ color: C.gold }}>no.jopas@gmail.com</a>
-            {' '}ja otsikkoon Jako52. Kiitos ja kumarrus, Tommi H
-          </p>
+          {[
+            'Hei ja tervetuloa sinä korttipelien ystävä!',
+            'Näin opettavan sovelluksen tarpeelliseksi, koska haluan lisää pelikavereita! Aina ei ole aikaa, opettajaa, virtaa tai pelaajia – korttipelisovelluksella on siis kysyntää, varsinkin kun korttipeleillä ei ole tekijänoikeuksia ja tarjontaa rajoittaa lukuisat paikalliset säännöt.',
+            'Nyt siis olkoon Tommin Standardi!',
+            'Tässä siulle yhdeksän peliä vaihe vaiheelta neuvottuna lukuisin toistoin opittaviksi. Yritin opettaa sovellukselle sääntövivahteeni ja pelilogiikkaani, mutta saattaa siellä joku bugikin olla mukana.',
+            'Kiitos ja kumarrus,\nTommi Haanranta',
+          ].map((t, i) => (
+            <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>
+          ))}
+          <a href={MAILTO} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
+            color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+            border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
+          }}>✉ Lähetä risut ja ruusut</a>
         </div>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 6, opacity: 0.8 }}>Peliasetukset</div>
-          <p style={{ margin: '0 0 10px', fontSize: 10, color: C.dim, fontFamily: 'sans-serif', opacity: 0.5, letterSpacing: 0.5 }}>
-            Muutettavissa myös pelin aikana.
-          </p>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Peliasetukset</div>
           {[
             { label: 'Tapahtumaloki auki',                                                   val: showLog,       set: setShowLog       },
             { label: 'Äänet',                                                                 val: soundOn,       set: setSoundOn       },
@@ -347,20 +371,65 @@ export default function App() {
             { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',             val: showCounts,    set: setShowCounts    },
             { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                   val: showPlayHints, set: setShowPlayHints },
             { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                   val: showLastPlay,  set: setShowLastPlay  },
+            { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn, set: setShowNextBtn },
           ].map(({ label, val, set }) => (
             <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: 'pointer' }}>
               <input
                 type="checkbox" checked={val} onChange={() => set(v => !v)}
                 style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
               />
-              <span style={{ fontSize: isMobile ? 11 : 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
+              <span style={{ fontSize: isMobile ? 11 : 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
             </label>
           ))}
         </div>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Tekoälyn taso 🤖</div>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+            {[
+              { key: 'beginner', label: 'Aloittelija', desc: 'tekee virheitä, voitettavissa' },
+              { key: 'normal',   label: 'Normaali',    desc: 'pelaa hyvin, mokaa joskus' },
+              { key: 'hard',     label: 'Vaativa',     desc: 'täysi strategia' },
+            ].map(({ key, label, desc }) => (
+              <button
+                key={key}
+                onClick={() => setAiLevel(key)}
+                style={{
+                  flex: 1, padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
+                  fontFamily: 'sans-serif', fontSize: 12,
+                  background: aiLevel === key ? `${C.gold}22` : 'transparent',
+                  border: `1px solid ${aiLevel === key ? C.gold : C.panelBorder}`,
+                  color: aiLevel === key ? C.gold : C.dim,
+                  transition: 'all 0.15s',
+                }}
+              >
+                {label}
+                <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{desc}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
           <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Pelaajat 👥</div>
-          <p style={{ margin: '0 0 10px', fontSize: 11, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 3, color: C.dim, opacity: 0.7 }}>PELAAJIA</span>
+            {[2, 3, 4].map(n => (
+              <button
+                key={n}
+                onClick={() => setPlayerCount(n)}
+                style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  border: `2px solid ${playerCount === n ? C.gold : C.panelBorder}`,
+                  background: playerCount === n ? `${C.gold}18` : 'transparent',
+                  color: playerCount === n ? C.gold : C.dim,
+                  fontSize: 18, cursor: 'pointer',
+                  fontFamily: 'Georgia,serif', transition: 'all 0.15s',
+                }}
+              >{n}</button>
+            ))}
+          </div>
+          <p style={{ margin: '0 0 10px', fontSize: 11, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>
             Vastustajat arvotaan valitusta ryhmästä.
           </p>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
@@ -400,100 +469,26 @@ export default function App() {
     const GameComponent = game.component;
     const maxW = isMobile ? 'calc(100vw - 20px)' : game.maxWidth;
 
-    if (gameSetup) {
+    // Tulosruutu pelin jälkeen
+    if (resultData) {
       return (
-        <div style={{ maxWidth: maxW, margin: '0 auto' }}>
-          {settingsPanel}
-          <GameHeader title={game.name} onBack={() => { setActive(null); setGameSetup(false); }} gearBtn={gearBtn} isMobile={isMobile} />
-          <div style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center',
-            padding: isMobile ? '32px 16px 40px' : '48px 24px 56px',
-            gap: isMobile ? 20 : 28,
-          }}>
-            <div style={{ fontSize: isMobile ? 56 : 72, lineHeight: 1 }}>{game.emoji}</div>
-
-            <div style={{
-              fontFamily: 'Georgia,serif',
-              fontSize: isMobile ? 28 : 40,
-              letterSpacing: isMobile ? 8 : 14,
-              background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`,
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            }}>
-              {game.name.toUpperCase()}
-            </div>
-
-            <div style={{ display: 'flex', gap: 14, fontSize: isMobile ? 16 : 20, opacity: 0.8 }}>
-              <span style={{ color: '#d0cfc8' }}>♠</span>
-              <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
-              <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
-              <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <span style={{
-                fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 3,
-                color: C.dim, opacity: 0.7,
-              }}>PELAAJIA</span>
-              {[2, 3, 4].map(n => {
-                const disabled = n < game.minPlayers;
-                const selected = playerCount === n;
-                return (
-                  <button
-                    key={n}
-                    onClick={() => !disabled && setPlayerCount(n)}
-                    style={{
-                      width: 48, height: 48, borderRadius: 12,
-                      border: `2px solid ${selected ? C.gold : disabled ? '#2a3a30' : C.panelBorder}`,
-                      background: selected ? `${C.gold}18` : 'transparent',
-                      color: disabled ? '#334a3c' : selected ? C.gold : C.dim,
-                      fontSize: 20, cursor: disabled ? 'default' : 'pointer',
-                      fontFamily: 'Georgia,serif', transition: 'all 0.15s',
-                    }}
-                  >{n}</button>
-                );
-              })}
-            </div>
-
-            <div style={{
-              width: '100%', maxWidth: 340,
-              border: `1px solid ${C.panelBorder}`, borderRadius: 14,
-              padding: '16px 20px', background: 'rgba(255,255,255,0.02)',
-            }}>
-              <div style={{
-                fontFamily: 'sans-serif', fontSize: 11, fontWeight: 700,
-                color: C.gold, letterSpacing: 1, marginBottom: 12,
-              }}>Säännöt lyhyesti</div>
-              {game.rules.map((r, i) => (
-                <div key={i} style={{
-                  color: C.dim, fontSize: 12, fontFamily: 'sans-serif',
-                  lineHeight: 1.7, paddingLeft: 8,
-                  borderLeft: i === 0 ? 'none' : 'none',
-                }}>{r}</div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => setGameSetup(false)}
-              style={{
-                padding: isMobile ? '13px 36px' : '15px 48px',
-                borderRadius: 32,
-                background: `linear-gradient(135deg,#d4a843,${C.gold},#b8922e)`,
-                border: 'none', color: '#0d1a0f',
-                fontSize: isMobile ? 16 : 19, fontWeight: 700,
-                fontFamily: 'Georgia,serif', letterSpacing: 3,
-                cursor: 'pointer', boxShadow: `0 4px 20px ${C.gold}40`,
-              }}
-            >Aloita →</button>
-          </div>
-        </div>
+        <GameResult
+          ranking={resultData.ranking}
+          revealCards={resultData.revealCards}
+          scoreBreakdown={resultData.scoreBreakdown}
+          isMobile={isMobile}
+          onNewGame={() => { setResultData(null); setGameKey(k => k + 1); }}
+          onMenu={() => { setResultData(null); setActive(null); }}
+        />
       );
     }
 
     return (
       <div style={{ maxWidth: maxW, margin: '0 auto' }}>
         {settingsPanel}
-        <GameHeader title={game.name} onBack={() => { setActive(null); setGameSetup(false); }} gearBtn={gearBtn} isMobile={isMobile} />
+        <GameHeader title={game.name} onBack={() => { setResultData(null); setActive(null); }} gearBtn={gearBtn} isMobile={isMobile} />
         <GameComponent
+          key={gameKey}
           game={game}
           hints={showLog}
           soundOn={soundOn}
@@ -503,9 +498,11 @@ export default function App() {
           teachMode={teachMode}
           showLastPlay={showLastPlay}
           isMobile={isMobile}
-          playerCount={playerCount}
+          playerCount={Math.max(playerCount, game.minPlayers)}
           playerNames={playerPool}
-          onResult={(heroWon) => recordResult(active, heroWon)}
+          showNextBtn={showNextBtn}
+          aiLevel={aiLevel}
+          onResult={(result) => handleGameResult(active, result)}
         />
       </div>
     );
@@ -513,7 +510,7 @@ export default function App() {
 
   return (
     <div style={{
-      background: '#0d2118', minHeight: '100vh',
+      background: C.bg, minHeight: '100vh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center',
       gap: isMobile ? 10 : 16, padding: isMobile ? '16px 12px' : '32px 24px',
@@ -533,12 +530,6 @@ export default function App() {
           }}>
             JAKO<span style={{ fontSize: isMobile ? 15 : 22, verticalAlign: 'super', letterSpacing: 2 }}>52</span>
           </h1>
-          <span style={{ display: 'flex', gap: isMobile ? 4 : 6, fontSize: isMobile ? 14 : 20, opacity: 0.85 }}>
-            <span style={{ color: '#d0cfc8' }}>♠</span>
-            <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
-            <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
-            <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
-          </span>
         </div>
         <div style={{ position: 'absolute', right: 0 }}>{gearBtn}</div>
       </div>
@@ -554,6 +545,9 @@ export default function App() {
         }}>
           {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={selectGame} />)}
         </div>
+      </div>
+      <div style={{ fontSize: 10, color: C.dim, opacity: 0.35, fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
+        v{APP_VERSION} · {BUILD_DATE}
       </div>
     </div>
   );

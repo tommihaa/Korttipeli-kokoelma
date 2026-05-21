@@ -8,9 +8,9 @@ Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 
 ## Navigation
-Valikko (päävalikko) → Välinäyttö (GameSetup) → Peli
-- Välinäyttö: iso emoji + pelin nimi kultaisena, PELAAJIA [2][3][4], säännöt lyhyesti, Aloita →
-- Ristiseiska: minPlayers=3, [2]-nappi disabled
+Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
+- `playerCount` valitaan Asetukset-paneelin Pelaajat-osiossa [2][3][4]
+- Ristiseiska: `Math.max(playerCount, game.minPlayers)` — varmistaa min 3 pelaajaa
 
 ## Global settings (App.jsx → props to all games)
 | Prop | Default | Selitys |
@@ -116,7 +116,7 @@ Virstanpylväät:
 ## Tech
 - React functional components + hooks only (no class components)
 - Tailwind core utilities only (no custom compiler)
-- No localStorage / sessionStorage (use useState/useReducer)
+- No localStorage / sessionStorage (use useState/useReducer) — TIETOINEN VALINTA: sovellus on "tyylikäs karvalakki-versio", ei tallenna edistymistä
 - Single-file artifacts (.jsx) — no separate CSS/JS files
 - Touch + stylus primary input (phone + tablet), no hover-dependent interactions
 - Responsive: `window.innerWidth < 600` = mobile, else tablet

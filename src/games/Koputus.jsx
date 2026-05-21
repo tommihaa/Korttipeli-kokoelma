@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, SUITS, RANKS, VAL, shuffle } from '../shared/helpers.js';
+import { isRed, lbl, SUITS, RANKS, VAL, shuffle, aiShouldFumble } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
@@ -38,7 +38,7 @@ function initGame(n, pool) {
 }
 
 const M = {
-  peekStart: 'Kortit on jaettu! Kurkkaa kaksi omaa pöytäkorttia — muista ne, sillä ne pysyvät piilossa koko pelin.',
+  peekStart: 'Kortit on jaettu! Kurkkaa kaksi omaa kenttäkorttia — muista ne, sillä ne pysyvät piilossa koko pelin.',
   peekOne:   'Hyvä! Kurkkaa vielä toinen kortti.',
   peekDone:  'Pelaajat katsoivat kaksi korttiaan. Peli voi alkaa.',
   yourTurn:  'Sinun vuorosi — nosta kortti pakasta tai poistopakasta. Voit koputtaa ennen nostoa, jos uskot pisteidesi olevan pienimmät.',
@@ -76,6 +76,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
         <span style={{ fontWeight: isActive ? 700 : 400, letterSpacing: 0.5 }}>{player.name}</span>
         {isActive && !small && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>● vuoro</span>}
         {showScore && player.isHuman && <span style={{ marginLeft: 'auto', color: '#a0baa8', fontSize: 12 }}>{pScore(player)} p</span>}
+        {!small && <span style={{ marginLeft: showScore && player.isHuman ? 6 : 'auto', fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>KENTTÄ</span>}
       </div>
       <div style={small ? { display: 'flex', flexDirection: 'row', gap: 4 } : { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
         {player.cards.map((card, i) => {
@@ -103,7 +104,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
@@ -138,6 +139,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const reactInt  = useRef(null);
   const aiTmr     = useRef(null);
   const teachRef  = useRef(teachMode);
+  const aiLevelRef = useRef(aiLevel);
+  useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs      = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
@@ -257,8 +260,14 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   }
 
   function endGame(gState) {
-    const heroScore = pScore(gState.players[0]);
-    onResult?.(heroScore === Math.min(...gState.players.map(pScore)));
+    const players = gState.players;
+    const sorted  = [...players].sort((a, b) => pScore(a) - pScore(b));
+    const ranking = sorted.map(p => {
+      const s = pScore(p);
+      return { name: p.name, place: sorted.filter(q => pScore(q) < s).length + 1, score: s, isHuman: p.isHuman };
+    });
+    const revealCards = players.map(p => ({ name: p.name, cards: p.cards }));
+    onResult?.({ ranking, revealCards });
     setPhase('gameover'); setScreen('gameover'); setMsg(M.gameOver);
   }
 
@@ -461,7 +470,9 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       const ks = [...p.known].reduce((s, i) => s + (p.cards[i]?.v || 0), 0);
       const uk = p.cards.filter(c => c !== null).length - p.known.size;
       const est = ks + uk * 5;
-      if (est <= 8) {
+      // Aloittelija koputaa liian aikaisin — ylioptimistinen arvio omasta tilanteesta
+      const knockThreshold = aiShouldFumble(aiLevelRef.current) ? 14 : 8;
+      if (est <= knockThreshold) {
         setKB(playerIdx); knockRef.current = playerIdx;
         const lr = new Set(gState.players.filter((_, i) => i !== playerIdx).map(pl => pl.id));
         setLR(lr); lrRef.current = lr; setMsg(M.aiKnock(p.name));
@@ -708,7 +719,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         {phase === 'spec_k_confirm' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
       </div>
 
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center', justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun koputus tai pakka loppuu</span>
         <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
       </div>

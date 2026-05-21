@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, SUITS, RANKS, VAL } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
@@ -120,7 +120,7 @@ function sortHand(hand) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
+export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -136,12 +136,15 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const [shuffling, setShuffling] = useState(false);
   const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
+  const [lappuSecsLeft, setLappuSecsLeft] = useState(null);
 
   const gRef   = useRef(null);
   const aiTmr  = useRef(null);
   const logRef = useRef([]);
   const sndRef = useRef(true);
   const teachRef = useRef(teachMode);
+  const aiLevelRef = useRef(aiLevel);
+  useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const prevDeckRef = useRef(null);
   const prevRCRef   = useRef(0);
   const tmrs   = useRef(new Set());
@@ -168,6 +171,13 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       setShuffling(true);
     }
   }, [G?.reshuffleCount]);
+
+  useEffect(() => {
+    if (G?.pendingLappu !== 0) { setLappuSecsLeft(null); return; }
+    setLappuSecsLeft(4);
+    const iv = setInterval(() => setLappuSecsLeft(s => s !== null && s > 0 ? s - 1 : 0), 1000);
+    return () => clearInterval(iv);
+  }, [G?.pendingLappu]);
 
   function addLog(m) {
     setMsg_(m);
@@ -253,7 +263,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       return { ...g, pendingLappu: null };
     }
     let g2 = reshuffleIfNeeded(g);
-    const pen = g2.deck.slice(0, 5);
+    const pen = g2.deck.slice(0, 3);
     g2 = {
       ...g2,
       deck: g2.deck.slice(pen.length),
@@ -262,6 +272,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       lappuSaid: new Set([...g2.lappuSaid, g.pendingLappu]),
       pendingLappu: null,
     };
+    if (sndRef.current) SFX.take();
     addLog(M.forgotLappu(g.players[g.pendingLappu].name, pen.length));
     return g2;
   }
@@ -289,7 +300,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const card  = cards[cards.length - 1];
     const isH   = p.isHuman;
 
-    if (sndRef.current) SFX.flip();
+    if (sndRef.current) SFX.play();
     addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
     flashLastPlay(isH ? 'Sinä' : p.name, cards, isH);
 
@@ -318,7 +329,10 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     let g2 = { ...g, players, finished };
 
     if (gameOver) {
-      onResult?.(finished[0] === 0);
+      const ranking = finished.map((idx, pos) => ({
+        name: g2.players[idx].name, place: pos + 1, isHuman: g2.players[idx].isHuman,
+      }));
+      onResult?.({ ranking });
       setGS({ ...g2, phase: 'gameover' });
       return;
     }
@@ -353,8 +367,13 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       g2 = { ...g2, aceBonus: card.s };
       if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
         if (!p.isHuman) {
-          addLog(M.lappu(p.name));
-          g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
+          // Aloittelija/Normaali voi unohtaa Lapun — pendingLappu, sakko bonusvuoron jälkeen
+          if (aiShouldFumble(aiLevelRef.current)) {
+            g2 = { ...g2, pendingLappu: playerIdx };
+          } else {
+            addLog(M.lappu(p.name));
+            g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
+          }
         }
         // Ihmiselle: ei aseteta pendingLappu vielä — odotetaan bonusvuoron päättymistä
       }
@@ -367,14 +386,20 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     // Lappu
     if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
       if (!p.isHuman) {
-        addLog(`${p.name}: Lappu!`);
-        g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
-        advanceTurn(g2, playerIdx);
+        // Aloittelija/Normaali voi unohtaa Lapun — pendingLappu, sakko advanceTurnissa
+        if (aiShouldFumble(aiLevelRef.current)) {
+          g2 = { ...g2, pendingLappu: playerIdx };
+          advanceTurn(g2, playerIdx);
+        } else {
+          addLog(`${p.name}: Lappu!`);
+          g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
+          advanceTurn(g2, playerIdx);
+        }
       } else {
         g2 = { ...g2, pendingLappu: playerIdx };
         setGS(g2);
-        // Anna ihmiselle 3 s aikaa sanoa Lappu ennen sakotusta
-        tm(() => advanceTurn(gRef.current, playerIdx), 3000);
+        // Anna ihmiselle 4 s aikaa sanoa Lappu ennen sakotusta
+        tm(() => advanceTurn(gRef.current, playerIdx), 4000);
       }
     } else {
       advanceTurn(g2, playerIdx);
@@ -390,6 +415,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       return;
     }
     const [drawn, ...deck] = g2.deck;
+    if (sndRef.current) SFX.flip();
     const prevHandSize = g2.players[playerIdx].hand.length;
     const players = g2.players.map((p, i) => i !== playerIdx ? p : { ...p, hand: [...p.hand, drawn] });
     const draws   = g2.drawsThisTurn + 1;
@@ -449,7 +475,22 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       return;
     }
 
-    const play = aiBestPlay(p.hand, discardTop, reqSuit);
+    const bestPlay = aiBestPlay(p.hand, discardTop, reqSuit);
+
+    // Aloittelija/Normaali-virhe: unohtaa että 7 on villikortti — nostaa pakasta
+    // vaikka seiska olisi kädessä ja muu sopimaton kortti
+    const playIsOnlySeven = bestPlay && bestPlay.length === 1 && bestPlay[0].r === '7';
+    if (playIsOnlySeven && drawsThisTurn < 3 && aiShouldFumble(aiLevelRef.current)) {
+      if (teachRef.current) addLog(`💡 ${p.name} unohti että 7 käy aina — nostaa pakasta`);
+      doDraw(gRef.current, activePlayer);
+      return;
+    }
+
+    // Aloittelija/Normaali-virhe: ei kerää samanarvoisia ketjuksi loppuun, vaan
+    // pelaa vain yhden ensimmäisen kun useampi olisi mahdollista
+    const play = (bestPlay && bestPlay.length > 1 && aiShouldFumble(aiLevelRef.current))
+      ? [bestPlay[0]]
+      : bestPlay;
     if (play) {
       const suit = play[0].r === '7'
         ? aiSuit(p.hand.filter(c => c.id !== play[0].id))
@@ -514,7 +555,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     if (newHand.length === 1 && !g2.lappuSaid.has(0)) {
       const g3 = { ...g2, pendingLappu: 0 };
       setGS(g3);
-      tm(() => advanceTurn(gRef.current, 0), 3000);
+      tm(() => advanceTurn(gRef.current, 0), 4000);
     } else {
       advanceTurn(g2, 0);
     }
@@ -528,7 +569,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     if (newHand.length === 1 && !g.lappuSaid.has(0)) {
       const g2 = { ...g, reqSuit: suit, phase: 'play', pendingLappu: 0 };
       setGS(g2);
-      tm(() => advanceTurn(gRef.current, 0), 3000);
+      tm(() => advanceTurn(gRef.current, 0), 4000);
     } else {
       advanceTurn({ ...g, reqSuit: suit, phase: 'play' }, 0);
     }
@@ -580,9 +621,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
         Lyö sama maa (1 kerralla) TAI sama arvo (useampi kerralla)<br />
         Ei sovi → nosta enintään 3 korttia, pelaa jos löytyy<br />
-        <span style={{ color: C.blue }}>7</span> → valitse vaadittu maa<br />
-        <span style={{ color: C.red }}>A</span> → bonusvuoro saman maan kortilla<br />
-        1 kortti → sano LAPPU tai +5
+        <span style={{ color: C.blue }}>7</span> → valitse vaadittu maa &nbsp;·&nbsp; <span style={{ color: C.red }}>A</span> → bonusvuoro<br />
+        1 kortti jäljellä → sano <strong>LAPPU</strong> (4 s) tai +3 korttia<br />
+        Voitto: ensimmäinen kortiton — ei voi päättää seiskaan tai ässään
       </div>
       <div style={{ textAlign: 'center' }}>
         <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
@@ -729,7 +770,8 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       {/* Lappu-banneri */}
       {showLappu && (
         <div style={{ background: 'rgba(224,92,59,0.12)', border: `1px solid ${C.red}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.red, flex: 1 }}>1 kortti jäljellä — sano Lappu ennen seuraavan vuoroa!</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.red, flex: 1 }}>1 kortti jäljellä — sano Lappu!</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, fontWeight: 700, color: lappuSecsLeft <= 1 ? '#ff4444' : C.red, minWidth: 24, textAlign: 'center', transition: 'color 0.3s' }}>{lappuSecsLeft ?? 4}</span>
           <button onClick={humanLappu} style={{ background: C.red, border: 'none', borderRadius: 8, padding: '8px 16px', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>LAPPU!</button>
         </div>
       )}
@@ -809,7 +851,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
       {/* Tilapalkki */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flex: 1 }}>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
+          <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> ensimmäinen kortiton voittaa
+          {' · '}
           <span style={{
             color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : 'inherit',
             fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 'inherit',

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed, aiShouldFumble } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
@@ -149,7 +149,7 @@ function getMaxAdd(g) {
 }
 
 // ── Komponentti ───────────────────────────────────────────────
-export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
+export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showNextBtn = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -180,15 +180,26 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const gRef    = useRef(null);
   const aiTmr   = useRef(null);
   const logRef  = useRef([]);
-  const sndRef     = useRef(false);
-  const teachRef   = useRef(teachMode);
-  const prevDeckRef = useRef(null);
-  const tmrs        = useRef(new Set());
-  const lastPlayTmr = useRef(null);
+  const sndRef         = useRef(false);
+  const teachRef       = useRef(teachMode);
+  const aiLevelRef     = useRef(aiLevel);
+  useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  const prevDeckRef    = useRef(null);
+  const tmrs           = useRef(new Set());
+  const lastPlayTmr    = useRef(null);
+  const showNextBtnRef = useRef(showNextBtn);
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
+  useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
+  // Auto-advance kun showNextBtn=false ja kierros odottaa jatkoa
+  useEffect(() => {
+    if (awaitingPlayerContinue && !showNextBtnRef.current) {
+      const id = tm(() => continueToNextRound(), 600);
+      return () => clearTimeout(id);
+    }
+  }, [awaitingPlayerContinue]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
 
   useEffect(() => {
@@ -433,7 +444,10 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           addLog(M.lost(act(p, 'Kärsit', 'Kärsi')));
         }
       });
-      onResult?.(rankings[0] === 0);
+      const ranking = rankings.map((id, pos) => ({
+        name: players[id].name, place: pos + 1, isHuman: players[id].isHuman,
+      }));
+      onResult?.({ ranking });
       const g2 = { ...g, players, deck, trumpCard: tc, rankings, table: [], phase: 'gameover' };
       setGS(g2);
       return;
@@ -678,7 +692,13 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     if (phase === 'attack') {
       const p = players[primaryAtk];
       if (p.isHuman) return;
-      const cards = aiPickAttack(p, players[defender].hand.length, ts);
+      let cards = aiPickAttack(p, players[defender].hand.length, ts);
+      // Aloittelija-virhe: hyökkää suurimmalla kortilla eikä pienimmällä
+      if (cards.length && aiShouldFumble(aiLevelRef.current)) {
+        const nonTrumps = p.hand.filter(c => c.s !== ts);
+        const pool = nonTrumps.length ? nonTrumps : p.hand;
+        cards = [[...pool].sort((a, b) => MV(b) - MV(a))[0]];
+      }
       if (!cards.length) { resolveRound(g, true); return; }
       doAttack(g, primaryAtk, cards);
     }
@@ -705,9 +725,15 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       let hand = [...p.hand];
       const beats = [];
       let canBeatAll = true;
+      const shouldFumbleDefense = aiShouldFumble(aiLevelRef.current);
       for (const slot of unbeaten) {
-        const dc = aiPickDefense(slot.atk, hand, ts);
+        let dc = aiPickDefense(slot.atk, hand, ts);
         if (!dc) { canBeatAll = false; break; }
+        // Aloittelija-virhe: käyttää valttia kun ei-valtilla tulisi toimeen
+        if (shouldFumbleDefense && dc.s !== ts) {
+          const trumpBeaters = hand.filter(c => c.s === ts && canBeat(slot.atk, c, ts));
+          if (trumpBeaters.length) dc = trumpBeaters.sort((a, b) => MV(a) - MV(b))[0];
+        }
         beats.push({ atkId: slot.atk.id, defCard: dc });
         hand = hand.filter(c => c.id !== dc.id);
       }
@@ -979,27 +1005,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
-      {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
-        {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
-            {lastPlay.cards.map(c => (
-              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Yläpalkki: valtti + pakkatiedot */}
+      {/* Yläpalkki: valtti */}
       <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 10px', borderRadius: 20, border: `1px solid ${C.trump}55`, background: `${C.trump}0d` }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>VALTTI</span>
           <span style={{ fontSize: 18, color: SUIT_COLOR[G.ts], fontWeight: 700 }}>{G.ts}</span>
           {G.trumpCard && <Card card={G.trumpCard} small backStyle={BACKS[cardBack]} />}
-        </div>
-        <div style={{ padding: '3px 10px', borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: `1px solid ${G.deck.length === 0 ? C.red + '55' : C.panelBorder}`, fontFamily: 'sans-serif', fontSize: 12, color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
-          {G.deck.length === 0 ? 'PAKKA TYHJÄ' : `Pakassa kortteja jäljellä ${G.deck.length} kpl`}
         </div>
       </div>
 
@@ -1025,10 +1036,14 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
       {/* Pöytä */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${G.table.length > 0 ? '#e05c3b33' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 130 : 200 }}>
-        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5 }}>
-          PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : `${G.table.length} paria`}
-          {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>✓ {defBeaten} kaadettu</span>}
-          {unbeatenSlots.length > 0 && <span style={{ color: C.red, marginLeft: 8 }}>! {unbeatenSlots.length} lyömättä</span>}
+        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <span>PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : `${G.table.length} paria`}
+            {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>✓ {defBeaten} kaadettu</span>}
+            {unbeatenSlots.length > 0 && <span style={{ color: C.red, marginLeft: 8 }}>! {unbeatenSlots.length} lyömättä</span>}
+          </span>
+          <span style={{ color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
+            PAKKA — {G.deck.length === 0 ? 'TYHJÄ!' : `${G.deck.length} korttia`}
+          </span>
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {G.table.map((slot, si) => {
@@ -1067,6 +1082,18 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           {isMyDef && selPass.length > 0 && `Siirto: ${selPass.map(lbl).join(',')} — klikkaa Siirrä tai peruuta.`}
         </div>
       )}
+
+      {/* Viimeisin siirto */}
+      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+        {lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Ihmispelaajan käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${myTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
@@ -1153,7 +1180,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         )}
 
         {/* Seuraavaan kierrokseen -nappi */}
-        {awaitingPlayerContinue && (
+        {awaitingPlayerContinue && showNextBtn && (
           <button onClick={continueToNextRound}
             style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '12px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', alignSelf: 'stretch', marginTop: 8 }}>
             Seuraava kierros →
@@ -1162,7 +1189,8 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       </div>
 
       {/* Tilarivi */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10, justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pääse korteistasi eroon — jäljimmäinen on Moska</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>

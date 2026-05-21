@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, SUITS, RANKS, VAL, shuffle } from '../shared/helpers.js';
+import { isRed, lbl, SUITS, RANKS, VAL, shuffle, aiShouldFumble } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
@@ -31,7 +31,7 @@ function newDeck() {
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const M = {
-  gameStart: 'Kortit on jaettu. Jokaisella on tuntematon kortti ja viisi pöytäkorttia. Aloita klikkaamalla nostopakkaa. Myöhemmillä kierroksilla voit nostaa myös poistopakasta.',
+  gameStart: 'Kortit on jaettu. Jokaisella on tuntematon kortti ja viisi kenttäkorttia. Aloita klikkaamalla nostopakkaa. Myöhemmillä kierroksilla voit nostaa myös poistopakasta.',
   deckEmpty: 'Nostopakka ehtyi — paljastetaan tuntemattomat!',
   yourTurn: 'Sinun vuorosi — nosta nostopakasta tai poistopakasta.',
   aiThinking: p => `${p.name} miettii...`,
@@ -44,8 +44,8 @@ const M = {
   tipDrawDeck:    name => `💡 ${name} nostaa pakasta — poistopakka ei paranna käsiä`,
   tipSwap:        (name, newC, oldC) => `💡 ${name} vaihtaa ${oldC} → ${newC} — pienentää pistelukua`,
   tipNoSwap:      name => `💡 ${name} ei vaihda — nostettu kortti on huonompi kuin käden kortit`,
-  humanDrawDiscard: (c, v) => `Nostit ${lblColored(c)} (${v} p) poistopakasta — pakollinen vaihto. Klikkaa pöytäkorttia.`,
-  humanDrawDeck: (c, v) => `Nostit ${lblColored(c)} (${v} p). Jos haluat sen pöytäkortteihisi, niin Vaihda se tai Heitä poistopakkaan.`,
+  humanDrawDiscard: (c, v) => `Nostit ${lblColored(c)} (${v} p) poistopakasta — pakollinen vaihto. Klikkaa kenttäkorttia.`,
+  humanDrawDeck: (c, v) => `Nostit ${lblColored(c)} (${v} p). Jos haluat sen kenttäkorteihisi, niin Vaihda se tai Heitä poistopakkaan.`,
   humanSwappedEnd: (idx, c, v, oldName) => `Paikka ${idx + 1}: ${lblColored(c)} (${v} p) sisään, ${oldName} poistopakkaan.`,
   humanSwappedContinue: (idx, c, v, oldName) => `Paikka ${idx + 1}: ${lblColored(c)} (${v} p) sisään, ${oldName} käteen.`,
   humanDiscard: (c) => `Heitit ${lblColored(c)} poistopakkaan. Vuoro ohi.`,
@@ -151,7 +151,7 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
+export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
   const [soundOn, setSnd]     = useState(initSoundOn);
@@ -181,6 +181,8 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const logRef      = useRef([]);
   const sndRef      = useRef(true);
   const teachRef    = useRef(teachMode);
+  const aiLevelRef  = useRef(aiLevel);
+  useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
   const tmrs         = useRef(new Set());
   const lastPlayTmr  = useRef(null);
@@ -340,7 +342,9 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     // Valitse huonoin tunnettu kortti vaihtokohteeksi
     const worstKnownIdx = [...p.known].sort((a, b) => p.row[b].v - p.row[a].v)[0];
     let card, newG;
-    if (top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v) {
+    // Aloittelija-virhe: ottaa poistopakasta kortin vaikka se on hieman huonompi
+    const kultaFumbleBonus = aiShouldFumble(aiLevelRef.current) ? 3 : 0;
+    if (top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v + kultaFumbleBonus) {
       // Poistopakasta nostaminen: pakollinen vaihto
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;
@@ -454,7 +458,6 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
           const swapChain = swaps.map(s => `paikka ${s.pos}: ${lblColored(s.card)}`).join(' → ');
           addLog(`${g2.players[idx].name} vaihtaa: ${swapChain}, ${lblColored(held)} poistopakkaan.`);
-          flashLastPlay(g2.players[idx].name, swaps[0].card, false);
           if (teachRef.current) addLog(M.tipSwap(g2.players[idx].name, lblColored(swaps[swaps.length - 1].card), lblColored(held)));
 
           tm(() => advance(newG, idx), 700);
@@ -476,7 +479,6 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     setG(newG); gRef.current = newG;
     if (sndRef.current) SFX.swap();
     addLog(M.aiSwapRow(g.players[idx], rowIdx, card, old));
-    flashLastPlay(g.players[idx].name, card, false);
     if (rowIdx === 0 && old.v <= 2) triggerKohahdus(old);
     tm(() => advance(newG, idx), 700);
   }
@@ -485,6 +487,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     const newG = { ...g, discard: [...g.discard, card] };
     setG(newG); gRef.current = newG;
     addLog(M.aiDiscard(g.players[idx], card));
+    flashLastPlay(g.players[idx].name, card, false);
     tm(() => advance(newG, idx), 600);
   }
 
@@ -529,7 +532,6 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     }
     const players = g.players.map((pl, i) => i === 0 ? { ...pl, row: newRow, known } : pl);
     if (sndRef.current) SFX.swap();
-    flashLastPlay('Sinä', held, true);
     const wasKnown = p.known.has(rowIdx);
     const oldName = wasKnown ? `${lbl(old)} (${old.v} p)` : `${lbl(old)} (${old.v} p paljastui)`;
     const nextIdx = rowIdx - 1;
@@ -562,6 +564,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     const newG = { ...g, discard: [...g.discard, held] };
     setG(newG); gRef.current = newG;
     addLog(M.humanDiscard(held));
+    flashLastPlay('Sinä', held, true);
     setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
     setPhase('drawing'); phaseRef.current = 'drawing';
     tm(() => advance(newG, 0), 300);
@@ -574,7 +577,13 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     setG(g); gRef.current = g;
     const scores = g.players.map(p => ({ ...p, total: p.unknown.v + p.row.reduce((s, c) => s + c.v, 0) }));
     const minScore = Math.min(...scores.map(s => s.total));
-    onResult?.(scores[0].total === minScore);
+    const sortedSc = [...scores].sort((a, b) => a.total - b.total);
+    const ranking  = sortedSc.map(p => ({
+      name: p.name, isHuman: p.isHuman, score: p.total,
+      place: sortedSc.filter(q => q.total < p.total).length + 1,
+    }));
+    const revealCards = g.players.map(p => ({ name: p.name, cards: [p.unknown, ...p.row] }));
+    onResult?.({ ranking, revealCards });
     const tied = scores.filter(s => s.total === minScore);
     addLog(M.gameOverScores(scores));
     tm(() => {
@@ -610,7 +619,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 360, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
         <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
-        Jokaiselle jaetaan 1 tuntematon + 5 pöytäkorttia. Nosta vuorollasi kortti pakasta tai miksei poistopakastakin, joskus paikan 1 tuntematon voi olla A tai 2, mikä on ikävää. Vaihda nostamasi kortti paikalle 5 rivin päähän, sitten paljastuneen kortin paikan 4 kortteihin jne. Tuntematon paljastuu lopussa. Pienin summa (A=1, K=13) voittaa!
+        Jokaiselle jaetaan 1 tuntematon + 5 kenttäkorttia. Nosta vuorollasi kortti pakasta tai miksei poistopakastakin, joskus paikan 1 tuntematon voi olla A tai 2, mikä on ikävää. Vaihda nostamasi kortti paikalle 5 rivin päähän, sitten paljastuneen kortin paikan 4 kortteihin jne. Tuntematon paljastuu lopussa. Pienin summa (A=1, K=13) voittaa!
       </div>
       <div style={{ textAlign: 'center' }}>
         <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
@@ -698,6 +707,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65, marginBottom: 2 }}>KENTTÄ</div>
             {ais.map((p, i) => {
               const pi = i + 1, isActive = curIdx === pi;
               return (
@@ -773,8 +783,9 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
 
       {/* Ihmispelaajan tuntematon + jono */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10 }}>
-        <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: curIdx === 0 ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero {curIdx === 0 ? '●' : ''}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'sans-serif', fontSize: 12, color: curIdx === 0 ? C.gold : C.dim, marginBottom: 8 }}>
+          <span>👤 Hero {curIdx === 0 ? '●' : ''}</span>
+          {!isMobile && <span style={{ fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>KENTTÄ</span>}
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap' }}>
           <div style={{ textAlign: 'center' }}>
@@ -810,7 +821,8 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
 
       {/* Tilarivi */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10, justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun pakka loppuu</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
       </div>

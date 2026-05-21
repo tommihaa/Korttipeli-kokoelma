@@ -19,3 +19,17 @@ export function shuffle(a) {
 export function newDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));
 }
+
+// AI:n vaikeustaso: noise = todennäköisyys että AI valitsee satunnaisen sallitun
+// siirron strategisen sijaan. Käytetään kaikissa peleissä yhtenäisesti.
+//   beginner  — 50% virheitä, oppilaalle voitettavissa
+//   normal    — 15% virheitä, ihmismäisiä möhläyksiä
+//   hard      — 0% virheitä, täysi nykyinen strategia
+export function aiNoise(aiLevel) {
+  if (aiLevel === 'beginner') return 0.5;
+  if (aiLevel === 'normal')   return 0.15;
+  return 0;
+}
+export function aiShouldFumble(aiLevel) {
+  return Math.random() < aiNoise(aiLevel);
+}

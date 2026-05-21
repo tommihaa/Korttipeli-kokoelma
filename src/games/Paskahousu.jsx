@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, aiShouldFumble } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -165,7 +165,7 @@ function aiCards(hand, top, pile) {
 
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
-export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
+export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -190,6 +190,8 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const logRef  = useRef([]);
   const sndRef     = useRef(true);
   const teachRef   = useRef(teachMode);
+  const aiLevelRef = useRef(aiLevel);
+  useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs    = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
@@ -271,7 +273,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     p.hand = p.hand.filter(c => !ids.has(c.id));
     addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
-    if (sndRef.current) SFX.flip();
+    if (sndRef.current) SFX.play();
     setJP(ids);
     setLP({ name: isH ? 'Sinä' : p.name, cards, isHuman: isH });
     tm(() => setJP(new Set()), 1900);
@@ -301,7 +303,10 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       remaining.forEach(pl => { if (!f.includes(pl.id)) f.push(pl.id); });
       const loser = players[f[f.length - 1]];
       addLog(M.loser(loser.isHuman, loser.name));
-      onResult?.(f[0] === 0);
+      const ranking = f.map((idx, pos) => ({
+        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman,
+      }));
+      onResult?.({ ranking });
       return setGS({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
     }
 
@@ -397,7 +402,10 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         remaining.forEach(pl => { if (!f.includes(pl.id)) f.push(pl.id); });
         const loserK = players[f[f.length - 1]];
         addLog(M.loser(loserK.isHuman, loserK.name));
-        onResult?.(f[0] === 0);
+        const ranking = f.map((idx, pos) => ({
+        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman,
+      }));
+      onResult?.({ ranking });
         return setGS({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
       }
 
@@ -529,7 +537,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     p.hand = p.hand.filter(c => !swapIds.has(c.id));
     p.hand = [...p.hand, ...playedCards];
     addLog(M.swapped(p.isHuman, p.name, swapCards.map(lblColored).join(', ')));
-    if (sndRef.current) SFX.flip();
+    if (sndRef.current) SFX.swap();
     setJP(new Set(swapCards.map(c => c.id)));
     tm(() => setJP(new Set()), 2000);
     const newPile = [...prevPile, ...swapCards];
@@ -587,8 +595,16 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     if (g.skipNext === turn) { applySkip(gRef.current, turn); return; }
 
-    const cards = aiCards(p.hand, top, g.pile);
+    let cards = aiCards(p.hand, top, g.pile);
     if (cards) {
+      if (cards.every(c => c.r !== '10' && c.r !== 'A') && aiShouldFumble(aiLevelRef.current)) {
+        // Aloittelija-virhe: pelaa 10 tai A turhaan — erikoiskortti kun normaali kävisi
+        const specials = p.hand.filter(c => (c.r === '10' || c.r === 'A') && canPlay(c, top));
+        if (specials.length > 0) cards = [specials[0]];
+      } else if (cards.length > 1 && aiShouldFumble(aiLevelRef.current)) {
+        // Aloittelija-virhe: pelaa vain yhden samanarvoisen kerralla
+        cards = [cards[0]];
+      }
       applyPlay(gRef.current, turn, cards); return;
     }
     if (draw.length)     { applyKnock(gRef.current, turn);       return; }
@@ -948,7 +964,8 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       </div>
 
       {/* Tilapalkki */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10, justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pääse kortistasi eroon — viimeinen on Paskahousu</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>

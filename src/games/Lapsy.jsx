@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, SUITS, RANKS, shuffle } from '../shared/helpers.js';
+import { isRed, lbl, SUITS, RANKS, shuffle, aiNoise } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -33,7 +33,7 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames }) {
+export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
   const [soundOn, setSnd]   = useState(initSoundOn);
@@ -64,6 +64,11 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const curRef       = useRef(0);
   const chRef        = useRef(null);
   const sndRef       = useRef(false);
+  const aiLevelRef   = useRef(aiLevel);
+  useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // AI memory: kortinlaskija (normal) tracks seen ranks; tosilaskija (hard) also tracks collected-card order
+  const memoryRef    = useRef({ seenByRank: {}, knownBottoms: {} });
+  const predMatchRef = useRef(false); // tosilaskija: true when the next flip was predicted
   const aiTmr        = useRef(null);
   const matchTimeRef = useRef(null);
   const recentMatch  = useRef(false);
@@ -90,37 +95,9 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
   const detectMoment = useCallback((eventType, context) => {
     if (eventType === 'epic_fast_slap' && context.ms && context.ms < 400) {
-      const moment = {
-        type: 'epic_fast_slap',
-        game: 'Läpsy',
-        title: '⚡ EPIC! Salamannopea reaktio!',
-        description: `Läpsäit vain ${context.ms}ms:ssä! Pelaajan refleksit ovat ylivertaisesti nopeat!`,
-        timestamp: new Date().toISOString(),
-        rarity: 'epic',
-        context,
-      };
-      saveMomentSilently(moment);
+      if (hints) addLog(`💾 Momentti: ${context.ms}ms — salamannopea reaktio!`);
     }
   }, [hints]);
-
-  const saveMomentSilently = (moment) => {
-    const feedback = {
-      momentType: moment.type,
-      game: moment.game,
-      rarity: moment.rarity,
-      comment: '',
-      timestamp: moment.timestamp,
-      context: moment.context,
-    };
-
-    const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
-    stored.push(feedback);
-    localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
-
-    if (hints) {
-      addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
-    }
-  };
 
   const pName = i => i === 0 ? 'Hero' : aiNames[i - 1];
 
@@ -160,6 +137,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setSR(null);
     finishOrderRef.current = []; setFinishOrder([]);
     logRef.current = []; setLog([]);
+    memoryRef.current = { seenByRank: {}, knownBottoms: {} };
+    predMatchRef.current = false;
     addLog(M.gameStart);
     setScreen('game');
     setShuffling(true);
@@ -216,6 +195,27 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     tm(() => setFA(null), 1900);
     setPiles(newPiles); pilesRef.current = newPiles;
     setCenter(newCenter); centerRef.current = newCenter;
+
+    // AI memory update
+    const level = aiLevelRef.current;
+    if (level === 'normal' || level === 'hard') {
+      const mem = memoryRef.current;
+      mem.seenByRank[card.r] = (mem.seenByRank[card.r] || 0) + 1;
+      if (level === 'hard') {
+        const kb = mem.knownBottoms[playerIdx];
+        if (kb) {
+          if (kb.totalAbove > 0) {
+            kb.totalAbove--;           // burned one unknown card from above the known section
+          } else if (kb.cards.length > 0) {
+            const predictedCard = kb.cards.shift(); // consume the predicted card
+            // If this predicted card matches the current top → we foresaw this exact match
+            if (curCenter.length > 0 && predictedCard.r === curCenter[0].r) {
+              predMatchRef.current = true;
+            }
+          }
+        }
+      }
+    }
 
     if (curCenter.length > 0 && curCenter[0].r === card.r) {
       handleMatch(newPiles, newCenter, playerIdx); return;
@@ -282,10 +282,33 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setCh(null); chRef.current = null;
     matchTimeRef.current = performance.now();
     addLog(M.match(center[0].r));
+
+    const matchRank = center[0].r;
+    const level = aiLevelRef.current;
+    const mem = memoryRef.current;
+
+    // Kortinlaskija (normal + hard): anticipation from how many of this rank were seen BEFORE
+    // seenByRank already includes both matching cards → subtract 2 for prior sightings
+    const prevSeen = (level === 'normal' || level === 'hard')
+      ? Math.max(0, (mem.seenByRank[matchRank] || 0) - 2)
+      : 0;
+    const anticipation = Math.min(prevSeen / 2, 1.0); // 0.0 → 0.5 → 1.0
+
+    // Tosilaskija (hard): additional bonus if the exact card was predicted from known pile order
+    const predicted = level === 'hard' && predMatchRef.current;
+    predMatchRef.current = false; // consume
+
     aiSlapTmrs.current.forEach(clearTimeout);
     aiSlapTmrs.current = piles.map((pile, i) => {
       if (i === 0 || pile.length === 0) return null;
-      const delay = 600 + Math.random() * 2400;
+      const noise = aiNoise(level);
+      const minDelay = 150 + noise * 1200;   // beginner: 750ms, normal: 330ms, hard: 150ms
+      const spread   = 600 + noise * 2000;   // beginner: 1600, normal: 900, hard: 600
+      // Memory shortens the minimum reaction time: up to 300ms for counting, 200ms for prediction
+      const anticipationBonus = anticipation * 300;
+      const predictBonus      = predicted ? 200 : 0;
+      const effectiveMin = Math.max(60, minDelay - anticipationBonus - predictBonus);
+      const delay = effectiveMin + Math.random() * spread;
       return tm(() => {
         if (phaseRef.current !== 'match') return;
         const ms = Math.round(performance.now() - matchTimeRef.current);
@@ -361,6 +384,17 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     recentMatch.current = true;
     tm(() => { recentMatch.current = false; }, 800);
     const newPiles = curPiles.map((p, i) => i === winnerIdx ? [...p, ...[...curCenter].reverse()] : p);
+
+    // Tosilaskija: memorise the order of cards now at the bottom of the winner's pile
+    if (aiLevelRef.current === 'hard') {
+      const mem = memoryRef.current;
+      // Cards go to bottom in reversed center order — same as [...curCenter].reverse()
+      mem.knownBottoms[winnerIdx] = {
+        cards: [...curCenter].reverse(), // first element = first card to come up from known section
+        totalAbove: curPiles[winnerIdx].length, // unknown cards sitting above the new known section
+      };
+    }
+
     recordEliminated(newPiles);
     setPiles(newPiles); pilesRef.current = newPiles;
     setCenter([]); centerRef.current = [];
@@ -377,8 +411,14 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       setPhase('gameover'); phaseRef.current = 'gameover';
       const winner = piles.findIndex(p => p.length > 0);
       addLog(M.gameOver(winner >= 0 ? pName(winner) : null));
-      onResult?.(winner === 0);
-      tm(() => setScreen('gameover'), 1800);
+      const eliminated = finishOrderRef.current;
+      const fullOrder  = winner >= 0
+        ? [winner, ...[...eliminated].reverse()]
+        : [...eliminated].reverse();
+      const ranking = fullOrder.map((idx, pos) => ({
+        name: pName(idx), place: pos + 1, isHuman: idx === 0,
+      }));
+      tm(() => onResult?.({ ranking }), 1800);
       return true;
     }
     return false;
@@ -603,7 +643,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>Käännä →</button>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> voita kaikki kortit — viimeinen pelissä voittaa</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
       </div>
