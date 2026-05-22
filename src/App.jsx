@@ -151,9 +151,9 @@ const GAMES = [
 const SANASTO = [
   // ─ Kortit ja erikoistilanteet ─────────────────────────────────────────────
   { kategoria: 'kortti', term: 'Mökki',         match: ['mökki','mokki','mökin','mökkejä'],                                emoji: '🏚', selitys: 'Koko pöydän tyhjennys yhdellä kaappauksella — antaa yhden lisäpisteen.',                                                          pelit: ['kasino']                       },
-  { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti, jonka saat edelliseltä pelaajalta, kun sinulla ei ole käypää pelattavaa. Eniten korttipantteja saanut häviää.',    pelit: ['ristiseiska']                  },
-  { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', emojiStyle: { filter: 'grayscale(1)' }, selitys: 'Q♠ on tämän pelin ainoa erikoiskortti, se on vain nostettava.',                                                         pelit: ['maija']                        },
-  { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Jos sinulla pelivuorosi päätteeksi on enää yksi kortti pienessä kädessäsi, niin LAPPU ennen kuin seuraava pelaaja ehtii nostaa kortin! Seiskassa unohdettu lapun huuto tarkoittaa +3 korttia.',              pelit: ['seiska']                       },
+  { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti, jonka saat edelliseltä pelaajalta, kun siulla ei ole käypää pelattavaa. Eniten korttipantteja saanut häviää.',    pelit: ['ristiseiska']                  },
+  { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', emojiStyle: { filter: 'grayscale(1) brightness(0.05)' }, selitys: 'Q♠ on tämän pelin ainoa erikoiskortti, se on vain nostettava.',                                                         pelit: ['maija']                        },
+  { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Jos siulla pelivuorosi päätteeksi on enää yksi kortti pienessä käessäsi, niin LAPPU ennenkuin seuraava pelaaja ehtii nostaa kortin! Seiskassa unohdettu lapun huuto tarkoittaa +3 korttia.',              pelit: ['seiska']                       },
   { kategoria: 'kortti', term: 'Kova kakkonen', match: ['kova kakkonen','kovat kakkoset'],                                 emoji: '♠',  selitys: '2♠ tai 2♣ — voi lyödä minkä tahansa ei-kaatokortin päälle.',                                                                       pelit: ['paskahousu']                   },
   // ─ Alueet ja vyöhykkeet ───────────────────────────────────────────────────
   { kategoria: 'alue',   term: 'Käsi',          match: ['käsikorttisi','käsikortillesi','käsikortteja'],                   emoji: '🤚', selitys: 'Livepeleissä viuhkana kädessäsi olevat kortit.',                                                                                           pelitLabel: 'kaikki paitsi Koputus, Kultakala' },
@@ -194,9 +194,14 @@ function splitWithGlossary(text) {
 
 /** Värikoodaa maavärit tekstiin tummaa taustaa varten */
 function renderSelitys(text) {
-  const darkSuit = { '♠': '#c8c8c8', '♥': '#e05c3b', '♦': '#ff8c42', '♣': '#4caf7d' };
+  const suitStyle = {
+    '♠': { color: '#1a1a1a', background: C.card, padding: '0 3px', borderRadius: 3, fontWeight: 700 },
+    '♣': { color: '#4caf7d', fontWeight: 700 },
+    '♥': { color: '#e05c3b', fontWeight: 700 },
+    '♦': { color: '#ff8c42', fontWeight: 700 },
+  };
   return text.split(/(♠|♥|♦|♣)/).map((p, i) =>
-    darkSuit[p] ? <span key={i} style={{ color: darkSuit[p], fontWeight: 700 }}>{p}</span> : p
+    suitStyle[p] ? <span key={i} style={suitStyle[p]}>{p}</span> : p
   );
 }
 
