@@ -194,15 +194,10 @@ function splitWithGlossary(text) {
 
 /** Värikoodaa maavärit tekstiin tummaa taustaa varten */
 function renderSelitys(text) {
-  const suitStyle = {
-    '♠': { color: '#1a1a1a', background: C.card, padding: '0 3px', borderRadius: 3, fontWeight: 700 },
-    '♣': { color: '#4caf7d', fontWeight: 700 },
-    '♥': { color: '#e05c3b', fontWeight: 700 },
-    '♦': { color: '#ff8c42', fontWeight: 700 },
-  };
-  return text.split(/(♠|♥|♦|♣)/).map((p, i) =>
-    suitStyle[p] ? <span key={i} style={suitStyle[p]}>{p}</span> : p
-  );
+  return text.split(/((?:[2-9]|10|[AJQKT])[♠♥♦♣]|[♠♥♦♣])/).map((p, i) => {
+    const suit = p.match(/[♠♥♦♣]/)?.[0];
+    return suit ? <span key={i} style={{ color: SUIT_COLOR[suit], fontWeight: 700 }}>{p}</span> : p;
+  });
 }
 
 /** Yksi sääntörivi korostettavilla termeillä — laajenee paikalleen */
