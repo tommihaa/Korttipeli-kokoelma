@@ -59,8 +59,8 @@ const GAMES = [
     component: Ristiseiska, maxWidth: 620, pakka: 'jaettu',
     rules: [
       '7♣ aloittaa · jatka 6♣:lla tai avaa uusi maa toisella 7:llä',
-      'Sekvenssi 7→6→8 avaa maan alapino (6→A) ja yläpino (8→K)',
-      'Jos käsikorteista ei löydy käypää → korttipantti: edellinen pelaaja (yli 1 kortti jäljellä) antaa sinulle sopimattomimmaksi arvioimansa kortin',
+      'Saman maan sarjassa pelatut 7→6→8 avaa maan alapinon (6→A) ja yläpinon (8→K)',
+      'Jos käsikorteista ei löydy käypää → korttipantti: edellinen pelaaja (jolla enemmän kuin 1 kortti jäljellä) antaa sinulle käsikorteistaan vaikeasti pelattavan',
       'Ensin korteitta → voittaa',
       'Viimeisenä kortteja kädessä → häviää',
     ],
