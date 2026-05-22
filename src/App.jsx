@@ -45,9 +45,9 @@ const GAMES = [
     diff: 'Helppo', diffColor: '#4caf7d',
     component: Lapsy, maxWidth: 520, pakka: 'jaettu',
     rules: [
-      'Lyö kasaan kun kaksi päällimmäistä korttia täsmäävät',
+      'Läpsää kasaa, kun kaksi päällimmäistä korttia täsmäävät',
       'Oikein → voitat kasan · Väärin → lisäät kortin kasaan',
-      'J/Q/K/A haastaa seuraavan 1–4 kertaa vastaamaan samalla',
+      'J/Q/K/A haaste seuraavalle pelaajalle, 1–4 korttia aikaa siirtää haaste seuraavalle kääntämällä pinostaan kuvakortti',
       'Viimeiseksi kortteja omaava voittaa',
     ],
   },
