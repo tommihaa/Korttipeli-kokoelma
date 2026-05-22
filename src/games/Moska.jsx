@@ -313,7 +313,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     defendAI:       (name, unbeaten, cards) => unbeaten > 0
       ? `${name} puolustaa... (pöydällä: ${cards})`
       : `${name} puolustaa...`,
-    addPhase:       cards => `═══ SIVULÖYNTIVAIHE ═══ Pöydällä: ${cards}`,
+    addPhase:       cards => `═══ SIVUSTALYÖNTIVAIHE ═══ Pöydällä: ${cards}`,
     canAdd:         (name, cards) => `${name}: Voit lyödä sivusta: ${cards} — tai Ohita.`,
     aiCanAdd:       (name, cards) => `${name} voi lyödä sivusta: ${cards}`,
     aiSkips:        name => `${name} ohittaa.`,
