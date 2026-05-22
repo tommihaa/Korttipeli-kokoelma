@@ -59,7 +59,7 @@ const GAMES = [
     component: Ristiseiska, maxWidth: 620, pakka: 'jaettu',
     rules: [
       '7♣ aloittaa · jatka 6♣:lla tai avaa uusi maa toisella 7:llä',
-      'Sekvenssi 7→6→8 avaa maan tornin · sen jälkeen torni rakentuu laskevasti A:han ja nousevasti K:hon',
+      'Sekvenssi 7→6→8 avaa maan kaksi tornia · laskevan (6→A) ja nousevan (8→K)',
       'Ei sopivaa → korttipantti: edellinen antaa sinulle huonoksi arvioimansa kortin',
       'Ensin korteitta → voittaa · Viimeisenä kortteja käteen → häviää',
     ],
@@ -169,7 +169,7 @@ const SANASTO = [
   { kategoria: 'alue',   term: 'Käsi',          match: ['käsikorttisi','käsikortillesi','käsikortteja'],                   emoji: '🤚', selitys: 'Livepeleissä viuhkana kädessäsi olevat kortit.',                                                                                           pelitLabel: 'kaikki paitsi Koputus, Kultakala' },
   { kategoria: 'alue',   term: 'Kenttä',        match: ['kenttäsi','kenttään','kenttää','kenttä'],                          emoji: '🔲', selitys: 'Nurinpäin pöydälle eteesi jaetut kortit. Pelin aikana voit katsoa mitä siellä onkaan ja vaihdatko pienempiin.',                         pelit: ['kultakala','koputus']          },
   { kategoria: 'alue',   term: 'Kasa',          match: [],                                                                  emoji: '📚', selitys: 'Pöydän keskelle kasautuva korttikeko. Läpsyssä sinne käännetään kortteja vuorotellen — voitetaan täsmäyksellä tai haastevoitolla. Paskahousussa siihen pelataan päälle, kaadetaan T/A tai neljällä samalla, muuten nostetaan.', pelit: ['lapsy','paskahousu']           },
-  { kategoria: 'alue',   term: 'Torni',         match: ['torni','tornit','tornin','torniin'],                               emoji: '🗼', selitys: 'Pöydän jokaisen maan korttijono, joka alkaa 7:stä ja kasvaa molempiin suuntiin: ensin 6 ja 8, sitten 5 ja 9 jne. Torni on "auki" vain jos viereinen numero on jo pelattuna.',  pelit: ['ristiseiska']                  },
+  { kategoria: 'alue',   term: 'Torni',         match: ['torni','tornit','tornin','torniin','torneja'],                    emoji: '🗼', selitys: 'Kaksi tornia per maa. Sekvenssi 7→6→8 avaa molemmat: laskevan tornin (6→5→4→3→2→A) ja nousevan tornin (8→9→10→J→Q→K). A kaataa laskevan, K kaataa nousevan.',             pelit: ['ristiseiska']                  },
   { kategoria: 'alue',   term: 'Pakka',         match: ['poistopakka','poistopakkaan','poistopakasta','pakasta','pakkaan','pakka'], emoji: '🎴', selitys: 'Nostopakka: korttien nostolähde, joka ehtyy pelin edetessä. Poistopakka: kasautuva pakka, jonka määrä kasvaa — sinne päätyvät pelatut tai hylätyt kortit.',                               pelitLabel: 'useimmat'                  },
   { kategoria: 'alue',   term: 'Pino',          match: ['pinon','pinoa','pinoja','pino'],                                   emoji: '🃏', selitys: 'Oma kasvot alaspäin oleva korttipino. Vuorollaan käännetään päällimmäinen yhteiseen kasaan.',                                                         pelit: ['lapsy']                        },
   { kategoria: 'alue',   term: 'Pöytä',         match: ['pöydältä','pöydälle','pöydän','pöytään'],                         emoji: '🟫', selitys: 'Alussa pöytään jaetaan 4 korttia kasvot ylöspäin irralleen. Pelin kuluessa sieltä vuorotellen kaapataan ja lisätään. Pöydän tyhjentäminen on mökin arvoinen suoritus.',  pelit: ['kasino']                       },
