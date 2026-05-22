@@ -74,7 +74,7 @@ const GAMES = [
       'Ei sovi → nosta max 3 korttia, pelaa heti jos löytyy',
       '7 → valitse vaadittu maa',
       'A → bonusvuoro saman maan kortilla',
-      '1 kortti → huuda LAPPU tai vastustajat saavat +5',
+      '1 kortti → huuda LAPPU tai sinulle +3 korttia',
     ],
   },
   {
@@ -84,9 +84,9 @@ const GAMES = [
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Kasino, maxWidth: 560, pakka: 'taydennetty', suosikki: true,
     rules: [
-      'Laske pöytäkortteja kortillasi täsmäävään summaan — kaappaa',
+      'Laske pöydän kortit täsmäävään summaan — tee kaappaus',
       'Tai jätä kortti pöytään — muut voivat käyttää sitä summiin',
-      'Mokki: kaappaa kaikki pöydältä → 3 lisäpistettä',
+      'Mökki: kaappaa kaikki pöydältä → 1 lisäpiste',
       'Ensimmäisenä 16+ pistettä voittaa',
     ],
   },
@@ -124,7 +124,7 @@ const GAMES = [
     component: Paskahousu, maxWidth: 580, pakka: 'taydennetty', suosikki: true,
     rules: [
       'Pelaa sama tai suurempi arvo edelliseen',
-      '2♦ / 2♥ nollaa pakka (arvo 2) — 2♠ / 2♣ nollaa (kova)',
+      '2♦ / 2♥ on arvo 2 — 2♠ / 2♣ on kova kakkonen: lyö ei-kaatokortin päälle',
       'Neljä samaa → pakkonollaus',
       'Viimeisenä yksin kortitoin = Paskahousu, häviät',
     ],
@@ -144,7 +144,105 @@ const GAMES = [
   },
 ];
 
+// ── Sanasto ──────────────────────────────────────────────────────────────────
+// match[]:    merkkijonot joita haetaan säännöistä (case-insensitive), pisin ensin
+// pelitLabel: ohittaa automaattisen pelinimilistan kun pelejä on monta
+const SANASTO = [
+  // ─ Kortit ja erikoistilanteet ─────────────────────────────────────────────
+  { kategoria: 'kortti', term: 'Mökki',         match: ['mökki','mokki','mökin','mökkejä'],                                emoji: '🏚', selitys: 'Koko pöydän tyhjennys yhdellä kaappauksella — antaa yhden lisäpisteen.',                                                          pelit: ['kasino']                       },
+  { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti jonka maksat toiselle kun sinulla ei ole sopivaa pelattavaa. Eniten korttipantteja saanut häviää.',               pelit: ['ristiseiska']                  },
+  { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', selitys: 'Q♠ — erikoiskortti jota ei voi torjua, eikä se itse torju muita kortteja.',                                                         pelit: ['maija']                        },
+  { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Viimeinen kortti kädessäsi — huuda ääneen! Seiskassa unohdettu lapun huuto tarkoittaa sinulle +3 korttia.',                          pelit: ['seiska']                       },
+  { kategoria: 'kortti', term: 'Kova kakkonen', match: ['kova kakkonen','kovat kakkoset'],                                 emoji: '♠',  selitys: '2♠ tai 2♣ — voi lyödä minkä tahansa ei-kaatokortin päälle.',                                                                       pelit: ['paskahousu']                   },
+  // ─ Alueet ja vyöhykkeet ───────────────────────────────────────────────────
+  { kategoria: 'alue',   term: 'Käsi',          match: ['käsikorttisi','käsikortillesi','käsikortteja'],                   emoji: '🤚', selitys: 'Omat kortit jotka vain sinä näet — viuhkana tai pinona piilossa.',                                                                   pelitLabel: 'kaikki paitsi Koputus'     },
+  { kategoria: 'alue',   term: 'Kenttä',        match: [],                                                                  emoji: '🔲', selitys: 'Nurinpäin pöydällä sinulle jaetut kortit. Pelin aikana sinulle paljastuu mitä siellä onkaan.',                                          pelit: ['kultakala','koputus']          },
+  { kategoria: 'alue',   term: 'Kasa',          match: [],                                                                  emoji: '📚', selitys: 'Kasautuva keko pöydän keskellä — pelataan päälle, kaadetaan T, A tai neljä samaa. Nostetaan, jos ei käy.',                           pelit: ['paskahousu']                   },
+  { kategoria: 'alue',   term: 'Torni',         match: [],                                                                  emoji: '🗼', selitys: 'Järjestyksessä rakennettu rakenne — oikea kortti oikeaan paikkaan, maa kerrallaan.',                                                   pelit: ['ristiseiska']                  },
+  { kategoria: 'alue',   term: 'Pakka',         match: ['poistopakkaan','poistopakasta','pakasta','pakkaan','pakka'],       emoji: '🎴', selitys: 'Korttien nostolähde, joka ehtyy.',                                                                                                    pelitLabel: 'useimmat'                  },
+  { kategoria: 'alue',   term: 'Pino',          match: ['pinon','pinoa','pinoja','pino'],                                   emoji: '🃏', selitys: 'Läpsyssä kateen jaetut kortit kasvot alaspäin.',                                                                                       pelit: ['lapsy']                        },
+  { kategoria: 'alue',   term: 'Pöytä',         match: ['pöydältä','pöydälle','pöydän','pöytään'],                         emoji: '🟫', selitys: 'Kortit kasvot ylöspäin oleva alue — kaapattavissa tai täydennettävissä. Kasinossa pöydältä kaapataan kortteja summien perusteella.',  pelit: ['kasino']                       },
+  { kategoria: 'alue',   term: 'Poissa',        match: ['pois pelistä'],                                                    emoji: '❌', selitys: 'Kaadetut kortit ei palaa peliin.',                                                                                                      pelitLabel: 'useimmat'                  },
+];
+
 const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));
+
+// ── Sanasto-apufunktiot ───────────────────────────────────────────────────────
+
+/** Pilkkoo tekstin osiin: { text, isTerm, term } */
+function splitWithGlossary(text) {
+  const patterns = SANASTO
+    .flatMap(s => s.match.map(m => ({ m, term: s.term })))
+    .sort((a, b) => b.m.length - a.m.length);   // pisin ensin: "kova kakkonen" ennen "kova"
+  const rx = new RegExp(
+    `(${patterns.map(p => p.m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
+    'i'
+  );
+  const parts = [];
+  let rem = text;
+  while (rem.length > 0) {
+    const hit = rem.match(rx);
+    if (!hit) { parts.push({ text: rem, isTerm: false }); break; }
+    if (hit.index > 0) parts.push({ text: rem.slice(0, hit.index), isTerm: false });
+    const canon = patterns.find(p => p.m.toLowerCase() === hit[0].toLowerCase())?.term ?? hit[0];
+    parts.push({ text: hit[0], isTerm: true, term: canon });
+    rem = rem.slice(hit.index + hit[0].length);
+  }
+  return parts;
+}
+
+/** Yksi sääntörivi korostettavilla termeillä — laajenee paikalleen */
+function RuleRow({ text }) {
+  const [openTerm, setOpenTerm] = useState(null);
+  const parts = splitWithGlossary(text);
+  const defn = openTerm ? SANASTO.find(s => s.term === openTerm) : null;
+  return (
+    <div style={{ marginBottom: 4 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 5 }}>
+        <span style={{ color: C.gold, flexShrink: 0, fontSize: 10, marginTop: 3 }}>▸</span>
+        <span style={{ fontSize: 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.55 }}>
+          {parts.map((p, i) =>
+            p.isTerm
+              ? <span key={i}
+                  onClick={() => setOpenTerm(o => o === p.term ? null : p.term)}
+                  style={{ color: openTerm === p.term ? C.gold : '#d4b86a', textDecoration: 'underline dotted', textUnderlineOffset: 3, cursor: 'pointer', fontWeight: 600 }}>
+                  {p.text}
+                </span>
+              : <span key={i}>{p.text}</span>
+          )}
+        </span>
+      </div>
+      {defn && (
+        <div style={{ marginLeft: 14, marginTop: 3, padding: '5px 10px', background: `${C.gold}12`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
+          <span style={{ color: C.gold, fontWeight: 700 }}>{defn.emoji} {defn.term}</span>{' — '}{defn.selitys}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Sanasto-rivi Asetuksissa: termi + expand-selitys */
+function SanastoRivi({ s }) {
+  const [open, setOpen] = useState(false);
+  const gameNames = s.pelitLabel ?? (s.pelit || []).map(id => GAMES.find(g => g.id === id)?.name ?? id).join(', ');
+  return (
+    <div style={{ borderBottom: `1px solid ${C.panelBorder}33` }}>
+      <button
+        onClick={() => setOpen(v => !v)}
+        style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 2px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
+        <span style={{ fontSize: 15, flexShrink: 0, minWidth: 22 }}>{s.emoji}</span>
+        <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: open ? C.gold : C.text, transition: 'color 0.15s' }}>{s.term}</span>
+        {gameNames && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, opacity: 0.6, marginRight: 4 }}>{gameNames}</span>}
+        <span style={{ fontSize: 13, color: C.dim, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+      </button>
+      {open && (
+        <div style={{ padding: '0 4px 10px 30px', fontSize: 12, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
+          {s.selitys}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function StatBadge({ s }) {
   if (!s || s.played === 0) return null;
@@ -195,8 +293,11 @@ function GameBtn({ g, stats, onSelect }) {
         >ℹ</span>
       </button>
       {showDesc && (
-        <div style={{ padding: '0 16px 10px 60px', fontSize: 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.5 }}>
-          {g.desc}
+        <div style={{ padding: '0 14px 12px 52px' }}>
+          <div style={{ fontSize: 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.5, fontStyle: 'italic', marginBottom: g.rules ? 8 : 0 }}>
+            {g.desc}
+          </div>
+          {g.rules && g.rules.map((rule, i) => <RuleRow key={i} text={rule} />)}
         </div>
       )}
     </div>
@@ -408,6 +509,22 @@ export default function App() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Sanasto 📖</div>
+          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
+            Napauta termiä — selitys aukeaa alle. Korostetut termit aukeavat myös pelivalikon säännöistä.
+          </div>
+          {[
+            { key: 'kortti', label: 'Kortit ja erikoistilanteet' },
+            { key: 'alue',   label: 'Alueet ja vyöhykkeet' },
+          ].map(({ key, label }) => (
+            <div key={key} style={{ marginBottom: 10 }}>
+              <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{label}</div>
+              {SANASTO.filter(s => s.kategoria === key).map(s => <SanastoRivi key={s.term} s={s} />)}
+            </div>
+          ))}
         </div>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
