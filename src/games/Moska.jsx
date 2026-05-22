@@ -313,9 +313,9 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     defendAI:       (name, unbeaten, cards) => unbeaten > 0
       ? `${name} puolustaa... (pöydällä: ${cards})`
       : `${name} puolustaa...`,
-    addPhase:       cards => `═══ LISÄYSVAIHE ═══ Pöydällä: ${cards}`,
-    canAdd:         (name, cards) => `${name}: Voit lisätä sivusta: ${cards} — tai Ohita.`,
-    aiCanAdd:       (name, cards) => `${name} voi lisätä: ${cards}`,
+    addPhase:       cards => `═══ SIVULÖYNTIVAIHE ═══ Pöydällä: ${cards}`,
+    canAdd:         (name, cards) => `${name}: Voit lyödä sivusta: ${cards} — tai Ohita.`,
+    aiCanAdd:       (name, cards) => `${name} voi lyödä sivusta: ${cards}`,
     aiSkips:        name => `${name} ohittaa.`,
     badSameRank:    'Hyökkäykseen vain saman vahvuisia kortteja.',
     tooManyCards:   'Kerralla enintään 6 korttia.',
@@ -571,7 +571,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = [...g.table, ...cards.map(c => ({ atk: c, def: null, atkBy: playerIdx }))];
     const players = g.players.map((pl, i) => i === playerIdx ? { ...pl, hand: newHand } : pl);
-    addLog(M.add(act(p, 'lisäsit', 'lisäsi'), cards.map(lblColored).join(', ')));
+    addLog(M.add(act(p, 'löit sivusta', 'löi sivusta'), cards.map(lblColored).join(', ')));
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
     tm(() => setJustPlaced(new Set()), 1800);
@@ -1170,7 +1170,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           <>
             <button onClick={humanConfirmAdd} disabled={!selAdd.length}
               style={{ background: selAdd.length ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selAdd.length ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 18px', color: selAdd.length ? '#0d2118' : C.dim, fontSize: 13, cursor: selAdd.length ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              Lisää {selAdd.length > 0 ? `(${selAdd.map(lbl).join(',')})` : ''}
+              Lyö sivusta {selAdd.length > 0 ? `(${selAdd.map(lbl).join(',')})` : ''}
             </button>
             <button onClick={humanSkipAdd}
               style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
