@@ -59,7 +59,7 @@ const GAMES = [
     component: Ristiseiska, maxWidth: 620, pakka: 'jaettu',
     rules: [
       '7♣ aloittaa · jatka 6♣:lla tai avaa uusi maa toisella 7:llä',
-      'Jokaisen maan torni rakentuu 7:stä — maan oma 6 avaa 5:n, 8 avaa 9:n · pääty A:han ja K:hon',
+      'Jokaisen maan tornit rakentuu 7:stä — maan oma 6 avaa 8, 8 avaa mahdollisuuden pelata torneja korteilla 5 ja 9 · torni kaatuu A:han ja K:hon',
       'Ei sopivaa → korttipantti: edellinen antaa sinulle huonoksi arvioimansa kortin',
       'Ensin korteitta → voittaa · Viimeisenä kortteja käteen → häviää',
     ],
