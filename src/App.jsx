@@ -150,17 +150,17 @@ const GAMES = [
 const SANASTO = [
   // ─ Kortit ja erikoistilanteet ─────────────────────────────────────────────
   { kategoria: 'kortti', term: 'Mökki',         match: ['mökki','mokki','mökin','mökkejä'],                                emoji: '🏚', selitys: 'Koko pöydän tyhjennys yhdellä kaappauksella — antaa yhden lisäpisteen.',                                                          pelit: ['kasino']                       },
-  { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti jonka maksat toiselle kun sinulla ei ole sopivaa pelattavaa. Eniten korttipantteja saanut häviää.',               pelit: ['ristiseiska']                  },
+  { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti, jonka saat edelliseltä pelaajalta, kun sinulla ei ole sopivaa pelattavaa. Eniten korttipantteja saanut häviää.',   pelit: ['ristiseiska']                  },
   { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', selitys: 'Q♠ — erikoiskortti jota ei voi torjua, eikä se itse torju muita kortteja.',                                                         pelit: ['maija']                        },
-  { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Viimeinen kortti kädessäsi — huuda ääneen! Seiskassa unohdettu lapun huuto tarkoittaa sinulle +3 korttia.',                          pelit: ['seiska']                       },
+  { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Kun sinulla on enää yksi kortti kädessäsi, niin LAPPU! Seiskassa unohdettu lapun huuto tarkoittaa sinulle +3 korttia.',              pelit: ['seiska']                       },
   { kategoria: 'kortti', term: 'Kova kakkonen', match: ['kova kakkonen','kovat kakkoset'],                                 emoji: '♠',  selitys: '2♠ tai 2♣ — voi lyödä minkä tahansa ei-kaatokortin päälle.',                                                                       pelit: ['paskahousu']                   },
   // ─ Alueet ja vyöhykkeet ───────────────────────────────────────────────────
-  { kategoria: 'alue',   term: 'Käsi',          match: ['käsikorttisi','käsikortillesi','käsikortteja'],                   emoji: '🤚', selitys: 'Omat kortit jotka vain sinä näet — viuhkana tai pinona piilossa.',                                                                   pelitLabel: 'kaikki paitsi Koputus'     },
-  { kategoria: 'alue',   term: 'Kenttä',        match: [],                                                                  emoji: '🔲', selitys: 'Nurinpäin pöydällä sinulle jaetut kortit. Pelin aikana sinulle paljastuu mitä siellä onkaan.',                                          pelit: ['kultakala','koputus']          },
-  { kategoria: 'alue',   term: 'Kasa',          match: [],                                                                  emoji: '📚', selitys: 'Kasautuva keko pöydän keskellä — pelataan päälle, kaadetaan T, A tai neljä samaa. Nostetaan, jos ei käy.',                           pelit: ['paskahousu']                   },
-  { kategoria: 'alue',   term: 'Torni',         match: [],                                                                  emoji: '🗼', selitys: 'Järjestyksessä rakennettu rakenne — oikea kortti oikeaan paikkaan, maa kerrallaan.',                                                   pelit: ['ristiseiska']                  },
+  { kategoria: 'alue',   term: 'Käsi',          match: ['käsikorttisi','käsikortillesi','käsikortteja'],                   emoji: '🤚', selitys: 'Omat kortit jotka vain sinä näet livepeleissä viuhkana kädessä.',                                                                        pelitLabel: 'kaikki paitsi Koputus'     },
+  { kategoria: 'alue',   term: 'Kenttä',        match: [],                                                                  emoji: '🔲', selitys: 'Nurinpäin pöydälle eteesi jaetut kortit. Pelin aikana voit katsoa mitä siellä onkaan ja vaihdatko pienempiin.',                         pelit: ['kultakala','koputus']          },
+  { kategoria: 'alue',   term: 'Kasa',          match: [],                                                                  emoji: '📚', selitys: 'Pöydän keskelle kasautuva korttikeko. Siihen pelataan päälle, kaadetaan T, A tai neljällä samalla. Nostetaan, jos ei käy.',             pelit: ['paskahousu']                   },
+  { kategoria: 'alue',   term: 'Torni',         match: [],                                                                  emoji: '🗼', selitys: 'Järjestyksessä kasattu rakenne. Saman maan kortti edellisen päälle muodostaa tornin.',                                                      pelit: ['ristiseiska']                  },
   { kategoria: 'alue',   term: 'Pakka',         match: ['poistopakkaan','poistopakasta','pakasta','pakkaan','pakka'],       emoji: '🎴', selitys: 'Korttien nostolähde, joka ehtyy.',                                                                                                    pelitLabel: 'useimmat'                  },
-  { kategoria: 'alue',   term: 'Pino',          match: ['pinon','pinoa','pinoja','pino'],                                   emoji: '🃏', selitys: 'Läpsyssä kateen jaetut kortit kasvot alaspäin.',                                                                                       pelit: ['lapsy']                        },
+  { kategoria: 'alue',   term: 'Pino',          match: ['pinon','pinoa','pinoja','pino'],                                   emoji: '🃏', selitys: 'Läpsyssä käteen jaetut kortit kasvot alaspäin.',                                                                                        pelit: ['lapsy']                        },
   { kategoria: 'alue',   term: 'Pöytä',         match: ['pöydältä','pöydälle','pöydän','pöytään'],                         emoji: '🟫', selitys: 'Kortit kasvot ylöspäin oleva alue — kaapattavissa tai täydennettävissä. Kasinossa pöydältä kaapataan kortteja summien perusteella.',  pelit: ['kasino']                       },
   { kategoria: 'alue',   term: 'Poissa',        match: ['pois pelistä'],                                                    emoji: '❌', selitys: 'Kaadetut kortit ei palaa peliin.',                                                                                                      pelitLabel: 'useimmat'                  },
 ];
@@ -191,6 +191,14 @@ function splitWithGlossary(text) {
   return parts;
 }
 
+/** Värikoodaa maavärit tekstiin tummaa taustaa varten */
+function renderSelitys(text) {
+  const darkSuit = { '♠': C.text, '♥': '#e05c3b', '♦': '#ff8c42', '♣': '#4caf7d' };
+  return text.split(/(♠|♥|♦|♣)/).map((p, i) =>
+    darkSuit[p] ? <span key={i} style={{ color: darkSuit[p], fontWeight: 700 }}>{p}</span> : p
+  );
+}
+
 /** Yksi sääntörivi korostettavilla termeillä — laajenee paikalleen */
 function RuleRow({ text }) {
   const [openTerm, setOpenTerm] = useState(null);
@@ -214,7 +222,7 @@ function RuleRow({ text }) {
       </div>
       {defn && (
         <div style={{ marginLeft: 14, marginTop: 3, padding: '5px 10px', background: `${C.gold}12`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>{defn.emoji} {defn.term}</span>{' — '}{defn.selitys}
+          <span style={{ color: C.gold, fontWeight: 700 }}>{defn.emoji} {defn.term}</span>{' — '}{renderSelitys(defn.selitys)}
         </div>
       )}
     </div>
@@ -237,7 +245,7 @@ function SanastoRivi({ s }) {
       </button>
       {open && (
         <div style={{ padding: '0 4px 10px 30px', fontSize: 12, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
-          {s.selitys}
+          {renderSelitys(s.selitys)}
         </div>
       )}
     </div>
