@@ -32,7 +32,7 @@ const GAMES = [
     diff: 'Helppo', diffColor: '#4caf7d',
     component: Kultakala, maxWidth: 560, pakka: 'taydennetty',
     rules: [
-      '1 tuntematon + 5 pöytäkorttia — pienin pistemäärä voittaa',
+      'Kenttäsi: 6 piilossa — 1 tuntematon pistelaskuun asti, 5 muuta voit katsoa',
       'Nosta pakasta tai poistopakasta',
       'Vaihda nostettu huonompaan tai hylkää poistopakkaan',
       'Pakka loppuu → kaikki paljastetaan ja pisteet lasketaan',
@@ -45,10 +45,10 @@ const GAMES = [
     diff: 'Helppo', diffColor: '#4caf7d',
     component: Lapsy, maxWidth: 520, pakka: 'jaettu',
     rules: [
-      'Lyö pinnaan kun pinnojen päälimmäiset kortit täsmäävät',
-      'Oikein → voitat koko pinon',
-      'Väärin → anna 2 korttia kyseiseen pinnaan',
-      'Kortittomuus voittaa',
+      'Lyö kasaan kun kaksi päällimmäistä korttia täsmäävät',
+      'Oikein → voitat kasan · Väärin → lisäät kortin kasaan',
+      'J/Q/K/A haastaa seuraavan 1–4 kertaa vastaamaan samalla',
+      'Viimeiseksi kortteja omaava voittaa',
     ],
   },
   {
@@ -98,7 +98,7 @@ const GAMES = [
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Koputus, maxWidth: 560, pakka: 'taydennetty',
     rules: [
-      'Muistele pöytäkorttisi arvo — ne ovat piilossa',
+      'Muistele kenttäsi arvot — ne ovat piilossa',
       'Löydät täsmäparin käsikortillesi → molemmat pois pelistä',
       'Koputus käynnistää viimeisen kierroksen',
       'Pienin pistemäärä paljastuksessa voittaa',
@@ -112,7 +112,7 @@ const GAMES = [
     component: Maija, maxWidth: 560, pakka: 'taydennetty',
     rules: [
       'Hyökkääjä lyö kortteja — puolustaja torjuu',
-      'Torju samalla maalla korkeammalla tai trumpilla',
+      'Torju samalla maalla korkeammalla tai valtilla',
       'Täyskaato → sinä hyökkäät seuraavaksi',
       'Q♠ = Maija — ei voi torjua eikä torju muita',
     ],
@@ -124,10 +124,11 @@ const GAMES = [
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Paskahousu, maxWidth: 580, pakka: 'taydennetty', suosikki: true,
     rules: [
-      'Pelaa sama tai suurempi arvo edelliseen',
-      '2♦ / 2♥ on arvo 2 — 2♠ / 2♣ on kova kakkonen: lyö ei-kaatokortin päälle',
-      'Neljä samaa → pakkonollaus',
-      'Viimeisenä yksin kortitoin = Paskahousu, häviät',
+      'Pelaa samaa tai suurempaa arvoa kasaan, vaikka useampi. Neljä samaa kaataa kasan pelistä pois.',
+      '2♠ / 2♣ = kova kakkonen — lyö minkä tahansa ei-kaatokortin päälle',
+      '10 tai A kaataa kasan · neljä samaa kaataa myös',
+      'Viimeisenä kortteja jäljellä = hävisit',
+      'Tavoite: pakan ehdyttyä päästä korteista eroon.',
     ],
   },
   {
@@ -160,7 +161,7 @@ const SANASTO = [
   { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', emojiStyle: { filter: 'grayscale(1) brightness(0.05)' }, selitys: 'Q♠ on tämän pelin ainoa erikoiskortti, se on vain nostettava.',                                                         pelit: ['maija']                        },
   { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Jos siulla pelivuorosi päätteeksi on enää yksi kortti pienessä käessäsi, niin LAPPU ennenkuin seuraava pelaaja ehtii nostaa kortin! Seiskassa unohdettu lapun huuto tarkoittaa +3 korttia.',              pelit: ['seiska']                       },
   { kategoria: 'kortti', term: 'Kova kakkonen', match: ['kova kakkonen','kovat kakkoset'],                                 emoji: '♠',  selitys: '2♠ tai 2♣ — voi lyödä minkä tahansa ei-kaatokortin päälle.',                                                                       pelit: ['paskahousu']                   },
-  { kategoria: 'kortti', term: 'Kaato',         match: ['kaadetaan','kaataa','kaadat','kaato'],                             emoji: '⬇️', selitys: 'Maijassa ja Moskassa sama asia kuin puolustus. Paskahousussa kaatokortteja ovat T, A ja neljä samanvahvuista (3–9, J, Q, K). Moskassa kaadetut kortit ovat poissa pelistä, vain jos puolustus onnistuu kaatamaan kaikki hyökkäykseen käytetyt kortit.',  pelit: ['maija','moska','paskahousu']   },
+  { kategoria: 'kortti', term: 'Kaato',         match: ['kaadetaan','kaataa','kaadat','kaato'],                             emoji: '⬇️', selitys: 'Maijassa ja Moskassa sama asia kuin puolustus. Paskahousussa kaatokortteja ovat 10 (kymppi), A (ässä) ja neljä samanvahvuista (3–9, J, Q, K). Moskassa kaadetut kortit ovat poissa pelistä, vain jos puolustus onnistuu kaatamaan kaikki hyökkäykseen käytetyt kortit.',  pelit: ['maija','moska','paskahousu']   },
   { kategoria: 'kortti', term: 'Valttimaa',     match: ['valttimaa','valttimaan','valttikortilla','valttikortti'],         emoji: '⭐', selitys: 'Pelin alussa pakan viimeinen jaettu kortti määrää valttimaan. Valttikortilla voi kaataa minkä tahansa ei-valttimaan kortin. Maijassa kaksi lisärajoitetta: valttimaa ei voi olla ♠ ja Q♠ on vain nostettava.', pelit: ['moska','maija']                },
   { kategoria: 'kortti', term: 'Täsmäys',      match: ['täsmäys','täsmäyksen','TÄSMÄYS'],                                  emoji: '👐', selitys: 'Kasan kaksi päällimmäistä korttia ovat samaa arvoa. Nopein läpsääjä voittaa koko kasan — väärä läpsäys sen sijaan lisää kortin kasaan.',                             pelit: ['lapsy']                        },
   { kategoria: 'kortti', term: 'Haaste',       match: ['haastaa','haasteen','haasteeseen','haastettiin'],                  emoji: '⚡', selitys: 'J/Q/K/A käännettäessä haastetaan seuraava: J=1 · Q=2 · K=3 · A=4 yritystä vastata J/Q/K/A:lla. Onnistunut vastaus siirtää haasteen eteenpäin. Epäonnistunut → haastaja voittaa kasan.', pelit: ['lapsy']                        },
@@ -172,7 +173,7 @@ const SANASTO = [
   { kategoria: 'alue',   term: 'Pakka',         match: ['poistopakkaan','poistopakasta','pakasta','pakkaan','pakka'],       emoji: '🎴', selitys: 'Korttien nostolähde, joka ehtyy.',                                                                                                    pelitLabel: 'useimmat'                  },
   { kategoria: 'alue',   term: 'Pino',          match: ['pinon','pinoa','pinoja','pino'],                                   emoji: '🃏', selitys: 'Oma kasvot alaspäin oleva korttipino. Vuorollaan käännetään päällimmäinen yhteiseen kasaan.',                                                         pelit: ['lapsy']                        },
   { kategoria: 'alue',   term: 'Pöytä',         match: ['pöydältä','pöydälle','pöydän','pöytään'],                         emoji: '🟫', selitys: 'Alussa pöytään jaetaan 4 korttia kasvot ylöspäin irralleen. Pelin kuluessa sieltä vuorotellen kaapataan ja lisätään. Pöydän tyhjentäminen on mökin arvoinen suoritus.',  pelit: ['kasino']                       },
-  { kategoria: 'alue',   term: 'Poissa',        match: ['pois pelistä'],                                                    emoji: '❌', selitys: 'Kaadetut kortit ei palaa peliin.',                                                                                                      pelitLabel: 'useimmat'                  },
+  { kategoria: 'alue',   term: 'Poissa',        match: ['pois pelistä'],                                                    emoji: '❌', selitys: 'Kaadetut kortit eivät palaa peliin.',                                                                                                      pelitLabel: 'useimmat'                  },
 ];
 
 const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));
@@ -226,7 +227,7 @@ function RuleRow({ text }) {
                   style={{ color: openTerm === p.term ? C.gold : '#d4b86a', textDecoration: 'underline dotted', textUnderlineOffset: 3, cursor: 'pointer', fontWeight: 600 }}>
                   {p.text}
                 </span>
-              : <span key={i}>{p.text}</span>
+              : <span key={i}>{renderSelitys(p.text)}</span>
           )}
         </span>
       </div>
