@@ -138,9 +138,9 @@ const GAMES = [
     component: Moska, maxWidth: 580, pakka: 'taydennetty',
     rules: [
       'Hyökkääjä lyö kortteja — puolustaja torjuu tai nostaa kaikki',
-      'Torju samalla maalla korkeammalla tai trumpilla',
+      'Torju samalla maalla korkeammalla tai valttikortilla',
       'Sivuhyökkäys: lisää sama arvo pöytään',
-      'Trumppi paljastetaan jaossa — se on voimakkain maa',
+      'Valttimaa paljastetaan jaossa — se on voimakkain maa',
     ],
   },
 ];
@@ -155,6 +155,8 @@ const SANASTO = [
   { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', emojiStyle: { filter: 'grayscale(1) brightness(0.05)' }, selitys: 'Q♠ on tämän pelin ainoa erikoiskortti, se on vain nostettava.',                                                         pelit: ['maija']                        },
   { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Jos siulla pelivuorosi päätteeksi on enää yksi kortti pienessä käessäsi, niin LAPPU ennenkuin seuraava pelaaja ehtii nostaa kortin! Seiskassa unohdettu lapun huuto tarkoittaa +3 korttia.',              pelit: ['seiska']                       },
   { kategoria: 'kortti', term: 'Kova kakkonen', match: ['kova kakkonen','kovat kakkoset'],                                 emoji: '♠',  selitys: '2♠ tai 2♣ — voi lyödä minkä tahansa ei-kaatokortin päälle.',                                                                       pelit: ['paskahousu']                   },
+  { kategoria: 'kortti', term: 'Kaato',         match: ['kaadetaan','kaataa','kaadat','kaato'],                             emoji: '⬇️', selitys: 'Maijassa ja Moskassa sama asia kuin puolustus. Paskahousussa kaatokortteja ovat T, A ja neljä samaa. Kaikissa peleissä kaadetut kortit ovat poissa pelistä.',  pelit: ['maija','moska','paskahousu']   },
+  { kategoria: 'kortti', term: 'Valttimaa',     match: ['valttimaa','valttimaan','valttikortilla','valttikortti'],         emoji: '⭐', selitys: 'Pelin alussa pakan viimeinen jaettu kortti määrää valttimaan. Valttikortilla voi kaataa minkä tahansa ei-valttisen kortin — pakko, jos ei ole saman maan korttia.', pelit: ['moska']                        },
   // ─ Alueet ja vyöhykkeet ───────────────────────────────────────────────────
   { kategoria: 'alue',   term: 'Käsi',          match: ['käsikorttisi','käsikortillesi','käsikortteja'],                   emoji: '🤚', selitys: 'Livepeleissä viuhkana kädessäsi olevat kortit.',                                                                                           pelitLabel: 'kaikki paitsi Koputus, Kultakala' },
   { kategoria: 'alue',   term: 'Kenttä',        match: [],                                                                  emoji: '🔲', selitys: 'Nurinpäin pöydälle eteesi jaetut kortit. Pelin aikana voit katsoa mitä siellä onkaan ja vaihdatko pienempiin.',                         pelit: ['kultakala','koputus']          },
@@ -455,12 +457,11 @@ export default function App() {
         </div>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Tommin korttipelikokoelma</div>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Jako on kokoelma 52-kortin pakalla pelattavia seurapelejä.</div>
           {[
-            'Hei ja tervetuloa sinä korttipelien ystävä!',
-            'Näin opettavan sovelluksen tarpeelliseksi, koska haluan lisää pelikavereita! Aina ei ole aikaa, opettajaa, virtaa tai pelaajia – korttipelisovelluksella on siis kysyntää, varsinkin kun korttipeleillä ei ole tekijänoikeuksia ja tarjontaa rajoittaa lukuisat paikalliset säännöt.',
-            'Nyt siis olkoon Tommin Standardi!',
-            'Tässä siulle yhdeksän peliä vaihe vaiheelta neuvottuna lukuisin toistoin opittaviksi. Yritin opettaa sovellukselle sääntövivahteeni ja pelilogiikkaani, mutta saattaa siellä joku bugikin olla mukana.',
+            'Hei',
+            'Yhdeksän peliä vaihe vaiheelta neuvottuna toistoin opittaviksi. Visioin, että tällä sovelluksella edesauttaa pelihaluisia viettämään rattoisaa aikaa yhteisen pöydän ääressä.',
+            'Korttipelien rikkaus piilee paikallisissa säännöissä. Yritin olla reilu omissa tulkinnoissa ja vivahteissa, mutta saattaa siellä joku "bugi, ei ominaisuus" olla seassa.',
             'Kiitos ja kumarrus,\nTommi Haanranta',
           ].map((t, i) => (
             <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>

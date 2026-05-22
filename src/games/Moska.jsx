@@ -294,7 +294,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   const M = {
-    gameStart:      (trump, att, def) => `Moska alkaa! Valtti: ${trump}. ${att}, ${def}.`,
+    gameStart:      (trump, att, def) => `Moska alkaa! Valttimaa: ${trump}. ${att}, ${def}.`,
     defenderWon:    (player, table) => `${player} onnistuneesti! Pöydällä: ${table}`,
     defenderTook:   (player, count, table) => `${player} ${count}. Pöydällä oli: ${table}`,
     playerDrew:     (player, count) => `${player} ${count}.`,
