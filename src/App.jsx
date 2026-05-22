@@ -76,7 +76,7 @@ const GAMES = [
       'Ei sovi → nosta max 3 korttia, pelaa heti jos löytyy',
       '7 → valitse vaadittu maa',
       'A → bonusvuoro saman maan kortilla',
-      '1 kortti → huuda LAPPU tai sinulle +3 korttia',
+      '1 kortti → ilmoita LAPPU tai myöhästyessäsi saat 3 lisäkorttia',
     ],
   },
   {
@@ -99,8 +99,8 @@ const GAMES = [
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Koputus, maxWidth: 560, pakka: 'taydennetty',
     rules: [
-      'Muistele kenttäsi arvot — ne ovat piilossa',
-      'Löydät täsmäparin käsikortillesi → molemmat pois pelistä',
+      'Muista kenttäsi arvot ja opi lisää',
+      'Jos näet poistopakkaan heitetyn täsmäparin kenttäsi tietylle kortille, niin klikkaa kenttäsi korttia',
       'Koputus käynnistää viimeisen kierroksen',
       'Pienin pistemäärä paljastuksessa voittaa',
     ],
@@ -116,6 +116,7 @@ const GAMES = [
       'Torju samalla maalla korkeammalla tai valtilla',
       'Täyskaato → sinä hyökkäät seuraavaksi',
       'Q♠ = Maija — ei voi torjua eikä torju muita',
+      'Valttimaa paljastetaan alussa',
     ],
   },
   {
@@ -139,10 +140,10 @@ const GAMES = [
     diff: 'Vaativa', diffColor: '#e05c3b',
     component: Moska, maxWidth: 580, pakka: 'taydennetty',
     rules: [
-      'Hyökkääjä lyö kortteja — puolustaja torjuu tai nostaa kaikki',
+      'Hyökkääjä lyö kortteja — puolustaja voi siirtää samanarvoisella, puolustautua kaatamalla kaikki tai nostaa kaikki',
+      'Muut voivat vuorollaan lyödä sivusta hyökkäykseen tai puolustukseen käytetyillä arvoilla',
       'Torju samalla maalla korkeammalla tai valttikortilla',
-      'Sivuhyökkäys: lyö sama arvo sivusta',
-      'Valttimaa paljastetaan jaossa — se on voimakkain maa',
+      'Valttimaa paljastetaan alussa',
     ],
   },
 ];
