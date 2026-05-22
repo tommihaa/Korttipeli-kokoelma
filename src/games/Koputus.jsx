@@ -68,7 +68,7 @@ const M = {
   tipDiscard: (n, c) => `💡 ${n} heittää ${c} — nostamasi kortti ei paranna käsiä`,
 };
 
-function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle }) {
+function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true }) {
   return (
     <div style={{ padding: small ? '4px 8px' : 14, borderRadius: 12, transition: 'border-color 0.2s', border: `1px solid ${isActive ? 'rgba(201,168,76,0.3)' : 'rgba(42,74,50,0.4)'}`, background: isActive ? 'rgba(201,168,76,0.03)' : 'transparent', display: small ? 'flex' : 'block', alignItems: small ? 'center' : undefined, gap: small ? 6 : 0 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: small ? 4 : 8, marginBottom: small ? 0 : 8, fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, flexShrink: 0 }}>
@@ -82,7 +82,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
         {player.cards.map((card, i) => {
           const vis = !!(debug || peekSet?.has(i));
           const cl = clickableSet?.has(i) ?? false;
-          const memGlow = player.known.has(i) && !peekSet?.has(i);
+          const memGlow = player.known.has(i) && !peekSet?.has(i) && showKnown;
           const reactHL = cl && phase === 'reaction';
           const justPlaced = lastSwap === i;
           if (card === null) return <Card key={i} empty small={small} />;
@@ -104,7 +104,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
@@ -630,7 +630,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
             return (
               <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: 110 }}>
                 <PlayerGrid player={ai} isActive={curIdx === pi} small={true} backStyle={BACKS[cardBack]}
-                  phase={phase} debug={debugOpen}
+                  phase={phase} debug={debugOpen} showKnown={showAIKnown}
                   lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
                   clickableSet={tgtClickable(pi)}
                   onCardClick={ci => {

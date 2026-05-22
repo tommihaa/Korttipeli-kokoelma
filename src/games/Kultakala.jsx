@@ -151,7 +151,7 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
+export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true }) {
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
   const [soundOn, setSnd]     = useState(initSoundOn);
@@ -363,7 +363,8 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       tm(() => {
         const g2 = gRef.current, p2 = g2.players[idx];
         const playerCount = g2.players.length;
-        const maxSwapValue = playerCount; // 4-pel: A-4, 3-pel: A-3, 2-pel: A-2
+        // 2-pel: A-3, 3-pel: A-4, 4-pel: A-5 (kokemuspohjainen)
+        const maxSwapValue = playerCount + 1;
 
         // **PHASE 3: Smart Position Selection**
         // Helper function to score how good a position is for a card
@@ -410,15 +411,14 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         for (let pos = 5; pos >= 1; pos--) {
           const idx_pos = pos - 1;
 
-          // Paikka 1 vain A-4
-          if (pos === 1 && held.v > maxSwapValue) {
-            break;
-          }
+          // Paikka 1: älä aja ulos tunnettua pientä korttia poistopakkaan
+          if (pos === 1 && p2.known.has(0) && p2.row[0].v <= maxSwapValue) break;
+          if (pos === 1 && held.v > maxSwapValue) break;
 
           const hasUnknownsAhead = Array.from({ length: pos - 1 }, (_, i) => i).some(i => !p2.known.has(i));
 
           if (held.v <= maxSwapValue) {
-            // A-4: vaihda tuntemattomaan tai tunnettuun jos sen jälkeen tuntemattomia
+            // A-3/4/5 (2/3/4 pel): vaihda tuntemattomaan tai tunnettuun jos sen jälkeen tuntemattomia
             if (!p2.known.has(idx_pos) || hasUnknownsAhead) {
               const old = p2.row[idx_pos];
               p2.row[idx_pos] = held;
@@ -696,7 +696,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
                   <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
                   <div style={{ display: 'flex', gap: 2 }}>
                     {p.row.map((c, ci) => (
-                      <div key={ci} style={{ borderRadius: 4, border: teachMode && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: teachMode && p.known.has(ci) ? `0 0 6px ${C.gold}66` : 'none', padding: teachMode && p.known.has(ci) ? 1 : 0 }}>
+                      <div key={ci} style={{ borderRadius: 4, border: showAIKnown && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: showAIKnown && p.known.has(ci) ? `0 0 6px ${C.gold}66` : 'none', padding: showAIKnown && p.known.has(ci) ? 1 : 0 }}>
                         <KaCard card={c} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
                       </div>
                     ))}
@@ -716,7 +716,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
                   <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
                   <div style={{ display: 'flex', gap: 2 }}>
                     {p.row.map((c, ci) => (
-                      <div key={ci} style={{ borderRadius: 6, border: teachMode && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: teachMode && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: teachMode && p.known.has(ci) ? 2 : 0 }}>
+                      <div key={ci} style={{ borderRadius: 6, border: showAIKnown && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: showAIKnown && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: showAIKnown && p.known.has(ci) ? 2 : 0 }}>
                         <KaCard card={c} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
                       </div>
                     ))}

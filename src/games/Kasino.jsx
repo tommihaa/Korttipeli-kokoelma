@@ -51,6 +51,22 @@ const isPataKakkonen = c => c && c.r === '2'  && c.s === '♠';
 const handVal  = c => isPataKakkonen(c) ? 15 : isRuutuKymppi(c) ? 16 : c.r === 'A' ? 14 : c.v;
 const tableVal = c => isPataKakkonen(c) ? 2  : isRuutuKymppi(c) ? 10 : c.r === 'A' ? 1  : c.v;
 
+// Kuinka vaarallista on jättää candidate pöytään (mahdollistaa pistekorttien kaappauksen)?
+function leaveDanger(candidate, table) {
+  const cv = tableVal(candidate);
+  let score = 0;
+  for (const t of table) {
+    const sum = cv + tableVal(t);
+    // Vastustaja voi kaapata molemmat jos pystyy pelaamaan kortin arvolla = sum (max 14 = ässä)
+    if (sum <= 14) {
+      if (isPataKakkonen(t)) score += 10;
+      else if (isRuutuKymppi(t)) score += 7;
+      else score += 1;
+    }
+  }
+  return score;
+}
+
 function newDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));
 }
@@ -616,7 +632,11 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       } else {
         const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
         const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
-        toLeave = [...leavePool].sort((a, b) => a.v - b.v)[0];
+        toLeave = [...leavePool].sort((a, b) => {
+          const da = leaveDanger(a, g.table);
+          const db = leaveDanger(b, g.table);
+          return da !== db ? da - db : a.v - b.v;
+        })[0];
       }
       aiTmr.current = tm(() => {
         const g2 = gRef.current;

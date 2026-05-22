@@ -74,6 +74,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const recentMatch  = useRef(false);
   const aiSlapTmrs   = useRef([]);
   const failTmr      = useRef(null);
+  const duelTmr      = useRef(null);
   const logRef       = useRef([]);
   const tmrs         = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
@@ -120,14 +121,43 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     heroTooSlow: 'Hero oli hieman hitaampi — ei rangaistusta.',
     heroSlapNoMatch: 'Hero läpsäsi — mutta ei täsmäystä! Menettää päällimmäisen kortin.',
     gameOver: (playerName) => playerName ? `${playerName === 'Hero' ? 'Veit voiton' : playerName + ' vei voiton'}! 🏆🎉` : 'Peli päättyi!',
+    duelStart: (a, b) => `⚔️ Kaksintaistelu! ${a} vs ${b} — pinot puolitetaan 30 s kuluttua jos ei ratkaisua.`,
+    duelHalved: (counts) => `✂️ 30 s kaksintaistelua — pinot puolitettu! ${counts}`,
   };
 
   useLayoutEffect(() => { startGame(); }, []);
+
+  function updateDuelTimer(currentPiles) {
+    const active = currentPiles.filter(p => p.length > 0);
+    if (active.length === 2) {
+      if (!duelTmr.current) {
+        const names = currentPiles.map((p, i) => p.length > 0 ? pName(i) : null).filter(Boolean);
+        addLog(M.duelStart(names[0], names[1]));
+        duelTmr.current = tm(() => halveDuelPiles(), 30000);
+      }
+    } else {
+      clearTimeout(duelTmr.current);
+      duelTmr.current = null;
+    }
+  }
+
+  function halveDuelPiles() {
+    duelTmr.current = null;
+    const curPiles = pilesRef.current;
+    const active = curPiles.filter(p => p.length > 0);
+    if (active.length !== 2 || phaseRef.current === 'gameover') return;
+    const newPiles = curPiles.map(p => p.length === 0 ? p : p.slice(0, Math.ceil(p.length / 2)));
+    setPiles(newPiles); pilesRef.current = newPiles;
+    const counts = newPiles.map((p, i) => p.length > 0 ? `${pName(i)}: ${p.length}` : null).filter(Boolean).join(', ');
+    addLog(M.duelHalved(counts));
+    duelTmr.current = tm(() => halveDuelPiles(), 30000);
+  }
 
   function startGame() {
     clearTimeout(aiTmr.current);
     aiSlapTmrs.current.forEach(clearTimeout);
     clearTimeout(failTmr.current); setFR(null);
+    clearTimeout(duelTmr.current); duelTmr.current = null;
     const initPiles = deal(nP);
     setPiles(initPiles); pilesRef.current = initPiles;
     setCenter([]); centerRef.current = [];
@@ -142,7 +172,10 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     addLog(M.gameStart);
     setScreen('game');
     setShuffling(true);
-    tm(() => maybeAIFlip(0, initPiles, [], null), 2300);
+    tm(() => {
+      maybeAIFlip(0, initPiles, [], null);
+      if (nP === 2) updateDuelTimer(initPiles);
+    }, 2300);
   }
 
   function nextTurn(fromIdx, newPiles, newCenter, ch) {
@@ -301,12 +334,17 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     aiSlapTmrs.current.forEach(clearTimeout);
     aiSlapTmrs.current = piles.map((pile, i) => {
       if (i === 0 || pile.length === 0) return null;
-      const noise = aiNoise(level);
-      const minDelay = 150 + noise * 1200;   // beginner: 750ms, normal: 330ms, hard: 150ms
-      const spread   = 600 + noise * 2000;   // beginner: 1600, normal: 900, hard: 600
-      // Memory shortens the minimum reaction time: up to 300ms for counting, 200ms for prediction
-      const anticipationBonus = anticipation * 300;
-      const predictBonus      = predicted ? 200 : 0;
+      // Per-level timing: avg = minDelay + spread/2 (before bonuses)
+      // beginner ~1550ms, normal ~1700ms, hard ~1300ms, supernatural ~1000ms
+      const { minDelay, spread } =
+        level === 'beginner'     ? { minDelay: 750,  spread: 1600 } :
+        level === 'normal'       ? { minDelay: 1100, spread: 1200 } :
+        level === 'hard'         ? { minDelay: 700,  spread: 1200 } :
+        level === 'supernatural' ? { minDelay: 500,  spread: 1000 } :
+                                   { minDelay: 1100, spread: 1200 };
+      // Anticipation (card counting) and prediction shorten effective minimum
+      const anticipationBonus = anticipation * 200;
+      const predictBonus      = predicted ? 150 : 0;
       const effectiveMin = Math.max(60, minDelay - anticipationBonus - predictBonus);
       const delay = effectiveMin + Math.random() * spread;
       return tm(() => {
@@ -401,6 +439,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setCh(null); chRef.current = null;
     setPhase('idle'); phaseRef.current = 'idle';
     if (checkGameOver(newPiles)) return;
+    updateDuelTimer(newPiles);
     setCur(winnerIdx); curRef.current = winnerIdx;
     tm(() => maybeAIFlip(winnerIdx, newPiles, [], null), 800);
   }

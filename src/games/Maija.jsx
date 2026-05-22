@@ -332,10 +332,25 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         hand.forEach(c => { if (!isMaija(c)) { if (!bySuit[c.s]) bySuit[c.s] = []; bySuit[c.s].push(c); } });
       }
       const suits = Object.values(bySuit).sort((a,b) => b.length - a.length);
+      // Hyökkää pienimmillä korteilla ensin — säästä isot tärkeämpiin hetkiin
+      suits.forEach(grp => grp.sort((a, b) => a.v - b.v));
       let toPlay = (suits[0] || []).slice(0, Math.min((suits[0] || []).length, defHandSize));
+
+      // Pakka loppu: laske jäljellä olevat valtit — jos vähän jäljellä, hyökkää valteilla
+      const deckEmpty = g2.deck.length === 0;
+      if (deckEmpty && !maija && !aiShouldFumble(aiLevelRef.current)) {
+        const myTrumps = hand.filter(c => c.s === g2.trump && !isMaija(c));
+        const trumpsDiscarded = g2.discard.filter(c => c.s === g2.trump).length;
+        const trumpsElsewhere = 13 - trumpsDiscarded - myTrumps.length;
+        if (myTrumps.length >= 2 && trumpsElsewhere <= 3) {
+          // Vastustajilla vähän valttikortteja — hyökkää valteilla päästäksesi eroon niistä
+          toPlay = [...myTrumps].sort((a, b) => a.v - b.v).slice(0, defHandSize);
+        }
+      }
+
       // Aloittelija-virhe: ei "vaihda Maijaa heikompaan" — pitää sen kädessä
       // vaikka nyt olisi oikea hetki pelata se pois
-      if (maija && (toPlay[0]?.s === '♠' || g2.deck.length === 0)) {
+      if (maija && (toPlay[0]?.s === '♠' || deckEmpty)) {
         if (!aiShouldFumble(aiLevelRef.current)) {
           toPlay = hand.filter(c => c.s === '♠').slice(0, defHandSize);
         }

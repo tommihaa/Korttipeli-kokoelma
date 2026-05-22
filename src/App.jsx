@@ -139,7 +139,7 @@ const GAMES = [
     rules: [
       'Hyökkääjä lyö kortteja — puolustaja torjuu tai nostaa kaikki',
       'Torju samalla maalla korkeammalla tai valttikortilla',
-      'Sivuhyökkäys: lisää sama arvo pöytään',
+      'Sivuhyökkäys: lyö sama arvo sivusta',
       'Valttimaa paljastetaan jaossa — se on voimakkain maa',
     ],
   },
@@ -355,7 +355,8 @@ export default function App() {
   const [teachMode, setTeachMode]   = useState(false);
   const [showLastPlay, setShowLastPlay] = useState(true);
   const [showNextBtn, setShowNextBtn]   = useState(true);
-  const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard'
+  const [showAIKnown, setShowAIKnown]   = useState(true);
+  const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard' | 'supernatural'
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
   const [playerGroup, setPlayerGroup] = useState(() => {
     const groups = ['laituri', 'jumalat', 'puolue', 'kansa'];
@@ -457,11 +458,10 @@ export default function App() {
         </div>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Jako on kokoelma 52-kortin pakalla pelattavia seurapelejä.</div>
           {[
-            'Hei',
-            'Yhdeksän peliä vaihe vaiheelta neuvottuna toistoin opittaviksi. Visioin, että tällä sovelluksella edesauttaa pelihaluisia viettämään rattoisaa aikaa yhteisen pöydän ääressä.',
-            'Korttipelien rikkaus piilee paikallisissa säännöissä. Yritin olla reilu omissa tulkinnoissa ja vivahteissa, mutta saattaa siellä joku "bugi, ei ominaisuus" olla seassa.',
+            'Hei!',
+            'Tämän sovelluksen missiona on auttaa pelihaluisia viettämään rattoisaa aikaa yhteisen pöydän ääressä. Mukana on yhdeksän peliä, joiden kulun oppii ymmärtämään lukuisien toistojen kautta. Tämä sovellus on digitaalinen, vuorovaikutteinen ympäristö, jossa kenelläkään ei ole kiire.',
+            'Korttipelien rikkaus piilee paikallisissa säännöissä. Yritin olla reilu omissa tulkinnoissani ja vivahteissani, mutta saattaahan sieltä joku "bugi, ei ominaisuus" seasta löytyä.',
             'Kiitos ja kumarrus,\nTommi Haanranta',
           ].map((t, i) => (
             <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>
@@ -476,17 +476,20 @@ export default function App() {
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
           <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Peliasetukset</div>
           {[
-            { label: 'Tapahtumaloki auki',                                                   val: showLog,       set: setShowLog       },
-            { label: 'Äänet',                                                                 val: soundOn,       set: setSoundOn       },
-            { label: 'Cheat Mode (Hero näkee kaikki pöytä- ja käsikortit)',                    val: seeAll,        set: setSeeAll        },
-            { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',             val: showCounts,    set: setShowCounts    },
-            { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                   val: showPlayHints, set: setShowPlayHints },
-            { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                   val: showLastPlay,  set: setShowLastPlay  },
-            { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn, set: setShowNextBtn },
-          ].map(({ label, val, set }) => (
-            <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: 'pointer' }}>
+            { label: 'Cheat Mode (Hero näkee kaikki pöytä- ja käsikortit)',                       val: seeAll,        set: setSeeAll        },
+            { label: '🔒 God Mode (manifestoi tulevat kortit)',                                    disabled: true                          },
+            { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',                 val: showCounts,    set: setShowCounts    },
+            { label: 'Näe muistipeleissä vastustajien katsomat korttipaikat korostettuina',       val: showAIKnown,   set: setShowAIKnown   },
+            { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                       val: showLastPlay,  set: setShowLastPlay  },
+            { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                       val: showPlayHints, set: setShowPlayHints },
+            { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
+            { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
+            { label: 'Äänet',                                                                       val: soundOn,       set: setSoundOn       },
+          ].map(({ label, val, set, disabled }) => (
+            <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
               <input
-                type="checkbox" checked={val} onChange={() => set(v => !v)}
+                type="checkbox" checked={disabled ? false : val} onChange={disabled ? undefined : () => set(v => !v)}
+                disabled={!!disabled}
                 style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
               />
               <span style={{ fontSize: isMobile ? 11 : 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
@@ -496,25 +499,26 @@ export default function App() {
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
           <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Tekoälyn taso 🤖</div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
             {[
-              { key: 'beginner', label: 'Aloittelija', desc: 'tekee virheitä, voitettavissa' },
-              { key: 'normal',   label: 'Normaali',    desc: 'pelaa hyvin, mokaa joskus' },
-              { key: 'hard',     label: 'Vaativa',     desc: 'täysi strategia' },
+              { key: 'beginner',     label: 'Aloittelija',     desc: 'tekee virheitä, voitettavissa' },
+              { key: 'normal',       label: 'Normaali',        desc: 'pelaa hyvin, mokaa joskus' },
+              { key: 'hard',         label: 'Vaativa',         desc: 'täysi strategia' },
+              { key: 'supernatural', label: 'Yliluonnollinen', desc: 'muistaa poistetut kortit' },
             ].map(({ key, label, desc }) => (
               <button
                 key={key}
                 onClick={() => setAiLevel(key)}
                 style={{
-                  flex: 1, padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
+                  flex: 1, minWidth: 'calc(50% - 4px)', padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
                   fontFamily: 'sans-serif', fontSize: 12,
-                  background: aiLevel === key ? `${C.gold}22` : 'transparent',
-                  border: `1px solid ${aiLevel === key ? C.gold : C.panelBorder}`,
-                  color: aiLevel === key ? C.gold : C.dim,
+                  background: aiLevel === key ? (key === 'supernatural' ? 'rgba(138,92,230,0.15)' : `${C.gold}22`) : 'transparent',
+                  border: `1px solid ${aiLevel === key ? (key === 'supernatural' ? '#8a5ce6' : C.gold) : C.panelBorder}`,
+                  color: aiLevel === key ? (key === 'supernatural' ? '#b48aff' : C.gold) : C.dim,
                   transition: 'all 0.15s',
                 }}
               >
-                {label}
+                {key === 'supernatural' ? '🔮 ' : ''}{label}
                 <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{desc}</div>
               </button>
             ))}
@@ -587,6 +591,7 @@ export default function App() {
             {playerPool.join(' · ')}
           </div>
         </div>
+
       </div>
     </div>
   );
@@ -628,6 +633,7 @@ export default function App() {
           playerCount={Math.max(playerCount, game.minPlayers)}
           playerNames={playerPool}
           showNextBtn={showNextBtn}
+          showAIKnown={showAIKnown}
           aiLevel={aiLevel}
           onResult={(result) => handleGameResult(active, result)}
         />

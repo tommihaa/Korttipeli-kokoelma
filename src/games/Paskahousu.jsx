@@ -127,7 +127,8 @@ function fillHand(hand, draw) {
 
 // AI: valitse paras kortti tai kortit
 // pile = nykyinen kasa (ennen pelaamista) — tarvitaan 4x-kaatolaskennan tarkistukseen
-function aiCards(hand, top, pile) {
+// drawLength = nostopakan koko — 0 = pakka loppu, siirry endgame-strategiaan
+function aiCards(hand, top, pile, drawLength) {
   const opts = hand.filter(c => canPlay(c, top));
   if (!opts.length) return null;
 
@@ -147,6 +148,36 @@ function aiCards(hand, top, pile) {
     if (quad) return quad;
   }
 
+  const isKova = c => c.r === '2' && (c.s === '♠' || c.s === '♣');
+
+  // Endgame: pakka loppu — tähtää hyviin kortteihin, aiheuta hankaluuksia
+  if (drawLength === 0) {
+    // Säästä: kova kakkonen (suurin), 10 (tyhjentää), A (kaataa kuvakortit), 9 (varmuus)
+    const save = new Set(['10', 'A', '9']);
+    const notSaved = opts.filter(c => !save.has(c.r) && !isKova(c));
+
+    // Pelaa ensin korkein kuvakortti (K > Q > J) — pakottaa vastustajan korkeaan
+    const faces = notSaved.filter(c => FACES.has(c.r));
+    if (faces.length > 0) {
+      const best = faces.reduce((a, b) => b.v > a.v ? b : a);
+      return opts.filter(c => c.r === best.r);
+    }
+
+    // Muut ei-säästettävät kortit korkeimmasta alimpaan
+    if (notSaved.length > 0) {
+      const best = notSaved.reduce((a, b) => b.v > a.v ? b : a);
+      return opts.filter(c => c.r === best.r && c.v === best.v);
+    }
+
+    // Vain säästettäviä jäljellä — pelaa 9 ensin, sitten 10/A, viimeisenä kova kakkonen
+    const nine = opts.find(c => c.r === '9');
+    if (nine) return opts.filter(c => c.r === '9');
+    const nonKova = opts.filter(c => !isKova(c));
+    if (nonKova.length > 0) return [nonKova.reduce((a, b) => a.v < b.v ? a : b)];
+    return [opts[0]];
+  }
+
+  // Normaali peli: pakka ei loppu
   // 2. Suosi normaaleja kortteja — käytä 10/A vain kun ei muuta vaihtoehtoa
   const normal = opts.filter(c => c.r !== '10' && c.r !== 'A');
   const pool   = normal.length > 0 ? normal : opts;
@@ -595,7 +626,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     if (g.skipNext === turn) { applySkip(gRef.current, turn); return; }
 
-    let cards = aiCards(p.hand, top, g.pile);
+    let cards = aiCards(p.hand, top, g.pile, draw.length);
     if (cards) {
       if (cards.every(c => c.r !== '10' && c.r !== 'A') && aiShouldFumble(aiLevelRef.current)) {
         // Aloittelija-virhe: pelaa 10 tai A turhaan — erikoiskortti kun normaali kävisi

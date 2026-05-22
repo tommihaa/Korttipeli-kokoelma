@@ -148,6 +148,37 @@ function getMaxAdd(g) {
   return Math.min(def.hand.length - unbeaten, 6 - g.table.length);
 }
 
+// Super Natural -hyökkäys: suosii arvoja joista moni kopio on jo poissa pelistä
+// → vähemmän riskiä että vastustajalla on sama arvo sivustalyöntiin
+function aiPickAttackSN(p, ts, removed) {
+  const byRank = {};
+  p.hand.forEach(c => { (byRank[c.r] = byRank[c.r] || []).push(c); });
+  const groups = Object.values(byRank).map(cards => {
+    const r = cards[0].r;
+    const goneCount = SUITS.filter(s => removed.has(`${r}${s}`)).length;
+    return { cards, isTrump: cards[0].s === ts, goneCount };
+  }).sort((a, b) => {
+    if (a.isTrump !== b.isTrump) return a.isTrump ? 1 : -1;
+    if (b.goneCount !== a.goneCount) return b.goneCount - a.goneCount;
+    return MV(a.cards[0]) - MV(b.cards[0]);
+  });
+  if (!groups.length) return [];
+  return [groups[0].cards[0]];
+}
+
+// Pienin pariton ei-valtti ensin — kaatuu eniten "roskakortin" logiikkaan
+function aiPickAddCard(addable, hand, ts) {
+  const sorted = [...addable].sort((a, b) => {
+    const aT = a.s === ts, bT = b.s === ts;
+    if (aT !== bT) return aT ? 1 : -1;
+    return MV(a) - MV(b);
+  });
+  const rankCount = {};
+  hand.forEach(c => { rankCount[c.r] = (rankCount[c.r] || 0) + 1; });
+  const unpaired = sorted.filter(c => rankCount[c.r] === 1);
+  return unpaired.length ? unpaired[0] : sorted[0];
+}
+
 // ── Komponentti ───────────────────────────────────────────────
 export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showNextBtn = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen, setScreen] = useState('select');
@@ -176,6 +207,8 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const momentsRef = useRef([]);
+
+  const removedRef = useRef(new Set()); // korttien rs-avaimet ("A♠") jotka ovat poistuneet pelistä
 
   const gRef    = useRef(null);
   const aiTmr   = useRef(null);
@@ -343,6 +376,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
   function startGame() {
     clearTimeout(aiTmr.current);
+    removedRef.current = new Set();
     const g = initGame(nP, playerNames);
     logRef.current = []; setLog([]);
     setSelAtk([]); setSelDefTarget(null); setSelPass([]); setSelAdd([]); setPakaAnim(false);
@@ -370,6 +404,11 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     ).join(', ');
 
     if (defWon) {
+      // Kaadetut kortit poistuvat pelistä — Super Natural muistaa ne
+      g.table.forEach(t => {
+        removedRef.current.add(`${t.atk.r}${t.atk.s}`);
+        if (t.def) removedRef.current.add(`${t.def.r}${t.def.s}`);
+      });
       addLog(M.defenderWon(act(defPlayer, 'puolustit', 'puolusti'), tableDesc));
       if (sndRef.current) SFX.capture();
     } else {
@@ -664,14 +703,19 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       addLog(M.canAdd(p.name, addable.map(lblColored).join(', ')));
       setSelAdd([]);
     } else {
-      // AI lisää jos puolustajalla paljon kortteja jäljellä, muuten ohittaa
+      // AI lisää sivusta — aggressiivisuus riippuu tasosta, korttivalinta suosii pieniä parittomia
       const def = g.players[g.defender];
-      const shouldAdd = def.hand.length >= 3 || g.table.length <= 2;
+      const lvl = aiLevelRef.current;
+      const shouldAdd = lvl === 'beginner'
+        ? g.table.length <= 1 && def.hand.length >= 5
+        : lvl === 'hard' || lvl === 'supernatural'
+          ? def.hand.length >= 2 && g.table.length < 5
+          : def.hand.length >= 3 || g.table.length <= 2;
       if (shouldAdd) {
-        const toAdd = addable.slice(0, 1);
+        const card = aiPickAddCard(addable, p.hand, g.ts);
         addLog(M.aiCanAdd(p.name, addable.map(lblColored).join(', ')));
         aiTmr.current = tm(() => {
-          doAdd(gRef.current, next, toAdd);
+          doAdd(gRef.current, next, [card]);
         }, 900 + Math.random() * 300);
       } else {
         addLog(M.aiSkips(p.name));
@@ -692,12 +736,18 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     if (phase === 'attack') {
       const p = players[primaryAtk];
       if (p.isHuman) return;
-      let cards = aiPickAttack(p, players[defender].hand.length, ts);
-      // Aloittelija-virhe: hyökkää suurimmalla kortilla eikä pienimmällä
-      if (cards.length && aiShouldFumble(aiLevelRef.current)) {
-        const nonTrumps = p.hand.filter(c => c.s !== ts);
-        const pool = nonTrumps.length ? nonTrumps : p.hand;
-        cards = [[...pool].sort((a, b) => MV(b) - MV(a))[0]];
+      const lvlA = aiLevelRef.current;
+      let cards;
+      if (lvlA === 'supernatural') {
+        cards = aiPickAttackSN(p, ts, removedRef.current);
+      } else {
+        cards = aiPickAttack(p, players[defender].hand.length, ts);
+        // Aloittelija-virhe: hyökkää suurimmalla kortilla eikä pienimmällä
+        if (cards.length && aiShouldFumble(lvlA)) {
+          const nonTrumps = p.hand.filter(c => c.s !== ts);
+          const pool = nonTrumps.length ? nonTrumps : p.hand;
+          cards = [[...pool].sort((a, b) => MV(b) - MV(a))[0]];
+        }
       }
       if (!cards.length) { resolveRound(g, true); return; }
       doAttack(g, primaryAtk, cards);
@@ -707,11 +757,14 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       const p = players[defender];
       if (p.isHuman) return;
 
-      // Kokeile siirtoa ensin (jos ei vielä kaatanut mitään)
+      // Kokeile siirtoa ensin (jos ei vielä kaatanut mitään) — Aloittelija ei siirrä
       const noBeats = !table.some(t => t.def);
-      if (noBeats && g.passChain.length < players.filter(pl => pl.rank === null).length - 2) {
+      const lvl = aiLevelRef.current;
+      if (lvl !== 'beginner' && noBeats && g.passChain.length < players.filter(pl => pl.rank === null).length - 2) {
         const atkRanks = new Set(table.map(t => t.atk.r));
-        const passCard = p.hand.find(c => atkRanks.has(c.r) && c.s !== ts);
+        const passCards = p.hand.filter(c => atkRanks.has(c.r) && c.s !== ts);
+        // Pienin sopiva ei-valttikortti — säästää isot kortit
+        const passCard = passCards.sort((a, b) => MV(a) - MV(b))[0];
         if (passCard && players.filter(pl => pl.rank === null).length > 2) {
           aiTmr.current = tm(() => {
             doPass(gRef.current, [passCard]);
@@ -738,6 +791,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         hand = hand.filter(c => c.id !== dc.id);
       }
 
+      const isSN = aiLevelRef.current === 'supernatural';
       if (canBeatAll) {
         aiTmr.current = tm(() => {
           let cur = gRef.current;
@@ -745,12 +799,13 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
             cur = doBeat(cur, atkId, defCard);
           }
           setGS(cur);
-          aiTmr.current = tm(() => startAddPhase(cur), 700);
-        }, 900);
+          aiTmr.current = tm(() => startAddPhase(cur), isSN ? 400 : 700);
+        }, isSN ? 450 : 900);
       } else {
+        // Ei pysty täydelliseen puolustukseen — ottaa heti ilman osittaisia paljastuksia
         aiTmr.current = tm(() => {
           resolveRound(gRef.current, false);
-        }, 900 + Math.random() * 300);
+        }, isSN ? 300 : 900 + Math.random() * 300);
       }
     }
   }
