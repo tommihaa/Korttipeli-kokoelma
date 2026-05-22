@@ -60,8 +60,9 @@ const GAMES = [
     rules: [
       '7♣ aloittaa · jatka 6♣:lla tai avaa uusi maa toisella 7:llä',
       'Sekvenssi 7→6→8 avaa maan alapino (6→A) ja yläpino (8→K)',
-      'Ei sopivaa → korttipantti: edellinen antaa sinulle huonoksi arvioimansa kortin',
-      'Ensin korteitta → voittaa · Viimeisenä kortteja käteen → häviää',
+      'Ei sopivaa käsikorteista → korttipantti: edellinen pelaaja (yli 1 kortti) antaa sopimattomimmaksi arvioimansa kortin',
+      'Ensin korteitta → voittaa',
+      'Viimeisenä kortteja kädessä → häviää',
     ],
   },
   {
