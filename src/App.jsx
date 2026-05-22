@@ -149,6 +149,11 @@ const GAMES = [
 // match[]:    merkkijonot joita haetaan säännöistä (case-insensitive), pisin ensin
 // pelitLabel: ohittaa automaattisen pelinimilistan kun pelejä on monta
 const SANASTO = [
+  // ─ Perustermit ───────────────────────────────────────────────────────────
+  { kategoria: 'perus', term: 'Maat',        match: ['pata','hertta','ruutu','risti','maata','maan'],                        emoji: '♠', selitys: 'Neljä maata: ♠ Pata · ♥ Hertta · ♦ Ruutu · ♣ Risti. Punaiset: ♥ ♦. Mustat: ♠ ♣. Maa ei yleensä ratkaise — arvo ratkaisee, paitsi valttipelissä.',                        pelitLabel: 'kaikki'                    },
+  { kategoria: 'perus', term: 'Kuvakortti',  match: ['kuvakortti','kuvakorttia','kuvakortilla','kuvakorteilla','kuvakortit'], emoji: '👑', selitys: 'J (Jätkä), Q (Kuningatar), K (Kuningas). Usein erityisasemassa: Paskahousussa ei voi pelata alle seiskan päälle, Läpsyssä laukaisevat haasteen.',                          pelitLabel: 'useimmat'                  },
+  { kategoria: 'perus', term: 'Ässä',        match: ['ässä','ässällä','ässiä','ässän','ässät'],                               emoji: '🂡', selitys: 'A — korkein tai erikoiskortti riippuen pelistä. Kasinossa +1 piste, Paskahousussa kaataa kuvakortteja (J/Q/K), Moskassa korkein arvo, Läpsyssä haastaa 4 kertaa.',           pelitLabel: 'useimmat'                  },
+  { kategoria: 'perus', term: 'Jako',        match: ['jaetaan','jaettu','jako','jakaa','jaon'],                               emoji: '🤲', selitys: 'Pakan jakaminen pelaajille pelin alussa. 52 korttia, 4 maata, 13 arvoa per maa (2–10, J, Q, K, A). Jako määrää koko pelin lähtötilanteen.',                                    pelitLabel: 'kaikki'                    },
   // ─ Kortit ja erikoistilanteet ─────────────────────────────────────────────
   { kategoria: 'kortti', term: 'Mökki',         match: ['mökki','mokki','mökin','mökkejä'],                                emoji: '🏚', selitys: 'Koko pöydän tyhjennys yhdellä kaappauksella — antaa yhden lisäpisteen.',                                                          pelit: ['kasino']                       },
   { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti, jonka saat edelliseltä pelaajalta, kun siulla ei ole käypää pelattavaa. Eniten korttipantteja saanut häviää.',    pelit: ['ristiseiska']                  },
@@ -533,6 +538,7 @@ export default function App() {
             Napauta termiä — selitys aukeaa alle. Korostetut termit aukeavat myös pelivalikon säännöistä.
           </div>
           {[
+            { key: 'perus',  label: 'Perustermit' },
             { key: 'kortti', label: 'Kortit ja erikoistilanteet' },
             { key: 'alue',   label: 'Alueet ja vyöhykkeet' },
           ].map(({ key, label }) => (

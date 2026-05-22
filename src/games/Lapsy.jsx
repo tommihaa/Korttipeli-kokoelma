@@ -487,12 +487,16 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
           </div>
         </div>
       </div>
-      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
+      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.8, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
         <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
-        Käännetään kasaan vuorotellen — kasan voi voittaa kahdella tavalla:<br />
-        Täsmäys (sama arvo päällä) → nopein läpsääjä voittaa · väärä läpsäys lisää kortin kasaan<br />
-        J haastaa 1 · Q 2 · K 3 · A 4 kertaa — vastataan J/Q/K/A:lla tai haastaja voittaa kasan<br />
-        Kaikki kortit keräämällä voittaa
+        Pelaajat lyövät pinostaan kortin kasaan vuorotellen. Voi tapahtua:<br /><br />
+        <span style={{ color: C.text }}>Täsmäys</span> — kaksi päällimmäistä samaa arvoa:<br />
+        &nbsp;· Oikein → voitat kasan<br />
+        &nbsp;· Väärin → lisäät kortin kasaan<br /><br />
+        <span style={{ color: C.text }}>Haaste</span> — käännät J, Q, K tai A:<br />
+        &nbsp;· Seuraavalla on 1/2/3/4 yritystä täsmäykseen tai haastaa edelleen J/Q/K/A:lla<br />
+        &nbsp;· Ei vastausta → haastaja voittaa kasan ja jatkaa kääntämistä<br /><br />
+        Viimeiseksi kortteja omaava voittaa.
       </div>
       <div style={{ textAlign: 'center' }}>
         <button onClick={startGame} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
