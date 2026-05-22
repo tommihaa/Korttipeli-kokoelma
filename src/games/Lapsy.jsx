@@ -75,6 +75,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const aiSlapTmrs   = useRef([]);
   const failTmr      = useRef(null);
   const duelTmr      = useRef(null);
+  const halvePending = useRef(false);
   const logRef       = useRef([]);
   const tmrs         = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
@@ -113,7 +114,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     challenged: (player, card, target, count, cardStr) => `${player} haastaa ${card}! Pelaajalla ${target} on ${count} ${cardStr} aikaa vastata haasteeseen.`,
     flipped: (player, card) => `${player} kääntää ${card}.`,
     match: (rank) => `TÄSMÄYS! ${rank} — kuka läpsää ensin?`,
-    wrongSlap: (player) => `${player} läpsäsi väärin — menettää päällimmäisen!`,
+    wrongSlap: (player) => `${player} läpsäsi väärin — päällimmäinen kortti lisätään kasaan.`,
     correctSlap: (player, ms, count) => {
       const msStr = ms ? ` (${ms} ms)` : '';
       return `${player} läpsäsi nopeiten${msStr} — voitti ${count} korttia!`;
@@ -121,8 +122,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     heroTooSlow: 'Hero oli hieman hitaampi — ei rangaistusta.',
     heroSlapNoMatch: 'Hero läpsäsi — mutta ei täsmäystä! Menettää päällimmäisen kortin.',
     gameOver: (playerName) => playerName ? `${playerName === 'Hero' ? 'Veit voiton' : playerName + ' vei voiton'}! 🏆🎉` : 'Peli päättyi!',
-    duelStart: (a, b) => `⚔️ Kaksintaistelu! ${a} vs ${b} — pinot puolitetaan 30 s kuluttua jos ei ratkaisua.`,
-    duelHalved: (counts) => `✂️ 30 s kaksintaistelua — pinot puolitettu! ${counts}`,
+    duelStart: (a, b) => `⚔️ Kaksintaistelu! ${a} vs ${b} — pinot puolitetaan 30 s välein.`,
+    duelHalved: (counts) => `✂️ Pinot puolitettu! ${counts}`,
   };
 
   useLayoutEffect(() => { startGame(); }, []);
@@ -133,31 +134,21 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       if (!duelTmr.current) {
         const names = currentPiles.map((p, i) => p.length > 0 ? pName(i) : null).filter(Boolean);
         addLog(M.duelStart(names[0], names[1]));
-        duelTmr.current = tm(() => halveDuelPiles(), 30000);
+        halvePending.current = false;
+        duelTmr.current = tm(() => { halvePending.current = true; duelTmr.current = null; }, 30000);
       }
     } else {
       clearTimeout(duelTmr.current);
       duelTmr.current = null;
+      halvePending.current = false;
     }
-  }
-
-  function halveDuelPiles() {
-    duelTmr.current = null;
-    const curPiles = pilesRef.current;
-    const active = curPiles.filter(p => p.length > 0);
-    if (active.length !== 2 || phaseRef.current === 'gameover') return;
-    const newPiles = curPiles.map(p => p.length === 0 ? p : p.slice(0, Math.ceil(p.length / 2)));
-    setPiles(newPiles); pilesRef.current = newPiles;
-    const counts = newPiles.map((p, i) => p.length > 0 ? `${pName(i)}: ${p.length}` : null).filter(Boolean).join(', ');
-    addLog(M.duelHalved(counts));
-    duelTmr.current = tm(() => halveDuelPiles(), 30000);
   }
 
   function startGame() {
     clearTimeout(aiTmr.current);
     aiSlapTmrs.current.forEach(clearTimeout);
     clearTimeout(failTmr.current); setFR(null);
-    clearTimeout(duelTmr.current); duelTmr.current = null;
+    clearTimeout(duelTmr.current); duelTmr.current = null; halvePending.current = false;
     const initPiles = deal(nP);
     setPiles(initPiles); pilesRef.current = initPiles;
     setCenter([]); centerRef.current = [];
@@ -433,15 +424,26 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       };
     }
 
-    recordEliminated(newPiles);
-    setPiles(newPiles); pilesRef.current = newPiles;
+    // Kaksintaistelu: puolita pinot kun 30 s on kulunut ja kasa tyhjenee
+    let finalPiles = newPiles;
+    if (halvePending.current && newPiles.filter(p => p.length > 0).length === 2) {
+      halvePending.current = false;
+      finalPiles = newPiles.map(p => p.length === 0 ? p : p.slice(0, Math.ceil(p.length / 2)));
+      const counts = finalPiles.map((p, i) => p.length > 0 ? `${pName(i)}: ${p.length}` : null).filter(Boolean).join(', ');
+      addLog(M.duelHalved(counts));
+      // Käynnistä seuraava 30 s kello
+      duelTmr.current = tm(() => { halvePending.current = true; duelTmr.current = null; }, 30000);
+    }
+
+    recordEliminated(finalPiles);
+    setPiles(finalPiles); pilesRef.current = finalPiles;
     setCenter([]); centerRef.current = [];
     setCh(null); chRef.current = null;
     setPhase('idle'); phaseRef.current = 'idle';
-    if (checkGameOver(newPiles)) return;
-    updateDuelTimer(newPiles);
+    if (checkGameOver(finalPiles)) return;
+    updateDuelTimer(finalPiles);
     setCur(winnerIdx); curRef.current = winnerIdx;
-    tm(() => maybeAIFlip(winnerIdx, newPiles, [], null), 800);
+    tm(() => maybeAIFlip(winnerIdx, finalPiles, [], null), 800);
   }
 
   function checkGameOver(piles) {
@@ -486,11 +488,11 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         </div>
       </div>
       <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.7, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
-        <span style={{ color: C.gold, fontWeight: 700 }}>Pelitapa</span><br />
-        Kortit jaetaan tasan. Pelaajat kääntävät vuorotellen pinonsa päällimmäisen pöydälle kasaan, mutta sitten voi tapahtua kaksi asiaa.<br /><br />
-        <strong style={{ fontSize: 11 }}>1. Täsmäys:</strong> Kaksi päällimmäistä korttia oli samanarvoisia → nopein läpsääjä voittaa kasan.<br /><br />
-        <strong style={{ fontSize: 11 }}>2. Erityiskortit (J, Q, K, A):</strong> Puolustajalla on 1–4 mahdollisuutta vetää erityiskortti. Jos epäonnistuu → haastaja voittaa. Jos onnistuu → haastaa seuraavan. Voi sattua myös täsmäys → nopein voittaa.<br /><br />
-        <strong style={{ fontSize: 11, color: C.gold }}>Voittaja:</strong> Se pelaaja, jolla on kortit kun muilla ei ole.
+        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
+        Käännetään kasaan vuorotellen — kasan voi voittaa kahdella tavalla:<br />
+        Täsmäys (sama arvo päällä) → nopein läpsääjä voittaa · väärä läpsäys lisää kortin kasaan<br />
+        J haastaa 1 · Q 2 · K 3 · A 4 kertaa — vastataan J/Q/K/A:lla tai haastaja voittaa kasan<br />
+        Kaikki kortit keräämällä voittaa
       </div>
       <div style={{ textAlign: 'center' }}>
         <button onClick={startGame} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
