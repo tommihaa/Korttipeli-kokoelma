@@ -185,8 +185,11 @@ function splitWithGlossary(text) {
   const patterns = SANASTO
     .flatMap(s => s.match.map(m => ({ m, term: s.term })))
     .sort((a, b) => b.m.length - a.m.length);   // pisin ensin: "kova kakkonen" ennen "kova"
+  // Sanaraja: ei kirjainta/numeroa ennen eikä jälkeen — toimii myös ä/ö/å-kirjaimilla
+  const wL = '(?<![a-zA-ZäöåÄÖÅ0-9])';
+  const wR = '(?![a-zA-ZäöåÄÖÅ0-9])';
   const rx = new RegExp(
-    `(${patterns.map(p => p.m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
+    `(${patterns.map(p => wL + p.m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + wR).join('|')})`,
     'i'
   );
   const parts = [];
