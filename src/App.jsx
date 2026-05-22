@@ -5,6 +5,7 @@ import GameResult from './shared/GameResult.jsx';
 /* eslint-disable no-undef */
 const APP_VERSION = __APP_VERSION__;
 const BUILD_DATE  = __BUILD_DATE__;
+const BUILD_TIME  = __BUILD_TIME__;
 /* eslint-enable no-undef */
 const MAILTO = `mailto:no.jopas@gmail.com?subject=${encodeURIComponent(`Version ${APP_VERSION}, Deploy ${BUILD_DATE}, Jako52 palaute`)}`;
 import Koputus from './games/Koputus.jsx';
@@ -150,18 +151,18 @@ const GAMES = [
 const SANASTO = [
   // ─ Kortit ja erikoistilanteet ─────────────────────────────────────────────
   { kategoria: 'kortti', term: 'Mökki',         match: ['mökki','mokki','mökin','mökkejä'],                                emoji: '🏚', selitys: 'Koko pöydän tyhjennys yhdellä kaappauksella — antaa yhden lisäpisteen.',                                                          pelit: ['kasino']                       },
-  { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti, jonka saat edelliseltä pelaajalta, kun sinulla ei ole sopivaa pelattavaa. Eniten korttipantteja saanut häviää.',   pelit: ['ristiseiska']                  },
-  { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', selitys: 'Q♠ — erikoiskortti jota ei voi torjua, eikä se itse torju muita kortteja.',                                                         pelit: ['maija']                        },
-  { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Kun sinulla on enää yksi kortti kädessäsi, niin LAPPU! Seiskassa unohdettu lapun huuto tarkoittaa sinulle +3 korttia.',              pelit: ['seiska']                       },
+  { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti, jonka saat edelliseltä pelaajalta, kun sinulla ei ole käypää pelattavaa. Eniten korttipantteja saanut häviää.',    pelit: ['ristiseiska']                  },
+  { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', emojiStyle: { filter: 'grayscale(1)' }, selitys: 'Q♠ on tämän pelin ainoa erikoiskortti, se on vain nostettava.',                                                         pelit: ['maija']                        },
+  { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Jos sinulla pelivuorosi päätteeksi on enää yksi kortti pienessä kädessäsi, niin LAPPU ennen kuin seuraava pelaaja ehtii nostaa kortin! Seiskassa unohdettu lapun huuto tarkoittaa +3 korttia.',              pelit: ['seiska']                       },
   { kategoria: 'kortti', term: 'Kova kakkonen', match: ['kova kakkonen','kovat kakkoset'],                                 emoji: '♠',  selitys: '2♠ tai 2♣ — voi lyödä minkä tahansa ei-kaatokortin päälle.',                                                                       pelit: ['paskahousu']                   },
   // ─ Alueet ja vyöhykkeet ───────────────────────────────────────────────────
-  { kategoria: 'alue',   term: 'Käsi',          match: ['käsikorttisi','käsikortillesi','käsikortteja'],                   emoji: '🤚', selitys: 'Omat kortit jotka vain sinä näet livepeleissä viuhkana kädessä.',                                                                        pelitLabel: 'kaikki paitsi Koputus'     },
+  { kategoria: 'alue',   term: 'Käsi',          match: ['käsikorttisi','käsikortillesi','käsikortteja'],                   emoji: '🤚', selitys: 'Livepeleissä viuhkana kädessäsi olevat kortit.',                                                                                           pelitLabel: 'kaikki paitsi Koputus, Kultakala' },
   { kategoria: 'alue',   term: 'Kenttä',        match: [],                                                                  emoji: '🔲', selitys: 'Nurinpäin pöydälle eteesi jaetut kortit. Pelin aikana voit katsoa mitä siellä onkaan ja vaihdatko pienempiin.',                         pelit: ['kultakala','koputus']          },
   { kategoria: 'alue',   term: 'Kasa',          match: [],                                                                  emoji: '📚', selitys: 'Pöydän keskelle kasautuva korttikeko. Siihen pelataan päälle, kaadetaan T, A tai neljällä samalla. Nostetaan, jos ei käy.',             pelit: ['paskahousu']                   },
   { kategoria: 'alue',   term: 'Torni',         match: [],                                                                  emoji: '🗼', selitys: 'Järjestyksessä kasattu rakenne. Saman maan kortti edellisen päälle muodostaa tornin.',                                                      pelit: ['ristiseiska']                  },
   { kategoria: 'alue',   term: 'Pakka',         match: ['poistopakkaan','poistopakasta','pakasta','pakkaan','pakka'],       emoji: '🎴', selitys: 'Korttien nostolähde, joka ehtyy.',                                                                                                    pelitLabel: 'useimmat'                  },
-  { kategoria: 'alue',   term: 'Pino',          match: ['pinon','pinoa','pinoja','pino'],                                   emoji: '🃏', selitys: 'Läpsyssä käteen jaetut kortit kasvot alaspäin.',                                                                                        pelit: ['lapsy']                        },
-  { kategoria: 'alue',   term: 'Pöytä',         match: ['pöydältä','pöydälle','pöydän','pöytään'],                         emoji: '🟫', selitys: 'Kortit kasvot ylöspäin oleva alue — kaapattavissa tai täydennettävissä. Kasinossa pöydältä kaapataan kortteja summien perusteella.',  pelit: ['kasino']                       },
+  { kategoria: 'alue',   term: 'Pino',          match: ['pinon','pinoa','pinoja','pino'],                                   emoji: '🃏', selitys: 'Käteen jaetut kortit. Koko pelin ajan kasvot alaspäin.',                                                                                        pelit: ['lapsy']                        },
+  { kategoria: 'alue',   term: 'Pöytä',         match: ['pöydältä','pöydälle','pöydän','pöytään'],                         emoji: '🟫', selitys: 'Alussa pöytään jaetaan 4 korttia kasvot ylöspäin irralleen. Pelin kuluessa sieltä vuorotellen kaapataan ja lisätään. Pöydän tyhjentäminen on mökin arvoinen suoritus.',  pelit: ['kasino']                       },
   { kategoria: 'alue',   term: 'Poissa',        match: ['pois pelistä'],                                                    emoji: '❌', selitys: 'Kaadetut kortit ei palaa peliin.',                                                                                                      pelitLabel: 'useimmat'                  },
 ];
 
@@ -193,7 +194,7 @@ function splitWithGlossary(text) {
 
 /** Värikoodaa maavärit tekstiin tummaa taustaa varten */
 function renderSelitys(text) {
-  const darkSuit = { '♠': C.text, '♥': '#e05c3b', '♦': '#ff8c42', '♣': '#4caf7d' };
+  const darkSuit = { '♠': '#c8c8c8', '♥': '#e05c3b', '♦': '#ff8c42', '♣': '#4caf7d' };
   return text.split(/(♠|♥|♦|♣)/).map((p, i) =>
     darkSuit[p] ? <span key={i} style={{ color: darkSuit[p], fontWeight: 700 }}>{p}</span> : p
   );
@@ -238,7 +239,7 @@ function SanastoRivi({ s }) {
       <button
         onClick={() => setOpen(v => !v)}
         style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 2px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
-        <span style={{ fontSize: 15, flexShrink: 0, minWidth: 22 }}>{s.emoji}</span>
+        <span style={{ fontSize: 15, flexShrink: 0, minWidth: 22, ...(s.emojiStyle || {}) }}>{s.emoji}</span>
         <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: open ? C.gold : C.text, transition: 'color 0.15s' }}>{s.term}</span>
         {gameNames && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, opacity: 0.6, marginRight: 4 }}>{gameNames}</span>}
         <span style={{ fontSize: 13, color: C.dim, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
@@ -672,7 +673,7 @@ export default function App() {
         </div>
       </div>
       <div style={{ fontSize: 10, color: C.dim, opacity: 0.35, fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
-        v{APP_VERSION} · {BUILD_DATE}
+        v{APP_VERSION} · {BUILD_DATE} {BUILD_TIME}
       </div>
     </div>
   );
