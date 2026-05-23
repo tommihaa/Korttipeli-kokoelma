@@ -47,7 +47,7 @@ const GAMES = [
     rules: [
       'Läpsää kasaa, kun kaksi päällimmäistä korttia täsmäävät',
       'Oikein → voitat kasan · Väärin → lisäät kortin kasaan',
-      'J/Q/K/A haaste seuraavalle pelaajalle, 1–4 korttia aikaa siirtää haaste seuraavalle kääntämällä pinostaan kuvakortti',
+      'Kasaan käännetty kuvakortti on haaste seuraavalle pelaajalle, 1–4 korttia aikaa siirtää haaste seuraavalle kääntämällä pinostaan kuvakortti',
       'Viimeinen, jolla kortteja voittaa',
     ],
   },
