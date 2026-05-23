@@ -61,6 +61,7 @@ const M = {
   aiDiscard: (n, c) => `${n} heitti ${lblColored(c)} poistopakkaan.`,
   aiKnock:   n => `${n} koputtaa — luottaa käteensä!`,
   aiReact:   (n, c) => `${n} reagoi lyömällä ${lblColored(c)} — kortti poistuu!`,
+  aiWrongReact: n => `${n} reagoi — väärä kortti! Rangaistus.`,
   tipKnock:  (n, est) => `💡 ${n} koputti — arvioitu pistemäärä ≤${est}, pienin kädessä!`,
   tipTakeDiscard: (n, card, old) => `💡 ${n} ottaa ${card} poistopakasta — parempi kuin käden ${old}`,
   tipDrawDeck: n => `💡 ${n} nostaa pakasta — poistopakan kortti ei paranna käsiä`,
@@ -398,10 +399,19 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         if (!stopReact.current) { stopReact.current = true; setRO(false); setMsg(M.reactEnd); advance(gState, byIdx); }
       }
     }, 500);
+    const level = aiLevelRef.current;
+    const missProbability   = level === 'beginner' ? 0.5  : level === 'normal' ? 0.25 : level === 'hard' ? 0.1 : 0.03;
+    const wrongReactChance  = level === 'beginner' ? 0.15 : 0;
+
     gState.players.forEach((p, i) => {
       if (p.isHuman) return;
       const mi = [...p.known].find(ki => p.cards[ki]?.r === card.r);
+
+      // Passiivisuus: jättää reagoimatta vaikka tietää sopivan kortin
+      if (mi !== undefined && Math.random() < missProbability) return;
+
       if (mi !== undefined) {
+        // Oikea reaktio
         const delay = 800 + Math.random() * 2400;
         tm(() => {
           if (stopReact.current) return;
@@ -416,6 +426,48 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
           });
           const newG = { ...cur, players }; setG(newG); gRef.current = newG;
           tm(() => advance(newG, byIdx), 900);
+        }, delay);
+      } else if (Math.random() < wrongReactChance) {
+        // Aloittelija-virhe: arvaa tuntemattomalla kortilla
+        const unknownIdxs = [0,1,2,3].filter(ki => !p.known.has(ki) && p.cards[ki] !== null);
+        if (!unknownIdxs.length) return;
+        const wrongIdx = unknownIdxs[Math.floor(Math.random() * unknownIdxs.length)];
+        const delay = 1200 + Math.random() * 1600;
+        tm(() => {
+          if (stopReact.current) return;
+          stopReact.current = true; clearInterval(reactInt.current); setRO(false);
+          const cur = gRef.current;
+          const wrongCard = cur.players[i].cards[wrongIdx];
+          if (!wrongCard) return;
+          if (wrongCard.r === card.r) {
+            // Sattumalta oikein — käy onneksi
+            setMsg(M.aiReact(p.name, wrongCard));
+            if (sndRef.current) SFX.reactWin();
+            const players = cur.players.map((pl, pi) => {
+              if (pi !== i) return pl;
+              const cards = [...pl.cards]; cards[wrongIdx] = null;
+              const kn = new Set([...pl.known].filter(k => k !== wrongIdx));
+              return { ...pl, cards, known: kn };
+            });
+            const newG = { ...cur, players }; setG(newG); gRef.current = newG;
+            tm(() => advance(newG, byIdx), 900);
+          } else {
+            // Väärä arvaus — rangaistus
+            setMsg(M.aiWrongReact(p.name));
+            if (sndRef.current) SFX.reactWrong();
+            const afterLoss = [...cur.players[i].cards]; afterLoss[wrongIdx] = null;
+            const draws = cur.deck.slice(0, 2); let dIdx = 0;
+            const withPenalty = afterLoss.map(c => { if (c === null && dIdx < draws.length) return draws[dIdx++]; return c; });
+            const newDeck = cur.deck.slice(2);
+            const players = cur.players.map((pl, pi) => {
+              if (pi !== i) return pl;
+              const kn = new Set([...pl.known].filter(k => k !== wrongIdx));
+              return { ...pl, cards: withPenalty, known: kn };
+            });
+            const newG = { ...cur, players, deck: newDeck, discard: [...cur.discard, wrongCard] };
+            setG(newG); gRef.current = newG;
+            tm(() => advance(newG, byIdx), 1200);
+          }
         }, delay);
       }
     });

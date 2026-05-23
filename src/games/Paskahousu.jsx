@@ -128,9 +128,14 @@ function fillHand(hand, draw) {
 // AI: valitse paras kortti tai kortit
 // pile = nykyinen kasa (ennen pelaamista) — tarvitaan 4x-kaatolaskennan tarkistukseen
 // drawLength = nostopakan koko — 0 = pakka loppu, siirry endgame-strategiaan
-function aiCards(hand, top, pile, drawLength) {
+// level = 'beginner'|'normal'|'hard'|'supernatural'
+function aiCards(hand, top, pile, drawLength, level = 'normal') {
   const opts = hand.filter(c => canPlay(c, top));
   if (!opts.length) return null;
+
+  const isHard  = level === 'hard' || level === 'supernatural';
+  const isSuper = level === 'supernatural';
+  const isKova  = c => c.r === '2' && (c.s === '♠' || c.s === '♣');
 
   // 1. Täydennä 4 samaa → välitön kaato (korkein prioriteetti)
   if (top && (LOW.has(top.r) || FACES.has(top.r))) {
@@ -148,7 +153,27 @@ function aiCards(hand, top, pile, drawLength) {
     if (quad) return quad;
   }
 
-  const isKova = c => c.r === '2' && (c.s === '♠' || c.s === '♣');
+  // 1b. Hard/Super: proaktiivinen kaato käden rakenteen perusteella (pakka ei tyhjä)
+  if (isHard && top && drawLength > 0 && pile) {
+    const distinctInPile = new Set(pile.map(c => c.r)).size;
+    if (distinctInPile > 2) {
+      const lowThreshold = isSuper ? 1 : 2;
+      const lowInHand   = hand.filter(c => c.v <= 6 && !isKova(c)).length;
+      const facesInHand = hand.filter(c => FACES.has(c.r)).length;
+
+      // 10-kaato: top ≤ 9, kädessä pieniä + kuvia
+      const tens = opts.filter(c => c.r === '10');
+      if (tens.length > 0 && top.v <= 9 && lowInHand >= lowThreshold && facesInHand >= 1) {
+        return [tens[0]];
+      }
+
+      // A-kaato: top on kuvakortti, kädessä pieniä
+      const aces = opts.filter(c => c.r === 'A');
+      if (aces.length > 0 && FACES.has(top.r) && lowInHand >= lowThreshold) {
+        return [aces[0]];
+      }
+    }
+  }
 
   // Endgame: pakka loppu — tähtää hyviin kortteihin, aiheuta hankaluuksia
   if (drawLength === 0) {
@@ -626,7 +651,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     if (g.skipNext === turn) { applySkip(gRef.current, turn); return; }
 
-    let cards = aiCards(p.hand, top, g.pile, draw.length);
+    let cards = aiCards(p.hand, top, g.pile, draw.length, aiLevelRef.current);
     if (cards) {
       if (cards.every(c => c.r !== '10' && c.r !== 'A') && aiShouldFumble(aiLevelRef.current)) {
         // Aloittelija-virhe: pelaa 10 tai A turhaan — erikoiskortti kun normaali kävisi

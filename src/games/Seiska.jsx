@@ -462,11 +462,28 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const { activePlayer, players, discardTop, reqSuit, drawsThisTurn, aceBonus } = g;
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
+    const level  = aiLevelRef.current;
+    const isSuper = level === 'supernatural';
+    const isHard  = level === 'hard' || isSuper;
 
-    // Ässä-bonusvuoro: pelaa saman maan kortti tai lopeta (+ rangaistus)
+    // ── Ässä-bonusvuoro ─────────────────────────────────────
     if (aceBonus !== null) {
       const bonusCard = p.hand.find(c => c.s === aceBonus && c.r !== '7');
-      if (bonusCard) {
+      // Strateginen harkinta: käytä bonus vain jos ei uhkaa + vie ≤kynnys korttiin
+      const applyLogic = level !== 'beginner' && (level !== 'normal' || Math.random() < 0.5);
+      const threshold  = isSuper ? 2 : 3; // supernatural tiukempi tavoite
+      let useBonus;
+      if (!bonusCard) {
+        useBonus = false;
+      } else if (!applyLogic) {
+        useBonus = true; // aloittelija tai normaali (50%): käytä aina jos voi
+      } else {
+        const anyoneAtOne = players.some(
+          (pl, i) => i !== activePlayer && !g.finished.includes(i) && pl.hand.length === 1
+        );
+        useBonus = !anyoneAtOne && (p.hand.length - 1) <= threshold;
+      }
+      if (useBonus) {
         doPlay({ ...gRef.current, aceBonus: null }, activePlayer, [bonusCard], null);
       } else {
         const g2 = applyAcePenalty({ ...gRef.current, aceBonus: null }, activePlayer);
@@ -477,20 +494,32 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
     const bestPlay = aiBestPlay(p.hand, discardTop, reqSuit);
 
-    // Aloittelija/Normaali-virhe: unohtaa että 7 on villikortti — nostaa pakasta
-    // vaikka seiska olisi kädessä ja muu sopimaton kortti
+    // Aloittelija/Normaali-virhe: unohtaa että 7 on villikortti
     const playIsOnlySeven = bestPlay && bestPlay.length === 1 && bestPlay[0].r === '7';
-    if (playIsOnlySeven && drawsThisTurn < 3 && aiShouldFumble(aiLevelRef.current)) {
+    if (playIsOnlySeven && drawsThisTurn < 3 && aiShouldFumble(level)) {
       if (teachRef.current) addLog(`💡 ${p.name} unohti että 7 käy aina — nostaa pakasta`);
       doDraw(gRef.current, activePlayer);
       return;
     }
 
-    // Aloittelija/Normaali-virhe: ei kerää samanarvoisia ketjuksi loppuun, vaan
-    // pelaa vain yhden ensimmäisen kun useampi olisi mahdollista
-    const play = (bestPlay && bestPlay.length > 1 && aiShouldFumble(aiLevelRef.current))
+    // Aloittelija/Normaali-virhe: ei ketjuta samanarvoisia
+    let play = (bestPlay && bestPlay.length > 1 && aiShouldFumble(level))
       ? [bestPlay[0]]
       : bestPlay;
+
+    // Hard/Supernatural: useista kelvollisista ässistä valitaan paras bonusmaan mukaan
+    if (play && play.length === 1 && play[0].r === 'A' && isHard) {
+      const validAces = validSingles(p.hand, discardTop, reqSuit).filter(c => c.r === 'A');
+      if (validAces.length > 1) {
+        const bestAce = validAces.reduce((best, ace) => {
+          const f  = p.hand.filter(c => c.id !== ace.id  && c.s === ace.s  && c.r !== '7').length;
+          const fb = p.hand.filter(c => c.id !== best.id && c.s === best.s && c.r !== '7').length;
+          return f > fb ? ace : best;
+        });
+        play = [bestAce];
+      }
+    }
+
     if (play) {
       const suit = play[0].r === '7'
         ? aiSuit(p.hand.filter(c => c.id !== play[0].id))

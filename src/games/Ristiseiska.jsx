@@ -133,9 +133,8 @@ function distanceToPlay(card, rows) {
 }
 
 // AI: seiskat ensin (priorisoi maa jossa on eniten omia kortteja),
-// porttikortteja (6 ja 8) pihdetään vain jos samaa maata on kädessä 1 kpl,
-// muuten pienin arvo.
-function aiBestCard(hand, rows) {
+// porttikortteja (6 ja 8) pihdetään strategisesti, muuten pienin arvo.
+function aiBestCard(hand, rows, level = 'normal') {
   const valid = hand.filter(c => isPlayable(c, rows));
   if (!valid.length) return null;
 
@@ -144,12 +143,27 @@ function aiBestCard(hand, rows) {
     return sevens.sort((a, b) => suitCount(hand, b.s) - suitCount(hand, a.s))[0];
   }
 
-  // Porttikorttia (6 tai 8) pidätellään jos samaa maata on useampi kädessä:
-  // tavoitteena pakotettu passaus jossa saa antaa heikot korttinsa pantiksi.
-  // (Passata saa vain kun käsikortit eivät käy — tämä on laillinen taktikki.)
+  const isHard = level === 'hard' || level === 'supernatural';
+
+  // Normal: pidättele porttia aina kun samaa maata on useampi → pakotettu passaus
+  // Hard/Super: pidättele vain jos kädessä on hyvä panttikandidaatti samaa maata
+  //   (distanceToPlay ≥ 3) — muuten pelaa portti auki, sillä muut saman maan kortit
+  //   ovat jo lähellä pelattavaksi eikä panttina siirtäminen tuo etua.
   const nonGates = valid.filter(c => {
     if (c.r !== '6' && c.r !== '8') return true;
-    return suitCount(hand, c.s) <= 1;
+    const cnt = suitCount(hand, c.s);
+    if (!isHard) {
+      // Normal: pidättele jos samaa maata on useampi (cnt > 1), muuten pelaa
+      return cnt <= 1;
+    }
+    // Hard/Supernatural: porttikortti on placeholder — pihtaa se niin kauan kuin
+    // kädessä on huonoja kortteja joista haluaa päästä eroon panttina.
+    // Huono kortti = kaukana pelattavuudesta (dist ≥ 3), mistä maasta tahansa.
+    // cnt = 1 (vain tämä portti maassa) → pidättele silti: puhdas blokkaus.
+    const hasAnyBadCard = hand.some(
+      other => other.id !== c.id && distanceToPlay(other, rows) >= 3
+    );
+    return !hasAnyBadCard; // pelaa portti jos kaikki muut kortit lähellä pelattavuutta
   });
 
   const pool = nonGates.length ? nonGates : valid;
@@ -379,21 +393,23 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
 
+    const level = aiLevelRef.current;
+
     if (bonusTurn !== null && bonusTurn === activePlayer) {
       const g2 = { ...gRef.current, bonusTurn: null };
-      const card = aiBestCard(p.hand, rows);
+      const card = aiBestCard(p.hand, rows, level);
       if (card) doPlay(g2, activePlayer, card);
       else      advanceTurnRS(g2, activePlayer);
       return;
     }
 
-    const card = aiBestCard(p.hand, rows);
+    const card = aiBestCard(p.hand, rows, level);
     let bestCard = card;
 
     if (bestCard) {
       if (bestCard.r === '7') {
         // Aloittelija-virhe: avaa seiskan väärään maahan — valitsee huonoimman maan
-        if (aiShouldFumble(aiLevelRef.current)) {
+        if (aiShouldFumble(level)) {
           const sevens = p.hand.filter(c => c.r === '7' && isPlayable(c, rows));
           if (sevens.length > 1) {
             bestCard = sevens.sort((a, b) => suitCount(p.hand, a.s) - suitCount(p.hand, b.s))[0];
@@ -401,7 +417,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         }
       } else if (bestCard.r !== '6' && bestCard.r !== '8') {
         // Aloittelija-virhe: pelaa porttikortin jota älykäs AI pidättelisi
-        if (aiShouldFumble(aiLevelRef.current)) {
+        if (aiShouldFumble(level)) {
           const allValid = p.hand.filter(c => isPlayable(c, rows));
           const heldGate = allValid.find(c => (c.r === '6' || c.r === '8') && suitCount(p.hand, c.s) > 1);
           if (heldGate) bestCard = heldGate;

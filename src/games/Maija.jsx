@@ -348,11 +348,12 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         }
       }
 
-      // Aloittelija-virhe: ei "vaihda Maijaa heikompaan" — pitää sen kädessä
-      // vaikka nyt olisi oikea hetki pelata se pois
-      if (maija && (toPlay[0]?.s === '♠' || deckEmpty)) {
-        if (!aiShouldFumble(aiLevelRef.current)) {
-          toPlay = hand.filter(c => c.s === '♠').slice(0, defHandSize);
+      // Maija-prioriteetti: luovu padoista heti jos muita patoja kädessä tai pakka tyhjä
+      if (maija && !aiShouldFumble(aiLevelRef.current)) {
+        const hasOtherSpades = hand.some(c => c.s === '♠' && !isMaija(c));
+        if (hasOtherSpades || deckEmpty) {
+          const spadeAttack = hand.filter(c => c.s === '♠' && !isMaija(c)).slice(0, defHandSize);
+          if (spadeAttack.length > 0) toPlay = spadeAttack;
         }
       }
       if (!toPlay.length) { toPlay = maija ? [maija] : [hand[0]]; }
@@ -410,6 +411,34 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
 
       // Aloittelija-virhe: heittää korkean kortin kun pienemmällä tulisi toimeen
       const shouldFumbleDefense = aiShouldFumble(aiLevelRef.current);
+
+      // Lasketaan montako valttia tarvitaan täyskaatoon
+      let trumpsNeeded = 0;
+      {
+        let tmp = [...hand];
+        for (const row of tbl2) {
+          if (row.def) continue;
+          const nonT2 = tmp.filter(c => c.s !== g2.trump && canBeat(row.att, c, g2.trump)).sort((a,b) => a.v - b.v);
+          if (nonT2.length) { tmp = tmp.filter(c => c.id !== nonT2[0].id); }
+          else {
+            const trp2 = tmp.filter(c => c.s === g2.trump && canBeat(row.att, c, g2.trump)).sort((a,b) => a.v - b.v);
+            if (trp2.length) { trumpsNeeded++; tmp = tmp.filter(c => c.id !== trp2[0].id); }
+          }
+        }
+      }
+      // Valtti-epäröinti: kannattaako käyttää valttia kaatoon?
+      const deckNowEmpty = g2.deck.length === 0;
+      const cardsOnTable = tbl2.filter(r => !r.def).length;
+      const defLvl = aiLevelRef.current;
+      let usesTrumpToBeat = canBeatAll;
+      if (canBeatAll && trumpsNeeded > 0 && !shouldFumbleDefense) {
+        if (defLvl === 'normal') {
+          usesTrumpToBeat = deckNowEmpty || cardsOnTable >= 3;
+        } else if (defLvl === 'hard' || defLvl === 'supernatural') {
+          usesTrumpToBeat = deckNowEmpty || cardsOnTable >= 2;
+        }
+      }
+
       const newTbl = tbl2.map(row => {
         if (row.def) return row;
         const nonT = hand.filter(c => c.s !== g2.trump && canBeat(row.att, c, g2.trump)).sort((a,b) => a.v - b.v);
@@ -420,7 +449,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
           const all = [...nonT, ...trp];
           chosen = all[Math.floor(Math.random() * all.length)];
         } else {
-          chosen = canBeatAll ? (nonT[0] || trp[0]) : nonT[0];
+          chosen = usesTrumpToBeat ? (nonT[0] || trp[0]) : nonT[0];
         }
         if (!chosen) return row;
         hand = hand.filter(c => c.id !== chosen.id);
