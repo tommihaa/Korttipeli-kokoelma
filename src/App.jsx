@@ -86,8 +86,8 @@ const GAMES = [
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Kasino, maxWidth: 560, pakka: 'taydennetty', suosikki: true,
     rules: [
-      'Laske pöydän kortit täsmäävään summaan — tee kaappaus',
-      'Tai jätä kortti pöytään — muut voivat käyttää sitä summiin',
+      'Laske pöydän korteista täsmääkö joku summa käsikorttisi arvon kanssa — tee kaappaus',
+      'Tai jätä kortti pöytään — muut voivat käyttää sitä omien käsikorttiensa summiin',
       'Mökki: kaappaa kaikki pöydältä → 1 lisäpiste',
       'Ensimmäisenä 16+ pistettä voittaa',
     ],
