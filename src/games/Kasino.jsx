@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { C, SUIT_COLOR } from '../shared/colors.js';
+import { C, SUIT_COLOR, SUIT_COLOR_DARK } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble } from '../shared/helpers.js';
@@ -29,7 +29,7 @@ function renderLogMessage(text) {
     }
     const rank = match[1];
     const suit = match[2];
-    const color = SUIT_COLOR[suit];
+    const color = SUIT_COLOR_DARK[suit];
     parts.push(
       <span key={`${match.index}-${rank}${suit}`} style={{ color, fontWeight: 700 }}>
         {rank}{suit}
@@ -65,6 +65,85 @@ function leaveDanger(candidate, table) {
     }
   }
   return score;
+}
+
+// ── AI-pistearvo: sama kaava kuin Vaihtoehdot-modaalissa ─────────────────
+function aiCardScore(cards, isMokki = false) {
+  let pts = 0;
+  for (const c of cards) {
+    if (isRuutuKymppi(c)) pts += 2;
+    else if (isPataKakkonen(c)) pts += 1;
+    else if (c.r === 'A') pts += 1;
+  }
+  if (isMokki) pts += 1;
+  const spades = cards.filter(c => c.s === '♠').length;
+  return pts * 10000 + spades * 100 + cards.length;
+}
+
+// ── Supernatural AI: tuntematon korttipankki ─────────────────────────────
+// Palauttaa kaikki kortit joita em. pelaaja ei varmuudella tiedä
+function getUnknownPool(g, playerIdx) {
+  const known = new Set();
+  const mark = cards => cards.forEach(c => known.add(`${c.r}${c.s}`));
+  mark(g.players[playerIdx].hand);
+  mark(g.table);
+  mark(g.builds.flatMap(b => b.cards));
+  g.players.forEach(p => mark(p.captured));
+  return SUITS.flatMap(s => RANKS.map(r => `${r}${s}`)).filter(rs => !known.has(rs));
+}
+
+// Todennäköisyys, että vähintään yhdellä vastustajalla on kortti jolla handVal = targetHV
+// (hypergeometrinen: käytetään ilman palautusta)
+function pAnyOpponentHas(g, playerIdx, targetHV) {
+  const pool = getUnknownPool(g, playerIdx);
+  const U = pool.length;
+  if (U === 0) return 0;
+  // Laske kuinka monta tuntematonta korttia osuu targetHV:hen
+  const m = pool.filter(rs => {
+    const r = rs.slice(0, -1); // rank: 'A','2'..'K','10' (suit on viimeinen merkki)
+    if (r === '2' && rs.endsWith('♠')) return targetHV === 15;  // 2♠ handVal=15
+    if (r === '10' && rs.endsWith('♦')) return targetHV === 16; // 10♦ handVal=16
+    if (r === 'A') return targetHV === 14;
+    return VAL[r] === targetHV;
+  }).length;
+  if (m === 0) return 0;
+  const k = g.players.filter((_, i) => i !== playerIdx).reduce((s, p) => s + p.hand.length, 0);
+  if (k === 0) return 0;
+  // P(ei yksikään k vastustajan kortista osu) = product((U-m-i)/(U-i))  i=0..k-1
+  let pNone = 1;
+  for (let i = 0; i < k && (U - i) > 0; i++) {
+    pNone *= Math.max(0, U - m - i) / (U - i);
+  }
+  return 1 - pNone;
+}
+
+// Etsi paras pöytäkorttilisäys rakennelmakaapin yhteyteen (sama arvo kuin rakennelmalla)
+function findTableBonus(table, value) {
+  let best = null;
+  const n = table.length;
+  for (let mask = 1; mask < (1 << n); mask++) {
+    const sel = table.filter((_, i) => (mask >> i) & 1);
+    if (canPartition(sel, value)) {
+      const score = aiCardScore(sel);
+      if (!best || score > best.score) best = { cards: sel, score };
+    }
+  }
+  return best ? best.cards : [];
+}
+
+// Todennäköisyyspainotettu varastusriski: kuinka vaarallinen tämä jättö on?
+function pWeightedLeaveDanger(candidate, g, playerIdx) {
+  const cardW = c => isPataKakkonen(c) ? 10 : isRuutuKymppi(c) ? 7 : c.r === 'A' ? 3 : 1;
+  const cv = tableVal(candidate);
+  // Suora: joku kaappaa candidaten yksin (tarvitsee käsikortin arvolla cv)
+  let danger = pAnyOpponentHas(g, playerIdx, cv) * cardW(candidate);
+  // Epäsuora: yhdistelmä candidaten + pöytäkortin kaappaus
+  for (const t of g.table) {
+    const sum = cv + tableVal(t);
+    if (sum > 14) continue; // ässän handVal = 14, K = 13
+    danger += pAnyOpponentHas(g, playerIdx, sum) * cardW(t);
+  }
+  return danger;
 }
 
 function newDeck() {
@@ -168,7 +247,7 @@ const M = {
   humanLeave: (who, card) => `${who} ${card} pöytään.`,
   warning: (card, captured) => `⚠ Huom: ${card} olisi kaapattu ${captured} — klikkaa pöytäkortit ennen käsikorttia.`,
   invalidMove: (card) => `${card} ei kaappaa valittuja kortteja — tarkista valintasi tai peruuta.`,
-  aiCapture: (name, handCard, captureStr, isMokki) => `${name}: ${handCard} ← ${captureStr}${isMokki ? ' 🏠' : ''}`,
+  aiCapture: (name, handCard, captureStr, isMokki) => `${name}: ${handCard} ← ${captureStr}${isMokki ? ' 🏠 MÖKKI!' : ''}`,
   tipMokki:   name => `💡 ${name} tekee MOKIN — kaappaa koko pöydän kerralla!`,
   tipSpecial: (name, card) => `💡 ${name} kohdistaa ${card}:hin — arvokkain kaappaus!`,
   tipLeave:   (name, card) => `💡 ${name} jättää pienen ${card} pöydälle — ei paljasta arvokorttia`,
@@ -187,7 +266,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const [phase, setPhase] = useState('idle');
   const [selTable, setSelTable] = useState([]);
   const [selBuilds, setSelBuilds] = useState([]); // selected build IDs for capture
+  const [captureMode, setCaptureMode] = useState(false); // kaappaustila
   const [buildMode, setBuildMode] = useState(false); // rakennustila
+  const [leaveMode, setLeaveMode] = useState(false); // jättämistila
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
   const [logOpen, setLO] = useState(hints);
@@ -202,6 +283,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+  const [helpTerm, setHelpTerm] = useState(null); // 'kaappaus' | 'rakennus'
 
   const gRef    = useRef(null);
   const phaseRef = useRef('idle');
@@ -267,44 +350,81 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     setG(g); gRef.current = g;
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
-    setSelTable([]); setSelBuilds([]); setScores(null); setPakaAnim(false);
+    setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false); setScores(null); setPakaAnim(false);
     logRef.current = []; setLog([]);
-    const hint = getTurnHint(g.players[0].hand, g.table);
+    const hint = getTurnHint(g.players[0].hand, g.table, g.builds);
     addLog(M.gameStart(hint));
     cumulBdRef.current = null;
     setScreen('game');
     setShuffling(true);
   }
 
-  function getTurnHint(hand, table) {
-    if (table.length === 0) return 'Pöytä tyhjä — jätä kortti pöytään.';
-    const captures = [];
+  function getTurnHint(hand, table, builds = []) {
+    const uniq = arr => arr.filter((hc, i, a) => a.findIndex(c => c.id === hc.id) === i);
+
+    // Omat rakennelmat joihin kädessä sopiva kortti
+    const ownBuildHCards = uniq(
+      builds.filter(b => b.ownerIdx === 0 && hand.some(hc => handVal(hc) === b.value))
+        .flatMap(b => hand.filter(hc => handVal(hc) === b.value))
+    );
+    // Vastustajan rakennelmat jotka voi kähveltää
+    const stealHCards = uniq(
+      builds.filter(b => b.ownerIdx !== 0 && hand.some(hc => handVal(hc) === b.value))
+        .flatMap(b => hand.filter(hc => handVal(hc) === b.value))
+    );
+
+    if (table.length === 0) {
+      const parts = [];
+      if (ownBuildHCards.length) parts.push(`Vie rakennelma: ${ownBuildHCards.map(c => lblColored(c)).join(', ')}`);
+      if (stealHCards.length)    parts.push(`Kähvellys: ${stealHCards.map(c => lblColored(c)).join(', ')}`);
+      if (parts.length) return `Pöytä tyhjä — ${parts.join(' · ')}`;
+      return 'Pöytä tyhjä — jätä kortti pöytään.';
+    }
+
+    // Pöytäkorttien kaappaus
+    const tableCaptureHCards = [];
     for (const hc of hand) {
       const hv = handVal(hc);
       const n = table.length;
-      let bestSet = null, bestScore = 0;
       for (let mask = 1; mask < (1 << n); mask++) {
         const sel = table.filter((_, i) => (mask >> i) & 1);
-        if (canPartition(sel, hv)) {
-          const sc = sel.filter(isPataKakkonen).length * 50
-            + sel.filter(isRuutuKymppi).length * 20
-            + sel.length;
-          if (sc > bestScore) { bestScore = sc; bestSet = sel; }
+        if (canPartition(sel, hv)) { tableCaptureHCards.push(hc); break; }
+      }
+    }
+
+    // Kaappaus = pöytäkortit + omat rakennelmat (deduplikoitu)
+    const allCaptureHCards = [...tableCaptureHCards];
+    for (const hc of ownBuildHCards) {
+      if (!allCaptureHCards.find(c => c.id === hc.id)) allCaptureHCards.push(hc);
+    }
+    // Kähvellys vain ne jotka eivät ole jo kaappauksissa
+    const uniqueStealHCards = stealHCards.filter(hc => !allCaptureHCards.find(c => c.id === hc.id));
+
+    // Rakennelman luonti (ei jo muissa kategorioissa)
+    const allUsed = [...allCaptureHCards, ...uniqueStealHCards];
+    const buildCreateHCards = [];
+    for (const hc of hand) {
+      if (allUsed.find(c => c.id === hc.id)) continue;
+      const hv = handVal(hc);
+      const n = table.length;
+      for (let mask = 0; mask < (1 << n); mask++) {
+        const sel = table.filter((_, i) => (mask >> i) & 1);
+        const buildValue = hv + sel.reduce((s, c) => s + tableVal(c), 0);
+        if (buildValue > 13) continue;
+        if (hand.some(c => c.id !== hc.id && handVal(c) === buildValue)) {
+          buildCreateHCards.push(hc); break;
         }
       }
-      if (bestSet) captures.push({ hc, bestSet, bestScore });
     }
-    if (!captures.length) return 'Ei kaappauksia — jätä kortti pöytään.';
-    captures.sort((a, b) => b.bestScore - a.bestScore);
-    const top = captures.slice(0, 2).map(({ hc, bestSet }) => {
-      const groups = findGroups(bestSet, handVal(hc));
-      const groupStr = groups.length > 1
-        ? groups.map(grp => '(' + grp.map(id => lbl(bestSet.find(c => c.id === id))).join('+') + ')').join('+')
-        : bestSet.map(lbl).join('+');
-      return `${lbl(hc)}→${groupStr}`;
-    });
-    const extra = captures.length > 2 ? ` +${captures.length - 2} muuta` : '';
-    return `Kaappaus: ${top.join(' · ')}${extra}`;
+
+    const totalCount = allCaptureHCards.length + uniqueStealHCards.length + buildCreateHCards.length;
+    if (!totalCount) return 'Ei kaappauksia — jätä kortti pöytään.';
+
+    const parts = [];
+    if (allCaptureHCards.length)   parts.push(`Kaappaus: ${allCaptureHCards.map(c => lblColored(c)).join(', ')}`);
+    if (uniqueStealHCards.length)  parts.push(`Kähvellys: ${uniqueStealHCards.map(c => lblColored(c)).join(', ')}`);
+    if (buildCreateHCards.length)  parts.push(`Rakenna: ${buildCreateHCards.map(c => lblColored(c)).join(', ')}`);
+    return parts.join(' · ');
   }
 
   function advance(g, fromIdx) {
@@ -322,7 +442,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     if (next === 0 && p.hand.length === 1 && g2.table.length === 0) {
       setCur(0); curRef.current = 0;
       setPhase('idle'); phaseRef.current = 'idle';
-      setSelTable([]); setSelBuilds([]); setBuildMode(false);
+      setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
       setG(g2); gRef.current = g2;
       const g3 = doLeave(g2, 0, p.hand[0]);
       setG(g3); gRef.current = g3;
@@ -333,10 +453,10 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
 
     setCur(next); curRef.current = next;
     setPhase('select_table'); phaseRef.current = 'select_table';
-    setSelTable([]); setSelBuilds([]); setBuildMode(false);
+    setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
     setG(g2); gRef.current = g2;
     if (p.isHuman) {
-      const hint = getTurnHint(p.hand, g2.table);
+      const hint = getTurnHint(p.hand, g2.table, g2.builds);
       addLog(M.yourTurn(korttia(p.hand.length), hint));
     } else {
       addLog(M.aiThinking(p.name));
@@ -427,7 +547,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     setPhase('select_table'); phaseRef.current = 'select_table';
     const h0 = withScores.players[0];
     const scoreStr = finalPlayers.map(p => `${p.name} ${p.score}p`).join(', ');
-    addLog(M.newRound(scoreStr, getTurnHint(h0.hand, withScores.table)));
+    addLog(M.newRound(scoreStr, getTurnHint(h0.hand, withScores.table, withScores.builds)));
   }
 
   function scoreRound(g) {
@@ -523,7 +643,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     const handV = handVal(handCard);
     const tableSum = tableCards.reduce((s, c) => s + tableVal(c), 0);
     const buildValue = handV + tableSum;
-    if (buildValue > 14) return null; // max rakennelman arvo = ässä (14)
+    if (buildValue > 13) return null; // max rakennelman arvo = kuningas (13)
     const hasCapturer = hand.some(c => c.id !== handCard.id && handVal(c) === buildValue);
     return hasCapturer ? buildValue : null;
   }
@@ -541,8 +661,10 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       : p
     );
     if (sndRef.current) SFX.build();
-    const who = playerIdx === 0 ? 'Sinä' : g.players[playerIdx].name;
-    addLog(M.humanBuild(who, buildValue));
+    const buildMsg = playerIdx === 0
+      ? `Sinä rakennat rakennelman — arvo ${buildValue}`
+      : `${g.players[playerIdx].name} rakentaa rakennelman — arvo ${buildValue}`;
+    addLog(buildMsg);
     return { ...g, players, table: newTable, builds: [...g.builds, build] };
   }
 
@@ -605,21 +727,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     const hasOwnBuild = g.builds.some(b => b.ownerIdx === 0);
     const hv = handVal(card);
 
-    // Ei valintaa → jätä pöytään (jos ei omaa rakennelmaa)
-    if (selTable.length === 0 && selBuilds.length === 0) {
-      if (hasOwnBuild) { addLog(M.noBuildLeave); return; }
-      phaseRef.current = 'idle'; setPhase('idle');
-      const best = findBestCapture(g.players[0], g.table);
-      const g2 = doLeave(g, 0, card);
-      setG(g2); gRef.current = g2;
-      setSelTable([]); setSelBuilds([]);
-      if (best && g.table.length > 0) {
-        addLog(M.warning(lblColored(best.handCard), best.tableCards.map(lbl).join('+')));
-      }
-      tm(() => advance(g2, 0), 600);
-      return;
-    }
-
     // Rakennelma(t) valittu → kaappaa rakennelmat (+ mahdolliset pöytäkortit)
     if (selBuilds.length > 0) {
       const selectedBuildObjs = g.builds.filter(b => selBuilds.includes(b.id));
@@ -643,24 +750,37 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       return;
     }
 
-    // Rakennustila — yritä vain rakennelmaa
+    // Rakennustila — toimii myös tyhjällä pöytävalinnalla (parirakennelma, mask=0)
     if (buildMode) {
+      if (hasOwnBuild && selTable.length === 0) { addLog(M.noBuildLeave); return; }
       const buildVal = getBuildValue(card, selTable, g.players[0].hand);
       if (buildVal !== null) {
         const g2 = doBuild(g, 0, card, selTable, buildVal);
         setG(g2); gRef.current = g2;
-        setSelTable([]); setSelBuilds([]); setBuildMode(false);
+        setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
         setPhase('idle'); phaseRef.current = 'idle';
         tm(() => advance(g2, 0), 600);
       } else {
-        addLog(selTable.length === 0
-          ? 'Valitse ensin pöytäkortteja rakennelmaan.'
-          : M.invalidMove(lblColored(card)));
+        addLog(M.invalidMove(lblColored(card)));
       }
       return;
     }
 
-    // Normaalitila — vain kaappaus
+    // Tyhjä valinta (ei buildMode) → leaveMode tai tila-virhe
+    if (selTable.length === 0) {
+      if (hasOwnBuild) { addLog(M.noBuildLeave); return; }
+      if (captureMode) { addLog('Kaappaustila — valitse ensin pöytäkortit, sitten käsikortti.'); return; }
+      if (!leaveMode)  { addLog('Valitse toiminto: 🎯 Kaappaa, 🔨 Rakenna tai 📤 Jätä.'); return; }
+      // leaveMode: jätä kortti pöytään
+      phaseRef.current = 'idle'; setPhase('idle');
+      const g2 = doLeave(g, 0, card);
+      setG(g2); gRef.current = g2;
+      setSelTable([]); setSelBuilds([]); setLeaveMode(false);
+      tm(() => advance(g2, 0), 600);
+      return;
+    }
+
+    // Normaalitila — kaappaus (selTable.length > 0, ei buildMode)
     if (isValidCapture(card, selTable)) {
       const captured = [...selTable];
       setCaptureAnim({ handCard: card, tableCards: captured });
@@ -677,8 +797,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     addLog(M.invalidMove(lblColored(card)));
   }
 
-  // AI: etsi paras kaappaus (tukee multi-capture)
-  function findBestCapture(p, table) {
+  // ── AI: parhaan kaappauksen haku ─────────────────────────────────────────
+  function findBestCapture(p, table, builds = []) {
     let best = null;
     for (const handCard of p.hand) {
       const hv = handVal(handCard);
@@ -686,22 +806,16 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       for (let mask = 1; mask < (1 << n); mask++) {
         const sel = table.filter((_, i) => (mask >> i) & 1);
         if (canPartition(sel, hv)) {
-          const isMokki = sel.length === table.length;
-          const score = (isMokki ? 10000 : 0)
-            + sel.filter(isPataKakkonen).length * 500
-            + sel.filter(isRuutuKymppi).length * 200
-            + sel.filter(c => c.s === '♠').length * 5
-            + sel.length;
-          if (!best || score > best.score) {
-            best = { handCard, tableCards: sel, score, isMokki };
-          }
+          const isMokki = sel.length === table.length && builds.length === 0;
+          const score = aiCardScore([handCard, ...sel], isMokki);
+          if (!best || score > best.score) best = { handCard, tableCards: sel, score, isMokki };
         }
       }
     }
     return best;
   }
 
-  // Aloittelija-virhe: huonoin käypä kaappaus (ei tunnista erityiskortteja)
+  // Aloittelija-virhe: huonoin käypä kaappaus
   function findWorstCapture(p, table) {
     let worst = null;
     for (const handCard of p.hand) {
@@ -711,35 +825,31 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         const sel = table.filter((_, i) => (mask >> i) & 1);
         if (canPartition(sel, hv)) {
           const isMokki = sel.length === table.length;
-          const score = (isMokki ? 10000 : 0)
-            + sel.filter(isPataKakkonen).length * 500
-            + sel.filter(isRuutuKymppi).length * 200
-            + sel.filter(c => c.s === '♠').length * 5
-            + sel.length;
-          if (!worst || score < worst.score) {
-            worst = { handCard, tableCards: sel, score, isMokki };
-          }
+          const score = aiCardScore([handCard, ...sel], isMokki);
+          if (!worst || score < worst.score) worst = { handCard, tableCards: sel, score, isMokki };
         }
       }
     }
     return worst;
   }
 
+  // Etsi paras rakennelma (ottaa huomioon pistearvo)
   function findAIBuild(p, table) {
-    // Etsi paras rakennelman luonti: käsikortti + pöytäkortit → arvo N, kädessä toinen N
+    let best = null;
     for (const handCard of p.hand) {
       const hv = handVal(handCard);
       const n = table.length;
       for (let mask = 0; mask < (1 << n); mask++) {
         const sel = table.filter((_, i) => (mask >> i) & 1);
-        const tableSum = sel.reduce((s, c) => s + tableVal(c), 0);
-        const buildValue = hv + tableSum;
-        if (buildValue > 14) continue; // max rakennelman arvo = ässä (14)
-        const hasCapturer = p.hand.some(c => c.id !== handCard.id && handVal(c) === buildValue);
-        if (hasCapturer) return { handCard, tableCards: sel, value: buildValue };
+        const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
+        if (bv > 13) continue;
+        const capturer = p.hand.find(c => c.id !== handCard.id && handVal(c) === bv);
+        if (!capturer) continue;
+        const score = aiCardScore([handCard, ...sel, capturer]);
+        if (!best || score > best.score) best = { handCard, tableCards: sel, value: bv, capturer, score };
       }
     }
-    return null;
+    return best;
   }
 
   function runAI(playerIdx, g) {
@@ -747,21 +857,29 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     if (!g || phaseRef.current === 'idle') return;
     const p = g.players[playerIdx];
     if (!p.hand.length) { advance(g, playerIdx); return; }
-    const fumble = aiShouldFumble(aiLevelRef.current);
-    const isNormal = !fumble;
+    const level = aiLevelRef.current;
+    const isBeginner = level === 'beginner';
+    const isSuper = level === 'supernatural';
+    const fumble = aiShouldFumble(level);
 
-    // 1. Kaappaa oma rakennelma jos mahdollista
+    // ─── 1. Kaappaa oma rakennelma (kaikki tasot, aloittelija 20% unohtaa) ───
     const ownBuilds = g.builds.filter(b => b.ownerIdx === playerIdx);
-    if (ownBuilds.length > 0) {
+    if (ownBuilds.length > 0 && !(isBeginner && Math.random() < 0.2)) {
       for (const build of ownBuilds) {
         const capturer = p.hand.find(hc => handVal(hc) === build.value);
         if (capturer) {
-          addLog(`${p.name} vie rakennelmansa (${build.value})`);
-          setCaptureAnim({ handCard: capturer, tableCards: build.cards });
-          setAiSel({ handCard: capturer, tableCards: build.cards });
+          // Normaali 50%, hard/super aina: poimi myös pöytäkortit jotka summautuvat samaan arvoon
+          const seesBonus = !isBeginner && (level !== 'normal' || Math.random() < 0.5);
+          const bonus = seesBonus ? findTableBonus(g.table, build.value) : [];
+          const animCards = [...build.cards, ...bonus];
+          const isMokkiBuild = g.builds.filter(b => b.id !== build.id).length === 0
+            && g.table.filter(c => !bonus.find(b2 => b2.id === c.id)).length === 0;
+          addLog(`${p.name} vie rakennelmansa (${build.value})${bonus.length > 0 ? ' + ' + bonus.map(lbl).join('+') : ''}${isMokkiBuild ? ' 🏠 MÖKKI!' : ''}`);
+          setCaptureAnim({ handCard: capturer, tableCards: animCards });
+          setAiSel({ handCard: capturer, tableCards: animCards });
           aiTmr.current = tm(() => {
             const g2 = gRef.current;
-            const g3 = doBuildCapture(g2, playerIdx, capturer, [build], [], true);
+            const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
             setG(g3); gRef.current = g3;
             setPendingCapture({ g2: g3, fromIdx: playerIdx });
           }, 1200);
@@ -770,18 +888,24 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       }
     }
 
-    // 2. Varasta vastustajan rakennelma (normal+)
-    if (isNormal) {
+    // ─── 2. Varasta vastustajan rakennelma (normal+) ──────────────────────────
+    if (!isBeginner) {
       const opponentBuilds = g.builds.filter(b => b.ownerIdx !== playerIdx);
       for (const build of opponentBuilds) {
         const capturer = p.hand.find(hc => handVal(hc) === build.value);
         if (capturer) {
-          addLog(`${p.name} kähveltää rakennelman (${build.value})!`);
-          setCaptureAnim({ handCard: capturer, tableCards: build.cards });
-          setAiSel({ handCard: capturer, tableCards: build.cards });
+          // Normaali 50%, hard/super aina: poimi myös pöytäkortit
+          const seesBonus = level !== 'normal' || Math.random() < 0.5;
+          const bonus = seesBonus ? findTableBonus(g.table, build.value) : [];
+          const animCards = [...build.cards, ...bonus];
+          const isMokkiSteal = g.builds.filter(b => b.id !== build.id).length === 0
+            && g.table.filter(c => !bonus.find(b2 => b2.id === c.id)).length === 0;
+          addLog(`${p.name} kähveltää rakennelman (${build.value})!${bonus.length > 0 ? ' + ' + bonus.map(lbl).join('+') : ''}${isMokkiSteal ? ' 🏠 MÖKKI!' : ''}`);
+          setCaptureAnim({ handCard: capturer, tableCards: animCards });
+          setAiSel({ handCard: capturer, tableCards: animCards });
           aiTmr.current = tm(() => {
             const g2 = gRef.current;
-            const g3 = doBuildCapture(g2, playerIdx, capturer, [build], [], true);
+            const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
             setG(g3); gRef.current = g3;
             setPendingCapture({ g2: g3, fromIdx: playerIdx });
           }, 1200);
@@ -790,12 +914,50 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       }
     }
 
-    // 3. Kaappaa pöydältä (normaali logiikka)
-    const bestCapture = findBestCapture(p, g.table);
+    // ─── 3. Kaappaa pöydältä ────────────────────────────────────────────────
+    const bestCapture = findBestCapture(p, g.table, g.builds);
     const captureToUse = (bestCapture && fumble)
       ? (findWorstCapture(p, g.table) || bestCapture)
       : bestCapture;
 
+    // ─── 4. Harkitse rakentamista (normal+, ei omaa rakennelmaa jo) ──────────
+    if (!isBeginner && ownBuilds.length === 0) {
+      const buildResult = findAIBuild(p, g.table);
+      if (buildResult) {
+        let doBuildAction = false;
+        if (level === 'normal') {
+          // Normal: rakenna aina kun voi
+          doBuildAction = true;
+        } else {
+          // Hard/supernatural: rakenna vain jos rakennusarvo > kaappauksen arvo
+          const captureScore = captureToUse ? captureToUse.score : 0;
+          let stealRisk = 0;
+          if (isSuper) {
+            stealRisk = pAnyOpponentHas(g, playerIdx, buildResult.value);
+          } else {
+            // Hard: arvio varastusriskistä pöydän korttitilanteen mukaan
+            const deckRemaining = 52 - g.players.flatMap(p2 => p2.captured).length
+              - g.players.reduce((s, p2) => s + p2.hand.length, 0)
+              - g.table.length - g.builds.flatMap(b => b.cards).length;
+            stealRisk = deckRemaining > 20 ? 0.3 : 0.15;
+          }
+          const discount = isSuper ? (1 - stealRisk) * 0.85 : (1 - stealRisk) * 0.8;
+          const effectiveBuildScore = buildResult.score * discount;
+          doBuildAction = effectiveBuildScore > captureScore * 1.5;
+        }
+        if (doBuildAction) {
+          aiTmr.current = tm(() => {
+            const g2 = gRef.current;
+            const g3 = doBuild(g2, playerIdx, buildResult.handCard, buildResult.tableCards, buildResult.value);
+            setG(g3); gRef.current = g3;
+            tm(() => advance(g3, playerIdx), 600);
+          }, 700 + Math.random() * 400);
+          return;
+        }
+      }
+    }
+
+    // ─── 3b. Suorita kaappaus (jos löytyi) ──────────────────────────────────
     if (captureToUse) {
       const groups = findGroups(captureToUse.tableCards, handVal(captureToUse.handCard));
       const captureStr = groups.length > 1
@@ -813,31 +975,27 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       return;
     }
 
-    // 4. Rakenna rakennelma (normal+, ei omaa rakennelmaa jo pöydässä)
-    if (isNormal && ownBuilds.length === 0) {
-      const buildResult = findAIBuild(p, g.table);
-      if (buildResult) {
-        aiTmr.current = tm(() => {
-          const g2 = gRef.current;
-          const g3 = doBuild(g2, playerIdx, buildResult.handCard, buildResult.tableCards, buildResult.value);
-          setG(g3); gRef.current = g3;
-          tm(() => advance(g3, playerIdx), 600);
-        }, 700 + Math.random() * 400);
-        return;
-      }
-    }
-
-    // 5. Jätä kortti pöytään
+    // ─── 5. Jätä kortti pöytään ──────────────────────────────────────────────
     let toLeave;
     if (fumble) {
       toLeave = p.hand[Math.floor(Math.random() * p.hand.length)];
+    } else if (isSuper) {
+      // Supernatural: minimoi probabilistinen varastusriski, suojele pistekortit
+      const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c) && c.r !== 'A');
+      const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
+      toLeave = [...leavePool].sort((a, b) => {
+        const da = pWeightedLeaveDanger(a, g, playerIdx);
+        const db = pWeightedLeaveDanger(b, g, playerIdx);
+        return da !== db ? da - db : tableVal(a) - tableVal(b);
+      })[0];
     } else {
+      // Normal/hard: heuristinen varastusriski
       const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
       const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
       toLeave = [...leavePool].sort((a, b) => {
         const da = leaveDanger(a, g.table);
         const db = leaveDanger(b, g.table);
-        return da !== db ? da - db : a.v - b.v;
+        return da !== db ? da - db : tableVal(a) - tableVal(b);
       })[0];
     }
     aiTmr.current = tm(() => {
@@ -854,7 +1012,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     setPendingCapture(null);
     setCaptureAnim(null);
     setAiSel({ handCard: null, tableCards: [] });
-    setSelBuilds([]); setBuildMode(false);
+    setSelBuilds([]); setCaptureMode(false); setBuildMode(false);
     setPhase('select_table'); phaseRef.current = 'select_table';
     advance(g2, fromIdx);
   }
@@ -953,8 +1111,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             <span style={{ color: C.gold, fontWeight: 700, fontSize: 12, flex: 1 }}>Pisteytys — ensimmäinen 16 pisteeseen voittaa</span>
             <button onClick={() => setShowInfo(false)} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>✕</button>
           </div>
-          <span style={{ color: SUIT_COLOR['♦'], fontWeight: 700 }}>10♦</span> = 2p &nbsp;·&nbsp;
-          <span style={{ color: SUIT_COLOR['♠'], fontWeight: 700 }}>2♠</span> = 1p &nbsp;·&nbsp;
+          <span style={{ color: SUIT_COLOR_DARK['♦'], fontWeight: 700 }}>10♦</span> = 2p &nbsp;·&nbsp;
+          <span style={{ color: SUIT_COLOR_DARK['♠'], fontWeight: 700 }}>2♠</span> = 1p &nbsp;·&nbsp;
           kukin ässä = 1p &nbsp;·&nbsp; eniten kortteja = 1p &nbsp;·&nbsp; eniten patoja = 1p &nbsp;·&nbsp; kukin mökki = 1p
         </div>
       )}
@@ -966,10 +1124,10 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       </div>
 
       {/* Pisteet + pakka */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: isMobile ? 4 : 8, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap', alignItems: 'center' }}>
         {G.players.map((p, i) => (
-          <div key={p.id} style={{ padding: '4px 12px', borderRadius: 20, fontFamily: 'sans-serif', fontSize: 12, background: curIdx === i ? C.gold + '14' : 'rgba(255,255,255,0.03)', border: `1px solid ${curIdx === i ? C.gold + '66' : C.panelBorder}`, color: curIdx === i ? C.gold : C.dim }}>
-            {p.name}: {p.score}/16p {curIdx === i ? '●' : ''}
+          <div key={p.id} style={{ padding: isMobile ? '3px 7px' : '4px 12px', borderRadius: 20, fontFamily: 'sans-serif', fontSize: isMobile ? 10 : 12, background: curIdx === i ? C.gold + '14' : 'rgba(255,255,255,0.03)', border: `1px solid ${curIdx === i ? C.gold + '66' : C.panelBorder}`, color: curIdx === i ? C.gold : C.dim }}>
+            {p.name}: {p.score}{isMobile ? '' : '/16'}p {curIdx === i ? '●' : ''}
           </div>
         ))}
       </div>
@@ -1011,9 +1169,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           {G.players.filter((_, i) => i !== 0).map(p => (
             <div key={p.id} style={{ flex: 1, minWidth: 90, background: 'rgba(255,255,255,0.03)', border: `1px solid ${curIdx === p.id ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '8px 10px', textAlign: 'center' }}>
               <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curIdx === p.id ? C.gold : C.dim, marginBottom: 4 }}>
-                🤖 {p.name} {curIdx === p.id ? '●' : ''} — {korttia(p.captured.length)} kaapattu
+                🤖 {p.name} {curIdx === p.id ? '●' : ''}{!isMobile && ` — ${korttia(p.captured.length)} kaapattu`}
               </div>
-              <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'nowrap', overflow: 'hidden' }}>
+              <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: debugOpen ? 'wrap' : 'nowrap', overflow: debugOpen ? 'visible' : 'hidden' }}>
                 {debugOpen
                   ? p.hand.map(c => <Card key={c.id} card={c} small showBadges backStyle={BACKS[cardBack]} />)
                   : p.hand.map((_, ci) => <div key={ci} style={{ width: 28, height: 40, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
@@ -1025,7 +1183,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       )}
 
       {/* Pöytä */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 160 : 290 }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 90 : 220 }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <span>PÖYTÄ — {G.table.length === 0 && G.builds.length === 0 ? 'tyhjä' : `${korttia(G.table.length)}${G.builds.length > 0 ? ` + ${G.builds.length} rakennelma` : ''}`}</span>
           <span style={{ color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>PAKKA — {G.deck.length === 0 ? 'TYHJÄ!' : `${G.deck.length} korttia`}</span>
@@ -1143,13 +1301,100 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       </div>
 
       {/* Peruuta / Seuraava */}
-      <div style={{ minHeight: isMobile ? 36 : 44, display: 'flex', alignItems: 'center', marginBottom: isMobile ? 4 : 10, gap: 10 }}>
+      <div style={{ minHeight: isMobile ? 36 : 44, display: 'flex', alignItems: 'center', marginBottom: isMobile ? 4 : 10, gap: 8, flexWrap: 'wrap' }}>
         {isMyTurn && !pendingCapture && (
           <button
-            onClick={() => { setBuildMode(m => !m); setSelTable([]); setSelBuilds([]); }}
-            style={{ background: buildMode ? `${C.gold}18` : 'transparent', border: `1px solid ${buildMode ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '10px 16px', color: buildMode ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
+            onClick={() => {
+              if (!captureMode) {
+                const h = G.players[0].hand, t = G.table, n = t.length;
+                const hasTableCapture = h.some(hc => {
+                  const hv = handVal(hc);
+                  for (let mask = 1; mask < (1 << n); mask++) {
+                    const sel = t.filter((_, i) => (mask >> i) & 1);
+                    if (canPartition(sel, hv)) return true;
+                  }
+                  return false;
+                });
+                const hasBuildCapture = G.builds.some(b => h.some(hc => handVal(hc) === b.value));
+                if (!hasTableCapture && !hasBuildCapture) {
+                  addLog('Ei kaappausmahdollisuuksia — mikään käsikortti ei sovi pöydän kortteihin.');
+                  return;
+                }
+              }
+              setCaptureMode(m => !m); setBuildMode(false); setLeaveMode(false); setSelTable([]); setSelBuilds([]);
+            }}
+            style={{ background: captureMode ? `${C.gold}18` : 'transparent', border: `1px solid ${captureMode ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: captureMode ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
+          >
+            🎯 Kaappaa{captureMode ? ' ●' : ''}
+          </button>
+        )}
+        {isMyTurn && !pendingCapture && (
+          <button
+            onClick={() => {
+              if (!buildMode) {
+                const h = G.players[0].hand, t = G.table, n = t.length;
+                let ok = false;
+                outer: for (const hc of h) {
+                  const hv = handVal(hc);
+                  for (let mask = 0; mask < (1 << n); mask++) {
+                    const sel = t.filter((_, i) => (mask >> i) & 1);
+                    const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
+                    if (bv > 13) continue;
+                    if (h.some(c => c.id !== hc.id && handVal(c) === bv)) { ok = true; break outer; }
+                  }
+                }
+                if (!ok) { addLog('Ei rakennusmahdollisuuksia — kädessä ei ole sopivaa paria rakennelmaan.'); return; }
+              }
+              setBuildMode(m => !m); setCaptureMode(false); setLeaveMode(false); setSelTable([]); setSelBuilds([]);
+            }}
+            style={{ background: buildMode ? `${C.gold}18` : 'transparent', border: `1px solid ${buildMode ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: buildMode ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
           >
             🔨 Rakenna{buildMode ? ' ●' : ''}
+          </button>
+        )}
+        {isMyTurn && !pendingCapture && (
+          <button
+            onClick={() => {
+              if (!leaveMode) {
+                const h = G.players[0].hand, t = G.table, n = t.length;
+                const hasCapture = h.some(hc => {
+                  const hv = handVal(hc);
+                  for (let mask = 1; mask < (1 << n); mask++) {
+                    const sel = t.filter((_, i) => (mask >> i) & 1);
+                    if (canPartition(sel, hv)) return true;
+                  }
+                  return false;
+                }) || G.builds.some(b => h.some(hc => handVal(hc) === b.value));
+                const hasBuild = (() => {
+                  for (const hc of h) {
+                    const hv = handVal(hc);
+                    for (let mask = 0; mask < (1 << n); mask++) {
+                      const sel = t.filter((_, i) => (mask >> i) & 1);
+                      const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
+                      if (bv > 13) continue;
+                      if (h.some(c => c.id !== hc.id && handVal(c) === bv)) return true;
+                    }
+                  }
+                  return false;
+                })();
+                const voit = [];
+                if (hasCapture) voit.push('kaapata');
+                if (hasBuild)   voit.push('rakentaa');
+                if (voit.length) addLog(`⚠ Jättämistila — käsikorteillasi voi ${voit.join(' ja ')}.`);
+              }
+              setLeaveMode(m => !m); setCaptureMode(false); setBuildMode(false); setSelTable([]); setSelBuilds([]);
+            }}
+            style={{ background: leaveMode ? `${C.gold}18` : 'transparent', border: `1px solid ${leaveMode ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: leaveMode ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
+          >
+            📤 Jätä{leaveMode ? ' ●' : ''}
+          </button>
+        )}
+        {isMyTurn && !pendingCapture && (
+          <button
+            onClick={() => setShowOptions(v => !v)}
+            style={{ background: showOptions ? `${C.gold}18` : 'transparent', border: `1px solid ${showOptions ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: showOptions ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
+          >
+            📋{isMobile ? '' : ' Vaihtoehdot'}
           </button>
         )}
         {isMyTurn && (selTable.length > 0 || selBuilds.length > 0) && (
@@ -1203,6 +1448,171 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           setCurrentMoment(null);
         }}
       />
+
+      {/* Vaihtoehdot-modaali */}
+      {showOptions && isMyTurn && (() => {
+        const hand = G.players[0].hand;
+        const table = G.table;
+        const n = table.length;
+
+        // Arvostus: pisteet → padat → korttimäärä (kaikki laskevasti)
+        const optScore = (cards, isMokki = false) => {
+          let pts = 0;
+          for (const c of cards) {
+            if (isRuutuKymppi(c)) pts += 2;
+            else if (isPataKakkonen(c)) pts += 1;
+            else if (c.r === 'A') pts += 1;
+          }
+          if (isMokki) pts += 1;
+          const spades = cards.filter(c => c.s === '♠').length;
+          return pts * 10000 + spades * 100 + cards.length;
+        };
+
+        // Pöytäkaappaukset — tallennetaan kortit tekstin sijaan
+        const captures = [];
+        for (const hc of hand) {
+          const hv = handVal(hc);
+          for (let mask = 1; mask < (1 << n); mask++) {
+            const sel = table.filter((_, i) => (mask >> i) & 1);
+            if (canPartition(sel, hv)) {
+              const isMokki = sel.length === table.length && G.builds.length === 0;
+              captures.push({ hc, tableCards: sel, isMokki, score: optScore([hc, ...sel], isMokki) });
+            }
+          }
+        }
+        captures.sort((a, b) => b.score - a.score);
+
+        // Omat rakennelmakaappaukset
+        const ownCaptures = G.builds
+          .filter(b => b.ownerIdx === 0)
+          .flatMap(b => hand.filter(hc => handVal(hc) === b.value).map(hc => ({
+            hc, build: b, score: optScore([hc, ...b.cards])
+          })))
+          .sort((a, b) => b.score - a.score);
+
+        // Kähvellykset
+        const steals = G.builds
+          .filter(b => b.ownerIdx !== 0)
+          .flatMap(b => hand.filter(hc => handVal(hc) === b.value).map(hc => ({
+            hc, build: b, owner: G.players[b.ownerIdx].name, score: optScore([hc, ...b.cards])
+          })))
+          .sort((a, b) => b.score - a.score);
+
+        // Rakennelmat — pisteet lasketaan koko tulevasta saaliista (hc + pöytäkortit + kaappaaja)
+        const builds = [];
+        for (const hc of hand) {
+          const hv = handVal(hc);
+          for (let mask = 0; mask < (1 << n); mask++) {
+            const sel = table.filter((_, i) => (mask >> i) & 1);
+            const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
+            if (bv > 13) continue;
+            const capturer = hand.find(c => c.id !== hc.id && handVal(c) === bv);
+            if (capturer) builds.push({ hc, tableCards: sel, value: bv, capturer,
+              score: optScore([hc, ...sel, capturer]) });
+          }
+        }
+        builds.sort((a, b) => b.score - a.score);
+
+        const hasAny = captures.length || ownCaptures.length || steals.length || builds.length;
+
+        // Pieni kortti — sama koko kuin pöydällä mobiilissa
+        const CS = ({ card }) => (
+          <Card card={card} xsmall showBadges backStyle={BACKS[cardBack]} />
+        );
+        // Rivin wrapper
+        const CardRow = ({ children, accent }) => (
+          <div style={{ display: 'flex', gap: 5, alignItems: 'center', padding: '6px 2px',
+            borderBottom: `1px solid ${C.panelBorder}33`, flexWrap: 'wrap',
+            borderLeft: accent ? `3px solid ${accent}` : undefined,
+            paddingLeft: accent ? 8 : 2 }}>
+            {children}
+          </div>
+        );
+        const Sep = ({ color = C.gold, ch = '←' }) => (
+          <span style={{ color, fontFamily: 'Georgia,serif', fontSize: 14, flexShrink: 0, opacity: 0.8 }}>{ch}</span>
+        );
+
+        return (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 400, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }} onClick={() => setShowOptions(false)}>
+            <div style={{ background: C.bg, border: `1px solid ${C.panelBorder}`, borderRadius: '16px 16px 0 0', padding: '16px', maxHeight: '65vh', overflowY: 'auto', maxWidth: 560, width: '100%', margin: '0 auto' }} onClick={e => e.stopPropagation()}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <span style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: C.gold, letterSpacing: 1 }}>📋 Vaihtoehdot</span>
+                <button onClick={() => setShowOptions(false)} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>✕</button>
+              </div>
+
+              {!hasAny && <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, padding: '8px 0' }}>Ei kaappaus- tai rakennusvaihtoehtoja.</div>}
+
+              {(captures.length > 0 || ownCaptures.length > 0) && (
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7 }}>🎯 KAAPPAUKSET</span>
+                    <button onClick={() => setHelpTerm(t => t === 'kaappaus' ? null : 'kaappaus')} style={{ background: 'transparent', border: `1px solid ${helpTerm === 'kaappaus' ? C.gold : C.dim + '55'}`, borderRadius: 6, padding: '1px 7px', fontSize: 10, color: helpTerm === 'kaappaus' ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>Kaappaustila {helpTerm === 'kaappaus' ? '▴' : '▾'}</button>
+                  </div>
+                  {helpTerm === 'kaappaus' && (
+                    <div style={{ marginBottom: 8, padding: '7px 10px', background: `${C.gold}0e`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.6 }}>
+                      <span style={{ color: C.gold, fontWeight: 700 }}>🎯 Kaappaustila</span> — paina nappia, valitse pöytäkortit joiden summa täsmää käsikorttisi arvoon, sitten klikkaa käsikorttia. <span style={{ color: '#7ec8a0' }}>Mökki</span> = kaappaat kaikki pöydältä kerralla (+1 piste).
+                    </div>
+                  )}
+                  {captures.map((c, i) => (
+                    <CardRow key={i} accent={c.isMokki ? C.tikki : undefined}>
+                      <CS card={c.hc} />
+                      <Sep />
+                      {c.tableCards.map(tc => <CS key={tc.id} card={tc} />)}
+                      {c.isMokki && <span style={{ fontSize: 11, color: C.tikki, fontFamily: 'sans-serif', fontWeight: 700 }}>🏠 MÖKKI</span>}
+                    </CardRow>
+                  ))}
+                  {ownCaptures.map((c, i) => (
+                    <CardRow key={i}>
+                      <CS card={c.hc} />
+                      <Sep />
+                      {c.build.cards.map(bc => <CS key={bc.id} card={bc} />)}
+                      <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim }}>oma</span>
+                    </CardRow>
+                  ))}
+                </div>
+              )}
+
+              {steals.length > 0 && (
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 6 }}>⚔ KÄHVELLYKSET</div>
+                  {steals.map((s, i) => (
+                    <CardRow key={i} accent='#e09060'>
+                      <CS card={s.hc} />
+                      <Sep color='#e09060' />
+                      {s.build.cards.map(bc => <CS key={bc.id} card={bc} />)}
+                      <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: '#e09060' }}>{s.owner}</span>
+                    </CardRow>
+                  ))}
+                </div>
+              )}
+
+              {builds.length > 0 && (
+                <div style={{ marginBottom: 4 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7 }}>🔨 RAKENNELMAT</span>
+                    <button onClick={() => setHelpTerm(t => t === 'rakennus' ? null : 'rakennus')} style={{ background: 'transparent', border: `1px solid ${helpTerm === 'rakennus' ? C.gold : C.dim + '55'}`, borderRadius: 6, padding: '1px 7px', fontSize: 10, color: helpTerm === 'rakennus' ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>Rakennustila {helpTerm === 'rakennus' ? '▴' : '▾'}</button>
+                  </div>
+                  {helpTerm === 'rakennus' && (
+                    <div style={{ marginBottom: 8, padding: '7px 10px', background: `${C.gold}0e`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.6 }}>
+                      <span style={{ color: C.gold, fontWeight: 700 }}>🔨 Rakennustila</span> — paina nappia, valitse pöytäkortteja joiden summa + käsikorttisi = rakennelman arvo. Sinulla täytyy olla kädessä toinen kortti samalla arvolla kaappaukseen. Vastustaja voi kähveltää rakennelmasi.
+                    </div>
+                  )}
+                  {builds.map((b, i) => (
+                    <CardRow key={i} accent='#7ec8a0'>
+                      <CS card={b.hc} />
+                      {b.tableCards.length > 0 && <Sep color={C.dim} ch='+' />}
+                      {b.tableCards.map(tc => <CS key={tc.id} card={tc} />)}
+                      <Sep color='#7ec8a0' ch={`→ ${b.value}`} />
+                      <span style={{ fontSize: 14, flexShrink: 0, lineHeight: 1 }}>🔑</span>
+                      <Card card={b.capturer} xsmall showBadges highlight backStyle={BACKS[cardBack]} />
+                    </CardRow>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>

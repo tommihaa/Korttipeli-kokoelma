@@ -20,4 +20,12 @@ export const SUIT_COLOR = {
   '♣': '#4caf7d',
 };
 
+// Tummalle taustalle (#1f5a3f) — SUIT_COLOR:n värit uppoavat tummaan vihreään
+export const SUIT_COLOR_DARK = {
+  '♠': '#c8c4d4',
+  '♥': '#ff6666',
+  '♦': '#ffb060',
+  '♣': '#5de08a',
+};
+
 export const suitColor = s => SUIT_COLOR[s] || '#1a1a2e';

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { C, SUIT_COLOR } from './shared/colors.js';
+import { C, SUIT_COLOR, SUIT_COLOR_DARK } from './shared/colors.js';
 import GameResult from './shared/GameResult.jsx';
 
 /* eslint-disable no-undef */
@@ -126,7 +126,7 @@ const GAMES = [
   },
   {
     id: 'paskahousu', name: 'Paskahousu', emoji: '🃏',
-    desc: <>Lähes se perinteinen paskahousu kuudella kortilla. <span style={{color:SUIT_COLOR['♦']}}>2♦</span> <span style={{color:SUIT_COLOR['♥']}}>2♥</span>{' arvo 2 · '}<span style={{color:SUIT_COLOR['♠']}}>2♠</span> <span style={{color:SUIT_COLOR['♣']}}>2♣</span>{' kovia'}</>,
+    desc: <>Lähes se perinteinen paskahousu kuudella kortilla. <span style={{color:SUIT_COLOR_DARK['♦']}}>2♦</span> <span style={{color:SUIT_COLOR_DARK['♥']}}>2♥</span>{' arvo 2 · '}<span style={{color:SUIT_COLOR_DARK['♠']}}>2♠</span> <span style={{color:SUIT_COLOR_DARK['♣']}}>2♣</span>{' kovia'}</>,
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Paskahousu, maxWidth: 580, pakka: 'taydennetty', suosikki: true,
@@ -191,6 +191,32 @@ const SANASTO = [
   { kategoria: 'alue',   term: 'Poissa',        match: ['pois pelistä'],                                                    emoji: '❌', selitys: 'Kaadetut kortit eivät palaa peliin.',                                                                                                      pelitLabel: 'useimmat'                  },
 ];
 
+// ── Merkistö ─────────────────────────────────────────────────────────────────
+const MERKISTO = [
+  // ─ Pelitoiminnot ─────────────────────────────────────────────────────────
+  { kategoria: 'toiminnot', icon: '🎯', label: 'Kaappaustila',     selitys: 'Valitse pöytäkortit, sitten käsikortti — kaappaa.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '🔨', label: 'Rakennustila',     selitys: 'Valitse pöytäkortteja + käsikortti → rakennelma, jonka kaappaat myöhemmin.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '📤', label: 'Jättämistila',     selitys: 'Valitse käsikortti — se menee pöytään muiden käytettäväksi.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '🏠', label: 'Mökki',            selitys: 'Kaappasit koko pöydän yhdellä siirolla — +1 lisäpiste.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '⚔',  label: 'Hyökkäys',         selitys: 'Hyökkääjä lyö kortit pöytään puolustajan kaadettavaksi.', peli: 'Moska · Maija' },
+  { kategoria: 'toiminnot', icon: '🛡',  label: 'Puolustus',        selitys: 'Puolustaja torjuu hyökkäyskorteilla tai valttimaan kortilla.', peli: 'Moska · Maija' },
+  // ─ Viestit ───────────────────────────────────────────────────────────────
+  { kategoria: 'viestit',   icon: '⚠',  label: 'Varoitus',         selitys: 'Huomasit jättää mahdollisuuden käyttämättä, tai olet siirtymässä riskialttiiseen tilaan.' },
+  { kategoria: 'viestit',   icon: '💡', label: 'Vinkki',           selitys: 'Strategiaehdotus koneälypelaajan siirrosta opetustilassa.' },
+  { kategoria: 'viestit',   icon: '●',  label: 'Vuoro',            selitys: 'Piste pisteindikaattorin ja nimen perässä — tällä pelaajalla on vuoro.' },
+  // ─ Pelaajat ──────────────────────────────────────────────────────────────
+  { kategoria: 'pelaajat',  icon: '👤', label: 'Ihmispelaaja',     selitys: 'Hero — sinä pelaat tätä pelaajaa.' },
+  { kategoria: 'pelaajat',  icon: '🤖', label: 'Koneäly',          selitys: 'Tietokoneen ohjaama vastustaja. Nimi arvotaan valitusta ryhmästä.' },
+  // ─ Käyttöliittymä ────────────────────────────────────────────────────────
+  { kategoria: 'ui',        icon: '⚙',  label: 'Asetukset',        selitys: 'Avaa asetukset, peliohjeet, sanaston ja merkistön.' },
+  { kategoria: 'ui',        icon: 'ℹ',  label: 'Info',             selitys: 'Tarkempi selite — esim. pisteytyssäännöt Kasinossa.' },
+  { kategoria: 'ui',        icon: '🔊', label: 'Ääni päällä',      selitys: 'Korttitehosteet ja fanfaarit kuuluvat.' },
+  { kategoria: 'ui',        icon: '🔇', label: 'Ääni pois',        selitys: 'Kaikki äänet mykistetty.' },
+  { kategoria: 'ui',        icon: '🔍', label: 'Cheat Mode pois',  selitys: 'Normaali tila — näet vain omat kortit.' },
+  { kategoria: 'ui',        icon: '🙈', label: 'Cheat Mode päällä',selitys: 'Näet kaikkien pelaajien käsikortit ja piilotetut kentän kortit.' },
+  { kategoria: 'ui',        icon: '🔮', label: 'Yliluonnollinen',  selitys: 'Koneälyn korkein taso — muistaa pakan menot ja optimoi täydellisesti.' },
+];
+
 const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));
 
 // ── Sanasto-apufunktiot ───────────────────────────────────────────────────────
@@ -240,7 +266,7 @@ function splitWithGlossary(text) {
 function renderSelitys(text) {
   return text.split(/((?:[2-9]|10|[AJQKT])[♠♥♦♣]|[♠♥♦♣])/).map((p, i) => {
     const suit = p.match(/[♠♥♦♣]/)?.[0];
-    return suit ? <span key={i} style={{ color: SUIT_COLOR[suit], fontWeight: 700 }}>{p}</span> : p;
+    return suit ? <span key={i} style={{ color: SUIT_COLOR_DARK[suit], fontWeight: 700 }}>{p}</span> : p;
   });
 }
 
@@ -406,6 +432,7 @@ export default function App() {
   });
   const [resultData, setResultData] = useState(null);   // {ranking, revealCards?, scoreBreakdown?}
   const [gameKey, setGameKey]       = useState(0);       // increment → remount game
+  const [showGlossary, setShowGlossary] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
@@ -479,6 +506,67 @@ export default function App() {
     >⚙</button>
   );
 
+  const glossaryScreen = showGlossary && (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 600, overflowY: 'auto', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: isMobile ? '16px 12px' : '32px 24px' }}>
+      <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13 }}>← Asetukset</button>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 16, color: C.gold, letterSpacing: 2 }}>Sanasto & Merkistö</span>
+          <div style={{ width: 90 }} />
+        </div>
+
+        {/* Sanasto */}
+        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}>Sanasto 📖</div>
+          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
+            Napauta termiä — selitys aukeaa alle. Korostetut termit aukeavat myös pelivalikon säännöistä.
+          </div>
+          {[
+            { key: 'perus',  label: 'Perustermit' },
+            { key: 'kortti', label: 'Kortit ja erikoistilanteet' },
+            { key: 'alue',   label: 'Alueet ja vyöhykkeet' },
+          ].map(({ key, label }) => (
+            <div key={key} style={{ marginBottom: 10 }}>
+              <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{label}</div>
+              {SANASTO.filter(s => s.kategoria === key).map(s => <SanastoRivi key={s.term} s={s} />)}
+            </div>
+          ))}
+        </div>
+
+        {/* Merkistö */}
+        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}>Merkistö 🔣</div>
+          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
+            Sovelluksessa käytetyt ikonit ja niiden merkitykset.
+          </div>
+          {[
+            { key: 'toiminnot', label: 'Pelitoiminnot' },
+            { key: 'viestit',   label: 'Viestit' },
+            { key: 'pelaajat',  label: 'Pelaajat' },
+            { key: 'ui',        label: 'Käyttöliittymä' },
+          ].map(({ key, label }) => (
+            <div key={key} style={{ marginBottom: 10 }}>
+              <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{label}</div>
+              {MERKISTO.filter(m => m.kategoria === key).map(m => (
+                <div key={m.label} style={{ display: 'flex', alignItems: 'baseline', gap: 8, padding: '5px 0', borderBottom: `1px solid ${C.panelBorder}33` }}>
+                  <span style={{ fontSize: 15, flexShrink: 0, minWidth: 22, textAlign: 'center', lineHeight: 1 }}>{m.icon}</span>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text, flexShrink: 0, minWidth: 130 }}>{m.label}</span>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.45, flex: 1 }}>
+                    {m.selitys}
+                    {m.peli && <span style={{ color: C.gold, opacity: 0.6, marginLeft: 4 }}>({m.peli})</span>}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '10px 0', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13, width: '100%' }}>← Takaisin asetuksiin</button>
+      </div>
+    </div>
+  );
+
   const settingsPanel = showSettings && (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 500, overflowY: 'auto',
@@ -540,7 +628,7 @@ export default function App() {
         </div>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Tekoälyn taso 🤖</div>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Koneälyn taso 🤖</div>
           <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
             {[
               { key: 'beginner',     label: 'Aloittelija',     desc: 'tekee virheitä, voitettavissa' },
@@ -567,22 +655,13 @@ export default function App() {
           </div>
         </div>
 
-        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Sanasto 📖</div>
-          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
-            Napauta termiä — selitys aukeaa alle. Korostetut termit aukeavat myös pelivalikon säännöistä.
-          </div>
-          {[
-            { key: 'perus',  label: 'Perustermit' },
-            { key: 'kortti', label: 'Kortit ja erikoistilanteet' },
-            { key: 'alue',   label: 'Alueet ja vyöhykkeet' },
-          ].map(({ key, label }) => (
-            <div key={key} style={{ marginBottom: 10 }}>
-              <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{label}</div>
-              {SANASTO.filter(s => s.kategoria === key).map(s => <SanastoRivi key={s.term} s={s} />)}
-            </div>
-          ))}
-        </div>
+        <button
+          onClick={() => setShowGlossary(true)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
+        >
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Sanasto & Merkistö 📖</span>
+          <span style={{ color: C.gold, fontSize: 16 }}>›</span>
+        </button>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
           <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Pelaajat 👥</div>
@@ -661,6 +740,7 @@ export default function App() {
     return (
       <div style={{ maxWidth: maxW, margin: '0 auto' }}>
         {settingsPanel}
+        {glossaryScreen}
         <GameHeader title={game.name} onBack={() => { setResultData(null); setActive(null); }} gearBtn={gearBtn} isMobile={isMobile} />
         <GameComponent
           key={gameKey}
@@ -693,6 +773,7 @@ export default function App() {
       fontFamily: 'Georgia,serif', color: C.text,
     }}>
       {settingsPanel}
+      {glossaryScreen}
 
       <div style={{
         position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
