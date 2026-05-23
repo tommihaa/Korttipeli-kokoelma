@@ -77,6 +77,8 @@ const GAMES = [
       '7 → valitse vaadittu maa',
       'A → bonusvuoro saman maan kortilla',
       '1 kortti → ilmoita LAPPU tai myöhästyessäsi saat 3 lisäkorttia',
+      'Ensin korteitta → voittaa',
+      'Viimeisenä kortteja kädessä → häviää',
     ],
   },
   {
@@ -117,6 +119,8 @@ const GAMES = [
       'Täyskaato → sinä hyökkäät seuraavaksi',
       'Q♠ = Maija — ei voi torjua eikä torju muita',
       'Valttimaa paljastetaan alussa',
+      'Ensin korteitta → voittaa',
+      'Viimeisenä kortteja kädessä → häviää',
     ],
   },
   {
@@ -129,8 +133,8 @@ const GAMES = [
       'Pelaa samaa tai suurempaa arvoa kasaan, vaikka useampi. Neljä samaa kaataa kasan pelistä pois.',
       '2♠ / 2♣ = kova kakkonen — lyö minkä tahansa ei-kaatokortin päälle',
       '10 tai A kaataa kasan · neljä samaa kaataa myös',
-      'Viimeisenä kortteja jäljellä = hävisit',
-      'Tavoite: pakan ehdyttyä päästä korteista eroon.',
+      'Ensin korteitta → voittaa',
+      'Viimeisenä kortteja kädessä → häviää',
     ],
   },
   {
@@ -144,6 +148,8 @@ const GAMES = [
       'Muut voivat vuorollaan lyödä sivusta hyökkäykseen tai puolustukseen käytetyillä arvoilla',
       'Torju samalla maalla korkeammalla tai valttikortilla',
       'Valttimaa paljastetaan alussa',
+      'Ensin korteitta → voittaa',
+      'Viimeisenä kortteja kädessä → häviää',
     ],
   },
 ];
