@@ -163,6 +163,8 @@ const SANASTO = [
   { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', emojiStyle: { filter: 'grayscale(1) brightness(0.05)' }, selitys: 'Q♠ on tämän pelin ainoa erikoiskortti, se on vain nostettava.',                                                         pelit: ['maija']                        },
   { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Jos siulla pelivuorosi päätteeksi on enää yksi kortti pienessä käessäsi, niin LAPPU ennenkuin seuraava pelaaja ehtii nostaa kortin! Seiskassa unohdettu lapun huuto tarkoittaa +3 korttia.',              pelit: ['seiska']                       },
   { kategoria: 'kortti', term: 'Kova kakkonen', match: ['kova kakkonen','kovat kakkoset'],                                 emoji: '♠',  selitys: '2♠ tai 2♣ — voi lyödä minkä tahansa ei-kaatokortin päälle.',                                                                       pelit: ['paskahousu']                   },
+  { kategoria: 'kortti', term: 'Hyökkäys',      match: ['hyökkä*'],                                                        emoji: '⚔️', selitys: 'Hyökkääjä lyö käsikorttejaan pöytään puolustajan kaadettavaksi. Moskassa hyökkäys samanarvoisilla korteilla, Maijassa saman maan korteilla.',          pelit: ['maija','moska']                },
+  { kategoria: 'kortti', term: 'Puolustus',     match: ['puolusta*','torjuu','torjua','torju'],                             emoji: '🛡️', selitys: 'Puolustaja kaataa jokaisen hyökkäykseen lyödyn kortin. Moskassa: samalla maalla korkeammalla tai valttikortilla. Maijassa: samalla maalla korkeammalla tai valtilla.',  pelit: ['maija','moska']                },
   { kategoria: 'kortti', term: 'Kaato',         match: ['kaadetaan','kaataa','kaadat','kaato'],                             emoji: '⬇️', selitys: 'Maijassa ja Moskassa sama asia kuin puolustus. Paskahousussa kaatokortteja ovat 10 (kymppi), A (ässä) ja neljä samanvahvuista (3–9, J, Q, K). Moskassa kaadetut kortit ovat poissa pelistä, vain jos puolustus onnistuu kaatamaan kaikki hyökkäykseen käytetyt kortit.',  pelit: ['maija','moska','paskahousu']   },
   { kategoria: 'kortti', term: 'Valttimaa',     match: ['valttimaa','valttimaan','valttikortilla','valttikortti'],         emoji: '⭐', selitys: 'Pelin alussa pakan viimeinen jaettu kortti määrää valttimaan. Valttikortilla voi kaataa minkä tahansa ei-valttimaan kortin. Maijassa kaksi lisärajoitetta: valttimaa ei voi olla ♠ ja Q♠ on vain nostettava.', pelit: ['moska','maija']                },
   { kategoria: 'kortti', term: 'Täsmäys',      match: ['täsmäys','täsmäyksen','TÄSMÄYS'],                                  emoji: '👐', selitys: 'Kasan kaksi päällimmäistä korttia ovat samaa arvoa. Nopein läpsääjä voittaa koko kasan — väärä läpsäys sen sijaan lisää kortin kasaan.',                             pelit: ['lapsy']                        },
@@ -187,12 +189,24 @@ const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins
 function splitWithGlossary(text) {
   const patterns = SANASTO
     .flatMap(s => s.match.map(m => ({ m, term: s.term })))
-    .sort((a, b) => b.m.length - a.m.length);   // pisin ensin: "kova kakkonen" ennen "kova"
+    // pisin ensin; * ei laske pituuteen (vartalohaku)
+    .sort((a, b) => {
+      const la = a.m.endsWith('*') ? a.m.length - 1 : a.m.length;
+      const lb = b.m.endsWith('*') ? b.m.length - 1 : b.m.length;
+      return lb - la;
+    });
   // Sanaraja: ei kirjainta/numeroa ennen eikä jälkeen — toimii myös ä/ö/å-kirjaimilla
   const wL = '(?<![a-zA-ZäöåÄÖÅ0-9])';
   const wR = '(?![a-zA-ZäöåÄÖÅ0-9])';
   const rx = new RegExp(
-    `(${patterns.map(p => wL + p.m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + wR).join('|')})`,
+    `(${patterns.map(p => {
+      if (p.m.endsWith('*')) {
+        // vartalo: osuu kaikkiin sanoihin jotka alkavat vartalolla
+        const stem = p.m.slice(0, -1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return wL + stem + '[a-zA-ZäöåÄÖÅ0-9]*';
+      }
+      return wL + p.m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + wR;
+    }).join('|')})`,
     'i'
   );
   const parts = [];
@@ -201,7 +215,11 @@ function splitWithGlossary(text) {
     const hit = rem.match(rx);
     if (!hit) { parts.push({ text: rem, isTerm: false }); break; }
     if (hit.index > 0) parts.push({ text: rem.slice(0, hit.index), isTerm: false });
-    const canon = patterns.find(p => p.m.toLowerCase() === hit[0].toLowerCase())?.term ?? hit[0];
+    const canon = patterns.find(p =>
+      p.m.endsWith('*')
+        ? hit[0].toLowerCase().startsWith(p.m.slice(0, -1).toLowerCase())
+        : p.m.toLowerCase() === hit[0].toLowerCase()
+    )?.term ?? hit[0];
     parts.push({ text: hit[0], isTerm: true, term: canon });
     rem = rem.slice(hit.index + hit[0].length);
   }
