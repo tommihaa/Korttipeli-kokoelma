@@ -99,8 +99,8 @@ const GAMES = [
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Koputus, maxWidth: 560, pakka: 'taydennetty',
     rules: [
-      'Muista kenttäsi arvot ja opi lisää',
-      'Jos näet poistopakkaan heitetyn täsmäparin kenttäsi tietylle kortille, niin klikkaa kenttäsi korttia',
+      'Alussa saat kurkata kaksi korttia. Opi pelin aikana muutkin tai vaihda pakasta vedettyyn.',
+      'Kun poistopakka ja kortti kentästäsi täsmää → käännä kortti poistopakkaan nopeiten',
       'Koputus käynnistää viimeisen kierroksen',
       'Pienin pistemäärä paljastuksessa voittaa',
     ],
