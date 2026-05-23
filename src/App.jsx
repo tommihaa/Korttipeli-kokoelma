@@ -19,7 +19,7 @@ import Ristiseiska from './games/Ristiseiska.jsx';
 import Paskahousu from './games/Paskahousu.jsx';
 import Admin from './Admin.jsx';
 
-const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu'];
+const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
 const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
 const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
 const KANSA            = ['Astraalitason tirehtööri','Boomer','Jonne','Justiina','Karen','Kukkahattutäti','Lumihiutale','NPC','Rane','Random','Setämies','Veeti'];
@@ -90,6 +90,7 @@ const GAMES = [
     rules: [
       'Laske pöydän korteista täsmääkö joku summa käsikorttisi arvon kanssa — tee kaappaus',
       'Tai jätä kortti pöytään — muut voivat käyttää sitä omien käsikorttiensa summiin',
+      'Rakennelma: valitse pöytäkortteja + käsikortti → summa, jonka kaappaat myöhemmin toisella saman arvoisella kortilla',
       'Mökki: kaappaa kaikki pöydältä → 1 lisäpiste',
       'Ensimmäisenä 16+ pistettä voittaa',
     ],
@@ -165,6 +166,7 @@ const SANASTO = [
   { kategoria: 'perus', term: 'Jako',        match: ['jaetaan','jaettu','jako','jakaa','jaon'],                               emoji: '🤲', selitys: 'Pakan jakaminen pelaajille pelin alussa. 52 korttia, 4 maata, 13 arvoa per maa (2–10, J, Q, K, A). Jako määrää koko pelin lähtötilanteen.',                                    pelitLabel: 'kaikki'                    },
   // ─ Kortit ja erikoistilanteet ─────────────────────────────────────────────
   { kategoria: 'kortti', term: 'Mökki',         match: ['mökki','mokki','mökin','mökkejä'],                                emoji: '🏚', selitys: 'Koko pöydän tyhjennys yhdellä kaappauksella — antaa yhden lisäpisteen.',                                                          pelit: ['kasino']                       },
+  { kategoria: 'kortti', term: 'Rakennelma',   match: ['rakennelma','rakennelman','rakennelmaa','rakennelmat','rakennelmia','rakennelmat'], emoji: '🔨', selitys: 'Valitset pöydältä kortteja ja lisäät oman käsikorttisi — niiden summa on rakennelman arvo. Sinulla täytyy olla kädessäsi toinen kortti samalla arvolla, jolla kaappaat rakennelman myöhemmin. Vastustaja voi varastaa rakennelman jos hänellä on saman arvoinen kortti.', pelit: ['kasino'] },
   { kategoria: 'kortti', term: 'Korttipantti',  match: ['korttipantti','korttipantteja','pantti','pantteja','panttia'],    emoji: '🎫', selitys: 'Rangaistuskortti, jonka saat edelliseltä pelaajalta, kun siulla ei ole käypää pelattavaa. Eniten korttipantteja saanut häviää.',    pelit: ['ristiseiska']                  },
   { kategoria: 'kortti', term: 'Maija',         match: ['maija'],                                                           emoji: '🂭', emojiStyle: { filter: 'grayscale(1) brightness(0.05)' }, selitys: 'Q♠ on tämän pelin ainoa erikoiskortti, se on vain nostettava.',                                                         pelit: ['maija']                        },
   { kategoria: 'kortti', term: 'Lappu',         match: ['lappu'],                                                           emoji: '📢', selitys: 'Jos siulla pelivuorosi päätteeksi on enää yksi kortti pienessä käessäsi, niin LAPPU ennenkuin seuraava pelaaja ehtii nostaa kortin! Seiskassa unohdettu lapun huuto tarkoittaa +3 korttia.',              pelit: ['seiska']                       },
