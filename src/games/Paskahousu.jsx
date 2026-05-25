@@ -91,6 +91,7 @@ function emptyPenalty(card) { return card.r === '10' || card.r === 'A'; }
 function mkGame(nP, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
   const deck    = mkDeck();
+  const allCards = [...deck]; // kaikki 52 korttia ennen jakoa — AI-inferenssiä varten
   const players = Array.from({ length: nP }, (_, i) => ({
     id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1],
     isHuman: allBots ? false : i === 0, hand: deck.splice(0, HAND_SZ),
@@ -102,6 +103,7 @@ function mkGame(nP, pool, allBots = false) {
   return {
     players, draw: deck, pile: [], top: null,
     turn: starter, skipNext: -1, finished: [], phase: 'play',
+    allCards, clearedCards: [],
   };
 }
 
@@ -129,13 +131,28 @@ function fillHand(hand, draw) {
 // pile = nykyinen kasa (ennen pelaamista) — tarvitaan 4x-kaatolaskennan tarkistukseen
 // drawLength = nostopakan koko — 0 = pakka loppu, siirry endgame-strategiaan
 // level = 'beginner'|'normal'|'hard'|'supernatural'
-function aiCards(hand, top, pile, drawLength, level = 'normal') {
+// allCards = kaikki 52 korttia pelin alussa (inferenssiä varten)
+// clearedCards = kasatut/poistetut kortit (inferenssiä varten)
+// activePlayers = aktiivisten (ei finished) pelaajien määrä
+function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null, clearedCards = null, activePlayers = 4) {
   const opts = hand.filter(c => canPlay(c, top));
   if (!opts.length) return null;
 
   const isHard  = level === 'hard' || level === 'supernatural';
   const isSuper = level === 'supernatural';
   const isKova  = c => c.r === '2' && (c.s === '♠' || c.s === '♣');
+
+  // Täydelliset tiedot: yliluonnollinen + kaksinpeli + pakka tyhjä
+  // Vastustajan käsi = kaikki kortit − oma käsi − kasa − kasatut kortit
+  let knownOpponentHand = null;
+  if (isSuper && activePlayers === 2 && drawLength === 0 && allCards && clearedCards) {
+    const ownIds     = new Set(hand.map(c => c.id));
+    const pileIds    = new Set(pile.map(c => c.id));
+    const clearedIds = new Set(clearedCards.map(c => c.id));
+    knownOpponentHand = allCards.filter(c =>
+      !ownIds.has(c.id) && !pileIds.has(c.id) && !clearedIds.has(c.id)
+    );
+  }
 
   // 1. Täydennä 4 samaa → välitön kaato (korkein prioriteetti)
   if (top && (LOW.has(top.r) || FACES.has(top.r))) {
@@ -177,20 +194,42 @@ function aiCards(hand, top, pile, drawLength, level = 'normal') {
 
   // Endgame: pakka loppu — tähtää hyviin kortteihin, aiheuta hankaluuksia
   if (drawLength === 0) {
+    // Tyhjä pöytä: punainen 2 (♥/♦2, arvo 2) käy vain tyhjälle pöydälle — pelaa se nyt pois
+    if (!top) {
+      const redTwos = opts.filter(c => c.r === '2' && (c.s === '♥' || c.s === '♦'));
+      if (redTwos.length > 0) return redTwos;
+    }
+
+    // Yliluonnollinen + täydelliset tiedot: valitse kortti taktisesti
+    if (knownOpponentHand !== null) {
+      const canOpponentBeat = myCard => knownOpponentHand.some(oc => canPlay(oc, myCard));
+      // Prioriteetti 1: kortti jota vastustaja ei voi lyödä → pakottaa nostamaan kasan
+      const unbeatable = opts.filter(c => !canOpponentBeat(c));
+      if (unbeatable.length > 0) {
+        return [unbeatable.reduce((a, b) => a.v < b.v ? a : b)];
+      }
+      // Prioriteetti 2: kaikki voidaan lyödä — pelaa se joka vaatii vastustajalta korkeimman kortin
+      const costOf = c => knownOpponentHand
+        .filter(oc => canPlay(oc, c))
+        .reduce((mn, oc) => oc.v < mn ? oc.v : mn, Infinity);
+      const best = opts.reduce((a, b) => costOf(b) > costOf(a) ? b : a);
+      return [best];
+    }
+
     // Säästä: kova kakkonen (suurin), 10 (tyhjentää), A (kaataa kuvakortit), 9 (varmuus)
     const save = new Set(['10', 'A', '9']);
     const notSaved = opts.filter(c => !save.has(c.r) && !isKova(c));
 
-    // Pelaa ensin korkein kuvakortti (K > Q > J) — pakottaa vastustajan korkeaan
+    // Pelaa ensin pienin kuvakortti (J < Q < K) — K on joustavampi myöhemmin, käy korkeammille
     const faces = notSaved.filter(c => FACES.has(c.r));
     if (faces.length > 0) {
-      const best = faces.reduce((a, b) => b.v > a.v ? b : a);
+      const best = faces.reduce((a, b) => a.v < b.v ? a : b);
       return opts.filter(c => c.r === best.r);
     }
 
-    // Muut ei-säästettävät kortit korkeimmasta alimpaan
+    // Muut ei-säästettävät kortit pienimmästä suurimpaan — korkea on joustavampi myöhemmin
     if (notSaved.length > 0) {
-      const best = notSaved.reduce((a, b) => b.v > a.v ? b : a);
+      const best = notSaved.reduce((a, b) => a.v < b.v ? a : b);
       return opts.filter(c => c.r === best.r && c.v === best.v);
     }
 
@@ -244,6 +283,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
+  const [timerLeft,    setTimerLeft]     = useState(null); // yhtäkkinen kuolema -laskuri (sekunteina)
 
   const gRef    = useRef(null);
   const aiTmr   = useRef(null);
@@ -258,10 +298,34 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const allBotsRef = useRef(false);
   const pausedRef  = useRef(false);
   const aiDelayRef = useRef(2000);
+  const suddenDeathTmr     = useRef(null);
+  const suddenDeathStarted = useRef(false);
 
   useEffect(() => { gRef.current = G; },         [G]);
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearInterval(swapTmr.current); }, []);
+  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearInterval(swapTmr.current); clearInterval(suddenDeathTmr.current); }, []);
+
+  // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + yliluonnollinen
+  useEffect(() => {
+    if (!G || G.phase === 'gameover' || suddenDeathStarted.current) return;
+    if (aiLevelRef.current !== 'supernatural') return;
+    const activeCount = G.players.filter((_, i) => !G.finished.includes(i)).length;
+    if (G.draw.length === 0 && activeCount === 2) {
+      suddenDeathStarted.current = true;
+      setTimerLeft(150);
+      addLog('⏱ Pakka tyhjä — <b>Yhtäkkinen kuolema!</b> 2:30 laskuri käy. Eniten kortteja voittaa!');
+      const id = setInterval(() => {
+        if (gRef.current?.phase === 'gameover') { clearInterval(id); setTimerLeft(null); return; }
+        setTimerLeft(prev => {
+          if (prev === null) { clearInterval(id); return null; }
+          if (prev <= 1) { clearInterval(id); tm(() => handleSuddenDeathEnd(), 50); return 0; }
+          return prev - 1;
+        });
+      }, 1000);
+      suddenDeathTmr.current = id;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [G?.draw?.length, G?.finished?.length, G?.phase]);
 
   function addLog(m) {
     setMsg_(m);
@@ -282,19 +346,19 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     played:       (isH, name, cards) => `${isH ? 'Sinä' : name}: ${cards}`,
     won:          (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
     loser:        (isH, name) => `${isH ? 'Sinä jäit' : `${name} jäi`} Paskahousuksi.`,
-    swept:        (isH, name) => `${isH ? 'Sinä kaadat kasan' : `${name} kaataa kasan`}! Jatkaa.`,
+    swept:        (isH, name, count) => `${isH ? 'Sinä kaadat' : `${name} kaataa`} ${count} kortin kasan! Jatkaa.`,
     yourTurn:     'On vuorosi.',
     yourTurnCont: 'Sinä jatkat vuoroasi.',
     emptyPenalty: (card, nextName) => `${card} tyhjälle — ${nextName} nostaa ja menettää vuoronsa!`,
     emptyPenalty2:(card, nextName) => `${card} tyhjälle — ${nextName} menettää vuoronsa!`,
-    blindSwept:   (isH, name, card) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — kaato! ${isH ? 'Jatkat.' : 'Jatkaa.'}`,
+    blindSwept:   (isH, name, card, count) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — kaatoi ${count} kortin kasan! ${isH ? 'Jatkat.' : 'Jatkaa.'}`,
     blindGood:    (isH, name, card) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — kortti kävi!`,
     blindBad:     (isH, name, card) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — ei käynyt, nosta kasa!`,
-    tookPile:     (isH, name, count) => `${isH ? 'Sinä nostat kasan' : `${name} nostaa kasan`} (${count}k).`,
+    tookPile:     (isH, name, count) => `${isH ? `Sinä nostat ${count} kortin kasan.` : `${name} nostaa ${count} kortin kasan.`}`,
     skipCard:     (isH, name, card) => `${isH ? 'Sinä nostat' : `${name} nostaa`} (${card}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`,
     skipNoCard:   (isH, name) => `${isH ? 'Sinä menetät' : `${name} menettää`} vuoronsa.`,
     swapped:      (isH, name, cards) => `${isH ? 'Sinä vaihdat' : `${name} vaihtaa`}! ${cards} kasaan.`,
-    swapSwept:    (isH, name) => `${isH ? 'Sinä kaadat kasan vaihdolla! Jatkat.' : `${name} kaataa kasan vaihdolla! Jatkaa.`}`,
+    swapSwept:    (isH, name, count, cards) => `${isH ? `Sinä kaadat ${count} kortin kasan vaihdossa saamallasi ${cards}! Jatkat.` : `${name} kaataa ${count} kortin kasan vaihdossa saamallaan ${cards}! Jatkaa.`}`,
     aiSwaps:      name => `${name} vaihtaa!`,
     aiStuck:      name => `${name}: ei pysty tekemään mitään.`,
     badCard:      'Kortti ei kelpaa tähän.',
@@ -309,7 +373,31 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     tm(() => setKasaAnim(null), type === 'quad' ? 2000 : type === 'clear' ? 1400 : 850);
   }
 
+  function handleSuddenDeathEnd() {
+    const g = gRef.current;
+    if (!g || g.phase === 'gameover') return;
+    const active = g.players.filter((_, i) => !g.finished.includes(i));
+    if (active.length < 2) return;
+    // Voittaa se jolla eniten kortteja
+    const sorted  = [...active].sort((a, b) => b.hand.length - a.hand.length);
+    const winner  = sorted[0];
+    const loser   = sorted[sorted.length - 1];
+    addLog(`⏱ Aika loppui! <b>${winner.name}</b> voittaa (${winner.hand.length}k &gt; ${loser.hand.length}k).`);
+    if (sndRef.current) SFX.capture();
+    const newFinished = [...g.finished, winner.id, loser.id];
+    const ranking = newFinished.map((idx, pos) => ({
+      name: g.players[idx].name, place: pos + 1, isHuman: g.players[idx].isHuman && !allBotsRef.current,
+    }));
+    setTimerLeft(null);
+    setGS({ ...g, finished: newFinished, phase: 'gameover' });
+    if (allBotsRef.current) { tm(() => setPendingResult({ ranking }), 800); }
+    else { onResult?.({ ranking }); }
+  }
+
   function startGame(forcedCount, allBotsMode = false) {
+    suddenDeathStarted.current = false;
+    clearInterval(suddenDeathTmr.current);
+    setTimerLeft(null);
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     pausedRef.current = false; setPaused(false);
     setPendingResult(null);
@@ -395,12 +483,13 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     // Kaato? → kaataja jatkaa (uusi vuoro)
     if (pileClears(cards, topBefore, pile)) {
-      addLog(M.swept(isH, p.name));
+      addLog(M.swept(isH, p.name, pile.length));
       if (sndRef.current) SFX.capture();
       const isQuad = cards[0].r !== '10' && cards[0].r !== 'A';
       triggerKasaAnim(isQuad ? 'quad' : 'clear');
       const contP = finished.includes(pidx) ? nextActive(players, pidx, finished) : pidx;
-      const g2 = { ...g, players, draw, pile: [], top: null, finished, turn: contP, skipNext: -1, phase: 'play' };
+      const g2 = { ...g, players, draw, pile: [], top: null, finished, turn: contP, skipNext: -1, phase: 'play',
+        clearedCards: [...(g.clearedCards || []), ...pile] };
       setGS(g2);
       if (players[contP] && !players[contP].isHuman)
         schedAI(() => runAI(gRef.current), 1400);
@@ -494,11 +583,12 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       }
 
       if (pileClears([knocked], topBefore, pile)) {
-        addLog(M.blindSwept(isH, p.name, lblColored(knocked)));
+        addLog(M.blindSwept(isH, p.name, lblColored(knocked), pile.length));
         if (sndRef.current) SFX.capture();
         triggerKasaAnim('clear');
         const contP = finished.includes(pidx) ? nextActive(players, pidx, finished) : pidx;
-        const g2 = { ...g, players, draw, pile: [], top: null, finished, turn: contP, skipNext: -1, phase: 'play' };
+        const g2 = { ...g, players, draw, pile: [], top: null, finished, turn: contP, skipNext: -1, phase: 'play',
+          clearedCards: [...(g.clearedCards || []), ...pile] };
         setGS(g2);
         if (players[contP] && !players[contP].isHuman)
           schedAI(() => runAI(gRef.current), 1400);
@@ -628,11 +718,12 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     const newTop  = swapCards[swapCards.length - 1];
     setSel([]);
     if (pileClears(swapCards, prevTop, newPile)) {
-      addLog(M.swapSwept(p.isHuman, p.name));
+      addLog(M.swapSwept(p.isHuman, p.name, newPile.length, swapCards.map(lblColored).join(', ')));
       if (sndRef.current) SFX.capture();
       triggerKasaAnim('clear');
       const contP = g.finished.includes(pidx) ? nextActive(players, pidx, g.finished) : pidx;
-      const g2 = { ...g, players, pile: [], top: null, turn: contP, phase: 'play', swapData: null };
+      const g2 = { ...g, players, pile: [], top: null, turn: contP, phase: 'play', swapData: null,
+        clearedCards: [...(g.clearedCards || []), ...newPile] };
       setGS(g2);
       if (players[contP] && !players[contP].isHuman)
         schedAI(() => runAI(gRef.current), 1400);
@@ -679,7 +770,8 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     if (g.skipNext === turn) { applySkip(gRef.current, turn); return; }
 
-    let cards = aiCards(p.hand, top, g.pile, draw.length, aiLevelRef.current);
+    const activePlayers = g.players.length - g.finished.length;
+    let cards = aiCards(p.hand, top, g.pile, draw.length, aiLevelRef.current, g.allCards, g.clearedCards, activePlayers);
     if (cards) {
       if (cards.every(c => c.r !== '10' && c.r !== 'A') && aiShouldFumble(aiLevelRef.current)) {
         // Aloittelija-virhe: pelaa 10 tai A turhaan — erikoiskortti kun normaali kävisi
@@ -1056,6 +1148,19 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         )}
       </div>
 
+      {/* Yhtäkkinen kuolema -laskuri */}
+      {timerLeft !== null && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px', marginBottom: 8, borderRadius: 10, background: timerLeft <= 30 ? 'rgba(224,92,59,0.12)' : 'rgba(123,47,190,0.08)', border: `1px solid ${timerLeft <= 30 ? '#e05c3b66' : 'rgba(123,47,190,0.35)'}` }}>
+          <span style={{ fontSize: 14 }}>⏱</span>
+          <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: timerLeft <= 30 ? '#ff6644' : '#e0ccff', minWidth: 48, animation: timerLeft <= 10 ? 'timerPulse 1s ease infinite' : undefined }}>
+            {String(Math.floor(timerLeft / 60)).padStart(2, '0')}:{String(timerLeft % 60).padStart(2, '0')}
+          </span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: timerLeft <= 30 ? '#ff9977' : '#bb88ff' }}>
+            Yhtäkkinen kuolema — eniten kortteja voittaa!
+          </span>
+        </div>
+      )}
+
       {/* Tilapalkki */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pääse kortistasi eroon — viimeinen on Paskahousu</span>
@@ -1160,6 +1265,11 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
           40%  { opacity: 1; letter-spacing: 2px; text-shadow: 0 0 8px rgba(224,92,59,0.5); }
           70%  { opacity: 1; letter-spacing: 1.5px; text-shadow: none; }
           100% { opacity: 1; }
+        }
+        @keyframes timerPulse {
+          0%   { opacity: 1; transform: scale(1); }
+          50%  { opacity: 0.65; transform: scale(1.1); color: #ff3300; }
+          100% { opacity: 1; transform: scale(1); }
         }
       `}</style>
     </div>
