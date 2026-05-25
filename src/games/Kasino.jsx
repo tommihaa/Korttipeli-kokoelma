@@ -206,11 +206,11 @@ function findGroups(cards, target) {
   return [];
 }
 
-function initGame(nPlayers, pool) {
+function initGame(nPlayers, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
   const deck = newDeck();
   const players = Array.from({ length: nPlayers }, (_, i) => ({
-    id: i, name: i === 0 ? 'Hero' : aiNames[i - 1], isHuman: i === 0,
+    id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1], isHuman: allBots ? false : i === 0,
     hand: [], captured: [], tikkiCount: 0, score: 0,
   }));
   const table = deck.splice(0, 4);
@@ -285,6 +285,10 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const [showInfo, setShowInfo] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [helpTerm, setHelpTerm] = useState(null); // 'kaappaus' | 'rakennus'
+  const [allBots, setAllBots] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [aiDelayMs, setAiDelayMs] = useState(2000);
+  const [pendingResult, setPendingResult] = useState(null);
 
   const gRef    = useRef(null);
   const phaseRef = useRef('idle');
@@ -295,6 +299,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const cumulBdRef    = useRef(null); // kumulatiivinen pisteytysdata joka kierros
   const showNextBtnRef = useRef(showNextBtn);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
+  const allBotsRef = useRef(false);
+  const pausedRef  = useRef(false);
+  const aiDelayRef = useRef(2000);
   const sndRef     = useRef(false);
   const teachRef   = useRef(teachMode);
   const aiLevelRef = useRef(aiLevel);
@@ -302,15 +309,23 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const tmrs    = useRef(new Set());
   const lastPlayTmr = useRef(null);
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
+  function schedAI(fn, base) {
+    const d = allBotsRef.current ? aiDelayRef.current : base;
+    aiTmr.current = tm(() => {
+      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
+      fn();
+    }, d + Math.random() * 400);
+  }
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  // Auto-advance kun showNextBtn=false ja kaappaus odottaa jatkoa
+  // Auto-advance kun showNextBtn=false tai allBots-tila ja kaappaus odottaa jatkoa
   useEffect(() => {
-    if (pendingCapture && !showNextBtnRef.current) {
-      const id = tm(() => continueAfterCapture(), 600);
+    if (pendingCapture && (!showNextBtnRef.current || allBotsRef.current)) {
+      const delay = allBotsRef.current ? 400 : 600;
+      const id = tm(() => continueAfterCapture(), delay);
       return () => clearTimeout(id);
     }
   }, [pendingCapture]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -321,6 +336,20 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     if (prevDeckRef.current !== null && prevDeckRef.current > 0 && cur === 0) setPakaAnim(true);
     prevDeckRef.current = cur;
   }, [G?.deck?.length]);
+
+  // Automaattieteneminen pistepaneelista allBots-tilassa
+  useEffect(() => {
+    if (!scores || !allBotsRef.current) return;
+    const anyAt16 = scores.some(s => s.totalScore >= 16);
+    let tid;
+    const tryAdv = () => {
+      if (pausedRef.current) { tid = tm(tryAdv, 500); return; }
+      if (anyAt16) setScores(null); // pendingResult overlay ottaa vallan
+      else startNextRound();
+    };
+    tid = tm(tryAdv, 3000);
+    return () => clearTimeout(tid);
+  }, [scores]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function addLog(m) {
     setMsg_(m);
@@ -344,19 +373,37 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
 
   useLayoutEffect(() => { startGame(); }, []);
 
-  function startGame() {
+  function startGame(forcedCount, allBotsMode = false) {
     clearTimeout(aiTmr.current);
-    const g = initGame(nP, playerNames);
+    allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    pausedRef.current = false; setPaused(false);
+    setPendingResult(null);
+    const cnt = forcedCount || nP;
+    const g = initGame(cnt, playerNames, allBotsMode);
     setG(g); gRef.current = g;
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
     setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false); setScores(null); setPakaAnim(false);
     logRef.current = []; setLog([]);
-    const hint = getTurnHint(g.players[0].hand, g.table, g.builds);
-    addLog(M.gameStart(hint));
     cumulBdRef.current = null;
+    if (allBotsMode) {
+      addLog('🤖 Bottien taistelu alkaa!');
+      schedAI(() => runAI(0, gRef.current), 2000);
+    } else {
+      const hint = getTurnHint(g.players[0].hand, g.table, g.builds);
+      addLog(M.gameStart(hint));
+    }
     setScreen('game');
     setShuffling(true);
+  }
+
+  function startBotBattle() {
+    startGame(nP, true);
+  }
+
+  function togglePause() {
+    const next = !pausedRef.current;
+    pausedRef.current = next; setPaused(next);
   }
 
   function getTurnHint(hand, table, builds = []) {
@@ -438,8 +485,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     const next = (fromIdx + 1) % g2.players.length;
     const p = g2.players[next];
 
-    // Pakollinen siirto: yksi kortti kädessä ja pöytä tyhjä
-    if (next === 0 && p.hand.length === 1 && g2.table.length === 0) {
+    // Pakollinen siirto: yksi kortti kädessä ja pöytä tyhjä (vain ihmispelaajalle)
+    if (next === 0 && p.isHuman && p.hand.length === 1 && g2.table.length === 0) {
       setCur(0); curRef.current = 0;
       setPhase('idle'); phaseRef.current = 'idle';
       setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
@@ -460,7 +507,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       addLog(M.yourTurn(korttia(p.hand.length), hint));
     } else {
       addLog(M.aiThinking(p.name));
-      aiTmr.current = tm(() => runAI(next, g2), 1200 + Math.random() * 400);
+      schedAI(() => runAI(next, gRef.current), 1200);
     }
   }
 
@@ -523,7 +570,11 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         if (bd.tikki)       items.push({ label: `Mökit (${bd.tikki} kpl)`,              pts: bd.tikki });
         return { name: p.name, score: newScores[i].totalScore, items };
       }).sort((a, b) => b.score - a.score);
-      onResult?.({ ranking, scoreBreakdown });
+      if (allBotsRef.current) {
+        tm(() => setPendingResult({ ranking }), 1200);
+      } else {
+        onResult?.({ ranking, scoreBreakdown });
+      }
     }
     const finalPlayers = g2.players.map((p, i) => ({ ...p, score: newScores[i].totalScore }));
     const g3 = { ...g2, players: finalPlayers };
@@ -536,7 +587,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   function startNextRound() {
     const g = gRef.current;
     const finalPlayers = g.players;
-    const newG = initGame(nP, playerNames);
+    const newG = initGame(nP, playerNames, allBotsRef.current);
     const withScores = {
       ...newG,
       players: newG.players.map((p, i) => ({ ...p, score: finalPlayers[i]?.score || 0 })),
@@ -547,7 +598,12 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     setPhase('select_table'); phaseRef.current = 'select_table';
     const h0 = withScores.players[0];
     const scoreStr = finalPlayers.map(p => `${p.name} ${p.score}p`).join(', ');
-    addLog(M.newRound(scoreStr, getTurnHint(h0.hand, withScores.table, withScores.builds)));
+    if (allBotsRef.current) {
+      addLog(`🤖 Uusi peli! Pisteet: ${scoreStr}`);
+      schedAI(() => runAI(0, gRef.current), 2000);
+    } else {
+      addLog(M.newRound(scoreStr, getTurnHint(h0.hand, withScores.table, withScores.builds)));
+    }
   }
 
   function scoreRound(g) {
@@ -857,10 +913,12 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     if (!g || phaseRef.current === 'idle') return;
     const p = g.players[playerIdx];
     if (!p.hand.length) { advance(g, playerIdx); return; }
-    const level = aiLevelRef.current;
+    const level = allBotsRef.current ? 'supernatural' : aiLevelRef.current;
     const isBeginner = level === 'beginner';
     const isSuper = level === 'supernatural';
     const fumble = aiShouldFumble(level);
+    const aDel = allBotsRef.current ? 400 : 1200; // animation delay
+    const qDel = allBotsRef.current ? 200 : 700;  // quick action delay
 
     // ─── 1. Kaappaa oma rakennelma (kaikki tasot, aloittelija 20% unohtaa) ───
     const ownBuilds = g.builds.filter(b => b.ownerIdx === playerIdx);
@@ -882,7 +940,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
             setG(g3); gRef.current = g3;
             setPendingCapture({ g2: g3, fromIdx: playerIdx });
-          }, 1200);
+          }, aDel);
           return;
         }
       }
@@ -908,7 +966,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
             setG(g3); gRef.current = g3;
             setPendingCapture({ g2: g3, fromIdx: playerIdx });
-          }, 1200);
+          }, aDel);
           return;
         }
       }
@@ -950,8 +1008,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             const g2 = gRef.current;
             const g3 = doBuild(g2, playerIdx, buildResult.handCard, buildResult.tableCards, buildResult.value);
             setG(g3); gRef.current = g3;
-            tm(() => advance(g3, playerIdx), 600);
-          }, 700 + Math.random() * 400);
+            tm(() => advance(g3, playerIdx), 400);
+          }, qDel + Math.random() * 200);
           return;
         }
       }
@@ -971,7 +1029,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         const g3 = doCapture(g2, playerIdx, captureToUse.handCard, captureToUse.tableCards, true);
         setG(g3); gRef.current = g3;
         setPendingCapture({ g2: g3, fromIdx: playerIdx });
-      }, 1200);
+      }, aDel);
       return;
     }
 
@@ -1002,8 +1060,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       const g2 = gRef.current;
       const g3 = doLeave(g2, playerIdx, toLeave);
       setG(g3); gRef.current = g3;
-      tm(() => advance(g3, playerIdx), 600);
-    }, 700 + Math.random() * 400);
+      tm(() => advance(g3, playerIdx), 400);
+    }, qDel + Math.random() * 200);
   }
 
   function continueAfterCapture() {
@@ -1045,8 +1103,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         Eniten kortteja +1 · 10♦ +2 · 2♠ +1 · Ässä +1<br />
         Ensimmäinen 16 pisteeseen voittaa!
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(123,47,190,0.5)', borderRadius: 14, padding: '12px 32px', color: '#c084fc', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>🤖 Bottien taistelu</button>
       </div>
     </div>
   );
@@ -1066,8 +1125,14 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           ))}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
-          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+          {allBots ? (
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi katselutila</button>
+          ) : (
+            <>
+              <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
+              <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+            </>
+          )}
         </div>
       </div>
     );
@@ -1152,9 +1217,13 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             );
           })}
           {scores.some(s => s.totalScore >= 16) ? (
-            <button onClick={() => setScreen('gameover')} style={{ marginTop: 10, width: '100%', background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 0', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>
-              Uusi ottelu →
-            </button>
+            allBots ? (
+              <div style={{ marginTop: 10, textAlign: 'center', fontFamily: 'sans-serif', fontSize: 12, color: '#c084fc' }}>🤖 Näytetään tulokset...</div>
+            ) : (
+              <button onClick={() => setScreen('gameover')} style={{ marginTop: 10, width: '100%', background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 0', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>
+                Uusi ottelu →
+              </button>
+            )
           ) : (
             <button onClick={startNextRound} style={{ marginTop: 10, width: '100%', background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 0', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>
               Seuraava peli →
@@ -1212,7 +1281,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
                   selected={!!isSel || !!isAiPick}
                   highlight={isMyTurn && !isSel}
                   justPlaced={c.id === jpId}
-                  onClick={isMyTurn ? () => humanToggleTable(c) : undefined}
+                  onClick={isMyTurn && !allBots ? () => humanToggleTable(c) : undefined}
                   backStyle={BACKS[cardBack]}
                 />
               </div>
@@ -1242,7 +1311,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
                 return (
                   <div
                     key={build.id}
-                    onClick={isMyTurn ? () => humanToggleBuild(build) : undefined}
+                    onClick={isMyTurn && !allBots ? () => humanToggleBuild(build) : undefined}
                     style={{ border: `2px solid ${borderColor}`, borderRadius: 10, padding: '6px 8px', background: isSel ? `${C.gold}12` : 'rgba(255,255,255,0.02)', cursor: isMyTurn ? 'pointer' : 'default', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
                   >
                     <div style={{ display: 'flex', gap: 3 }}>
@@ -1276,7 +1345,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       {/* Ihmispelaajan käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero {curIdx === 0 ? '●' : ''} — {korttia(human.captured.length)} kaapattu, {human.tikkiCount} mökkiä
+          {allBots ? '🤖' : '👤'} {G.players[0].name} {curIdx === 0 ? '●' : ''} — {korttia(human.captured.length)} kaapattu, {human.tikkiCount} mökkiä
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {
@@ -1292,7 +1361,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
               <Card key={c.id} card={c} small={isMobile} showBadges
                 highlight={valid}
                 dim={isMyTurn && hasSelection && !valid}
-                onClick={isMyTurn ? () => humanSelectHand(c) : undefined}
+                onClick={isMyTurn && !allBots ? () => humanSelectHand(c) : undefined}
                 backStyle={BACKS[cardBack]}
               />
             );
@@ -1300,9 +1369,20 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         </div>
       </div>
 
+      {/* Bottien taistelu -hallintapalkki */}
+      {allBots && (
+        <div style={{ background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', letterSpacing: 1 }}>🤖 KATSELUTILA</span>
+          <button onClick={togglePause} style={{ background: paused ? 'rgba(192,132,252,0.2)' : 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 12px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
+          <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = +e.target.value; setAiDelayMs(v); aiDelayRef.current = v; }} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE' }} />
+          <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c084fc' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+          <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 10px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>↺</button>
+        </div>
+      )}
+
       {/* Peruuta / Seuraava */}
       <div style={{ minHeight: isMobile ? 36 : 44, display: 'flex', alignItems: 'center', marginBottom: isMobile ? 4 : 10, gap: 8, flexWrap: 'wrap' }}>
-        {isMyTurn && !pendingCapture && (
+        {!allBots && isMyTurn && !pendingCapture && (
           <button
             onClick={() => {
               if (!captureMode) {
@@ -1328,7 +1408,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             🎯 Kaappaa{captureMode ? ' ●' : ''}
           </button>
         )}
-        {isMyTurn && !pendingCapture && (
+        {!allBots && isMyTurn && !pendingCapture && (
           <button
             onClick={() => {
               if (!buildMode) {
@@ -1352,7 +1432,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             🔨 Rakenna{buildMode ? ' ●' : ''}
           </button>
         )}
-        {isMyTurn && !pendingCapture && (
+        {!allBots && isMyTurn && !pendingCapture && (
           <button
             onClick={() => {
               if (!leaveMode) {
@@ -1389,7 +1469,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             📤 Jätä{leaveMode ? ' ●' : ''}
           </button>
         )}
-        {isMyTurn && !pendingCapture && (
+        {!allBots && isMyTurn && !pendingCapture && (
           <button
             onClick={() => setShowOptions(v => !v)}
             style={{ background: showOptions ? `${C.gold}18` : 'transparent', border: `1px solid ${showOptions ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: showOptions ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
@@ -1397,12 +1477,12 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             📋{isMobile ? '' : ' Vaihtoehdot'}
           </button>
         )}
-        {isMyTurn && (selTable.length > 0 || selBuilds.length > 0) && (
+        {!allBots && isMyTurn && (selTable.length > 0 || selBuilds.length > 0) && (
           <button onClick={() => { setSelTable([]); setSelBuilds([]); }} style={{ background: 'transparent', border: `1px solid ${C.dim}66`, borderRadius: 9, padding: '10px 16px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
             Peruuta valinta
           </button>
         )}
-        {pendingCapture && showNextBtn && (
+        {!allBots && pendingCapture && showNextBtn && (
           <button onClick={continueAfterCapture} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 9, padding: '10px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
             Seuraava →
           </button>
@@ -1417,9 +1497,11 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Cheat Mode
-        </button>
+        {!allBots && (
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+            {debugOpen ? '🙈' : '🔍'} Cheat Mode
+          </button>
+        )}
       </div>
 
       {/* Loki */}
@@ -1613,6 +1695,26 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           </div>
         );
       })()}
+
+      {/* PendingResult overlay — allBots-tilan loppunäyttö */}
+      {pendingResult && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(0,0,0,0.88)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
+          <div style={{ fontSize: 26, color: '#c084fc', fontFamily: 'Georgia,serif', letterSpacing: 4 }}>🤖 TAISTELU PÄÄTTYI</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
+            {pendingResult.ranking.map((p, i) => (
+              <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? 'rgba(123,47,190,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? 'rgba(192,132,252,0.5)' : 'rgba(255,255,255,0.08)'}` }}>
+                <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : '🤖'}</span>
+                <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? '#c084fc' : C.text }}>{p.name}</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: i === 0 ? '#c084fc' : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginTop: 8 }}>
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi taistelu</button>
+            <button onClick={() => { setPendingResult(null); setScreen('select'); }} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12, padding: '12px 20px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Valikko</button>
+          </div>
+        </div>
+      )}
 
       <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>

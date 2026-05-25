@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
@@ -64,13 +64,13 @@ function initRows() {
   return rows;
 }
 
-function initGame(nP, pool) {
+function initGame(nP, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
   const deck = mkDeck();
   const per  = Math.floor(52 / nP);
   const players = Array.from({ length: nP }, (_, i) => ({
-    id: i, name: i === 0 ? 'Hero' : aiNames[i - 1],
-    isHuman: i === 0,
+    id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1],
+    isHuman: allBots ? false : i === 0,
     hand: deck.splice(0, per),
   }));
 
@@ -195,6 +195,10 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const [shuffling, setShuffling] = useState(false);
   const [lastPlay, setLastPlay] = useState(null);
   const [currentMoment, setCurrentMoment] = useState(null);
+  const [allBots, setAllBots]             = useState(false);
+  const [paused, setPaused]               = useState(false);
+  const [aiDelayMs, setAiDelayMs]         = useState(2000);
+  const [pendingResult, setPendingResult] = useState(null);
 
   const gRef       = useRef(null);
   const aiTmr      = useRef(null);
@@ -206,6 +210,9 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs       = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
+  const allBotsRef = useRef(false);
+  const pausedRef  = useRef(false);
+  const aiDelayRef = useRef(2000);
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
@@ -252,9 +259,13 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
   useLayoutEffect(() => { startGame(); }, []);
 
-  function startGame() {
+  function startGame(forcedCount, allBotsMode = false) {
+    allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    pausedRef.current = false; setPaused(false);
+    setPendingResult(null);
     clearTimeout(aiTmr.current);
-    const g = initGame(nP, playerNames);
+    const count = forcedCount ?? nP;
+    const g = initGame(count, playerNames, allBotsMode);
     logRef.current = []; setLog([]); setSel(null); setLastPlay(null);
     setGS(g);
     const s = g.players[g.activePlayer];
@@ -263,6 +274,14 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     setShuffling(true);
     if (!s.isHuman) aiTmr.current = tm(() => runAI(g), 3100);
   }
+
+  function startBotBattle() {
+    aiLevelRef.current = 'supernatural';
+    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setNP(4);
+    startGame(4, true);
+  }
+  function togglePause() { pausedRef.current = !pausedRef.current; setPaused(p => !p); }
 
   // ── Vuoron vaihto ───────────────────────────────────────────
   function advanceTurnRS(g, fromIdx) {
@@ -273,7 +292,11 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const g2 = { ...g, activePlayer: nextIdx, turnCount, firstRoundDone };
     setGS(g2);
     if (!g.players[nextIdx].isHuman) {
-      aiTmr.current = tm(() => runAI(g2), 1100 + Math.random() * 400);
+      const d = allBotsRef.current ? aiDelayRef.current : 1100;
+      aiTmr.current = tm(() => {
+        if (pausedRef.current) { const w = () => { if (!pausedRef.current) runAI(g2); else tm(w, 300); }; w(); return; }
+        runAI(g2);
+      }, d + Math.random() * 400);
     } else {
       const canPlay = hasAnyPlay(g.players[nextIdx].hand, g2.rows);
       addLog(M.yourTurn(canPlay));
@@ -315,10 +338,11 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     if (remaining.length <= 1) {
       remaining.forEach(pl => { if (!finished.includes(pl.id)) finished.push(pl.id); });
       const ranking = finished.map((idx, pos) => ({
-        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman,
+        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
-      onResult?.({ ranking });
       setGS({ ...g, players, rows, finished, phase: 'gameover' });
+      if (allBotsRef.current) { tm(() => setPendingResult({ ranking }), 800); }
+      else { onResult?.({ ranking }); }
       return;
     }
 
@@ -526,8 +550,12 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
         Pöytäkortit pelataan maittain kaksi pinoa per maa. Ensin 7, sitten sen alapuolelle 6 ja seuraavaksi seiskan yläpuolelle 8. Ala-pino 6 päälle 5,4,3,2 ja A kaataa. Ylä-pino järjestys 8,9,T,J,Q ja K kaataa. Passaus vain kun ei kortti käy. Ensimmäinen kortiton voittaa.
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          🔮 Bottien Taistelu
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+        </button>
       </div>
     </div>
   );
@@ -798,7 +826,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
             return (
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 70, flexShrink: 0 }}>
-                  {isActive ? '► ' : '🤖 '}{p.name}
+                  {isActive ? '► ' : '🤖 '}{truncName(p.name)}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
                 {debugOpen ? (
@@ -916,6 +944,38 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
           <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
         </div>
       </div>
+
+      {allBots && G?.phase !== 'gameover' && (
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', padding: '6px 10px', background: 'rgba(123,47,190,0.08)', border: '1px solid rgba(123,47,190,0.25)', borderRadius: 10, marginBottom: 8 }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#bb88ff' }}>🔮 Katsomotila</span>
+          <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: '#f0e6ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
+          <button onClick={() => { aiDelayRef.current = Math.max(500, aiDelayRef.current - 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>−0.5s</button>
+          <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#bb88ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+          <button onClick={() => { aiDelayRef.current = Math.min(4000, aiDelayRef.current + 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>+0.5s</button>
+        </div>
+      )}
+
+      {pendingResult && allBots && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,22,18,0.93)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, zIndex: 100, padding: 24 }}>
+          <div style={{ fontSize: 32 }}>🔮</div>
+          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>KATSOMOTILA PÄÄTTYI</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 340 }}>
+            {pendingResult.ranking.map((r, i) => {
+              const medals = ['🥇','🥈','🥉','4️⃣'];
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? C.gold + '55' : C.panelBorder}` }}>
+                  <span style={{ fontSize: 18 }}>{medals[i] || ''}</span>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : C.dim }}>{r.name}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button onClick={startBotBattle} style={{ padding: '12px 28px', borderRadius: 12, background: 'rgba(123,47,190,0.3)', border: '1px solid rgba(123,47,190,0.5)', color: '#f0e6ff', fontSize: 14, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🔮 Uusi katselutila</button>
+            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
+          </div>
+        </div>
+      )}
 
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>

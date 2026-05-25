@@ -56,6 +56,10 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const [aiNames]            = useState(() => shuffledAINames(playerNames));
   const [currentMoment, setCurrentMoment] = useState(null);
   const [finishOrder, setFinishOrder] = useState([]); // eliminointijärjestys, ensin poistunut ensin
+  const [allBots, setAllBots]         = useState(false);
+  const [paused, setPaused]           = useState(false);
+  const [aiDelayMs, setAiDelayMs]     = useState(2000);
+  const [pendingResult, setPendingResult] = useState(null);
 
   const pilesRef       = useRef([]);
   const finishOrderRef = useRef([]);
@@ -79,6 +83,9 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const logRef       = useRef([]);
   const tmrs         = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
+  const allBotsRef   = useRef(false);
+  const pausedRef    = useRef(false);
+  const aiDelayRef   = useRef(2000);
 
   useEffect(() => { pilesRef.current = piles; }, [piles]);
   useEffect(() => { centerRef.current = center; }, [center]);
@@ -144,12 +151,16 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     }
   }
 
-  function startGame() {
+  function startGame(forcedCount, allBotsMode = false) {
+    allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    pausedRef.current = false; setPaused(false);
+    setPendingResult(null);
     clearTimeout(aiTmr.current);
     aiSlapTmrs.current.forEach(clearTimeout);
     clearTimeout(failTmr.current); setFR(null);
     clearTimeout(duelTmr.current); duelTmr.current = null; halvePending.current = false;
-    const initPiles = deal(nP);
+    const count = forcedCount ?? nP;
+    const initPiles = deal(count);
     setPiles(initPiles); pilesRef.current = initPiles;
     setCenter([]); centerRef.current = [];
     setCur(0); curRef.current = 0;
@@ -165,8 +176,20 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     setShuffling(true);
     tm(() => {
       maybeAIFlip(0, initPiles, [], null);
-      if (nP === 2) updateDuelTimer(initPiles);
+      if (count === 2) updateDuelTimer(initPiles);
     }, 2300);
+  }
+
+  function startBotBattle() {
+    aiLevelRef.current = 'supernatural';
+    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setNP(4);
+    startGame(4, true);
+  }
+
+  function togglePause() {
+    pausedRef.current = !pausedRef.current;
+    setPaused(p => !p);
   }
 
   function nextTurn(fromIdx, newPiles, newCenter, ch) {
@@ -201,10 +224,15 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
   function maybeAIFlip(idx, piles, center, ch) {
     if (phaseRef.current === 'gameover') return;
-    if (idx === 0) return;
+    if (idx === 0 && !allBotsRef.current) return;
     if (piles[idx].length === 0) { nextTurn(idx, piles, center, chRef.current); return; }
-    const delay = ch ? 1000 : 800 + Math.random() * 100;
-    tm(() => doFlip(idx, piles, center), delay);
+    const baseDelay = allBotsRef.current ? aiDelayRef.current : 800 + Math.random() * 100;
+    const delay = ch ? Math.min(1000, baseDelay * 0.6) : baseDelay + Math.random() * 200;
+    const schedFlip = () => {
+      if (pausedRef.current) { tm(schedFlip, 300); return; }
+      doFlip(idx, piles, center);
+    };
+    tm(schedFlip, delay);
   }
 
   function doFlip(playerIdx, curPiles, curCenter) {
@@ -324,7 +352,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
     aiSlapTmrs.current.forEach(clearTimeout);
     aiSlapTmrs.current = piles.map((pile, i) => {
-      if (i === 0 || pile.length === 0) return null;
+      if ((i === 0 && !allBotsRef.current) || pile.length === 0) return null;
       // Per-level timing: avg = minDelay + spread/2 (before bonuses)
       // beginner ~1550ms, normal ~1700ms, hard ~1300ms, supernatural ~1000ms
       const { minDelay, spread } =
@@ -457,9 +485,13 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         ? [winner, ...[...eliminated].reverse()]
         : [...eliminated].reverse();
       const ranking = fullOrder.map((idx, pos) => ({
-        name: pName(idx), place: pos + 1, isHuman: idx === 0,
+        name: pName(idx), place: pos + 1, isHuman: idx === 0 && !allBotsRef.current,
       }));
-      tm(() => onResult?.({ ranking }), 1800);
+      if (allBotsRef.current) {
+        tm(() => setPendingResult({ ranking }), 800);
+      } else {
+        tm(() => onResult?.({ ranking }), 1800);
+      }
       return true;
     }
     return false;
@@ -498,8 +530,12 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         &nbsp;· Ei vastausta → haastaja voittaa kasan ja jatkaa kääntämistä<br /><br />
         Viimeiseksi kortteja omaava voittaa.
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          🔮 Bottien Taistelu
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+        </button>
       </div>
     </div>
   );
@@ -693,6 +729,38 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
       </div>
+
+      {allBots && phase !== 'gameover' && (
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', padding: '6px 10px', background: 'rgba(123,47,190,0.08)', border: '1px solid rgba(123,47,190,0.25)', borderRadius: 10, marginBottom: 8 }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#bb88ff' }}>🔮 Katsomotila</span>
+          <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: paused ? '#f0e6ff' : '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
+          <button onClick={() => { aiDelayRef.current = Math.max(500, aiDelayRef.current - 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>−0.5s</button>
+          <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#bb88ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+          <button onClick={() => { aiDelayRef.current = Math.min(4000, aiDelayRef.current + 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>+0.5s</button>
+        </div>
+      )}
+
+      {pendingResult && allBots && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,22,18,0.93)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, zIndex: 100, padding: 24 }}>
+          <div style={{ fontSize: 32 }}>🔮</div>
+          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>KATSOMOTILA PÄÄTTYI</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 340 }}>
+            {pendingResult.ranking.map((r, i) => {
+              const medals = ['🥇','🥈','🥉','4️⃣'];
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? C.gold + '55' : C.panelBorder}` }}>
+                  <span style={{ fontSize: 18 }}>{medals[i] || ''}</span>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : C.dim }}>{r.name}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button onClick={startBotBattle} style={{ padding: '12px 28px', borderRadius: 12, background: 'rgba(123,47,190,0.3)', border: '1px solid rgba(123,47,190,0.5)', color: '#f0e6ff', fontSize: 14, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🔮 Uusi katselutila</button>
+            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
+          </div>
+        </div>
+      )}
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>

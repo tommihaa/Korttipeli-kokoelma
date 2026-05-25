@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, SUITS, RANKS, VAL, shuffle, aiShouldFumble } from '../shared/helpers.js';
+import { isRed, lbl, SUITS, RANKS, VAL, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
@@ -53,11 +53,12 @@ const M = {
   tieBreaker: 'Tasatilanne — noppafanaali!',
 };
 
-function initGame(nPlayers, pool) {
+function initGame(nPlayers, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
   const deck = newDeck();
   const players = Array.from({ length: nPlayers }, (_, i) => ({
-    id: i, name: i === 0 ? 'Hero' : aiNames[i - 1], isHuman: i === 0,
+    id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1],
+    isHuman: allBots ? false : i === 0,
     unknown: deck.shift(),
     row: [deck.shift(), deck.shift(), deck.shift(), deck.shift(), deck.shift()],
     known: new Set(),
@@ -66,9 +67,9 @@ function initGame(nPlayers, pool) {
 }
 
 // Paikallinen Card — tukee "unknown"-tilaa
-function KaCard({ card, faceUp, small, mini, highlight, dim, pulse, unknown, onClick, backStyle }) {
+function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknown, onClick, backStyle }) {
   const [h, setH] = useState(false);
-  const w = mini ? 30 : small ? 44 : 60, ht = mini ? 42 : small ? 60 : 82;
+  const w = mini ? 30 : tiny ? 36 : small ? 44 : 60, ht = mini ? 42 : tiny ? 50 : small ? 60 : 82;
   const back = backStyle || BACKS.ilves;
   const clickable = !!onClick;
 
@@ -173,6 +174,10 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const [kohahdus, setKohahdus] = useState(null);
   const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
+  const [allBots, setAllBots]             = useState(false);
+  const [paused, setPaused]               = useState(false);
+  const [aiDelayMs, setAiDelayMs]         = useState(2000);
+  const [pendingResult, setPendingResult] = useState(null);
 
   const gRef        = useRef(null);
   const phaseRef    = useRef('idle');
@@ -187,6 +192,9 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const tmrs         = useRef(new Set());
   const lastPlayTmr  = useRef(null);
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
+  const allBotsRef   = useRef(false);
+  const pausedRef    = useRef(false);
+  const aiDelayRef   = useRef(2000);
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
@@ -252,9 +260,13 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
 
   useLayoutEffect(() => { startGame(); }, []);
 
-  function startGame() {
+  function startGame(forcedCount, allBotsMode = false) {
+    allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    pausedRef.current = false; setPaused(false);
+    setPendingResult(null);
     clearTimeout(aiTmr.current);
-    const g = initGame(nP, playerNames);
+    const count = forcedCount ?? nP;
+    const g = initGame(count, playerNames, allBotsMode);
     setG(g); gRef.current = g;
     setCur(0); curRef.current = 0;
     setPhase('drawing'); phaseRef.current = 'drawing';
@@ -264,6 +276,17 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     setScreen('game');
     setShuffling(true);
     tm(() => maybeAI(0, g), 2500);
+  }
+
+  function startBotBattle() {
+    allBotsRef.current = true; setAllBots(true);
+    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    startGame(nP, true);
+  }
+
+  function togglePause() {
+    const next = !pausedRef.current;
+    pausedRef.current = next; setPaused(next);
   }
 
   function advance(g, fromIdx) {
@@ -284,8 +307,13 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
 
   function maybeAI(idx, g) {
     if (phaseRef.current === 'gameover') return;
-    if (idx === 0) return;
-    tm(() => aiTurn(idx, gRef.current), 900 + Math.random() * 600);
+    if (idx === 0 && !allBotsRef.current) return;
+    const baseDelay = allBotsRef.current ? aiDelayRef.current : 900;
+    const schedFlip = () => {
+      if (pausedRef.current) { tm(schedFlip, 300); return; }
+      aiTurn(idx, gRef.current);
+    };
+    tm(schedFlip, baseDelay + Math.random() * 600);
   }
 
   function aiTurn(idx, g) {
@@ -583,7 +611,8 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       place: sortedSc.filter(q => q.total < p.total).length + 1,
     }));
     const revealCards = g.players.map(p => ({ name: p.name, cards: [p.unknown, ...p.row] }));
-    onResult?.({ ranking, revealCards });
+    if (allBotsRef.current) { tm(() => setPendingResult({ ranking, revealCards }), 800); }
+    else { onResult?.({ ranking, revealCards }); }
     const tied = scores.filter(s => s.total === minScore);
     addLog(M.gameOverScores(scores));
     tm(() => {
@@ -621,8 +650,9 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
         Jokaiselle jaetaan 1 tuntematon + 5 kenttäkorttia. Nosta vuorollasi kortti pakasta tai miksei poistopakastakin, joskus paikan 1 tuntematon voi olla A tai 2, mikä on ikävää. Vaihda nostamasi kortti paikalle 5 rivin päähän, sitten paljastuneen kortin paikan 4 kortteihin jne. Tuntematon paljastuu lopussa. Pienin summa (A=1, K=13) voittaa!
       </div>
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
         <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 14, padding: '12px 36px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>🤖 Bottien taistelu</button>
       </div>
     </div>
   );
@@ -650,8 +680,13 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           ))}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
-          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+          {allBots ? (<>
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '12px 32px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi katselutila</button>
+            {pendingResult && <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>}
+          </>) : (<>
+            <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
+            <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+          </>)}
         </div>
       </div>
     );
@@ -692,7 +727,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
               const pi = i + 1, isActive = curIdx === pi;
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 5, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '5px 8px' }}>
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: isActive ? C.gold : C.dim, minWidth: 54, flexShrink: 0 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: isActive ? C.gold : C.dim, minWidth: 54, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
                   <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
                   <div style={{ display: 'flex', gap: 2 }}>
                     {p.row.map((c, ci) => (
@@ -712,7 +747,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
               const pi = i + 1, isActive = curIdx === pi;
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px' }}>
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {p.name}{isActive ? ' ●' : ''}</div>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
                   <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
                   <div style={{ display: 'flex', gap: 2 }}>
                     {p.row.map((c, ci) => (
@@ -730,12 +765,13 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
 
       {/* Pakka-alue */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: isMobile ? '8px 10px' : '12px 16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
+        {(() => { const pw = isMobile ? 58 : 72, ph = isMobile ? 80 : 98; return (<>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>NOSTOPAKKA</div>
           <div onClick={canDraw ? () => humanDraw(false) : undefined}>
             <FanStack
               count={G.deck.length}
-              w={72} h={98}
+              w={pw} h={ph}
               backStyle={BACKS[cardBack]}
               borderColor={canDraw ? C.gold : undefined}
               glowColor={canDraw ? C.gold : undefined}
@@ -747,14 +783,14 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
           <div
             onClick={canDraw ? () => humanDraw(true) : canDiscard ? humanStopSwap : undefined}
-            style={{ cursor: (canDraw && discardTop) || canDiscard ? 'pointer' : 'default', position: 'relative', width: 72, height: 98 }}
+            style={{ cursor: (canDraw && discardTop) || canDiscard ? 'pointer' : 'default', position: 'relative', width: pw, height: ph }}
           >
             {!discardTop
-              ? <div style={{ width: 72, height: 98, borderRadius: 9, border: `1.5px dashed ${canDiscard ? C.gold : C.panelBorder}`, opacity: canDiscard ? 0.8 : 0.3, boxShadow: canDiscard ? `0 0 14px rgba(201,168,76,0.4)` : 'none', transition: 'all 0.2s' }} />
-              : <div style={{ position: 'relative', width: 72, height: 98, borderRadius: 9, background: C.card, border: `2px solid ${(canDraw || canDiscard) ? C.gold : '#aaa'}`, boxShadow: (canDraw || canDiscard) ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              ? <div style={{ width: pw, height: ph, borderRadius: 9, border: `1.5px dashed ${canDiscard ? C.gold : C.panelBorder}`, opacity: canDiscard ? 0.8 : 0.3, boxShadow: canDiscard ? `0 0 14px rgba(201,168,76,0.4)` : 'none', transition: 'all 0.2s' }} />
+              : <div style={{ position: 'relative', width: pw, height: ph, borderRadius: 9, background: C.card, border: `2px solid ${(canDraw || canDiscard) ? C.gold : '#aaa'}`, boxShadow: (canDraw || canDiscard) ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ textAlign: 'center', color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
-                  <div style={{ fontSize: 18, fontWeight: 700 }}>{discardTop.r}</div>
-                  <div style={{ fontSize: 22 }}>{discardTop.s}</div>
+                  <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 700 }}>{discardTop.r}</div>
+                  <div style={{ fontSize: isMobile ? 18 : 22 }}>{discardTop.s}</div>
                 </div>
               </div>}
           </div>
@@ -767,6 +803,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
             <div style={{ fontSize: 10, color: C.gold, fontFamily: 'sans-serif', marginTop: 5 }}>{held.v} p</div>
           </div>
         )}
+        </>); })()}
       </div>
 
       {/* Viimeisin siirto */}
@@ -781,23 +818,23 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         )}
       </div>
 
-      {/* Ihmispelaajan tuntematon + jono */}
+      {/* Pelaaja 0 (ihminen tai botti katselutilassa) */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'sans-serif', fontSize: 12, color: curIdx === 0 ? C.gold : C.dim, marginBottom: 8 }}>
-          <span>👤 Hero {curIdx === 0 ? '●' : ''}</span>
+          <span>{allBots ? '🤖' : '👤'} {human.name} {curIdx === 0 ? '●' : ''}</span>
           {!isMobile && <span style={{ fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>KENTTÄ</span>}
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap' }}>
-          <div style={{ textAlign: 'center' }}>
-            <KaCard card={human.unknown} unknown faceUp={false} small backStyle={BACKS[cardBack]} />
+        <div style={{ display: 'flex', gap: isMobile ? 4 : 8, alignItems: 'flex-end', flexWrap: 'nowrap' }}>
+          <div style={{ textAlign: 'center', flexShrink: 0 }}>
+            <KaCard card={human.unknown} unknown faceUp={false} small={!isMobile} tiny={isMobile} backStyle={BACKS[cardBack]} />
             <div style={{ fontFamily: 'sans-serif', fontSize: 9, color: C.gold, marginTop: 3 }}>?</div>
           </div>
-          <span style={{ color: C.dim, fontSize: 16, marginBottom: 20 }}>+</span>
+          <span style={{ color: C.dim, fontSize: isMobile ? 12 : 16, marginBottom: isMobile ? 14 : 20, flexShrink: 0 }}>+</span>
           {human.row.map((c, i) => {
             const isSwapTarget = canSwapRow && swapIdx === i;
             return (
-              <div key={i} style={{ textAlign: 'center' }}>
-                <KaCard card={c} faceUp={debugOpen || human.known.has(i)} small
+              <div key={i} style={{ textAlign: 'center', flexShrink: 0 }}>
+                <KaCard card={c} faceUp={debugOpen || human.known.has(i)} small={!isMobile} tiny={isMobile}
                   highlight={isSwapTarget}
                   pulse={hints && human.known.has(i) && !isSwapTarget}
                   backStyle={BACKS[cardBack]} />
@@ -808,24 +845,61 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         </div>
       </div>
 
-      {/* Toimintopainikkeet */}
-      <div style={{ minHeight: isMobile ? 36 : 44, display: 'flex', gap: 10, alignItems: 'center', marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
-        {canSwapRow && swapIdx !== null && (
-          <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
-            dangerouslySetInnerHTML={{ __html: `Vaihda ${lblColored(held)} paikan ${swapIdx + 1} korttiin` }} />
-        )}
-        {canStop && (
-          <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
-            dangerouslySetInnerHTML={{ __html: `Heitä ${lblColored(held)} poistopakkaan` }} />
-        )}
-      </div>
+      {/* Toimintopainikkeet — piilotettu katselutilassa */}
+      {!allBots && (
+        <div style={{ minHeight: isMobile ? 32 : 44, display: 'flex', gap: isMobile ? 6 : 10, alignItems: 'center', marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
+          {canSwapRow && swapIdx !== null && (
+            <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
+              dangerouslySetInnerHTML={{ __html: `Vaihda ${lblColored(held)} paikan ${swapIdx + 1} korttiin` }} />
+          )}
+          {canStop && (
+            <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
+              dangerouslySetInnerHTML={{ __html: `Heitä ${lblColored(held)} poistopakkaan` }} />
+          )}
+        </div>
+      )}
+
+      {/* Bottien taistelu -ohjauspaneeli */}
+      {allBots && (
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 10 }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', fontWeight: 700 }}>🤖 KATSELUTILA</span>
+          <button onClick={togglePause} style={{ fontSize: 11, padding: '4px 12px', borderRadius: 10, border: '1px solid rgba(123,47,190,0.5)', background: paused ? 'rgba(123,47,190,0.35)' : 'transparent', color: '#c084fc', cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: '#9b6dc4' }}>Nopeus</span>
+            <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = Number(e.target.value); setAiDelayMs(v); aiDelayRef.current = v; }} style={{ width: 80, accentColor: '#7B2FBE', cursor: 'pointer' }} />
+            <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9b6dc4' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+          </div>
+          <button onClick={startBotBattle} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 10, border: '1px solid rgba(123,47,190,0.4)', background: 'transparent', color: '#9b6dc4', cursor: 'pointer', fontFamily: 'sans-serif', marginLeft: 'auto' }}>↺ Uusi</button>
+        </div>
+      )}
 
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun pakka loppuu</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
+        {!allBots && <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>}
       </div>
+
+      {/* Katselutila: pending result overlay */}
+      {allBots && pendingResult && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, zIndex: 300 }}>
+          <div style={{ background: '#1a0a2e', border: '2px solid rgba(123,47,190,0.7)', borderRadius: 20, padding: '32px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, maxWidth: 360 }}>
+            <span style={{ fontSize: 32 }}>🐟</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, color: '#c084fc', letterSpacing: 4 }}>KATSELUTILA PÄÄTTYI</span>
+            {pendingResult.ranking.map((p, i) => (
+              <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', width: '100%' }}>
+                <span style={{ fontSize: 16 }}>{i === 0 ? '🏆' : i === pendingResult.ranking.length - 1 ? '🐟' : '🎯'}</span>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: i === 0 ? '#c084fc' : '#9b6dc4', flex: 1 }}>{p.name}</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 14, color: i === 0 ? '#c084fc' : '#6b4a9a' }}>{p.score} p</span>
+              </div>
+            ))}
+            <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+              <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '11px 24px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi</button>
+              <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '11px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>

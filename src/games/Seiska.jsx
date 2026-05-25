@@ -2,25 +2,17 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import HandoffScreen from '../shared/HandoffScreen.jsx';
+import PlayerSetup, { slotsToPlayers } from '../shared/PlayerSetup.jsx';
 
 // ── Seiska ─────────────────────────────────────────────────────
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 const coloredSuit = s => `<span style="color:${SUIT_COLOR[s]}">${s}</span>`;
 const SUIT_SYMS = ['♠', '♥', '♦', '♣'];
-
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function mkDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({
@@ -30,34 +22,33 @@ function mkDeck() {
 
 // Voidaanko yksittäinen kortti lyödä
 function canSingle(card, discardTop, reqSuit, isLast) {
-  if (card.r === '7' && isLast)            return false; // ei voi voittaa seiskalla
-  if (card.r === 'A' && isLast)            return false; // ei voi voittaa ässällä
-  if (card.r === '7')                      return true;  // 7 on villikortti — käy kaiken päälle
+  if (card.r === '7' && isLast)            return false;
+  if (card.r === 'A' && isLast)            return false;
+  if (card.r === '7')                      return true;
   const suit = reqSuit || discardTop.s;
   if (card.s === suit)                     return true;
   if (!reqSuit && card.r === discardTop.r) return true;
   return false;
 }
 
-// Voidaanko korttiryhmä lyödä (sama arvo useampana)
+// Voidaanko korttiryhmä lyödä
 function canGroup(cards, discardTop, reqSuit, handSize) {
   if (!cards.length) return false;
   if (cards.length === 1) return canSingle(cards[0], discardTop, reqSuit, handSize === 1);
-  if (cards[0].r === '7' || cards[0].r === 'A') return false; // seiskat ja ässät vain yksinään
-  if (cards.some(c => c.r !== cards[0].r)) return false;      // kaikki sama arvo
-  return cards.some(c => canSingle(c, discardTop, reqSuit, false)); // vähintään yksi käy
+  if (cards[0].r === '7' || cards[0].r === 'A') return false;
+  if (cards.some(c => c.r !== cards[0].r)) return false;
+  return cards.some(c => canSingle(c, discardTop, reqSuit, false));
 }
 
 function validSingles(hand, discardTop, reqSuit) {
   return hand.filter(c => canSingle(c, discardTop, reqSuit, hand.length === 1));
 }
 
-function mkInitState(nP, pool) {
-  const aiNames = shuffledAINames(pool);
+// playerDefs: [{name, isHuman}, ...]
+function mkInitState(playerDefs) {
   let deck = mkDeck();
-  const players = Array.from({ length: nP }, (_, i) => ({
-    id: i, name: i === 0 ? 'Hero' : aiNames[i - 1],
-    isHuman: i === 0,
+  const players = playerDefs.map((def, i) => ({
+    id: i, name: def.name, isHuman: def.isHuman,
     hand: deck.splice(0, 7),
   }));
   let top;
@@ -94,15 +85,68 @@ function nextActive(players, from, finished) {
   return -1;
 }
 
-function aiBestPlay(hand, discardTop, reqSuit) {
-  if (!reqSuit) {
-    const same = hand.filter(c => c.r === discardTop.r && c.r !== '7');
-    if (same.length > 1) return same;
+function aiBestPlay(hand, discardTop, reqSuit, opponents = []) {
+  // Ryhmitä kortit arvon mukaan (ei 7/A — ne eivät salli ryhmälyöntiä)
+  const byRank = {};
+  for (const c of hand) {
+    if (c.r === '7' || c.r === 'A') continue;
+    if (!byRank[c.r]) byRank[c.r] = [];
+    byRank[c.r].push(c);
   }
+  // Etsi suurin ryhmä, josta vähintään yksi kortti käy (canGroup tarkistaa tämän)
+  let bestMulti = null;
+  for (const cards of Object.values(byRank)) {
+    if (cards.length > 1 && canGroup(cards, discardTop, reqSuit, hand.length)) {
+      if (!bestMulti || cards.length > bestMulti.length) bestMulti = cards;
+    }
+  }
+  if (bestMulti) {
+    // Yhdistävä kortti (matching suit) ensin — se tulee alimmaiseksi pinoon
+    const suit = reqSuit || discardTop.s;
+    const ci = bestMulti.findIndex(c => c.s === suit);
+    if (ci > 0) bestMulti = [bestMulti[ci], ...bestMulti.slice(0, ci), ...bestMulti.slice(ci + 1)];
+
+    // Säästä pari: pelaa ryhmä vain jos se tyhjentää / lappuuttaa käden,
+    // tai jos saman maan yksittäistä korttia ei ole PARIN ULKOPUOLELLA
+    // (esim. ♠3+♦3 -pari: ♠3 itse on yhdistävä kortti, ei "ulkopuolinen vaihtoehto")
+    const newHandSize = hand.length - bestMulti.length;
+    if (newHandSize <= 1) return bestMulti; // voitto tai lappu — aina ryhmä
+    const directMatchOutsidePair = validSingles(hand, discardTop, reqSuit)
+      .filter(c => c.r !== '7' && c.s === (reqSuit || discardTop.s) && !bestMulti.find(b => b.id === c.id));
+    if (!directMatchOutsidePair.length) return bestMulti; // parin oma kortti on ainoa match — pelaa pari
+    // muuten: saman maan kortti löytyy muualta — säästä pari, pelaa yksittäinen
+  }
+
   const singles = validSingles(hand, discardTop, reqSuit);
   if (!singles.length) return null;
   const non7 = singles.filter(c => c.r !== '7');
-  return [non7.length ? non7[0] : singles[0]];
+  if (!non7.length) return [singles[0]];
+
+  // Suosi ässää jos joku vastustaja on lähellä voittoa (≤ 2 korttia) —
+  // ässärangaistus nostattaa heidät ja ässäbonusvuoro antaa jatkaa itse
+  const dangerousOpponent = opponents.some(p => p.hand.length <= 2);
+  if (dangerousOpponent) {
+    const ace = non7.find(c => c.r === 'A');
+    if (ace) return [ace];
+  }
+
+  // 3–5 korttia: suosi siirtoa joka jättää mahdollisimman suuren saman arvon ryhmän
+  // (3 kädessä → jätä pari, 4 kädessä → jätä kolmoset, 5 kädessä → jätä nelonen)
+  if (hand.length >= 3 && hand.length <= 5) {
+    const targetSize = hand.length - 1;
+    const leaveGroup = non7.filter(c => {
+      const rest = hand.filter(h => h.id !== c.id);
+      const rankCounts = {};
+      for (const h of rest) rankCounts[h.r] = (rankCounts[h.r] || 0) + 1;
+      return Object.values(rankCounts).some(count => count >= targetSize);
+    });
+    if (leaveGroup.length) return [leaveGroup[0]];
+  }
+
+  // Suosi korttia jolla ei ole paria kädessä — säästää parin myöhempään yhdistelmälyöntiin
+  // (esim. pelaa ♥3 eikä ♥9 kun kädessä on myös ♠9)
+  const nonPair = non7.filter(c => hand.filter(h => h.r === c.r).length === 1);
+  return [nonPair.length ? nonPair[0] : non7[0]];
 }
 
 function aiSuit(hand) {
@@ -119,24 +163,38 @@ function sortHand(hand) {
   });
 }
 
+function initSlots(count) {
+  return [
+    { name: 'Hero', isHuman: true,  active: count >= 1 },
+    { name: '',     isHuman: false, active: count >= 2 },
+    { name: '',     isHuman: false, active: count >= 3 },
+    { name: '',     isHuman: false, active: count >= 4 },
+  ];
+}
+
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
-  const [screen,   setScreen]  = useState('select');
-  const [nP,       setNP]      = useState(playerCount);
-  const [soundOn,  setSnd]     = useState(initSoundOn);
+export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
+  const [screen,      setScreen]  = useState('select');
+  const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
+  const [handoff,     setHandoff] = useState(null); // null | { name }
+  const [soundOn,     setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
-  const [G,        setG]       = useState(null);
-  const [msg,      setMsg_]    = useState('');
-  const [log,      setLog]     = useState([]);
-  const [logOpen,  setLO]      = useState(hints);
-  const [selected, setSel]     = useState([]);
-  const [debugOpen,setDebug]   = useState(initSeeAll);
-  const [pakaAnim, setPakaAnim] = useState(false);
-  const [jpId, setJP] = useState(null);
-  const [shuffling, setShuffling] = useState(false);
+  const [G,           setG]       = useState(null);
+  const [msg,         setMsg_]    = useState('');
+  const [log,         setLog]     = useState([]);
+  const [logOpen,     setLO]      = useState(hints);
+  const [selected,    setSel]     = useState([]);
+  const [debugOpen,   setDebug]   = useState(initSeeAll);
+  const [pakaAnim,    setPakaAnim] = useState(false);
+  const [jpId,        setJP]      = useState(null);
+  const [shuffling,   setShuffling] = useState(false);
   const [currentMoment, setCurrentMoment] = useState(null);
-  const [lastPlay, setLastPlay] = useState(null);
+  const [lastPlay,    setLastPlay] = useState(null);
   const [lappuSecsLeft, setLappuSecsLeft] = useState(null);
+  const [paused,    setPaused]   = useState(false);
+  const [aiDelayMs, setAiDelayMs] = useState(1200);
+  const [intention, setIntention] = useState(null); // { playerIdx, cards } | null
+  const [pendingResult, setPendingResult] = useState(null); // { ranking } — odottaa käyttäjän "Tulokset →" -klikkiä
 
   const gRef   = useRef(null);
   const aiTmr  = useRef(null);
@@ -145,11 +203,25 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const teachRef = useRef(teachMode);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
-  const prevDeckRef = useRef(null);
-  const prevRCRef   = useRef(0);
-  const tmrs   = useRef(new Set());
-  const lastPlayTmr = useRef(null);
+  const prevDeckRef  = useRef(null);
+  const prevRCRef    = useRef(0);
+  const tmrs         = useRef(new Set());
+  const lastPlayTmr  = useRef(null);
+  const pausedRef    = useRef(false);
+  const pendingFnRef = useRef(null);
+  const aiDelayRef   = useRef(1200);
+  // UI-animaatioajastin (ei pysähdy Tauko-tilassa)
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
+  // AI-siirtoajastin (pysähtyy Tauko-tilassa)
+  const aiTm = (fn, ms) => {
+    const id = setTimeout(() => {
+      tmrs.current.delete(id);
+      if (pausedRef.current) { pendingFnRef.current = fn; return; }
+      fn();
+    }, ms);
+    tmrs.current.add(id);
+    return id;
+  };
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
@@ -172,8 +244,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     }
   }, [G?.reshuffleCount]);
 
+  // Lappu-ajastin näkyy vain kun aktiivinen pelaaja on ihminen
   useEffect(() => {
-    if (G?.pendingLappu !== 0) { setLappuSecsLeft(null); return; }
+    const idx = G?.pendingLappu;
+    if (idx === null || idx === undefined || !G?.players?.[idx]?.isHuman) {
+      setLappuSecsLeft(null); return;
+    }
     setLappuSecsLeft(4);
     const iv = setInterval(() => setLappuSecsLeft(s => s !== null && s > 0 ? s - 1 : 0), 1000);
     return () => clearInterval(iv);
@@ -188,6 +264,23 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
   function setGS(g) { setG(g); gRef.current = g; }
 
+  function togglePause() {
+    const next = !pausedRef.current;
+    pausedRef.current = next;
+    setPaused(next);
+    if (!next && pendingFnRef.current) {
+      const fn = pendingFnRef.current;
+      pendingFnRef.current = null;
+      fn();
+    }
+  }
+
+  function changeDelay(delta) {
+    const next = Math.max(200, Math.min(3000, aiDelayRef.current + delta));
+    aiDelayRef.current = next;
+    setAiDelayMs(next);
+  }
+
   const M = {
     gameStart:    card => `Seiska alkaa! Päällimmäinen: ${card}.`,
     yourTurnSuit: cl => `Sinun vuorosi — ${cl}`,
@@ -195,15 +288,15 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     forgotLappu:  (name, count) => `${name} unohti sanoa Lappu — +${count} korttia sakkona!`,
     played:       (isH, name, cards) => `${isH ? 'Sinä' : name}: ${cards}`,
     won:          (isH, name, rank) => rank === 1 ? `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉` : `${isH ? 'Tulit' : `${name} tuli`} ${rank}. sijalle.`,
-    sevenPlayed:  (isH, name, suit) => `${isH ? 'Sinä' : name} laittaa seiskan päälle — vaadittu maa: ${suit}`,
+    sevenPlayed:  (isH, name, suit) => `${isH ? 'Sinä pelaat' : `${name} pelaa`} seiskan ja vaatii pelattavaksi maata: ${coloredSuit(suit)}`,
+    sevenOnSeven: (isH, name, suit) => `${isH ? 'Sinä pelaat' : `${name} pelaa`} seiskan seiskan päälle — vaadittu maa on päällimmäisen seiskan maa: ${coloredSuit(suit)}`,
     chooseSuit:   'Valitse vaadittu maa seiskan jälkeen.',
-    suitChosen:   (isH, name, suit) => `${isH ? 'Sinä valitset' : `${name} valitsee`} maan: ${suit}`,
     lappu:        name => `${name}: Lappu!`,
-    aceBonus:     (isH, name, suit) => `Ässä! ${isH ? 'Sinä voit' : `${name} voi`} jatkaa ${suit}-maalla.`,
+    aceBonus:     (isH, name, suit) => `Ässä! ${isH ? 'Sinä voit' : `${name} voi`} jatkaa ${coloredSuit(suit)}-maalla.`,
     deckEmpty:    'Pakka tyhjä — vuoro päättyy.',
-    aiDraws:      name => `${name} nostaa.`,
-    aiDrawFail:   name => `${name}: Nosto ei auta.`,
-    aiDrawsGone:  name => `${name}: Nostot eivät auttaneet.`,
+    aiDraws:      (name, card) => card ? `${name} nostaa ${card}.` : `${name} nostaa.`,
+    aiDrawFail:   (name, card) => card ? `${name}: ${card} ei käy.` : `${name}: Nosto ei auta.`,
+    aiDrawsGone:  (name, card) => card ? `${name}: ${card} ei auta — vuoro päättyy.` : `${name}: Nostot eivät auttaneet.`,
     humanDraws:   card => `Nostat ${card}.`,
     drawnPlayable:(card, left) => `${card} on pelattavissa! Lyö se tai nosta uudelleen (${left} jäljellä).`,
     draws3Used:   '3 nostoa käytetty — vuoro päättyy automaattisesti.',
@@ -214,7 +307,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     tipSaveSeven: (name, suit) => `💡 ${name} valitsee ${suit} — eniten kortteja siinä maassa`,
     tipDraw:      name => `💡 ${name} nostaa — ei sopivaa korttia kädessä`,
     tipPassAfterDraws: name => `💡 ${name} lopettaa nostelun 3 jälkeen — vuoro siirtyy`,
-    suitSelected: suit => `Valitsit maan: ${suit}`,
+    suitSelected: suit => `Valitsit maan: ${coloredSuit(suit)}`,
     lappuSelf:    'Lappu! Sinulla on yksi kortti jäljellä.',
   };
 
@@ -225,21 +318,34 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
   }
 
-  useLayoutEffect(() => { startGame(); }, []);
-
-  function startGame() {
+  function startGame(forcedSlots) {
     clearTimeout(aiTmr.current);
     prevRCRef.current = 0;
-    const g = mkInitState(nP, playerNames);
-    logRef.current = []; setLog([]); setSel([]); setPakaAnim(false);
+    pausedRef.current = false; setPaused(false); pendingFnRef.current = null; setIntention(null);
+    const playerDefs = slotsToPlayers(forcedSlots || playerSlots, playerNames);
+    const g = mkInitState(playerDefs);
+    logRef.current = []; setLog([]); setSel([]); setPakaAnim(false); setHandoff(null);
     setGS(g);
     addLog(M.gameStart(lblColored(g.discardTop)));
+    if (g.players.every(p => !p.isHuman)) {
+      if (aiLevelRef.current !== 'supernatural') {
+        onAiLevelChange?.('supernatural');
+        aiLevelRef.current = 'supernatural';
+      }
+      aiDelayRef.current = 3000;
+      setAiDelayMs(3000);
+      addLog('🔮 Katsomotila — kaikki botit pelaavat yliluonnollisella tasolla.');
+    }
     setScreen('game');
     setShuffling(true);
-    if (g.players[0].isHuman) {
+    const firstPlayer = g.players[g.activePlayer];
+    const multiHuman = g.players.filter(p => p.isHuman).length >= 2;
+    if (!firstPlayer.isHuman) {
+      aiTmr.current = aiTm(() => runAI(g), 3100);
+    } else if (multiHuman) {
+      setHandoff({ name: firstPlayer.name });
+    } else if (hints) {
       addLog(M.yourTurnSuit(`lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`));
-    } else {
-      aiTmr.current = tm(() => runAI(g), 3100);
     }
   }
 
@@ -284,8 +390,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     if (nextIdx === -1) return;
     const g3 = { ...g2, activePlayer: nextIdx, drawsThisTurn: 0 };
     setGS(g3);
-    if (!g3.players[nextIdx].isHuman) {
-      aiTmr.current = tm(() => runAI(g3), 1200 + Math.random() * 400);
+    const nextPlayer = g3.players[nextIdx];
+    const multiHuman = g3.players.filter(p => p.isHuman).length >= 2;
+    if (!nextPlayer.isHuman) {
+      aiTmr.current = aiTm(() => runAI(g3), aiDelayRef.current + Math.random() * 400);
+    } else if (multiHuman) {
+      setHandoff({ name: nextPlayer.name });
     } else if (hints) {
       const cl = g3.reqSuit
         ? `Vaadittu maa: ${coloredSuit(g3.reqSuit)} — lyö ${coloredSuit(g3.reqSuit)}-maa tai nosta.`
@@ -294,15 +404,27 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     }
   }
 
+  // ── Peittokuva kuitattu → vuoro alkaa ───────────────────────
+  function onHandoffReady() {
+    setHandoff(null);
+    const g = gRef.current;
+    if (!g || !hints) return;
+    const cl = g.reqSuit
+      ? `Vaadittu maa: ${coloredSuit(g.reqSuit)} — lyö ${coloredSuit(g.reqSuit)}-maa tai nosta.`
+      : `Lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}-arvo tai nosta.`;
+    addLog(M.yourTurnSuit(cl));
+  }
+
   // ── Lyönti ──────────────────────────────────────────────────
-  function doPlay(g, playerIdx, cards, suitChoice) {
+  function doPlay(g, playerIdx, cards, suitChoice, fromDraw = false) {
     const p     = g.players[playerIdx];
     const card  = cards[cards.length - 1];
     const isH   = p.isHuman;
 
     if (sndRef.current) SFX.play();
-    addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
-    flashLastPlay(isH ? 'Sinä' : p.name, cards, isH);
+    // 7 ja A hoitavat oman lokiviestinsä — ei erillistä "pelaaja: kortti" -riviä
+    if (!fromDraw && card.r !== '7' && card.r !== 'A') addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
+    flashLastPlay(isH ? p.name : p.name, cards, isH);
 
     // Poista kädestä
     let players = g.players.map((pl, i) => i !== playerIdx ? pl
@@ -332,8 +454,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       const ranking = finished.map((idx, pos) => ({
         name: g2.players[idx].name, place: pos + 1, isHuman: g2.players[idx].isHuman,
       }));
-      onResult?.({ ranking });
-      setGS({ ...g2, phase: 'gameover' });
+      setPendingResult({ ranking });
+      setGS({ ...g2, phase: 'finished' });
+      if (sndRef.current) tm(() => SFX.fanfare(), 600);
       return;
     }
 
@@ -345,9 +468,8 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       const newDiscard = { ...g2, discardTop: card, discardPile: [...g2.discardPile, ...cards], reqSuit: null, finished };
       const pendLappu = (newHand.length === 1 && !g2.lappuSaid.has(playerIdx)) ? playerIdx : g2.pendingLappu;
       if (g2.reqSuit !== null) {
-        // Seiska seiskan päälle — väri automaattisesti tämän seiskan oma maa
         const suit = card.s;
-        addLog(M.sevenPlayed(isH, p.name, suit));
+        addLog(M.sevenOnSeven(isH, p.name, suit));
         g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
       } else if (!suitChoice && p.isHuman) {
         setGS({ ...newDiscard, phase: 'awaiting_suit', pendingLappu: null });
@@ -355,39 +477,38 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         return;
       } else {
         const suit = suitChoice || aiSuit(newHand);
-        if (!suitChoice) addLog(M.suitChosen(isH, p.name, suit));
+        if (!suitChoice) addLog(M.sevenPlayed(isH, p.name, suit));
         g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
       }
     } else {
       g2 = { ...g2, discardTop: card, discardPile: [...g2.discardPile, ...cards], reqSuit: null };
     }
 
-    // Ässä: bonusvuoro — pelaaja voi jatkaa saman maan kortilla
+    // Ässä: bonusvuoro
     if (card.r === 'A') {
       g2 = { ...g2, aceBonus: card.s };
       if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
         if (!p.isHuman) {
-          // Aloittelija/Normaali voi unohtaa Lapun — pendingLappu, sakko bonusvuoron jälkeen
-          if (aiShouldFumble(aiLevelRef.current)) {
+          const effectiveLevel = g2.players.every(pl => !pl.isHuman) ? 'supernatural' : aiLevelRef.current;
+          if (aiShouldFumble(effectiveLevel)) {
             g2 = { ...g2, pendingLappu: playerIdx };
           } else {
             addLog(M.lappu(p.name));
             g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
           }
         }
-        // Ihmiselle: ei aseteta pendingLappu vielä — odotetaan bonusvuoron päättymistä
       }
       addLog(M.aceBonus(isH, p.name, card.s));
       setGS(g2);
-      if (!p.isHuman) aiTmr.current = tm(() => runAI(gRef.current), 1600);
+      if (!p.isHuman) aiTmr.current = aiTm(() => runAI(gRef.current), aiDelayRef.current + 400);
       return;
     }
 
     // Lappu
     if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
       if (!p.isHuman) {
-        // Aloittelija/Normaali voi unohtaa Lapun — pendingLappu, sakko advanceTurnissa
-        if (aiShouldFumble(aiLevelRef.current)) {
+        const effectiveLevel2 = g2.players.every(pl => !pl.isHuman) ? 'supernatural' : aiLevelRef.current;
+        if (aiShouldFumble(effectiveLevel2)) {
           g2 = { ...g2, pendingLappu: playerIdx };
           advanceTurn(g2, playerIdx);
         } else {
@@ -398,7 +519,6 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       } else {
         g2 = { ...g2, pendingLappu: playerIdx };
         setGS(g2);
-        // Anna ihmiselle 4 s aikaa sanoa Lappu ennen sakotusta
         tm(() => advanceTurn(gRef.current, playerIdx), 4000);
       }
     } else {
@@ -432,15 +552,34 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
     if (!isH2) {
       const pName = g2.players[playerIdx].name;
+      const wd = Math.max(300, aiDelayRef.current * 0.6); // nostoketjun viive skaalautuu tahdin mukana
       if (valid) {
-        addLog(M.aiDraws(pName));
-        aiTmr.current = tm(() => doPlay(gRef.current, playerIdx, [drawn], null), 700);
-      } else if (draws < 3) {
-        addLog(M.aiDrawFail(pName));
-        aiTmr.current = tm(() => doDraw(gRef.current, playerIdx), 700);
+        addLog(M.aiDraws(pName, debugOpen ? lblColored(drawn) : null));
+        // Näytä nostettu kortti aiottuna ennen kuin se lyödään (skaalautuu tahdin mukana)
+        if (initShowIntention) {
+          const intentionMs = Math.min(2500, Math.max(800, aiDelayRef.current * 0.7));
+          setIntention({ playerIdx, cards: [drawn] });
+          aiTmr.current = aiTm(() => {
+            setIntention(null);
+            doPlay(gRef.current, playerIdx, [drawn], null);
+          }, intentionMs);
+        } else {
+          doPlay(gRef.current, playerIdx, [drawn], null);
+        }
       } else {
-        addLog(M.aiDrawsGone(pName));
-        aiTmr.current = tm(() => advanceTurn(gRef.current, playerIdx), 700);
+        // Nostettu kortti ei käy — tarkista onko koko käteen nyt pelattava kortti
+        // (esim. 7 tai A joka ei käynyt viimeisenä kortina, mutta käy nyt kun käsi kasvoi)
+        const handPlay = aiBestPlay(hand, g2.discardTop, g2.reqSuit);
+        if (handPlay) {
+          addLog(M.aiDrawFail(pName, lblColored(drawn)));
+          aiTmr.current = aiTm(() => runAI(gRef.current), wd);
+        } else if (draws < 3) {
+          addLog(M.aiDrawFail(pName, lblColored(drawn)));
+          aiTmr.current = aiTm(() => doDraw(gRef.current, playerIdx), wd);
+        } else {
+          addLog(M.aiDrawsGone(pName, lblColored(drawn)));
+          aiTmr.current = aiTm(() => advanceTurn(gRef.current, playerIdx), wd);
+        }
       }
     } else {
       addLog(M.humanDraws(lblColored(drawn)));
@@ -462,21 +601,21 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const { activePlayer, players, discardTop, reqSuit, drawsThisTurn, aceBonus } = g;
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
-    const level  = aiLevelRef.current;
+    // Katsomotilassa (kaikki botteja) käytetään aina yliluonnollista tasoa
+    const level  = players.every(pl => !pl.isHuman) ? 'supernatural' : aiLevelRef.current;
     const isSuper = level === 'supernatural';
     const isHard  = level === 'hard' || isSuper;
 
     // ── Ässä-bonusvuoro ─────────────────────────────────────
     if (aceBonus !== null) {
       const bonusCard = p.hand.find(c => c.s === aceBonus && c.r !== '7');
-      // Strateginen harkinta: käytä bonus vain jos ei uhkaa + vie ≤kynnys korttiin
       const applyLogic = level !== 'beginner' && (level !== 'normal' || Math.random() < 0.5);
-      const threshold  = isSuper ? 2 : 3; // supernatural tiukempi tavoite
+      const threshold  = isSuper ? 2 : 3;
       let useBonus;
       if (!bonusCard) {
         useBonus = false;
       } else if (!applyLogic) {
-        useBonus = true; // aloittelija tai normaali (50%): käytä aina jos voi
+        useBonus = true;
       } else {
         const anyoneAtOne = players.some(
           (pl, i) => i !== activePlayer && !g.finished.includes(i) && pl.hand.length === 1
@@ -492,9 +631,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       return;
     }
 
-    const bestPlay = aiBestPlay(p.hand, discardTop, reqSuit);
+    const opponents = players.filter((pl, i) => i !== activePlayer && !g.finished.includes(i));
+    const bestPlay = aiBestPlay(p.hand, discardTop, reqSuit, opponents);
 
-    // Aloittelija/Normaali-virhe: unohtaa että 7 on villikortti
     const playIsOnlySeven = bestPlay && bestPlay.length === 1 && bestPlay[0].r === '7';
     if (playIsOnlySeven && drawsThisTurn < 3 && aiShouldFumble(level)) {
       if (teachRef.current) addLog(`💡 ${p.name} unohti että 7 käy aina — nostaa pakasta`);
@@ -502,12 +641,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       return;
     }
 
-    // Aloittelija/Normaali-virhe: ei ketjuta samanarvoisia
-    let play = (bestPlay && bestPlay.length > 1 && aiShouldFumble(level))
+    // Ryhmäfumble vain jos siirto ei vie pois pelistä — voittavaa ryhmää ei unohdeta koskaan
+    const isWinningGroup = bestPlay && bestPlay.length === p.hand.length;
+    let play = (bestPlay && bestPlay.length > 1 && !isWinningGroup && aiShouldFumble(level))
       ? [bestPlay[0]]
       : bestPlay;
 
-    // Hard/Supernatural: useista kelvollisista ässistä valitaan paras bonusmaan mukaan
     if (play && play.length === 1 && play[0].r === 'A' && isHard) {
       const validAces = validSingles(p.hand, discardTop, reqSuit).filter(c => c.r === 'A');
       if (validAces.length > 1) {
@@ -528,7 +667,17 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         if (play.length > 1) addLog(M.tipMultiPlay(p.name, play.length));
         else if (play[0].r === '7' && suit) addLog(M.tipSaveSeven(p.name, coloredSuit(suit)));
       }
-      doPlay(gRef.current, activePlayer, play, suit);
+      // Näytä aikomus ennen lyöntiä (skaalautuu tahdin mukana)
+      if (initShowIntention) {
+        const intentionMs = Math.min(2500, Math.max(800, aiDelayRef.current * 0.7));
+        setIntention({ playerIdx: activePlayer, cards: play });
+        aiTmr.current = aiTm(() => {
+          setIntention(null);
+          doPlay(gRef.current, activePlayer, play, suit);
+        }, intentionMs);
+      } else {
+        doPlay(gRef.current, activePlayer, play, suit);
+      }
     } else if (drawsThisTurn < 3) {
       if (teachRef.current) addLog(M.tipDraw(p.name));
       doDraw(gRef.current, activePlayer);
@@ -538,12 +687,17 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     }
   }
 
-  // ── Ihmistoiminnot ──────────────────────────────────────────
+  // ── Ihmistoiminnot (käyttää G.activePlayer, ei hardkoodattua 0) ─
   function humanToggle(card) {
-    if (!G || G.phase !== 'play' || G.activePlayer !== 0) return;
+    if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff) return;
     if (G.aceBonus !== null) {
-      if (card.s !== G.aceBonus || card.r === '7') return;
-      setSel(prev => prev.find(c => c.id === card.id) ? [] : [card]);
+      if (card.r === '7' || card.r === 'A') return;
+      setSel(prev => {
+        const has = prev.find(c => c.id === card.id);
+        if (has) return prev.filter(c => c.id !== card.id);
+        if (prev.length === 0) return card.s === G.aceBonus ? [card] : prev; // ensimmäinen: oltava oikea maa
+        return card.r === prev[0].r ? [...prev, card] : prev; // lisäkortti: sama arvo
+      });
       return;
     }
     setSel(prev => {
@@ -560,65 +714,68 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   function humanPlay() {
     if (!selected.length || !G) return;
     const g = gRef.current;
+    const idx = g.activePlayer;
     if (g.aceBonus !== null) {
-      const card = selected[0];
-      if (card.s !== g.aceBonus) { addLog(M.wrongSuit); return; }
-      setSel([]);
-      doPlay({ ...g, aceBonus: null }, 0, [card], null);
+      if (selected[0]?.s !== g.aceBonus) { addLog(M.wrongSuit); return; }
+      const cards = [...selected]; setSel([]);
+      doPlay({ ...g, aceBonus: null }, idx, cards, null);
       return;
     }
-    if (!canGroup(selected, g.discardTop, g.reqSuit, g.players[0].hand.length)) {
+    if (!canGroup(selected, g.discardTop, g.reqSuit, g.players[idx].hand.length)) {
       addLog(M.badCards);
       return;
     }
     const cards = [...selected]; setSel([]);
-    doPlay(g, 0, cards, null);
+    doPlay(g, idx, cards, null);
   }
 
   function humanSkipAceBonus() {
     const g = gRef.current;
     if (!g || g.aceBonus === null) return;
+    const idx = g.activePlayer;
     setSel([]);
-    const g2 = applyAcePenalty({ ...g, aceBonus: null }, 0);
-    const newHand = g2.players[0].hand;
-    if (newHand.length === 1 && !g2.lappuSaid.has(0)) {
-      const g3 = { ...g2, pendingLappu: 0 };
+    const g2 = applyAcePenalty({ ...g, aceBonus: null }, idx);
+    const newHand = g2.players[idx].hand;
+    if (newHand.length === 1 && !g2.lappuSaid.has(idx)) {
+      const g3 = { ...g2, pendingLappu: idx };
       setGS(g3);
-      tm(() => advanceTurn(gRef.current, 0), 4000);
+      tm(() => advanceTurn(gRef.current, idx), 4000);
     } else {
-      advanceTurn(g2, 0);
+      advanceTurn(g2, idx);
     }
   }
 
   function humanChooseSuit(suit) {
     const g = gRef.current;
     if (!g || g.phase !== 'awaiting_suit') return;
+    const idx = g.activePlayer;
     addLog(M.suitSelected(suit));
-    const newHand = g.players[0].hand;
-    if (newHand.length === 1 && !g.lappuSaid.has(0)) {
-      const g2 = { ...g, reqSuit: suit, phase: 'play', pendingLappu: 0 };
+    const newHand = g.players[idx].hand;
+    if (newHand.length === 1 && !g.lappuSaid.has(idx)) {
+      const g2 = { ...g, reqSuit: suit, phase: 'play', pendingLappu: idx };
       setGS(g2);
-      tm(() => advanceTurn(gRef.current, 0), 4000);
+      tm(() => advanceTurn(gRef.current, idx), 4000);
     } else {
-      advanceTurn({ ...g, reqSuit: suit, phase: 'play' }, 0);
+      advanceTurn({ ...g, reqSuit: suit, phase: 'play' }, idx);
     }
   }
 
   function humanDraw() {
-    if (!G || G.phase !== 'play' || G.activePlayer !== 0) return;
-    doDraw(gRef.current, 0);
+    if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff) return;
+    doDraw(gRef.current, G.activePlayer);
   }
 
   function humanEndTurn() {
-    if (!G || G.phase !== 'play' || G.activePlayer !== 0 || G.drawsThisTurn === 0) return;
+    if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff || G.drawsThisTurn === 0) return;
     setSel([]);
-    advanceTurn(gRef.current, 0);
+    advanceTurn(gRef.current, G.activePlayer);
   }
 
   function humanLappu() {
     const g = gRef.current;
     if (!g) return;
-    setGS({ ...g, lappuSaid: new Set([...g.lappuSaid, 0]), pendingLappu: null });
+    const idx = g.activePlayer;
+    setGS({ ...g, lappuSaid: new Set([...g.lappuSaid, idx]), pendingLappu: null });
     addLog(M.lappuSelf);
   }
 
@@ -627,35 +784,56 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
   // ── Select ──────────────────────────────────────────────────
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center', marginBottom: 24 }}>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: isMobile ? '24px 16px' : 32, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center', marginBottom: 32 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>7️⃣</div>
         <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>SEISKA</h1>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
           <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
           <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
           <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
           <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
         </div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 12 }}>
-          <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {[2, 3, 4].map(n => (
-              <button key={n} onClick={() => setNP(n)} style={{ width: 44, height: 44, borderRadius: 10, cursor: 'pointer', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
-            ))}
-          </div>
+      </div>
+
+      <div style={{ width: '100%', maxWidth: 380, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {/* Pelaajamäärä: Hero + botit */}
+        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 2, textAlign: 'center', opacity: 0.6 }}>PELAA SINÄ</div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          {[4, 3, 2].map(n => (
+            <button key={n} onClick={() => {
+              const slots = Array(4).fill(null).map((_, i) => ({
+                name: i === 0 ? 'Hero' : '', isHuman: i === 0, active: i < n,
+              }));
+              startGame(slots);
+            }} style={{
+              flex: 1, padding: '14px 8px', borderRadius: 12, cursor: 'pointer',
+              background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`,
+              color: C.text, fontFamily: 'Georgia,serif', fontSize: 15,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+            }}>
+              <span>{n}</span>
+              <span style={{ fontSize: 10, fontFamily: 'sans-serif', color: C.dim, opacity: 0.7 }}>pelaajaa</span>
+            </button>
+          ))}
         </div>
-      </div>
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.9, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
-        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
-        Lyö sama maa (1 kerralla) TAI sama arvo (useampi kerralla)<br />
-        Ei sovi → nosta enintään 3 korttia, pelaa jos löytyy<br />
-        <span style={{ color: C.blue }}>7</span> → valitse vaadittu maa &nbsp;·&nbsp; <span style={{ color: C.red }}>A</span> → bonusvuoro<br />
-        1 kortti jäljellä → sano <strong>LAPPU</strong> (4 s) tai +3 korttia<br />
-        Voitto: ensimmäinen kortiton — ei voi päättää seiskaan tai ässään
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+
+        {/* Bottien Taistelu */}
+        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 2, textAlign: 'center', opacity: 0.6, marginTop: 8 }}>TAI KATSO</div>
+        <button onClick={() => {
+          const slots = Array(4).fill(null).map((_, i) => ({
+            name: '', isHuman: false, active: true,
+          }));
+          startGame(slots);
+        }} style={{
+          width: '100%', padding: '16px 20px', borderRadius: 14, cursor: 'pointer',
+          background: 'rgba(138,92,230,0.12)', border: '1px solid rgba(138,92,230,0.4)',
+          color: '#c4a0ff', fontFamily: 'Georgia,serif', fontSize: 15,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+        }}>
+          <span>🔮 Bottien Taistelu</span>
+          <span style={{ fontSize: 11, fontFamily: 'sans-serif', opacity: 0.7 }}>4 bottia · yliluonnollinen taso</span>
+        </button>
       </div>
     </div>
   );
@@ -689,17 +867,32 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
   if (!G) return null;
 
-  const human      = G.players[0];
-  const isMyTurn   = G.activePlayer === 0 && (G.phase === 'play' || G.phase === 'awaiting_suit');
-  const canAct     = isMyTurn && G.phase === 'play';
-  const hasValid   = canAct && validSingles(human.hand, G.discardTop, G.reqSuit).length > 0;
-  const canDraw    = canAct && G.drawsThisTurn < 3 && G.aceBonus === null;
-  const canEnd     = canAct && G.drawsThisTurn > 0 && G.aceBonus === null;
-  const showLappu  = human.hand.length === 1 && !G.lappuSaid.has(0) && G.pendingLappu === 0 && G.phase === 'play';
+  // ── Peli-view ────────────────────────────────────────────────
+  const activeP    = G.players[G.activePlayer];
+  const humanIdx   = G.players.findIndex(p => p.isHuman);
+  const multiHuman = G.players.filter(p => p.isHuman).length >= 2;
+  const allBots    = G.players.every(p => !p.isHuman);
+  // Yksipelaaja-tilassa näytetään aina ihmispelaajan käsi, vaikka botin vuoro
+  const displayP      = (humanIdx >= 0 && !multiHuman) ? G.players[humanIdx] : activeP;
+  const isMyTurn      = activeP?.isHuman && !handoff && (G.phase === 'play' || G.phase === 'awaiting_suit');
+  const canAct        = isMyTurn && G.phase === 'play';
+  // Katsomotila: valaistaan aktiivisen botin pelattavat kortit
+  const spectatorAct  = !isMyTurn && G.phase === 'play' && displayP?.id === G.activePlayer;
+  const hasValid  = canAct && validSingles(activeP.hand, G.discardTop, G.reqSuit).length > 0;
+  const canDraw   = canAct && G.drawsThisTurn < 3 && G.aceBonus === null;
+  const canEnd    = canAct && G.drawsThisTurn > 0 && G.aceBonus === null;
+  const showLappu = activeP?.hand.length === 1
+    && !G.lappuSaid.has(G.activePlayer)
+    && G.pendingLappu === G.activePlayer
+    && G.phase === 'play'
+    && !handoff;
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
+
+      {/* Peittokuva (pass-and-play) */}
+      {handoff && <HandoffScreen playerName={handoff.name} onReady={onHandoffReady} />}
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -707,27 +900,45 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
-      {/* AI-kädet — viuhka */}
-      {G.players.filter((_, i) => i !== 0).length > 0 && (
+      {/* Muut pelaajat — kortit selkäpuolella tai cheat-tilassa avattuina */}
+      {G.players.filter((_, i) => allBots || i !== displayP?.id).length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: isMobile ? 4 : 8 }}>
-          {G.players.filter((_, i) => i !== 0).map(p => {
-            const isActive = G.activePlayer === p.id;
+          {G.players.filter((_, i) => allBots || i !== displayP?.id).map(p => {
+            const isActive = p.id === G.activePlayer;
             const isDone   = G.finished.includes(p.id);
             const rank     = isDone ? G.finished.indexOf(p.id) + 1 : null;
             const hasLappu = G.lappuSaid.has(p.id) && p.hand.length === 1;
             const count = p.hand.length;
             const cw = 20, ch = 30, ov = 10;
             const fanW = count > 0 ? cw + Math.max(0, count - 1) * ov : cw;
+            const icon = p.isHuman ? '👤 ' : '🤖 ';
             return (
-              <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
+              <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? 'rgba(201,168,76,0.05)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '33' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 70, flexShrink: 0 }}>
-                  {isActive ? '► ' : '🤖 '}{p.name}
+                  {isActive ? '► ' : ''}{icon}{truncName(p.name)}
                   {hasLappu && <span style={{ color: C.red, marginLeft: 4 }}>LAPPU</span>}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
-                {debugOpen ? (
-                  <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                    {p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)}
+                {(debugOpen || allBots) ? (
+                  <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
+                    {p.hand.map(c => {
+                      const isIntended = intention?.playerIdx === p.id
+                        && intention.cards?.some(ic => ic.id === c.id);
+                      const hlCard = !isIntended && isActive && allBots && G.phase === 'play'
+                        && (G.aceBonus !== null
+                          ? (c.s === G.aceBonus && c.r !== '7' && c.r !== 'A')
+                          : canSingle(c, G.discardTop, G.reqSuit, p.hand.length === 1));
+                      const mlCard = !isIntended && isActive && allBots && G.phase === 'play'
+                        && G.aceBonus === null && c.r !== '7' && c.r !== 'A'
+                        && !G.reqSuit && c.r === G.discardTop.r;
+                      return (
+                        <Card key={c.id} card={c} xsmall backStyle={BACKS[cardBack]}
+                          selected={isIntended}
+                          highlight={hlCard || mlCard}
+                          dim={!isIntended && isActive && allBots && G.phase === 'play' && !hlCard && !mlCard}
+                        />
+                      );
+                    })}
                   </div>
                 ) : isDone ? null : count === 0 ? null : (
                   <div style={{ position: 'relative', width: fanW, height: ch, flexShrink: 0 }}>
@@ -773,7 +984,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       </div>
 
       {/* Suit-valitsin (seiskan jälkeen) */}
-      {G.phase === 'awaiting_suit' && G.activePlayer === 0 && (
+      {G.phase === 'awaiting_suit' && activeP?.isHuman && !handoff && (
         <div style={{ background: 'rgba(201,168,76,0.08)', border: `1px solid ${C.gold}44`, borderRadius: 14, padding: '14px 16px', marginBottom: 10 }}>
           <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, marginBottom: 10 }}>Valitse vaadittu maa:</div>
           <div style={{ display: 'flex', gap: 10 }}>
@@ -788,7 +999,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       )}
 
       {/* Ässä-bonusvuoro */}
-      {G.aceBonus !== null && G.activePlayer === 0 && (
+      {G.aceBonus !== null && activeP?.isHuman && !handoff && (
         <div style={{ background: 'rgba(91,168,212,0.1)', border: `1px solid ${C.blue}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 30, color: SUIT_COLOR[G.aceBonus], lineHeight: 1 }}>{G.aceBonus}</span>
           <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.text, flex: 1 }}>Ässä! Voit jatkaa {G.aceBonus}-maalla tai lopettaa vuoron.</span>
@@ -817,25 +1028,40 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         )}
       </div>
 
-      {/* Oma käsi */}
+      {/* Aktiivinen pelaaja — käsi (piilotetaan katsomotilassa, botti-kortit yläosassa) */}
+      {!allBots && (
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero{human.hand.length > 0 ? ` — ${korttia(human.hand.length)} kädessä` : ' — tyhjä! 🏆'}
-          {G.lappuSaid.has(0) && human.hand.length === 1 && <span style={{ color: C.gold, marginLeft: 8 }}>LAPPU</span>}
+          {displayP?.isHuman ? '👤' : '🤖'} {displayP?.name}
+          {displayP?.hand.length > 0
+            ? ` — ${korttia(displayP.hand.length)} kädessä`
+            : ' — tyhjä! 🏆'}
+          {G.lappuSaid.has(displayP?.id) && displayP?.hand.length === 1 && <span style={{ color: C.gold, marginLeft: 8 }}>LAPPU</span>}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', minHeight: isMobile ? 90 : 216 }}>
-          {sortHand(human.hand).map(c => {
+          {sortHand(displayP?.hand ?? []).map(c => {
             const isSel   = !!selected.find(s => s.id === c.id);
-            const single  = canAct && (G.aceBonus !== null
-              ? (c.s === G.aceBonus && c.r !== '7')
-              : canSingle(c, G.discardTop, G.reqSuit, human.hand.length === 1));
-            const multi   = canAct && G.aceBonus === null && c.r !== '7' && c.r !== 'A' && (
-              selected.length > 0
-                ? c.r === selected[0].r && !isSel
-                : !G.reqSuit && c.r === G.discardTop.r
-            );
-            const hl      = !isSel && (selected.length > 0 ? multi : (single || multi));
-            const dimmed  = canAct && !isSel && (selected.length > 0 ? !multi : (!single && !multi));
+            const single  = canAct
+              ? (G.aceBonus !== null
+                  ? (c.s === G.aceBonus && c.r !== '7' && c.r !== 'A')
+                  : canSingle(c, G.discardTop, G.reqSuit, activeP.hand.length === 1))
+              : spectatorAct && (G.aceBonus !== null
+                  ? (c.s === G.aceBonus && c.r !== '7' && c.r !== 'A')
+                  : canSingle(c, G.discardTop, G.reqSuit, displayP.hand.length === 1));
+            const multi   = canAct
+              ? (c.r !== '7' && c.r !== 'A' && (G.aceBonus !== null
+                  ? selected.length > 0 && c.r === selected[0].r && !isSel  // aceBonus: lisätään samaa arvoa
+                  : selected.length > 0
+                    ? c.r === selected[0].r && !isSel
+                    : !G.reqSuit && c.r === G.discardTop.r))
+              : (spectatorAct && G.aceBonus === null && c.r !== '7' && c.r !== 'A'
+                  && !G.reqSuit && c.r === G.discardTop.r);
+            const hl      = !isSel && (canAct
+              ? (selected.length > 0 ? multi : (single || multi))
+              : (single || multi));
+            const dimmed  = canAct
+              ? (!isSel && (selected.length > 0 ? !multi : (!single && !multi)))
+              : (spectatorAct && !isSel && !single && !multi);
             return (
               <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                 selected={isSel}
@@ -848,9 +1074,51 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
           })}
         </div>
       </div>
+      )}
 
       {/* Toiminnot */}
       <div style={{ minHeight: isMobile ? 36 : 52, display: 'flex', gap: 8, marginBottom: isMobile ? 4 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
+        {/* Katsomo-säätimet — näytetään botin vuorolla */}
+        {!isMyTurn && G.phase === 'play' && G.players.some(p => !p.isHuman) && (
+          <>
+            <button onClick={togglePause} style={{
+              fontSize: 12, padding: '5px 14px', borderRadius: 8, fontFamily: 'sans-serif',
+              border: `1px solid ${paused ? C.gold + '55' : C.panelBorder}`,
+              background: paused ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.04)',
+              color: paused ? C.gold : C.dim, cursor: 'pointer',
+            }}>
+              {paused ? '▶ Jatka' : '⏸ Tauko'}
+            </button>
+            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 9, color: C.dim, opacity: 0.55, letterSpacing: 1, textTransform: 'uppercase' }}>Siirtoväli &amp; aikomusaika</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <button onClick={() => changeDelay(-500)} disabled={aiDelayMs <= 200} style={{
+                  fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif',
+                  border: `1px solid ${C.panelBorder}`, background: 'rgba(255,255,255,0.04)',
+                  color: aiDelayMs <= 200 ? 'rgba(255,255,255,0.15)' : C.dim,
+                  cursor: aiDelayMs <= 200 ? 'default' : 'pointer',
+                }}>−0.5s</button>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.text, minWidth: 30, textAlign: 'center' }}>
+                  {(aiDelayMs / 1000).toFixed(1)}s
+                </span>
+                <button onClick={() => changeDelay(+500)} disabled={aiDelayMs >= 3000} style={{
+                  fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif',
+                  border: `1px solid ${C.panelBorder}`, background: 'rgba(255,255,255,0.04)',
+                  color: aiDelayMs >= 3000 ? 'rgba(255,255,255,0.15)' : C.dim,
+                  cursor: aiDelayMs >= 3000 ? 'default' : 'pointer',
+                }}>+0.5s</button>
+              </span>
+            </span>
+          </>
+        )}
+        {pendingResult && (
+          <button
+            onClick={() => onResult?.(pendingResult)}
+            style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
+          >
+            Tulokset →
+          </button>
+        )}
         {canAct && (
           <>
             {selected.length > 0 && (

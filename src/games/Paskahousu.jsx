@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, aiShouldFumble } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -88,12 +88,12 @@ function pileClears(cards, top, pile) {
 
 function emptyPenalty(card) { return card.r === '10' || card.r === 'A'; }
 
-function mkGame(nP, pool) {
+function mkGame(nP, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
   const deck    = mkDeck();
   const players = Array.from({ length: nP }, (_, i) => ({
-    id: i, name: i === 0 ? 'Hero' : aiNames[i - 1],
-    isHuman: i === 0, hand: deck.splice(0, HAND_SZ),
+    id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1],
+    isHuman: allBots ? false : i === 0, hand: deck.splice(0, HAND_SZ),
   }));
   const starter = players.reduce((best, p, i) => {
     const m = Math.min(...p.hand.map(c => c.v));
@@ -239,6 +239,10 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const [pakaAnim, setPakaAnim] = useState(false); // pakka ehtyi -animaatio
   const [shuffling, setShuffling] = useState(false);
   const [currentMoment, setCurrentMoment] = useState(null);
+  const [allBots, setAllBots]             = useState(false);
+  const [paused, setPaused]               = useState(false);
+  const [aiDelayMs, setAiDelayMs]         = useState(2000);
+  const [pendingResult, setPendingResult] = useState(null);
 
   const gRef    = useRef(null);
   const aiTmr   = useRef(null);
@@ -250,6 +254,9 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs    = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
+  const allBotsRef = useRef(false);
+  const pausedRef  = useRef(false);
+  const aiDelayRef = useRef(2000);
 
   useEffect(() => { gRef.current = G; },         [G]);
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);
@@ -303,10 +310,14 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
   useLayoutEffect(() => { startGame(); }, []);
 
-  function startGame() {
+  function startGame(forcedCount, allBotsMode = false) {
+    allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    pausedRef.current = false; setPaused(false);
+    setPendingResult(null);
     clearTimeout(aiTmr.current);
     setSel([]); setPakaAnim(false);
-    const g = mkGame(nP, playerNames);
+    const count = forcedCount ?? nP;
+    const g = mkGame(count, playerNames, allBotsMode);
     logRef.current = []; setLog([]);
     setGS(g);
     const s = g.players[g.turn];
@@ -314,7 +325,22 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     addLog(M.gameStart(s.isHuman, s.name, lblColored(lowestCard)));
     setScreen('game');
     setShuffling(true);
-    if (!s.isHuman) aiTmr.current = tm(() => runAI(g), 4100);
+    if (!s.isHuman) schedAI(() => runAI(gRef.current), 3100);
+  }
+
+  function startBotBattle() {
+    aiLevelRef.current = 'supernatural';
+    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setNP(4);
+    startGame(4, true);
+  }
+  function togglePause() { pausedRef.current = !pausedRef.current; setPaused(p => !p); }
+  function schedAI(fn, base) {
+    const d = allBotsRef.current ? aiDelayRef.current : base;
+    aiTmr.current = tm(() => {
+      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
+      fn();
+    }, d + Math.random() * 300);
   }
 
   // ── applyPlay ─────────────────────────────────────────────────────────────
@@ -360,10 +386,11 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const loser = players[f[f.length - 1]];
       addLog(M.loser(loser.isHuman, loser.name));
       const ranking = f.map((idx, pos) => ({
-        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman,
+        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
-      onResult?.({ ranking });
-      return setGS({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
+      setGS({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
+      if (allBotsRef.current) { tm(() => setPendingResult({ ranking }), 800); } else { onResult?.({ ranking }); }
+      return;
     }
 
     // Kaato? → kaataja jatkaa (uusi vuoro)
@@ -376,7 +403,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const g2 = { ...g, players, draw, pile: [], top: null, finished, turn: contP, skipNext: -1, phase: 'play' };
       setGS(g2);
       if (players[contP] && !players[contP].isHuman)
-        aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+        schedAI(() => runAI(gRef.current), 1400);
       else addLog(M.yourTurnCont);
       return;
     }
@@ -420,7 +447,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     const g2 = { ...g, players, draw, pile, top: newTop, finished, turn: advTurn, skipNext, phase: 'play' };
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(gRef.current), 1400);
     else addLog(M.yourTurn);
   }
 
@@ -459,10 +486,11 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         const loserK = players[f[f.length - 1]];
         addLog(M.loser(loserK.isHuman, loserK.name));
         const ranking = f.map((idx, pos) => ({
-        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman,
-      }));
-      onResult?.({ ranking });
-        return setGS({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
+          name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
+        }));
+        setGS({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
+        if (allBotsRef.current) { tm(() => setPendingResult({ ranking }), 800); } else { onResult?.({ ranking }); }
+        return;
       }
 
       if (pileClears([knocked], topBefore, pile)) {
@@ -473,7 +501,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         const g2 = { ...g, players, draw, pile: [], top: null, finished, turn: contP, skipNext: -1, phase: 'play' };
         setGS(g2);
         if (players[contP] && !players[contP].isHuman)
-          aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+          schedAI(() => runAI(gRef.current), 1400);
         else addLog(M.yourTurnCont);
         return;
       }
@@ -493,7 +521,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const g2 = { ...g, players, draw, pile, top: knocked, finished, turn: advTurn, skipNext, phase: 'play' };
       setGS(g2);
       if (players[advTurn] && !players[advTurn].isHuman)
-        aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+        schedAI(() => runAI(gRef.current), 1400);
       else addLog(M.yourTurn);
     } else {
       addLog(M.blindBad(isH, p.name, lblColored(knocked)));
@@ -503,7 +531,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const g2 = { ...g, players, draw, pile: [], top: null, finished: g.finished, turn: advTurn, skipNext: g.skipNext, phase: 'play' };
       setGS(g2);
       if (players[advTurn] && !players[advTurn].isHuman)
-        aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+        schedAI(() => runAI(gRef.current), 1400);
       else addLog(M.yourTurn);
     }
   }
@@ -607,7 +635,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const g2 = { ...g, players, pile: [], top: null, turn: contP, phase: 'play', swapData: null };
       setGS(g2);
       if (players[contP] && !players[contP].isHuman)
-        aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+        schedAI(() => runAI(gRef.current), 1400);
       else addLog(M.yourTurnCont);
       return;
     }
@@ -746,9 +774,13 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         Viimeinen pelaaja on Paskahousu.
       </div>
 
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>
           Aloita →
+        </button>
+        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          🔮 Bottien Taistelu
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
         </button>
       </div>
     </div>
@@ -817,7 +849,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
             return (
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : willSkip ? C.red + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : willSkip ? C.red : C.dim, minWidth: 70, flexShrink: 0 }}>
-                  {isActive ? '► ' : '🤖 '}{p.name}
+                  {isActive ? '► ' : '🤖 '}{truncName(p.name)}
                   {willSkip && <span style={{ color: C.red, marginLeft: 4 }}>⚠</span>}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
@@ -1029,6 +1061,38 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
           {debugOpen ? '🙈' : '🔍'} Cheat Mode
         </button>
       </div>
+
+      {allBots && G?.phase !== 'gameover' && (
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', padding: '6px 10px', background: 'rgba(123,47,190,0.08)', border: '1px solid rgba(123,47,190,0.25)', borderRadius: 10, marginBottom: 8 }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#bb88ff' }}>🔮 Katsomotila</span>
+          <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: '#f0e6ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
+          <button onClick={() => { aiDelayRef.current = Math.max(500, aiDelayRef.current - 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>−0.5s</button>
+          <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#bb88ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+          <button onClick={() => { aiDelayRef.current = Math.min(4000, aiDelayRef.current + 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>+0.5s</button>
+        </div>
+      )}
+
+      {pendingResult && allBots && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,22,18,0.93)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, zIndex: 100, padding: 24 }}>
+          <div style={{ fontSize: 32 }}>🔮</div>
+          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>KATSOMOTILA PÄÄTTYI</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 340 }}>
+            {pendingResult.ranking.map((r, i) => {
+              const medals = ['🥇','🥈','🥉','4️⃣'];
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? C.gold + '55' : C.panelBorder}` }}>
+                  <span style={{ fontSize: 18 }}>{medals[i] || ''}</span>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : C.dim }}>{r.name}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button onClick={startBotBattle} style={{ padding: '12px 28px', borderRadius: 12, background: 'rgba(123,47,190,0.3)', border: '1px solid rgba(123,47,190,0.5)', color: '#f0e6ff', fontSize: 14, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🔮 Uusi katselutila</button>
+            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
+          </div>
+        </div>
+      )}
 
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>

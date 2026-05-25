@@ -24,14 +24,14 @@ function newDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));
 }
 
-function initGame(n, pool) {
+function initGame(n, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
   const deck = newDeck();
   return {
     players: Array.from({ length: n }, (_, i) => ({
-      id: i, name: i === 0 ? 'Hero' : aiNames[i - 1], isHuman: i === 0,
+      id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1], isHuman: allBots ? false : i === 0,
       cards: [deck.shift(), deck.shift(), deck.shift(), deck.shift()],
-      known: new Set(i === 0 ? [] : [0, 1]),
+      known: new Set(allBots ? [0, 1] : (i === 0 ? [] : [0, 1])),
     })),
     deck, discard: [],
   };
@@ -129,6 +129,10 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
   const [currentMoment, setCurrentMoment] = useState(null);
+  const [allBots, setAllBots]   = useState(false);
+  const [paused, setPaused]     = useState(false);
+  const [aiDelayMs, setAiDelayMs] = useState(2000);
+  const [pendingResult, setPendingResult] = useState(null);
 
   const logRef     = useRef([]);
   const gRef       = useRef(null);
@@ -144,6 +148,18 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs      = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
+  const allBotsRef = useRef(false);
+  const pausedRef  = useRef(false);
+  const aiDelayRef = useRef(2000);
+  const sndRef     = useRef(initSoundOn);
+  useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
+  function schedAI(fn, base) {
+    const d = allBotsRef.current ? aiDelayRef.current : base;
+    aiTmr.current = tm(() => {
+      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
+      fn();
+    }, d + Math.random() * 400);
+  }
 
   const setMsg = m => {
     setMsg_(m);
@@ -212,16 +228,41 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
 
   useLayoutEffect(() => { startGame(); }, []);
 
-  function startGame() {
+  function startGame(forcedCount, allBotsMode = false) {
     clearTimeout(aiTmr.current); clearInterval(reactInt.current);
-    const g = initGame(nP, playerNames);
+    allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    pausedRef.current = false; setPaused(false);
+    setPendingResult(null);
+    const cnt = forcedCount || nP;
+    const g = initGame(cnt, playerNames, allBotsMode);
     setG(g); gRef.current = g;
-    setPhase('peeking'); setCurIdx(0); setPD(0); setTP(new Set());
-    setDrawn(null); setMsg(M.peekStart); setKB(null); knockRef.current = null;
+    setDrawn(null); setKB(null); knockRef.current = null;
     setLR(null); lrRef.current = null; setSS(null); setRO(false);
     logRef.current = []; setLog([]); setPakaAnim(false);
-    setScreen('game');
-    setShuffling(true);
+    if (allBotsMode) {
+      // Ohita kurkkausvaihe — kaikki botit tietävät jo 2 korttiaan
+      const si = 1 % cnt;
+      setPhase('draw'); setCurIdx(si); curRef.current = si;
+      setPD(2); setTP(new Set());
+      setMsg('🤖 Bottien taistelu alkaa!');
+      setScreen('game');
+      setShuffling(true);
+      schedAI(() => runAI(si, gRef.current), 2000);
+    } else {
+      setPhase('peeking'); setCurIdx(0); setPD(0); setTP(new Set());
+      setMsg(M.peekStart);
+      setScreen('game');
+      setShuffling(true);
+    }
+  }
+
+  function startBotBattle() {
+    startGame(nP, true);
+  }
+
+  function togglePause() {
+    const next = !pausedRef.current;
+    pausedRef.current = next; setPaused(next);
   }
 
   function onPeek(idx) {
@@ -257,7 +298,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     setPhase('draw'); setDrawn(null); setSS(null);
     const np = gState.players[next];
     if (np.isHuman) setMsg(M.yourTurn);
-    else { setMsg(M.aiTurn(np.name)); aiTmr.current = tm(() => runAI(next, gState), 600); }
+    else { setMsg(M.aiTurn(np.name)); schedAI(() => runAI(next, gRef.current), 600); }
   }
 
   function endGame(gState) {
@@ -268,7 +309,11 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       return { name: p.name, place: sorted.filter(q => pScore(q) < s).length + 1, score: s, isHuman: p.isHuman };
     });
     const revealCards = players.map(p => ({ name: p.name, cards: p.cards }));
-    onResult?.({ ranking, revealCards });
+    if (allBotsRef.current) {
+      setPendingResult({ ranking });
+    } else {
+      onResult?.({ ranking, revealCards });
+    }
     setPhase('gameover'); setScreen('gameover'); setMsg(M.gameOver);
   }
 
@@ -399,7 +444,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         if (!stopReact.current) { stopReact.current = true; setRO(false); setMsg(M.reactEnd); advance(gState, byIdx); }
       }
     }, 500);
-    const level = aiLevelRef.current;
+    const level = allBotsRef.current ? 'supernatural' : aiLevelRef.current;
     const missProbability   = level === 'beginner' ? 0.5  : level === 'normal' ? 0.25 : level === 'hard' ? 0.1 : 0.03;
     const wrongReactChance  = level === 'beginner' ? 0.15 : 0;
 
@@ -523,7 +568,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       const uk = p.cards.filter(c => c !== null).length - p.known.size;
       const est = ks + uk * 5;
       // Aloittelija koputaa liian aikaisin — ylioptimistinen arvio omasta tilanteesta
-      const knockThreshold = aiShouldFumble(aiLevelRef.current) ? 14 : 8;
+      const knockThreshold = aiShouldFumble(allBotsRef.current ? 'supernatural' : aiLevelRef.current) ? 14 : 8;
       if (est <= knockThreshold) {
         setKB(playerIdx); knockRef.current = playerIdx;
         const lr = new Set(gState.players.filter((_, i) => i !== playerIdx).map(pl => pl.id));
@@ -534,32 +579,40 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     const worstKn = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
       .sort((a, b) => gState.players[playerIdx].cards[b].v - gState.players[playerIdx].cards[a].v)[0];
     const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
-    tm(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); }, 1600);
-    tm(() => {
+    const thinkMs = allBotsRef.current ? Math.min(aiDelayRef.current * 0.25, 500) : 1600;
+    const reactMs = allBotsRef.current ? 400 : 1200;
+    tm(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); }, thinkMs);
+    schedAI(() => {
+      const gNow = gRef.current; if (!gNow) return;
+      const pNow = gNow.players[playerIdx];
+      const dtNow = gNow.discard[gNow.discard.length - 1];
+      const worstKnNow = [...pNow.known].filter(i => gNow.players[playerIdx].cards[i] !== null)
+        .sort((a, b) => gNow.players[playerIdx].cards[b].v - gNow.players[playerIdx].cards[a].v)[0];
+      const drawFromDiscardNow = dtNow && worstKnNow !== undefined && dtNow.v < pNow.cards[worstKnNow].v;
       let card, deck, discard;
-      if (drawFromDiscard) {
-        card = dt; deck = gState.deck; discard = gState.discard.slice(0, -1);
+      if (drawFromDiscardNow) {
+        card = dtNow; deck = gNow.deck; discard = gNow.discard.slice(0, -1);
       } else {
-        if (!gState.deck.length) { endGame(gState); return; }
-        card = gState.deck[0]; deck = gState.deck.slice(1); discard = gState.discard;
+        if (!gNow.deck.length) { endGame(gNow); return; }
+        card = gNow.deck[0]; deck = gNow.deck.slice(1); discard = gNow.discard;
       }
-      const wo = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
-        .sort((a, b) => p.cards[b].v - p.cards[a].v)[0];
-      if (wo !== undefined && card.v < p.cards[wo].v) {
-        const old = p.cards[wo];
-        const players = gState.players.map((pl, i) => {
+      const wo = [...pNow.known].filter(i => gNow.players[playerIdx].cards[i] !== null)
+        .sort((a, b) => pNow.cards[b].v - pNow.cards[a].v)[0];
+      if (wo !== undefined && card.v < pNow.cards[wo].v) {
+        const old = pNow.cards[wo];
+        const players = gNow.players.map((pl, i) => {
           if (i !== playerIdx) return pl;
           const cards = [...pl.cards]; cards[wo] = card;
           return { ...pl, cards, known: new Set([...pl.known, wo]) };
         });
-        const updG = { ...gState, players, deck, discard: [...discard, old] };
+        const updG = { ...gNow, players, deck, discard: [...discard, old] };
         setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
         flashSlot(playerIdx, wo);
-        tm(() => openReaction(updG, old, playerIdx), 1200);
+        tm(() => openReaction(updG, old, playerIdx), reactMs);
       } else {
-        const updG = { ...gState, deck, discard: [...discard, card] };
+        const updG = { ...gNow, deck, discard: [...discard, card] };
         setG(updG); gRef.current = updG; setMsg(M.aiDiscard(p.name, card));
-        tm(() => openReaction(updG, card, playerIdx), 1200);
+        tm(() => openReaction(updG, card, playerIdx), reactMs);
       }
     }, 3600);
   }
@@ -600,8 +653,9 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
         Muista katsomasi tai vaihtamasi kortit. Muista myös mitä kortteja muut säilyttävät.
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita peli →</button>
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita peli →</button>
+        <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(123,47,190,0.5)', borderRadius: 14, padding: '12px 32px', color: '#c084fc', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>🤖 Bottien taistelu</button>
       </div>
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
     </div>
@@ -627,8 +681,14 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
           ))}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Btn label="Uusi peli →" onClick={startGame} color={C.gold} />
-          <Btn label="← Vaihda pelaajia" onClick={() => setScreen('select')} color={C.gold} outline />
+          {allBots ? (
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi katselutila</button>
+          ) : (
+            <>
+              <Btn label="Uusi peli →" onClick={() => startGame()} color={C.gold} />
+              <Btn label="← Vaihda pelaajia" onClick={() => setScreen('select')} color={C.gold} outline />
+            </>
+          )}
         </div>
         <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
       </div>
@@ -640,7 +700,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const human = G.players[0];
   const ais = G.players.slice(1);
   const discardTop = G.discard[G.discard.length - 1];
-  const isHuman = curIdx === 0;
+  const isHuman = curIdx === 0 && !allBots;
 
   const ownClickable = () => {
     const nonNull = i => G.players[0].cards[i] !== null;
@@ -762,19 +822,30 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         </div>
       )}
 
+      {/* Bottien taistelu -hallintapalkki */}
+      {allBots && (
+        <div style={{ background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', letterSpacing: 1 }}>🤖 KATSELUTILA</span>
+          <button onClick={togglePause} style={{ background: paused ? 'rgba(192,132,252,0.2)' : 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 12px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
+          <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = +e.target.value; setAiDelayMs(v); aiDelayRef.current = v; }} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE' }} />
+          <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c084fc' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+          <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 10px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>↺</button>
+        </div>
+      )}
+
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 36 : 44, alignItems: 'center' }}>
         {isHuman && phase === 'drawn' && <Btn label="Heitä poistopakkaan ›" onClick={humanDiscard} color={C.gold} />}
         {isHuman && phase === 'draw' && knockedBy === null && <Btn label="🤜 Koputan!" onClick={humanKnock} color={C.red} outline />}
-        {phase === 'spec_q_tgt' && specState && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
-        {phase === 'spec_k_decide' && specState && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
-        {phase === 'spec_k_confirm' && <Btn label="✓ Vaihda tähän" onClick={handleKSwap} color={C.gold} />}
-        {phase === 'spec_k_confirm' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
+        {!allBots && phase === 'spec_q_tgt' && specState && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
+        {!allBots && phase === 'spec_k_decide' && specState && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
+        {!allBots && phase === 'spec_k_confirm' && <Btn label="✓ Vaihda tähän" onClick={handleKSwap} color={C.gold} />}
+        {!allBots && phase === 'spec_k_confirm' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
       </div>
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun koputus tai pakka loppuu</span>
         <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
+        {!allBots && <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>}
       </div>
 
       <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>
@@ -802,6 +873,26 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
           setCurrentMoment(null);
         }}
       />
+
+      {/* PendingResult overlay — allBots-tilan loppunäyttö */}
+      {pendingResult && screen === 'game' && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(0,0,0,0.88)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
+          <div style={{ fontSize: 26, color: '#c084fc', fontFamily: 'Georgia,serif', letterSpacing: 4 }}>🤖 TAISTELU PÄÄTTYI</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
+            {pendingResult.ranking.map((p, i) => (
+              <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? 'rgba(123,47,190,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? 'rgba(192,132,252,0.5)' : 'rgba(255,255,255,0.08)'}` }}>
+                <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : '🤖'}</span>
+                <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? '#c084fc' : C.text }}>{p.name}</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: i === 0 ? '#c084fc' : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginTop: 8 }}>
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi taistelu</button>
+            <button onClick={() => { setPendingResult(null); setScreen('select'); }} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12, padding: '12px 20px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Valikko</button>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes rpulse{0%{transform:scale(1);box-shadow:0 0 22px rgba(224,92,59,0.4)}40%{transform:scale(1.13);box-shadow:0 0 32px rgba(224,92,59,0.7)}100%{transform:scale(1);box-shadow:0 0 22px rgba(224,92,59,0.4)}}

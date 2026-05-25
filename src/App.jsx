@@ -422,6 +422,7 @@ export default function App() {
   const [showPlayHints, setShowPlayHints] = useState(true);
   const [teachMode, setTeachMode]   = useState(false);
   const [showLastPlay, setShowLastPlay] = useState(true);
+  const [showIntention, setShowIntention] = useState(true);
   const [showNextBtn, setShowNextBtn]   = useState(true);
   const [showAIKnown, setShowAIKnown]   = useState(true);
   const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard' | 'supernatural'
@@ -433,6 +434,7 @@ export default function App() {
   const [resultData, setResultData] = useState(null);   // {ranking, revealCards?, scoreBreakdown?}
   const [gameKey, setGameKey]       = useState(0);       // increment → remount game
   const [showGlossary, setShowGlossary] = useState(false);
+  const [showEsittely, setShowEsittely] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
@@ -587,20 +589,31 @@ export default function App() {
           >✕ Sulje</button>
         </div>
 
-        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          {[
-            'Hei!',
-            'Tämän sovelluksen missiona on auttaa pelihaluisia viettämään rattoisaa aikaa yhteisen pöydän ääressä. Mukana on yhdeksän peliä, joiden kulun oppii ymmärtämään lukuisien toistojen kautta. Tämä sovellus on digitaalinen, vuorovaikutteinen ympäristö, jossa kenelläkään ei ole kiire.',
-            'Korttipelien rikkaus piilee paikallisissa säännöissä. Yritin olla reilu omissa tulkinnoissani ja vivahteissani, mutta saattaahan sieltä joku "bugi, ei ominaisuus" seasta löytyä.',
-            'Kiitos ja kumarrus,\nTommi Haanranta',
-          ].map((t, i) => (
-            <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>
-          ))}
-          <a href={MAILTO} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
-            color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
-            border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
-          }}>✉ Lähetä risut ja ruusut</a>
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowEsittely(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Esittely</span>
+            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showEsittely ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showEsittely && (
+            <div style={{ padding: '0 14px 14px' }}>
+              {[
+                'Hei!',
+                'Tämän sovelluksen missiona on auttaa pelihaluisia viettämään rattoisaa aikaa yhteisen pöydän ääressä. Mukana on yhdeksän peliä, joiden kulun oppii ymmärtämään lukuisien toistojen kautta. Tämä sovellus on digitaalinen, vuorovaikutteinen ympäristö, jossa kenelläkään ei ole kiire.',
+                'Korttipelien rikkaus piilee paikallisissa säännöissä. Yritin olla reilu omissa tulkinnoissani ja vivahteissani, mutta saattaahan sieltä joku "bugi, ei ominaisuus" seasta löytyä.',
+                'Kiitos ja kumarrus,\nTommi Haanranta',
+              ].map((t, i) => (
+                <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>
+              ))}
+              <a href={MAILTO} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
+                color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
+              }}>✉ Lähetä risut ja ruusut</a>
+            </div>
+          )}
         </div>
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
@@ -611,6 +624,7 @@ export default function App() {
             { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',                 val: showCounts,    set: setShowCounts    },
             { label: 'Näe muistipeleissä vastustajien katsomat korttipaikat korostettuina',       val: showAIKnown,   set: setShowAIKnown   },
             { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                       val: showLastPlay,  set: setShowLastPlay  },
+            { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska)', val: showIntention, set: setShowIntention },
             { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                       val: showPlayHints, set: setShowPlayHints },
             { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
             { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
@@ -752,12 +766,14 @@ export default function App() {
           showPlayHints={showPlayHints}
           teachMode={teachMode}
           showLastPlay={showLastPlay}
+          showIntention={showIntention}
           isMobile={isMobile}
           playerCount={Math.max(playerCount, game.minPlayers)}
           playerNames={playerPool}
           showNextBtn={showNextBtn}
           showAIKnown={showAIKnown}
           aiLevel={aiLevel}
+          onAiLevelChange={setAiLevel}
           onResult={(result) => handleGameResult(active, result)}
         />
       </div>
