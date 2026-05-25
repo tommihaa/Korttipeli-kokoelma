@@ -498,37 +498,16 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
 
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <div style={{ fontSize: 48, marginBottom: 8 }}>👋</div>
-        <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>LÄPSY</h1>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8, marginBottom: 6 }}>
-          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
-          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
-          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
-          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
-        </div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 12 }}>
-          <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
-          <div style={{ display: 'flex', gap: 10 }}>
-            {[2, 3, 4].map(n => (
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, fontFamily: 'Georgia,serif' }}>
+      <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+        <div style={{ display: 'flex', gap: 10 }}>
+          {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.red : C.panelBorder}`, background: nP === n ? C.red + '18' : 'transparent', color: nP === n ? C.red : C.dim, transition: 'all 0.2s' }}>{n}</button>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
-      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: '14px 18px', maxWidth: 320, fontFamily: 'sans-serif', fontSize: 12, color: C.dim, lineHeight: 1.8, marginBottom: 20, marginLeft: 'auto', marginRight: 'auto' }}>
-        <span style={{ color: C.gold, fontWeight: 700 }}>Säännöt lyhyesti</span><br />
-        Pelaajat lyövät pinostaan kortin kasaan vuorotellen. Voi tapahtua:<br /><br />
-        <span style={{ color: C.text }}>Täsmäys</span> — kaksi päällimmäistä samaa arvoa:<br />
-        &nbsp;· Oikein → voitat kasan<br />
-        &nbsp;· Väärin → lisäät kortin kasaan<br /><br />
-        <span style={{ color: C.text }}>Haaste</span> — käännät J, Q, K tai A:<br />
-        &nbsp;· Seuraavalla on 1/2/3/4 yritystä täsmäykseen tai haastaa edelleen J/Q/K/A:lla<br />
-        &nbsp;· Ei vastausta → haastaja voittaa kasan ja jatkaa kääntämistä<br /><br />
-        Viimeiseksi kortteja omaava voittaa.
-      </div>
-      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
