@@ -69,7 +69,7 @@ const M = {
   tipDiscard: (n, c) => `💡 ${n} heittää ${c} — nostamasi kortti ei paranna käsiä`,
 };
 
-function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true }) {
+function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true, intentSlot }) {
   return (
     <div style={{ padding: small ? '4px 8px' : 14, borderRadius: 12, transition: 'border-color 0.2s', border: `1px solid ${isActive ? 'rgba(201,168,76,0.3)' : 'rgba(42,74,50,0.4)'}`, background: isActive ? 'rgba(201,168,76,0.03)' : 'transparent', display: small ? 'flex' : 'block', alignItems: small ? 'center' : undefined, gap: small ? 6 : 0 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: small ? 4 : 8, marginBottom: small ? 0 : 8, fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, flexShrink: 0 }}>
@@ -93,6 +93,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
               reactHL={reactHL}
               justPlaced={justPlaced}
               pulse={memGlow && !cl && !justPlaced}
+              selected={intentSlot === i}
               backStyle={backStyle}
               onClick={cl ? () => onCardClick?.(i) : undefined}
               disabled={clickableSet && !cl}
@@ -105,7 +106,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
@@ -132,6 +133,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const [allBots, setAllBots]   = useState(false);
   const [paused, setPaused]     = useState(false);
   const [aiDelayMs, setAiDelayMs] = useState(2000);
+  const [intention, setIntention] = useState(null); // { playerIdx, slotIdx } | null
   const [pendingResult, setPendingResult] = useState(null);
 
   const logRef     = useRef([]);
@@ -597,16 +599,25 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       const wo = [...pNow.known].filter(i => gNow.players[playerIdx].cards[i] !== null)
         .sort((a, b) => pNow.cards[b].v - pNow.cards[a].v)[0];
       if (wo !== undefined && card.v < pNow.cards[wo].v) {
-        const old = pNow.cards[wo];
-        const players = gNow.players.map((pl, i) => {
-          if (i !== playerIdx) return pl;
-          const cards = [...pl.cards]; cards[wo] = card;
-          return { ...pl, cards, known: new Set([...pl.known, wo]) };
-        });
-        const updG = { ...gNow, players, deck, discard: [...discard, old] };
-        setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
-        flashSlot(playerIdx, wo);
-        tm(() => openReaction(updG, old, playerIdx), reactMs);
+        const doSwap = () => {
+          const old = pNow.cards[wo];
+          const players = gNow.players.map((pl, i) => {
+            if (i !== playerIdx) return pl;
+            const cards = [...pl.cards]; cards[wo] = card;
+            return { ...pl, cards, known: new Set([...pl.known, wo]) };
+          });
+          const updG = { ...gNow, players, deck, discard: [...discard, old] };
+          setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
+          flashSlot(playerIdx, wo);
+          tm(() => openReaction(updG, old, playerIdx), reactMs);
+        };
+        if (initShowIntention) {
+          const intentionMs = Math.min(1200, Math.max(400, aiDelayRef.current * 0.3));
+          setIntention({ playerIdx, slotIdx: wo });
+          tm(() => { setIntention(null); doSwap(); }, intentionMs);
+          return;
+        }
+        doSwap();
       } else {
         const updG = { ...gNow, deck, discard: [...discard, card] };
         setG(updG); gRef.current = updG; setMsg(M.aiDiscard(p.name, card));
@@ -729,6 +740,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
                   phase={phase} debug={debugOpen || allBots} showKnown={showAIKnown}
                   lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
                   clickableSet={tgtClickable(pi)}
+                  intentSlot={intention?.playerIdx === pi ? intention.slotIdx : undefined}
                   onCardClick={ci => {
                     if (phase === 'spec_q_tgt') handleQTarget(pi, ci);
                     else if (phase === 'spec_k_decide') handleKPeekTarget(pi, ci);

@@ -256,7 +256,7 @@ const M = {
   noBuildLeave: 'Sinulla on rakennelma pöydässä — kaappaa se ensin!',
 };
 
-export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showNextBtn = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
+export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -1002,8 +1002,10 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           doBuildAction = effectiveBuildScore > captureScore * 1.5;
         }
         if (doBuildAction) {
+          if (initShowIntention) setAiSel({ handCard: buildResult.handCard, tableCards: buildResult.tableCards });
           aiTmr.current = tm(() => {
             const g2 = gRef.current;
+            setAiSel({ handCard: null, tableCards: [] });
             const g3 = doBuild(g2, playerIdx, buildResult.handCard, buildResult.tableCards, buildResult.value);
             setG(g3); gRef.current = g3;
             tm(() => advance(g3, playerIdx), 400);
@@ -1225,7 +1227,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
               </div>
               <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: (debugOpen || allBots) ? 'wrap' : 'nowrap', overflow: (debugOpen || allBots) ? 'visible' : 'hidden' }}>
                 {(debugOpen || allBots)
-                  ? p.hand.map(c => <Card key={c.id} card={c} small showBadges backStyle={BACKS[cardBack]} />)
+                  ? p.hand.map(c => <Card key={c.id} card={c} small showBadges backStyle={BACKS[cardBack]} selected={initShowIntention && aiSel.handCard?.id === c.id} />)
                   : p.hand.map((_, ci) => <div key={ci} style={{ width: 28, height: 40, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
                 }
               </div>

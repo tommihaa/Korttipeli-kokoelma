@@ -107,7 +107,7 @@ function initGame(nPlayers, pool, allBots = false) {
 }
 
 // ── Pääkomponentti ──────────────────────────────────────────────────
-export default function Maija({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
+export default function Maija({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -129,6 +129,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
+  const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
 
   const gRef = useRef(null);
@@ -392,6 +393,12 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       if (teachRef.current && toPlay.length > 1) {
         const suitSpan = `<span style="color:${SUIT_COLOR[toPlay[0].s]}">${toPlay[0].s}</span>`;
         addLog(M.tipAttackSuit(g2.players[g2.attackerIdx].name, toPlay.length, suitSpan));
+      }
+      if (initShowIntention) {
+        const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
+        setIntention({ playerIdx: g2.attackerIdx, cards: toPlay });
+        aiTmr.current = tm(() => { setIntention(null); doAttack(g2, toPlay); }, intentionMs);
+        return;
       }
       doAttack(g2, toPlay);
     }
@@ -694,7 +701,10 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
                 </div>
                 <div style={{ display:'flex', gap:2, justifyContent:'center', flexWrap:'wrap' }}>
                   {(debugOpen || allBots)
-                    ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]}/>)
+                    ? p.hand.map(c => {
+                        const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
+                        return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} selected={isIntended}/>;
+                      })
                     : p.hand.map((_, ci) => <div key={ci} style={{ width:22, height:33, borderRadius:4, background:BACKS[cardBack].bg, border:`1px solid ${BACKS[cardBack].border}` }}/>)
                   }
                 </div>

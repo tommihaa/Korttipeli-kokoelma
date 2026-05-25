@@ -181,7 +181,7 @@ function aiWorstCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
+export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -198,6 +198,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
+  const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
 
   const gRef       = useRef(null);
@@ -420,8 +421,17 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     if (bonusTurn !== null && bonusTurn === activePlayer) {
       const g2 = { ...gRef.current, bonusTurn: null };
       const card = aiBestCard(p.hand, rows, level);
-      if (card) doPlay(g2, activePlayer, card);
-      else      advanceTurnRS(g2, activePlayer);
+      if (card) {
+        if (initShowIntention) {
+          const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
+          setIntention({ playerIdx: activePlayer, cards: [card] });
+          aiTmr.current = tm(() => { setIntention(null); doPlay(g2, activePlayer, card); }, intentionMs);
+        } else {
+          doPlay(g2, activePlayer, card);
+        }
+      } else {
+        advanceTurnRS(g2, activePlayer);
+      }
       return;
     }
 
@@ -465,7 +475,13 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
           }
         }
       }
-      doPlay(gRef.current, activePlayer, bestCard);
+      if (initShowIntention) {
+        const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
+        setIntention({ playerIdx: activePlayer, cards: [bestCard] });
+        aiTmr.current = tm(() => { setIntention(null); doPlay(gRef.current, activePlayer, bestCard); }, intentionMs);
+      } else {
+        doPlay(gRef.current, activePlayer, bestCard);
+      }
     } else {
       doPass(gRef.current, activePlayer);
     }
@@ -814,7 +830,10 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
                 </span>
                 {(debugOpen || allBots) ? (
                   <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                    {p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)}
+                    {p.hand.map(c => {
+                      const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
+                      return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} selected={isIntended} />;
+                    })}
                   </div>
                 ) : isDone ? null : count === 0 ? null : (
                   <div style={{ position: 'relative', width: fanW, height: ch, flexShrink: 0 }}>

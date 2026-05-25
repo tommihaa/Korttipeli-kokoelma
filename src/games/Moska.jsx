@@ -180,7 +180,7 @@ function aiPickAddCard(addable, hand, ts) {
 }
 
 // ── Komponentti ───────────────────────────────────────────────
-export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showNextBtn = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
+export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -209,6 +209,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
+  const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
   const momentsRef = useRef([]);
 
@@ -779,6 +780,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         }
       }
       if (!cards.length) { resolveRound(g, true); return; }
+      if (initShowIntention) {
+        const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
+        setIntention({ playerIdx: primaryAtk, cards });
+        aiTmr.current = tm(() => { setIntention(null); doAttack(gRef.current, primaryAtk, cards); }, intentionMs);
+        return;
+      }
       doAttack(g, primaryAtk, cards);
     }
 
@@ -1100,7 +1107,10 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
               </div>
               <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
                 {(debugOpen || allBots)
-                  ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
+                  ? p.hand.map(c => {
+                      const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
+                      return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} selected={isIntended} />;
+                    })
                   : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
                 }
               </div>
