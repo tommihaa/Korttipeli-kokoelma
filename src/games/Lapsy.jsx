@@ -133,8 +133,6 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     duelHalved: (counts) => `✂️ Pinot puolitettu! ${counts}`,
   };
 
-  useLayoutEffect(() => { startGame(); }, []);
-
   function updateDuelTimer(currentPiles) {
     const active = currentPiles.filter(p => p.length > 0);
     if (active.length === 2) {

@@ -257,8 +257,6 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     tipGiveWorst:(name, card) => `💡 ${name} antaa ${card} panttiin — kaukaisin kortti pelattavuudesta`,
   };
 
-  useLayoutEffect(() => { startGame(); }, []);
-
   function startGame(forcedCount, allBotsMode = false) {
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     pausedRef.current = false; setPaused(false);

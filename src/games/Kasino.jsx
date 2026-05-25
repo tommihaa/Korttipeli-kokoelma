@@ -371,8 +371,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
   }
 
-  useLayoutEffect(() => { startGame(); }, []);
-
   function startGame(forcedCount, allBotsMode = false) {
     clearTimeout(aiTmr.current);
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);

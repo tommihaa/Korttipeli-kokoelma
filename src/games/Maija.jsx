@@ -213,8 +213,6 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
   }
 
-  useLayoutEffect(() => { startGame(); }, []);
-
   function startGame(forcedCount, allBotsMode = false) {
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     pausedRef.current = false; setPaused(false);

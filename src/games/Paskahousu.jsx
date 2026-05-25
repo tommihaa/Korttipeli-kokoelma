@@ -308,8 +308,6 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     tm(() => setKasaAnim(null), type === 'quad' ? 2000 : type === 'clear' ? 1400 : 850);
   }
 
-  useLayoutEffect(() => { startGame(); }, []);
-
   function startGame(forcedCount, allBotsMode = false) {
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     pausedRef.current = false; setPaused(false);

@@ -226,8 +226,6 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     prevDeckRef.current = cur;
   }, [G?.deck?.length]);
 
-  useLayoutEffect(() => { startGame(); }, []);
-
   function startGame(forcedCount, allBotsMode = false) {
     clearTimeout(aiTmr.current); clearInterval(reactInt.current);
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
