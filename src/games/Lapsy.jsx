@@ -578,7 +578,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
                 🤖 {pName(pi)}{curTurn === pi ? ' ●' : ''}
               </div>
               <div style={{ margin: '0 auto' }}>
-                {debugOpen
+                {(debugOpen || allBots)
                   ? <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
                       {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
                       {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center' }}>+{pile.length - 6}</span>}

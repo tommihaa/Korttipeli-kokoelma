@@ -812,7 +812,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
                   {isActive ? '► ' : '🤖 '}{truncName(p.name)}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
-                {debugOpen ? (
+                {(debugOpen || allBots) ? (
                   <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     {p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)}
                   </div>

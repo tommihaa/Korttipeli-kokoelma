@@ -726,7 +726,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
             return (
               <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: 110 }}>
                 <PlayerGrid player={ai} isActive={curIdx === pi} small={true} backStyle={BACKS[cardBack]}
-                  phase={phase} debug={debugOpen} showKnown={showAIKnown}
+                  phase={phase} debug={debugOpen || allBots} showKnown={showAIKnown}
                   lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
                   clickableSet={tgtClickable(pi)}
                   onCardClick={ci => {
@@ -788,7 +788,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       ); })()}
 
       <div style={{ marginBottom: isMobile ? 6 : 12 }}>
-        <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={debugOpen} backStyle={BACKS[cardBack]}
+        <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={debugOpen || allBots} backStyle={BACKS[cardBack]}
           clickableSet={ownClickable()} onCardClick={onOwnCard} peekSet={tempPeek}
           lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} small={isMobile} />
       </div>
@@ -829,7 +829,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun koputus tai pakka loppuu</span>
         <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        {!allBots && <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>}
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
       </div>
 
       <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>

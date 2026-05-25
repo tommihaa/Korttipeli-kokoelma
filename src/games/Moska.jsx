@@ -1099,7 +1099,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
                 {p.rank !== null ? ` — sija ${p.rank}` : ''}
               </div>
               <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-                {debugOpen
+                {(debugOpen || allBots)
                   ? p.hand.map(c => <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} />)
                   : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
                 }
@@ -1304,9 +1304,9 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
-        {!allBots && <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {debugOpen ? '🙈' : '🔍'} Cheat Mode
-        </button>}
+        </button>
       </div>
 
       {/* Loki */}
