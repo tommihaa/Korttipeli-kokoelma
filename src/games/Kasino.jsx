@@ -1223,8 +1223,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
               <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curIdx === p.id ? C.gold : C.dim, marginBottom: 4 }}>
                 🤖 {p.name} {curIdx === p.id ? '●' : ''}{!isMobile && ` — ${korttia(p.captured.length)} kaapattu`}
               </div>
-              <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: debugOpen ? 'wrap' : 'nowrap', overflow: debugOpen ? 'visible' : 'hidden' }}>
-                {debugOpen
+              <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: (debugOpen || allBots) ? 'wrap' : 'nowrap', overflow: (debugOpen || allBots) ? 'visible' : 'hidden' }}>
+                {(debugOpen || allBots)
                   ? p.hand.map(c => <Card key={c.id} card={c} small showBadges backStyle={BACKS[cardBack]} />)
                   : p.hand.map((_, ci) => <div key={ci} style={{ width: 28, height: 40, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
                 }
@@ -1480,11 +1480,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
-        {!allBots && (
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-            {debugOpen ? '🙈' : '🔍'} Cheat Mode
-          </button>
-        )}
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+          {debugOpen ? '🙈' : '🔍'} Cheat Mode
+        </button>
       </div>
 
       {/* Loki */}
