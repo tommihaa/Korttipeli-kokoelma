@@ -176,6 +176,7 @@ function initSlots(count) {
 export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
+  const [nP, setNP] = useState(playerCount);
   const [handoff,     setHandoff] = useState(null); // null | { name }
   const [soundOn,     setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
@@ -347,6 +348,14 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     } else if (hints) {
       addLog(M.yourTurnSuit(`lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`));
     }
+  }
+
+  function startBotBattle() {
+    aiLevelRef.current = 'supernatural';
+    onAiLevelChange?.('supernatural');
+    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    const slots = Array(4).fill(null).map((_, i) => ({ name: '', isHuman: false, active: true }));
+    startGame(slots);
   }
 
   // ── Ässärangaistus: muut nostavat kortin ────────────────────
@@ -784,8 +793,8 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
   // ── Select ──────────────────────────────────────────────────
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: isMobile ? '24px 16px' : 32, fontFamily: 'Georgia,serif', color: C.text }}>
-      <div style={{ textAlign: 'center', marginBottom: 32 }}>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif', color: C.text }}>
+      <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>7️⃣</div>
         <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>SEISKA</h1>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
@@ -796,43 +805,22 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         </div>
       </div>
 
-      <div style={{ width: '100%', maxWidth: 380, display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {/* Pelaajamäärä: Hero + botit */}
-        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 2, textAlign: 'center', opacity: 0.6 }}>PELAA SINÄ</div>
+      <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
         <div style={{ display: 'flex', gap: 10 }}>
-          {[4, 3, 2].map(n => (
-            <button key={n} onClick={() => {
-              const slots = Array(4).fill(null).map((_, i) => ({
-                name: i === 0 ? 'Hero' : '', isHuman: i === 0, active: i < n,
-              }));
-              startGame(slots);
-            }} style={{
-              flex: 1, padding: '14px 8px', borderRadius: 12, cursor: 'pointer',
-              background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.panelBorder}`,
-              color: C.text, fontFamily: 'Georgia,serif', fontSize: 15,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-            }}>
-              <span>{n}</span>
-              <span style={{ fontSize: 10, fontFamily: 'sans-serif', color: C.dim, opacity: 0.7 }}>pelaajaa</span>
-            </button>
+          {[2, 3, 4].map(n => (
+            <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
-
-        {/* Bottien Taistelu */}
-        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 2, textAlign: 'center', opacity: 0.6, marginTop: 8 }}>TAI KATSO</div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
         <button onClick={() => {
-          const slots = Array(4).fill(null).map((_, i) => ({
-            name: '', isHuman: false, active: true,
-          }));
+          const slots = Array(4).fill(null).map((_, i) => ({ name: i === 0 ? 'Hero' : '', isHuman: i === 0, active: i < nP }));
           startGame(slots);
-        }} style={{
-          width: '100%', padding: '16px 20px', borderRadius: 14, cursor: 'pointer',
-          background: 'rgba(138,92,230,0.12)', border: '1px solid rgba(138,92,230,0.4)',
-          color: '#c4a0ff', fontFamily: 'Georgia,serif', fontSize: 15,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-        }}>
-          <span>🔮 Bottien Taistelu</span>
-          <span style={{ fontSize: 11, fontFamily: 'sans-serif', opacity: 0.7 }}>4 bottia · yliluonnollinen taso</span>
+        }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          🔮 Bottien Taistelu
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
         </button>
       </div>
     </div>
@@ -1076,10 +1064,21 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       </div>
       )}
 
+      {/* Bottien taistelu -hallintapalkki */}
+      {allBots && (
+        <div style={{ background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', letterSpacing: 1 }}>🤖 KATSELUTILA</span>
+          <button onClick={togglePause} style={{ background: paused ? 'rgba(192,132,252,0.2)' : 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 12px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
+          <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = +e.target.value; setAiDelayMs(v); aiDelayRef.current = v; }} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE' }} />
+          <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c084fc' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+          <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 10px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>↺</button>
+        </div>
+      )}
+
       {/* Toiminnot */}
       <div style={{ minHeight: isMobile ? 36 : 52, display: 'flex', gap: 8, marginBottom: isMobile ? 4 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
-        {/* Katsomo-säätimet — näytetään botin vuorolla */}
-        {!isMyTurn && G.phase === 'play' && G.players.some(p => !p.isHuman) && (
+        {/* Katsomo-säätimet — näytetään botin vuorolla (ei allBots-tilassa, se on erillisessä palkissa) */}
+        {!isMyTurn && !allBots && G.phase === 'play' && G.players.some(p => !p.isHuman) && (
           <>
             <button onClick={togglePause} style={{
               fontSize: 12, padding: '5px 14px', borderRadius: 8, fontFamily: 'sans-serif',

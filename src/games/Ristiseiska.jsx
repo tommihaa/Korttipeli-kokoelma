@@ -181,7 +181,7 @@ function aiWorstCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
+export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -276,6 +276,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
   function startBotBattle() {
     aiLevelRef.current = 'supernatural';
+    onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setNP(4);
     startGame(4, true);
@@ -540,7 +541,17 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
   // ── Select ──────────────────────────────────────────────────
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, fontFamily: 'Georgia,serif' }}>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 48, marginBottom: 8, color: SUIT_COLOR['♣'] }}>♣</div>
+        <h1 style={{ fontSize: isMobile ? 24 : 52, letterSpacing: isMobile ? 3 : 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>RISTISEISKA</h1>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+      </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
         <div style={{ display: 'flex', gap: 10 }}>
@@ -591,7 +602,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const human       = G.players[0];
   const isGiving    = G.givingCardTo !== null && G.givingPlayerIdx === 0;
   const isBonusTurn = G.bonusTurn === 0;
-  const isMyTurn    = G.phase === 'play' && (G.activePlayer === 0 || isBonusTurn);
+  const isMyTurn    = G.phase === 'play' && (G.activePlayer === 0 || isBonusTurn) && !allBots;
   const iCanPlay    = (G.activePlayer === 0 || isBonusTurn) && hasAnyPlay(human.hand, G.rows);
   const iCanPass    = G.activePlayer === 0 && !isBonusTurn && !iCanPlay;
 
@@ -813,15 +824,17 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       </div>
 
       {/* AI-kädet — viuhka */}
-      {G.players.filter((_, i) => i !== 0).length > 0 && (
+      {G.players.filter((_, i) => allBots || i !== 0).length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: isMobile ? 4 : 8 }}>
-          {G.players.filter((_, i) => i !== 0).map(p => {
+          {G.players.filter((_, i) => allBots || i !== 0).map(p => {
             const isActive = G.activePlayer === p.id;
             const isDone   = G.finished.includes(p.id);
             const rank     = isDone ? G.finished.indexOf(p.id) + 1 : null;
             const count = p.hand.length;
             const cw = 20, ch = 30, ov = 10;
             const fanW = count > 0 ? cw + Math.max(0, count - 1) * ov : cw;
+            const canHighlight = allBots && isActive && G.phase === 'play' && !isDone;
+            const playableSet = canHighlight ? new Set(p.hand.filter(c => isPlayable(c, G.rows)).map(c => c.id)) : null;
             return (
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 70, flexShrink: 0 }}>
@@ -830,9 +843,14 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
                 </span>
                 {(debugOpen || allBots) ? (
                   <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                    {p.hand.map(c => {
+                    {sortHand(p.hand).map(c => {
                       const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
-                      return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} selected={isIntended} />;
+                      const isPlayable_ = playableSet?.has(c.id);
+                      return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]}
+                        selected={isIntended}
+                        highlight={!isIntended && !!isPlayable_}
+                        dim={!isIntended && playableSet !== null && !isPlayable_}
+                      />;
                     })}
                   </div>
                 ) : isDone ? null : count === 0 ? null : (
@@ -885,6 +903,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       </div>
 
 
+      {!allBots && (<>
       {/* Oma käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn || isGiving ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 14px', marginBottom: isMobile ? 6 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn || isGiving ? C.gold : C.dim, marginBottom: 8 }}>
@@ -911,6 +930,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
           })}
         </div>
       </div>
+      </>)}
 
       {/* Toiminnot */}
       <div style={{ minHeight: isMobile ? 36 : 52, display: 'flex', gap: 8, marginBottom: isMobile ? 6 : 10, alignItems: 'center', flexWrap: 'wrap' }}>

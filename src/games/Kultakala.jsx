@@ -152,7 +152,7 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true }) {
+export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange }) {
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
   const [soundOn, setSnd]     = useState(initSoundOn);
@@ -278,6 +278,8 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
 
   function startBotBattle() {
     allBotsRef.current = true; setAllBots(true);
+    aiLevelRef.current = 'supernatural';
+    onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     startGame(nP, true);
   }
@@ -625,7 +627,17 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
 
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, fontFamily: 'Georgia,serif' }}>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>🐟</div>
+        <h1 style={{ fontSize: isMobile ? 30 : 52, letterSpacing: isMobile ? 5 : 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KULTAKALA</h1>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+      </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
         <div style={{ display: 'flex', gap: 10 }}>
@@ -635,8 +647,11 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
-        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 14, padding: '12px 36px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>🤖 Bottien taistelu</button>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          🔮 Bottien Taistelu
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+        </button>
       </div>
     </div>
   );
@@ -668,7 +683,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
             <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '12px 32px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi katselutila</button>
             {pendingResult && <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>}
           </>) : (<>
-            <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
+            <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
             <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
           </>)}
         </div>

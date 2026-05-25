@@ -33,7 +33,7 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal' }) {
+export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
   const [soundOn, setSnd]   = useState(initSoundOn);
@@ -180,6 +180,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
   function startBotBattle() {
     aiLevelRef.current = 'supernatural';
+    onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setNP(4);
     startGame(4, true);
@@ -498,7 +499,17 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
 
   if (screen === 'select') return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, fontFamily: 'Georgia,serif' }}>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>👋</div>
+        <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>LÄPSY</h1>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+      </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
         <div style={{ display: 'flex', gap: 10 }}>
@@ -569,32 +580,51 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: isMobile ? 6 : 12, flexWrap: 'wrap' }}>
-        {piles.slice(1).map((pile, i) => {
-          const pi = i + 1;
-          return (
-            <div key={pi} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.04)', border: `1px solid ${curTurn === pi ? C.red + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px', textAlign: 'center', transition: 'border-color 0.2s' }}>
-              <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curTurn === pi ? C.red : C.dim, marginBottom: 5 }}>
-                🤖 {pName(pi)}{curTurn === pi ? ' ●' : ''}
+      {allBots
+        ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: isMobile ? 6 : 12 }}>
+            {piles.map((pile, pi) => (
+              <div key={pi} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.04)', border: `1px solid ${curTurn === pi ? C.red + '55' : C.panelBorder}`, borderRadius: 8, padding: '4px 8px', transition: 'border-color 0.2s' }}>
+                <span style={{ minWidth: 64, flexShrink: 0, fontFamily: 'sans-serif', fontSize: 11, color: curTurn === pi ? C.red : C.dim }}>
+                  🤖 {pName(pi).slice(0, 8)}{curTurn === pi ? ' ●' : ''}
+                </span>
+                <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1 }}>
+                  {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
+                  {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center', flexShrink: 0 }}>+{pile.length - 6}</span>}
+                </div>
               </div>
-              <div style={{ margin: '0 auto' }}>
-                {(debugOpen || allBots)
-                  ? <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
-                      {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
-                      {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center' }}>+{pile.length - 6}</span>}
-                    </div>
-                  : <FanStack
-                      count={pile.length}
-                      w={44} h={60}
-                      backStyle={BACKS[cardBack]}
-                      borderColor={curTurn === pi ? C.red + '88' : undefined}
-                    />}
-              </div>
-              <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, marginTop: 5 }}>{pile.length} {pile.length === 1 ? 'kortti' : 'korttia'}</div>
-            </div>
-          );
-        })}
-      </div>
+            ))}
+          </div>
+        )
+        : (
+          <div style={{ display: 'flex', gap: 8, marginBottom: isMobile ? 6 : 12, flexWrap: 'wrap' }}>
+            {piles.slice(1).map((pile, i) => {
+              const pi = i + 1;
+              return (
+                <div key={pi} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.04)', border: `1px solid ${curTurn === pi ? C.red + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px', textAlign: 'center', transition: 'border-color 0.2s' }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curTurn === pi ? C.red : C.dim, marginBottom: 5 }}>
+                    🤖 {pName(pi)}{curTurn === pi ? ' ●' : ''}
+                  </div>
+                  <div style={{ margin: '0 auto' }}>
+                    {debugOpen
+                      ? <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+                          {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
+                          {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center' }}>+{pile.length - 6}</span>}
+                        </div>
+                      : <FanStack
+                          count={pile.length}
+                          w={44} h={60}
+                          backStyle={BACKS[cardBack]}
+                          borderColor={curTurn === pi ? C.red + '88' : undefined}
+                        />}
+                  </div>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, marginTop: 5 }}>{pile.length} {pile.length === 1 ? 'kortti' : 'korttia'}</div>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
 
       <div style={{ height: isMobile ? 28 : 36, marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
         {bestMs !== null && (

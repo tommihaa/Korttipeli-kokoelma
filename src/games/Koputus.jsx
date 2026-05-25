@@ -106,7 +106,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
@@ -257,6 +257,9 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   }
 
   function startBotBattle() {
+    aiLevelRef.current = 'supernatural';
+    onAiLevelChange?.('supernatural');
+    aiDelayRef.current = 2000; setAiDelayMs(2000);
     startGame(nP, true);
   }
 
@@ -639,7 +642,17 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
 
   if (screen === 'select') return (
-    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, fontFamily: 'Georgia,serif' }}>
+    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>🤜</div>
+        <h1 style={{ fontSize: isMobile ? 36 : 54, letterSpacing: isMobile ? 8 : 14, margin: 0, background: 'linear-gradient(135deg,#e8c96a,#c9a84c,#a07830)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KOPUTUS</h1>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
+          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
+          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
+          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
+          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
+        </div>
+      </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
         <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
         <div style={{ display: 'flex', gap: 10 }}>
@@ -650,7 +663,10 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita peli →</button>
-        <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(123,47,190,0.5)', borderRadius: 14, padding: '12px 32px', color: '#c084fc', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>🤖 Bottien taistelu</button>
+        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          🔮 Bottien Taistelu
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+        </button>
       </div>
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
     </div>
@@ -693,7 +709,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   if (!G) return null;
 
   const human = G.players[0];
-  const ais = G.players.slice(1);
+  const ais = allBots ? G.players : G.players.slice(1);
   const discardTop = G.discard[G.discard.length - 1];
   const isHuman = curIdx === 0 && !allBots;
 
@@ -731,25 +747,50 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         </div>
       )}
       {ais.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 10, flexWrap: isMobile ? 'nowrap' : 'wrap', marginBottom: isMobile ? 6 : 12 }}>
-          {ais.map((ai, i) => {
-            const pi = i + 1;
-            return (
-              <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: 110 }}>
-                <PlayerGrid player={ai} isActive={curIdx === pi} small={true} backStyle={BACKS[cardBack]}
-                  phase={phase} debug={debugOpen || allBots} showKnown={showAIKnown}
-                  lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
-                  clickableSet={tgtClickable(pi)}
-                  intentSlot={intention?.playerIdx === pi ? intention.slotIdx : undefined}
-                  onCardClick={ci => {
-                    if (phase === 'spec_q_tgt') handleQTarget(pi, ci);
-                    else if (phase === 'spec_k_decide') handleKPeekTarget(pi, ci);
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
+        allBots
+          ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: isMobile ? 6 : 12 }}>
+              {ais.map((ai) => {
+                const pi = ai.id;
+                return (
+                  <div key={ai.id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.03)', border: `1px solid ${curIdx === pi ? C.gold + '55' : C.panelBorder}`, borderRadius: 8, padding: '4px 8px' }}>
+                    <span style={{ minWidth: 64, flexShrink: 0, fontFamily: 'sans-serif', fontSize: 11, color: curIdx === pi ? C.gold : C.dim }}>
+                      🤖 {ai.name.slice(0, 8)}{curIdx === pi ? ' ●' : ''}
+                    </span>
+                    <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1 }}>
+                      {ai.cards.map((c, ci) =>
+                        c
+                          ? <Card key={ci} card={c} small backStyle={BACKS[cardBack]}
+                              selected={intention?.playerIdx === pi && intention.slotIdx === ci} />
+                          : <div key={ci} style={{ width: isMobile ? 30 : 36, height: isMobile ? 43 : 52, borderRadius: 5, border: '1px dashed rgba(255,255,255,0.1)', opacity: 0.3, flexShrink: 0 }} />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )
+          : (
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 10, flexWrap: isMobile ? 'nowrap' : 'wrap', marginBottom: isMobile ? 6 : 12 }}>
+              {ais.map((ai) => {
+                const pi = ai.id;
+                return (
+                  <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: 110 }}>
+                    <PlayerGrid player={ai} isActive={curIdx === pi} small={true} backStyle={BACKS[cardBack]}
+                      phase={phase} debug={debugOpen} showKnown={showAIKnown}
+                      lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
+                      clickableSet={tgtClickable(pi)}
+                      intentSlot={intention?.playerIdx === pi ? intention.slotIdx : undefined}
+                      onCardClick={ci => {
+                        if (phase === 'spec_q_tgt') handleQTarget(pi, ci);
+                        else if (phase === 'spec_k_decide') handleKPeekTarget(pi, ci);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )
       )}
 
       {/* Pakka-alue */}
@@ -799,11 +840,13 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       </div>
       ); })()}
 
+      {!allBots && (
       <div style={{ marginBottom: isMobile ? 6 : 12 }}>
         <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={debugOpen || allBots} backStyle={BACKS[cardBack]}
           clickableSet={ownClickable()} onCardClick={onOwnCard} peekSet={tempPeek}
           lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} small={isMobile} />
       </div>
+      )}
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: drawn && showDrawn ? 'rgba(255,255,255,0.022)' : 'transparent', border: `1px solid ${drawn && showDrawn ? '#2a4a32' : 'transparent'}`, borderRadius: 10, marginBottom: isMobile ? 4 : 12, minHeight: isMobile ? 36 : 50, transition: 'background 0.2s' }}>
         {drawn && showDrawn
