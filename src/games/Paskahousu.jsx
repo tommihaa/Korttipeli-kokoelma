@@ -313,7 +313,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     if (G.draw.length === 0 && activeCount === 2) {
       suddenDeathStarted.current = true;
       setTimerLeft(150);
-      addLog('⏱ Pakka tyhjä — <b>Yhtäkkinen kuolema!</b> 2:30 laskuri käy. Eniten kortteja voittaa!');
+      addLog('⏱ Pakka tyhjä — <b>Yhtäkkinen kuolema!</b> 2:30 laskuri käy. Vähemmän kortteja voittaa!');
       const id = setInterval(() => {
         if (gRef.current?.phase === 'gameover') { clearInterval(id); setTimerLeft(null); return; }
         setTimerLeft(prev => {
@@ -378,11 +378,11 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     if (!g || g.phase === 'gameover') return;
     const active = g.players.filter((_, i) => !g.finished.includes(i));
     if (active.length < 2) return;
-    // Voittaa se jolla eniten kortteja
-    const sorted  = [...active].sort((a, b) => b.hand.length - a.hand.length);
+    // Voittaa se jolla vähemmän kortteja
+    const sorted  = [...active].sort((a, b) => a.hand.length - b.hand.length);
     const winner  = sorted[0];
     const loser   = sorted[sorted.length - 1];
-    addLog(`⏱ Aika loppui! <b>${winner.name}</b> voittaa (${winner.hand.length}k &gt; ${loser.hand.length}k).`);
+    addLog(`⏱ Aika loppui! <b>${winner.name}</b> voittaa (${winner.hand.length}k &lt; ${loser.hand.length}k).`);
     if (sndRef.current) SFX.capture();
     const newFinished = [...g.finished, winner.id, loser.id];
     const ranking = newFinished.map((idx, pos) => ({
@@ -1156,7 +1156,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
             {String(Math.floor(timerLeft / 60)).padStart(2, '0')}:{String(timerLeft % 60).padStart(2, '0')}
           </span>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: timerLeft <= 30 ? '#ff9977' : '#bb88ff' }}>
-            Yhtäkkinen kuolema — eniten kortteja voittaa!
+            Yhtäkkinen kuolema — vähemmän kortteja voittaa!
           </span>
         </div>
       )}
