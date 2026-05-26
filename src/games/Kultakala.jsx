@@ -695,7 +695,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   if (!G) return null;
 
   const human = G.players[0];
-  const ais = G.players.slice(1);
+  const ais = allBots ? G.players : G.players.slice(1);
   const discardTop = G.discard[G.discard.length - 1];
   const canDraw = curIdx === 0 && phase === 'drawing';
   const canSwapRow = curIdx === 0 && (phase === 'holding' || phase === 'swapping');
@@ -724,7 +724,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         isMobile ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 6 }}>
             {ais.map((p, i) => {
-              const pi = i + 1, isActive = curIdx === pi;
+              const pi = allBots ? i : i + 1, isActive = curIdx === pi;
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 5, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '5px 8px' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: isActive ? C.gold : C.dim, minWidth: 54, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
@@ -744,7 +744,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
             <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65, marginBottom: 2 }}>KENTTÄ</div>
             {ais.map((p, i) => {
-              const pi = i + 1, isActive = curIdx === pi;
+              const pi = allBots ? i : i + 1, isActive = curIdx === pi;
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
@@ -818,8 +818,8 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         )}
       </div>
 
-      {/* Pelaaja 0 (ihminen tai botti katselutilassa) */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10 }}>
+      {/* Pelaaja 0 (ihminen — piilotettu allBots-tilassa, koska näkyy ais-listassa) */}
+      {!allBots && <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'sans-serif', fontSize: 12, color: curIdx === 0 ? C.gold : C.dim, marginBottom: 8 }}>
           <span>{allBots ? '🤖' : '👤'} {human.name} {curIdx === 0 ? '●' : ''}</span>
           {!isMobile && <span style={{ fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>KENTTÄ</span>}
@@ -843,7 +843,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
             );
           })}
         </div>
-      </div>
+      </div>}
 
       {/* Toimintopainikkeet — piilotettu katselutilassa */}
       {!allBots && (
