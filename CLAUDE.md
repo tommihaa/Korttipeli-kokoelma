@@ -34,7 +34,8 @@ Huom: `playerCount` välitetään propina, pelit eivät vielä kaikki hyödynnä
 At the start of every session run `npm run dev` in the background so the dev server is available at http://localhost:5173/ for preview verification during development.
 
 ## Deploy
-Production deploy: `npm run build && npx vercel --prod`
+Production deploy: `npm run deploy`  (= `vercel build --prod && vercel deploy --prebuilt --prod`)
+One-time setup per machine: `npx vercel pull --yes --environment production`
 Live URL: https://tommi-jako52.vercel.app
 
 ## Games & Terminology
