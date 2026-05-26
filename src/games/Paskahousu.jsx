@@ -347,7 +347,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     won:          (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
     loser:        (isH, name) => `${isH ? 'Sinä jäit' : `${name} jäi`} Paskahousuksi.`,
     swept:        (isH, name, count) => `${isH ? 'Sinä kaadat' : `${name} kaataa`} ${count} kortin kasan! Jatkaa.`,
-    yourTurn:     'On vuorosi.',
+    turnOf:       name => `Vuorossa ${name}.`,
     yourTurnCont: 'Sinä jatkat vuoroasi.',
     emptyPenalty: (card, nextName) => `${card} tyhjälle — ${nextName} nostaa ja menettää vuoronsa!`,
     emptyPenalty2:(card, nextName) => `${card} tyhjälle — ${nextName} menettää vuoronsa!`,
@@ -419,6 +419,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     aiLevelRef.current = 'supernatural';
     onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setDebug(true);
     setNP(4);
     startGame(4, true);
   }
@@ -456,7 +457,12 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     const filled = fillHand(p.hand, draw);
     p.hand = filled.hand;
     const newlyDrawn = filled.drawn;
-    if (g.draw.length > 0 && draw.length === 0) setPakaAnim(true); // pakka ehtyi
+    if (g.draw.length > 0 && draw.length === 0) {
+      setPakaAnim(true); // pakka on tyhjä
+      const activeNow = g.players.length - g.finished.length;
+      if (!(aiLevelRef.current === 'supernatural' && activeNow === 2))
+        addLog('📦 Pakka on tyhjä — peli jatkuu käsikortein.');
+    }
 
     let finished = [...g.finished];
     if (p.hand.length === 0 && !finished.includes(pidx)) {
@@ -537,7 +543,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
       schedAI(() => runAI(gRef.current), 1400);
-    else addLog(M.yourTurn);
+    else addLog(M.turnOf('Hero'));
   }
 
   // ── applyKnock ────────────────────────────────────────────────────────────
@@ -559,7 +565,12 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       tm(() => setJP(new Set()), 2000);
 
       p.hand = fillHand(p.hand, draw).hand;
-      if (draw.length === 0) setPakaAnim(true); // pakka ehtyi
+      if (draw.length === 0) {
+        setPakaAnim(true); // pakka on tyhjä
+        const activeNow = g.players.length - g.finished.length;
+        if (!(aiLevelRef.current === 'supernatural' && activeNow === 2))
+          addLog('📦 Pakka on tyhjä — peli jatkuu käsikortein.');
+      }
 
       let finished = [...g.finished];
       if (p.hand.length === 0 && !finished.includes(pidx)) {
@@ -612,7 +623,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       setGS(g2);
       if (players[advTurn] && !players[advTurn].isHuman)
         schedAI(() => runAI(gRef.current), 1400);
-      else addLog(M.yourTurn);
+      else addLog(M.turnOf('Hero'));
     } else {
       addLog(M.blindBad(isH, p.name, lblColored(knocked)));
       triggerKasaAnim('take');
@@ -622,7 +633,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       setGS(g2);
       if (players[advTurn] && !players[advTurn].isHuman)
         schedAI(() => runAI(gRef.current), 1400);
-      else addLog(M.yourTurn);
+      else addLog(M.turnOf('Hero'));
     }
   }
 
@@ -639,7 +650,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else addLog(M.yourTurn);
+    else addLog(M.turnOf('Hero'));
   }
 
   // ── applySkip ─────────────────────────────────────────────────────────────
@@ -671,7 +682,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (nextP !== -1) {
       if (!players[nextP]?.isHuman) aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-      else addLog(M.yourTurn);
+      else addLog(M.turnOf('Hero'));
     }
   }
 
@@ -697,7 +708,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2); setSel([]);
     if (advTurn !== -1 && !g.players[advTurn]?.isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else if (advTurn !== -1) addLog(M.yourTurn);
+    else if (advTurn !== -1) addLog(M.turnOf('Hero'));
   }
 
   function applySwap(g, swapCards) {
@@ -735,7 +746,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else addLog(M.yourTurn);
+    else addLog(M.turnOf('Hero'));
   }
 
   function doAISwap(g, pidx) {
@@ -770,6 +781,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     if (g.skipNext === turn) { applySkip(gRef.current, turn); return; }
 
+    addLog(M.turnOf(p.name));
     const activePlayers = g.players.length - g.finished.length;
     let cards = aiCards(p.hand, top, g.pile, draw.length, aiLevelRef.current, g.allCards, g.clearedCards, activePlayers);
     if (cards) {
@@ -798,7 +810,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     setGS(g2);
     if (nextP !== -1 && !players[nextP]?.isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
-    else addLog(M.yourTurn);
+    else addLog(M.turnOf('Hero'));
   }
 
   // ── Ihmispelaajan kortinvalinta ───────────────────────────────────────────
@@ -940,7 +952,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
                   {willSkip && <span style={{ color: C.red, marginLeft: 4 }}>⚠</span>}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
-                {(debugOpen || allBots) ? (
+                {debugOpen ? (
                   <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     {sortHand(p.hand).map(c => {
                       const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);

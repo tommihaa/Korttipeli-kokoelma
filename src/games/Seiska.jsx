@@ -114,6 +114,15 @@ function aiBestPlay(hand, discardTop, reqSuit, opponents = []) {
     const directMatchOutsidePair = validSingles(hand, discardTop, reqSuit)
       .filter(c => c.r !== '7' && c.s === (reqSuit || discardTop.s) && !bestMulti.find(b => b.id === c.id));
     if (!directMatchOutsidePair.length) return bestMulti; // parin oma kortti on ainoa match — pelaa pari
+    // Maanvaihto: jos ryhmälyönti vaihtaa maan sellaiseksi jota on enemmän kädessä → pelaa ryhmä
+    const effectiveSuit = bestMulti[bestMulti.length - 1].s;
+    const currentSuit   = reqSuit || discardTop.s;
+    if (effectiveSuit !== currentSuit) {
+      const remaining    = hand.filter(c => !bestMulti.find(b => b.id === c.id));
+      const newSuitCount = remaining.filter(c => c.s === effectiveSuit).length;
+      const curSuitCount = remaining.filter(c => c.s === currentSuit).length;
+      if (newSuitCount > curSuitCount) return bestMulti; // maanvaihto hyödyllinen — pelaa pari
+    }
     // muuten: saman maan kortti löytyy muualta — säästä pari, pelaa yksittäinen
   }
 
@@ -284,6 +293,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
   const M = {
     gameStart:    card => `Seiska alkaa! Päällimmäinen: ${card}.`,
+    turnOf:       name => `Vuorossa ${name}.`,
     yourTurnSuit: cl => `Sinun vuorosi — ${cl}`,
     aceDrawn:     (isH, name, card) => `${isH ? 'Sinä nostat' : `${name} nostaa`} ässärangaistuksena ${card}.`,
     forgotLappu:  (name, count) => `${name} unohti sanoa Lappu — +${count} korttia sakkona!`,
@@ -294,6 +304,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     chooseSuit:   'Valitse vaadittu maa seiskan jälkeen.',
     lappu:        name => `${name}: Lappu!`,
     aceBonus:     (isH, name, suit) => `Ässä! ${isH ? 'Sinä voit' : `${name} voi`} jatkaa ${coloredSuit(suit)}-maalla.`,
+    reshuffle:    'Pakka loppui. Lyöntipakka juuri sekoitettiin uudeksi Pakaksi.',
     deckEmpty:    'Pakka tyhjä — vuoro päättyy.',
     aiDraws:      (name, card) => card ? `${name} nostaa ${card}.` : `${name} nostaa.`,
     aiDrawFail:   (name, card) => card ? `${name}: ${card} ei käy.` : `${name}: Nosto ei auta.`,
@@ -343,10 +354,13 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const multiHuman = g.players.filter(p => p.isHuman).length >= 2;
     if (!firstPlayer.isHuman) {
       aiTmr.current = aiTm(() => runAI(g), 3100);
-    } else if (multiHuman) {
-      setHandoff({ name: firstPlayer.name });
-    } else if (hints) {
-      addLog(M.yourTurnSuit(`lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`));
+    } else {
+      addLog(M.turnOf(firstPlayer.name));
+      if (multiHuman) {
+        setHandoff({ name: firstPlayer.name });
+      } else if (hints) {
+        addLog(M.yourTurnSuit(`lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`));
+      }
     }
   }
 
@@ -354,6 +368,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     aiLevelRef.current = 'supernatural';
     onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setDebug(true);
     const slots = Array(4).fill(null).map((_, i) => ({ name: '', isHuman: false, active: true }));
     startGame(slots);
   }
@@ -403,13 +418,16 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const multiHuman = g3.players.filter(p => p.isHuman).length >= 2;
     if (!nextPlayer.isHuman) {
       aiTmr.current = aiTm(() => runAI(g3), aiDelayRef.current + Math.random() * 400);
-    } else if (multiHuman) {
-      setHandoff({ name: nextPlayer.name });
-    } else if (hints) {
-      const cl = g3.reqSuit
-        ? `Vaadittu maa: ${coloredSuit(g3.reqSuit)} — lyö ${coloredSuit(g3.reqSuit)}-maa tai nosta.`
-        : `Lyö ${coloredSuit(g3.discardTop.s)}-maa tai ${g3.discardTop.r}-arvo tai nosta.`;
-      addLog(M.yourTurnSuit(cl));
+    } else {
+      addLog(M.turnOf(nextPlayer.name));
+      if (multiHuman) {
+        setHandoff({ name: nextPlayer.name });
+      } else if (hints) {
+        const cl = g3.reqSuit
+          ? `Vaadittu maa: ${coloredSuit(g3.reqSuit)} — lyö ${coloredSuit(g3.reqSuit)}-maa tai nosta.`
+          : `Lyö ${coloredSuit(g3.discardTop.s)}-maa tai ${g3.discardTop.r}-arvo tai nosta.`;
+        addLog(M.yourTurnSuit(cl));
+      }
     }
   }
 
@@ -538,6 +556,10 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   // ── Nosto ───────────────────────────────────────────────────
   function doDraw(g, playerIdx) {
     let g2 = reshuffleIfNeeded(g);
+    if (g2.reshuffleCount !== (g.reshuffleCount || 0)) {
+      addLog(M.reshuffle);
+      if (sndRef.current) SFX.swap();
+    }
     if (!g2.deck.length) {
       addLog(M.deckEmpty);
       advanceTurn(g2, playerIdx);
@@ -640,6 +662,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       return;
     }
 
+    addLog(M.turnOf(p.name));
     const opponents = players.filter((pl, i) => i !== activePlayer && !g.finished.includes(i));
     const bestPlay = aiBestPlay(p.hand, discardTop, reqSuit, opponents);
 
@@ -907,7 +930,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
                   {hasLappu && <span style={{ color: C.red, marginLeft: 4 }}>LAPPU</span>}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
-                {(debugOpen || allBots) ? (
+                {debugOpen ? (
                   <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
                     {p.hand.map(c => {
                       const isIntended = intention?.playerIdx === p.id

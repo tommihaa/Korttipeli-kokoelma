@@ -2,91 +2,150 @@
 
 ## Pelitapa
 
-Kaikki kortit jaetaan mahdollisimman tasan pelaajille. **Pienimmän kortin haltija aloittaa** — punaiset kakkoset (♥2, ♦2) ovat pienimmät kortit pelissä.
+Jokaiselle jaetaan 6 käsikorttia. Loput muodostavat nostopakan.
 
-Tavoite: pääste kortit käsistä ensimmäisenä. Viimeinen pelaaja jolla on kortit on **Paskahousu**.
+Tavoite: pääse eroon käsikorteista — viimeinen on **Paskahousu**.
 
-## Korttijärjestys (heikoin → vahvin)
+## Korttiarvot
 
-```
-2(pun.) — 3 — 4 — 5 — 6 — 7 *(pakottaa kuvalle)* — 8 — 9 — 10 *(pakottaa pienille)* — J — Q — K — A — 2(must.)
-```
-
-- **Punaiset kakkoset (♥2, ♦2)** = 2 (pienimmät kortit)
-- **Numerokortit** = 3–10
-- **Kuvakortit** = J (11), Q (12), K (13)
-- **Ässä** = 14
-- **Mustat kakkoset (♠2, ♣2)** = 15 (suurimmät kortit, "kova kortti")
+| Kortti | Arvo | Huomio |
+|---|---|---|
+| ♥2 / ♦2 | 2 | Pienin — käy vain tyhjälle pöydälle |
+| 3 | 3 | — |
+| 4–9 | 4–9 | Normaali alue |
+| 10 | — | **Kaataja** (arvo ≤ 9 päällä) tai rangaistus tyhjälle |
+| J | 11 | Kuvakortti — ei alle seiskan (7) päälle |
+| Q | 12 | Kuvakortti — ei alle seiskan (7) päälle |
+| K | 13 | Kuvakortti — ei alle seiskan (7) päälle |
+| A | — | **Kaataja** (kuvakortin päälle) tai rangaistus tyhjälle |
+| ♠2 / ♣2 | 15 | Suurin — vain toinen musta kakkonen päälle |
 
 ## Vuoron kulku
 
-1. Aloittaja lyö (aloitukseen käy mikä tahansa kortti)
-2. Jokainen pelaaja vuorollaan lyö **yhtä vahva tai vahvempi** kortti
-3. Voit lyödä **useamman saman arvoisen** kortin **yhdellä kertaa** (esim. kaksi kolmosta)
-4. Jos et voi lyödä → **kokeile lyömällä pakasta kortti**
-5. Jos se ei käy, niin nosta kasa
+1. Pelaaja jolla on **pienin kortti** aloittaa
+2. Lyö yksi tai useampi **samanarvoinen** kortti kasaan
+3. Kortin arvo pitää olla **yhtä suuri tai suurempi** kuin päällimmäinen
+4. **Kuvakorttia** ei saa lyödä alle 7 olevan kortin päälle
+5. Tyhjälle pöydälle käyvät kaikki kortit (paitsi 10 ja A → rangaistus)
+6. Jos ei voi pelata → **nosta pakasta** (sokkona) tai **nosta kasa** käteen
+7. Pelattuaan pelaaja täydentää kätensä 6 kortiksi nostopakasta
 
-## Erityiskortit ja säännöt
+## Sokkopakasta nosto
 
-### Mustat kakkoset (♠2, ♣2) — "Kova kortti"
-- **Lyö minkä tahansa kortin päälle** (arvo ≥ mikä tahansa)
-- **Tyhjälle pöydälle lyödessä** → seuraavan pelaajan on **nostettava se käteensä, jos ei ole toista kovaa kakkosta** ja vuoro siirtyy (ei passausta!)
+- Nosta pakan päällimmäinen kortti paljastamatta ensin
+- Jos kortti käy kasaan → **lyödään kasaan** (voi kaataa kasan!)
+- Jos ei käy → **otetaan koko kasa käteen** (rangaistus)
 
-### Seiska (7)
-- Seiskan jälkeen on lyötävä **kuvakortti (J, Q tai K)**
-- **Kutosen tai alle kortin päälle kuvia ei voi lyödä**
+## Kaato (kasan tyhjennys)
 
-### Kymppi (10)
-- Kymppi on kaatokortti, joka kaataa kasan, jonka päällimmäinen 2-9
+Kasa tyhjennetään pelistä ja kaataja jatkaa:
 
-### Ässä (A)
-- Ässä on kaatokortti, joka kaataa kasan, jossa päällimmäinen J,Q tai K
+| Tilanne | Ehto |
+|---|---|
+| **10** kaataa | Päällimmäinen arvo ≤ 9 (3–9 tai ♥/♦2) |
+| **A** kaataa | Päällimmäinen on kuvakortti (J/Q/K) |
+| **4 samaa** | Neljä samanarvoista päällä (myös eri vuoroilta kertyneinä) |
 
-### Neljä samaa
-- Kun kasaan tulee **neljäs saman arvoinen kortti** (eri vuoroilla tai yhdellä kertaa) → **kasa kaatuu pelistä pois**
-- **Sama pelaaja aloittaa uuden** kierroksen
+Kaataja saa jatkaa (uusi vuoro). Kasa menee sivuun — ei sekoiteta nostopakkaan.
+
+## Rangaistuskortti tyhjälle pöydälle
+
+- 10 tai A tyhjälle pöydälle → **seuraava pelaaja nostaa kortin ja menettää vuoronsa**
+
+## Vaihto-mahdollisuus
+
+Kun pelaaja täydentää kätensä nostopakasta ja nostaa **paremman kortin kuin pelasi**:
+
+- 3 sekuntia aikaa vaihtaa: lyöty kortti takaisin käteen, uusi kortti kasaan
+- Ehto: nostettu kortti käy kasaan ja on **arvo pienempi** tai erityiskortti (musta 2, tai kaataa kasan)
+- Vaihto voi myös kaataa kasan — silloin kaataja jatkaa
+- AI tekee vaihdon aina kun se on edullinen
+
+## Pakka tyhjä
+
+Kun nostopakka loppuu:
+- Viesti lokissa: `📦 Pakka on tyhjä — peli jatkuu käsikortein.`
+- Kortteja ei enää täydennetä käteen
+- Kasattuja kortteja ei sekoiteta uudelleen (kaadettua kasaa ei palauteta)
 
 ## Pelin loppu
 
-1. Pelaajat pelaa kunnes heiltä loppuvat kortit
-2. **Ensimmäinen joka tyhjentää kätensä voittaa**
-3. Seuraavat sijoituksista (toinen, kolmas jne.)
-4. **Viimeinen pelaaja jolla on kortit on Paskahousu** — häviää
+- Ensimmäinen joka tyhjentää kätensä voittaa
+- Sijoitukset määräytyvät poistumisajankohdan mukaan
+- Viimeinen jäljelle jäänyt on **Paskahousu**
 
 ## Pelaajien näkyvyys
 
-- Jokainen pelaaja näkee **oman kätensä** koko ajan
-- Pöydän ylin kortti on **näkyvä kaikille**
-- Muiden pelaajien kädet ovat **piilossa** (kortiluku näkyvä)
-- Roskissa olevien korttien määrä on **näkyvä** (ei sisältö)
+- Jokainen näkee **oman kätensä** koko ajan
+- Kasan **päällimmäinen kortti** on kaikkien nähtävissä
+- Muiden kortit ovat **piilossa** (kortiluku näkyy; Cheat Mode paljastaa)
+- Nostopakan koko on **näkyvissä**
+
+## Tapahtumaloki
+
+- **Vuorossa [Pelaaja].** — jokaisen uuden vuoron alussa
+- **📦 Pakka on tyhjä — peli jatkuu käsikortein.** — nostopakka loppui
+- **⏱ Pakka tyhjä — Yhtäkkinen kuolema! 2:30 laskuri käy.** — supernatural + 2 pelaajaa
+
+## Yhtäkkinen kuolema (Sudden Death)
+
+**Ehto**: yliluonnollinen tekoäly + tasan 2 aktiivista pelaajaa + pakka tyhjä
+
+- 2:30 (150 s) laskuri käynnistyy
+- Ajan loputtua: **vähemmän kortteja kädessä voittaa**
+- Laskuri näytetään punaisena alle 30 s:n kohdalla
 
 ## AI-strategia
 
-### AI:n pelaamisen prioriteetti
+### Tasot
 
-1. **Vältä nostamista, joten käytä 10 ja A kaatoihin**
-2. **Käytä normaaleja kortteja** (3–9, ennen 7:ää)
-3. **Kova kortti (2) vain välttämättä** — säästä lopusta
+| Taso | Kuvaus |
+|---|---|
+| `beginner` | Pelaa 10/A turhaan, pelaa yhden kerralla vaikka useampi kävisi |
+| `normal` | Pelaa pienimmät kortit, ryhmittää samanarvoiset, säästää 10/A |
+| `hard` | Proaktiivinen 10/A-kaato kasan rakenteen perusteella |
+| `supernatural` | Täysi strategia + täydellinen informaatio loppupelissä |
 
-### AI:n kovan kortin (2) logiikka
-- Älä hukkaa kovaa korttia turhan aikaisesti
+### Normaali peli (pakka ei tyhjä)
 
-### AI:n tyhjälle pöydälle aloitus
-- Aloita pienellä (2–6) — säästä vahvempia
-- Kova kortti vain jos pakko
+1. **Pelaa pienin arvo** (säästää korkeat kortit)
+2. **Pelaa kaikki samanarvoiset yhdellä kertaa** (ryhmälyönti)
+3. **Säästä 10 ja A** — käytä vain jos ei muuta vaihtoehtoa
+4. 10 ja A pelataan yksi kerrallaan (yksikin tyhjentää kasan)
 
-## Pakkakoko ja kierrosten määrä
+### Proaktiivinen kaato (hard + supernatural)
 
-- **4 pelaajaa**: 13 korttia per pelaaja = noin 10–15 kierrosta
-- **3 pelaajaa**: ~17 korttia per pelaaja = noin 15–20 kierrosta
-- Riippuu siitä kuinka nopeasti pelaajat tyhjentävät
+Jos kasassa ≥ 3 eri arvoa, arvioidaan käden rakenne:
+
+- **10-kaato**: lyödään kun top ≤ 9 ja kädessä on pieniä + kuvakortteja
+- **A-kaato**: lyödään kun top on kuvakortti ja kädessä on pieniä
+- Supernatural: vaatii ≥ 1 pienen kortin kädessä; hard: vaatii ≥ 2
+
+### Endgame-strategia (pakka tyhjä)
+
+**Prioriteettijärjestys**:
+
+1. **Punainen 2** (♥2/♦2, arvo 2) tyhjälle pöydälle — muuten jumissa
+2. **Täydennä nelonen** (4 samaa) → välitön kaato
+3. **Kuvakortti** (J < Q < K) — pelaa pienin ensin, suurempi joustavampi myöhemmin
+4. **Normaali kortti** — pienin arvo ensin
+5. **Säästettävät** (9, 10, A, ♠2/♣2) — pelaa vain kun muuta ei ole
+   - Järjestys: 9 ensin → 10/A → musta kakkonen viimeiseksi
+
+### Täydellinen informaatio (supernatural)
+
+**Ehto**: yliluonnollinen + 2 aktiivista pelaajaa + pakka tyhjä
+
+- Vastustajan käsi lasketaan:
+  `kaikki 52 korttia − oma käsi − kasa − poistetut kortit`
+- **Prioriteetti 1**: pelaa kortti jota vastustaja ei voi lyödä → pakottaa nostamaan kasan
+- **Prioriteetti 2**: kaikki kortit lyötävissä → pelaa se joka vaatii vastustajalta korkeimman kortin
 
 ## Pelin luonne
 
-Paskahousu on **loukkaava ja taktiikkapeli** jossa:
-- **Yksinkertaiset säännöt** mutta **taktinen syvyys**
-- **Kova kortti (2)** ja **kaato kortit (10, A)** sekä kynnyskortti 7 luovat **psykologista painetta**
-- **Neljän samaa kaatava -sääntö** lisää **dramaattisuutta**
-- **Viimeinen pelaaja (Paskahousu)** — häviäjä on selkeä
-
-Peli yhdistää **nopean reaktion, strategian ja muistin** — oikea kortti oikealla hetkellä ratkaisee.
+Paskahousu on **laituripeli** jossa:
+- Yksinkertaiset säännöt mutta kasan rakenteen analysointi tärkeää
+- 10/A ovat taktisia aseita — oikea hetki ratkaisee
+- Neljän samanarvoisen kerääminen tuo dramaattisen kaaton
+- Vaihto-mekanismi palkitsee onnellisen noston
+- Loppupelissä (pakka tyhjä) strategia muuttuu täysin: punainen 2 on vaarallinen, kova kakkonen vahvin

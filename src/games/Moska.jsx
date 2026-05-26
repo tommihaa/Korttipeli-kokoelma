@@ -416,6 +416,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     aiLevelRef.current = 'supernatural';
     onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setDebug(true);
     startGame(nP, true);
   }
 

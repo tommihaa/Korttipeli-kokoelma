@@ -399,6 +399,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     aiLevelRef.current = 'supernatural';
     onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setDebug(true);
     startGame(nP, true);
   }
 

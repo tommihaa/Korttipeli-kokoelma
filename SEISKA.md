@@ -2,9 +2,9 @@
 
 ## Pelitapa
 
-Jokaiselle jaetaan 7 käsikorttia. Loput muodostavat nostopakan — pakan päällimmäinen käännetään näkyviin lyöntipakan pohjaksi.
+Jokaiselle jaetaan 7 käsikorttia. Loput muodostavat nostopakan — pakan päällimmäinen käännetään näkyviin lyöntipakan pohjaksi (ei 7 eikä A).
 
-Tavoite: pääse eroon käsikorteista ensimmäisenä
+Tavoite: pääse eroon käsikorteista ensimmäisenä.
 
 ## Vuoron kulku
 
@@ -15,37 +15,36 @@ Tavoite: pääse eroon käsikorteista ensimmäisenä
    - **Sama arvo**: useamman saman arvoisen voi lyödä **yhdellä kertaa**
 4. Jos ei pysty lyödä → nosta pakasta **enintään 3 korttia**
 5. Nostamisen jälkeen jos silti ei sovi → sano "Ohi" ja vuoro siirtyy
-6. Jos nostopakka loppuu → lyöntipakan päällimmäinen jätetään paikalleen, muista sekoitetaan uusi nostopakka
+6. Jos nostopakka loppuu → lyöntipakan päällimmäinen jätetään paikalleen, muut sekoitetaan uudeksi nostopakaksi
 
 ## Erityiskortit
 
 ### Ässä (A)
-- Lyödessä ässää kaikki **muut pelaajat nostavat pakasta yhden kortin**
-- Sama pelaaja ei saa lyödä Ässää toisen ässän päälle, seuraava voi
-- Ässää ei voi lyödä viimeisenä korttina
+- Lyödessä ässää kaikki **muut pelaajat nostavat pakasta yhden kortin** (rangaistus)
+- Ässää lyönyt saa **bonusvuoron** samaa maata
+- Ässää ei voi lyödä **viimeisenä korttina**
+- Toisen ässän päälle voi lyödä ässän — bonusmaa on jälkimmäisen ässän maa
 
 ### Seiska (7)
 - **Villikortti** — pelaaja saa **valita seuraavan maan vapaasti**
-- Jos seuraava pelaaja lyö toisen Seiskan toisen seiskan päälle, niin vaadittu maa on sen toisen seiskan maa
-- **Rajoitus**: seiskaa **ei voi lyödä viimeisenä korttina** — on lyötävä ennen sitä
+- Jos seuraava pelaaja lyö toisen seiskan toisen päälle, vaadittu maa on sen toisen seiskan maa
+- Seiskaa **ei voi lyödä viimeisenä korttina**
 
 ## Lappu-sääntö
 
-- Kun pelaajalla on **enää yksi kortti jäljellä**, hänen on **sanottava "Lappu"**
-- Jos unohtaa eikä sitä huomata ennen **seuraavan vuoron** alkua → **sakoksi nostetaan 5 korttia**
+- Kun pelaajalla on **enää yksi kortti jäljellä**, hänen on sanottava **"Lappu"**
+- Jos unohtaa eikä sitä huomata ennen seuraavan vuoron alkua → **sakoksi nostetaan 5 korttia**
 
-## Pisteet (valinnainen)
+## Nostopakan uudelleensekoitus
 
-Seiskasta voidaan pelata **pisteillä useamman erän yli**:
-- Käteenjääneet kortit lisätään **miinuspisteisiin**:
-  - Ässä = −14 pistettä
-  - Seiska = −25 pistettä
-  - Muut kortit = nimellisarvo (2–13)
-- **Häviää**: ensimmäinen pelaaja joka ylittää −100 (tai sovitun rajan)
+- Kun nostopakka loppuu ja pelaaja haluaa nostaa, lyöntipakka (paitsi päällimmäinen kortti) **sekoitetaan uudeksi nostopakaksi**
+- Viesti lokissa: "Pakka loppui. Lyöntipakka juuri sekoitettiin uudeksi Pakaksi."
+- Jos lyöntipakassakin on vain 1 kortti (ei voi sekoittaa) → vuoro päättyy automaattisesti
 
 ## Pelin loppu
 
-- Ensimmäinen pelaaja joka **tyhjentää kätensä** (ei seiskalla, eikä ässällä!) **voittaa**
+- Ensimmäinen joka **tyhjentää kätensä** (ei seiskalla eikä ässällä) **voittaa**
+- Sijoitukset määräytyvät poistumisajankohdan mukaan
 
 ## Pelaajien näkyvyys
 
@@ -55,28 +54,44 @@ Seiskasta voidaan pelata **pisteillä useamman erän yli**:
 - Nostopakan koko on **näkyvä kaikille**
 - Seiskasta asetettu maa on **näkyvä kaikille**
 
+## Tapahtumaloki
+
+- **Vuorossa [Pelaaja].** — jokaisen uuden vuoron alussa (ei ässäbonusvuorolle)
+- **Sinun vuorosi — [ohje]** — ihmispelaajalle hints-moodissa
+- **Pakka loppui. Lyöntipakka juuri sekoitettiin uudeksi Pakaksi.** — uudelleensekoituksesta
+
 ## AI-strategia
 
-### AI:n pelaamislogiikka
-1. **Priorisoi**: sama arvo useampana — ei tarvitse nostaa
-2. **Seiskat ettei tarvitse nostaa**: älä lyö seiskaa viimeisenä korttina
-3. **Ässien käyttö**: aina kun mahdollista — kaikki muut nostavat kortin
+### Tasot
+| Taso | Kuvaus |
+|---|---|
+| `beginner` | Tekee satunnaisia virheitä: unohtaa että 7 käy aina, pelaa ryhmän yksittäisenä |
+| `normal` | Kortinlaskuri — muistaa nähtyjen arvojen määrät, ennakoinnin perusteella |
+| `hard` (tosilaskija) | Muistaa kasan järjestyksen voitetun pöydän pohjalta, ennakoi täsmäyksiä |
+| `supernatural` | Ei virheitä, täysi strategia |
 
-### AI:n seiskan logiikka
-- Valitse maa strategisesti:
-  - Suo pelaajille visuaalisia virheitä
-  - Pelaa maa jossa sinulla on vähän kortteja
+### Ryhmälyöntilogiikka (`aiBestPlay`)
 
-### AI:n nostamislogiikka
-- Nosta 3 korttia tai kunnes kelpaa
-- Passaa jos 3 kortin jälkeen ei kelpaa
+1. **Etsi suurin pelattava ryhmä** (sama arvo, ≥2 korttia; ei 7/A)
+2. **Järjestä ryhmä**: yhdistävä maa ensin, uusi päällimmäinen maa viimeisenä
+3. **Pelaa ryhmä jos:**
+   - Se tyhjentää tai lappuuttaa käden (≤1 kortti jäljellä) — aina
+   - Parin oma kortti on ainoa yhteensopiva kortti (ei muuta vaihtoehtoa)
+   - **Ryhmä vaihtaa maan sellaiseksi jota on enemmän jäljellä kädessä** ← (maanvaihto-optimointi)
+4. **Muuten säästä pari** ja pelaa yksittäinen suoran maan kortti
+
+### Yksittäiskortin valinta
+- Jos vastustajalla ≤ 2 korttia → suosi ässää (rangaistus + bonusvuoro)
+- 3–5 korttia kädessä → pelaa kortti joka jättää suurimman saman arvon ryhmän
+- Suosi korttia jolla ei ole paria kädessä (säästää parin myöhempään ryhmälyöntiin)
+
+### Seiskan maanvalinta (`aiSuit`)
+- Valitaan maa jossa on **eniten kortteja kädessä**
 
 ## Pelin luonne
 
 Seiska on **UNO-tyyppinen peli** jossa:
-- Yksinkertainen säännöt mutta strateginen ja nopea
+- Yksinkertaiset säännöt mutta strateginen syvyys
 - Erityiskortit (A, 7) lisäävät käänteitä
-- Lappu-sääntö lisää muistiin liittyvää elementtiä
-- Pisteversio (valinnainen) tekee pitkäaikaisesta pelaamisesta palkitsevaa
-
-Nopeus ja muisti ovat tärkeämpiä kuin syvä strategia.
+- Ryhmälyönti + maanvaihto ovat keskeisiä taktiikoita
+- Lappu-sääntö lisää muistielementtejä

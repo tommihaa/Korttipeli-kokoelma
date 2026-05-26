@@ -278,6 +278,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     aiLevelRef.current = 'supernatural';
     onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setDebug(true);
     setNP(4);
     startGame(4, true);
   }
@@ -841,7 +842,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
                   {isActive ? '► ' : '🤖 '}{truncName(p.name)}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
-                {(debugOpen || allBots) ? (
+                {debugOpen ? (
                   <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     {sortHand(p.hand).map(c => {
                       const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);

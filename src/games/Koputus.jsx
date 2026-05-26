@@ -260,6 +260,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     aiLevelRef.current = 'supernatural';
     onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setDebug(true);
     startGame(nP, true);
   }
 
@@ -760,7 +761,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
                     <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1 }}>
                       {ai.cards.map((c, ci) =>
                         c
-                          ? <Card key={ci} card={c} small backStyle={BACKS[cardBack]}
+                          ? <Card key={ci} card={c} small backStyle={BACKS[cardBack]} faceUp={debugOpen}
                               selected={intention?.playerIdx === pi && intention.slotIdx === ci} />
                           : <div key={ci} style={{ width: isMobile ? 30 : 36, height: isMobile ? 43 : 52, borderRadius: 5, border: '1px dashed rgba(255,255,255,0.1)', opacity: 0.3, flexShrink: 0 }} />
                       )}

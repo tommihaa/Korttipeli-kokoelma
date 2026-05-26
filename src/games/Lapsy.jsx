@@ -83,7 +83,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const logRef       = useRef([]);
   const tmrs         = useRef(new Set());
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  const allBotsRef   = useRef(false);
+  const allBotsRef     = useRef(false);
+  const allBotNamesRef = useRef([]);
   const pausedRef    = useRef(false);
   const aiDelayRef   = useRef(2000);
 
@@ -108,7 +109,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     }
   }, [hints]);
 
-  const pName = i => i === 0 ? 'Hero' : aiNames[i - 1];
+  const pName = i => allBots ? (allBotNamesRef.current[i] ?? `Bot${i + 1}`) : (i === 0 ? 'Hero' : aiNames[i - 1]);
 
   const M = {
     gameStart: 'Peli alkaa! Jokainen kääntää vuorollaan pinonsa päällimmäisen kortin.',
@@ -179,9 +180,11 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   function startBotBattle() {
+    allBotNamesRef.current = shuffledAINames(playerNames).slice(0, 4);
     aiLevelRef.current = 'supernatural';
     onAiLevelChange?.('supernatural');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
+    setDebug(true);
     setNP(4);
     startGame(4, true);
   }
@@ -401,6 +404,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   function humanSlap() {
+    if (allBotsRef.current) return;
     if (phaseRef.current !== 'match') {
       if (recentMatch.current) { return; }
       if (sndRef.current) SFX.wrongSlap();
@@ -419,6 +423,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   function humanFlip() {
+    if (allBotsRef.current) return;
     if (curRef.current !== 0 || phaseRef.current !== 'idle') return;
     if (pilesRef.current[0].length === 0) return;
     doFlip(0, pilesRef.current, centerRef.current);
@@ -589,9 +594,15 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
                   🤖 {pName(pi).slice(0, 8)}{curTurn === pi ? ' ●' : ''}
                 </span>
                 <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1 }}>
-                  {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
-                  {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center', flexShrink: 0 }}>+{pile.length - 6}</span>}
+                  {debugOpen
+                    ? <>
+                        {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
+                        {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center', flexShrink: 0 }}>+{pile.length - 6}</span>}
+                      </>
+                    : <FanStack count={pile.length} w={36} h={50} backStyle={BACKS[cardBack]} borderColor={curTurn === pi ? C.red + '88' : undefined} />
+                  }
                 </div>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flexShrink: 0 }}>{pile.length}k</span>
               </div>
             ))}
           </div>
@@ -715,21 +726,23 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         )}
       </div>
 
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: `2px solid ${humanTurn ? C.red + '66' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'border-color 0.2s' }}>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: humanTurn ? C.red : C.dim, marginBottom: 6 }}>👤 Hero{curTurn === 0 ? ' ●' : ''}</div>
-          <div>
-            <FanStack
-              count={humanPile.length}
-              w={60} h={82}
-              backStyle={BACKS[cardBack]}
-              borderColor={humanTurn ? C.red + '88' : undefined}
-            />
+      {!allBots && (
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: `2px solid ${humanTurn ? C.red + '66' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'border-color 0.2s' }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: humanTurn ? C.red : C.dim, marginBottom: 6 }}>👤 Hero{curTurn === 0 ? ' ●' : ''}</div>
+            <div>
+              <FanStack
+                count={humanPile.length}
+                w={60} h={82}
+                backStyle={BACKS[cardBack]}
+                borderColor={humanTurn ? C.red + '88' : undefined}
+              />
+            </div>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, marginTop: 5 }}>{humanPile.length} {humanPile.length === 1 ? 'kortti' : 'korttia'}</div>
           </div>
-          <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, marginTop: 5 }}>{humanPile.length} {humanPile.length === 1 ? 'kortti' : 'korttia'}</div>
+          <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>Käännä →</button>
         </div>
-        <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>Käännä →</button>
-      </div>
+      )}
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> voita kaikki kortit — viimeinen pelissä voittaa</span>
