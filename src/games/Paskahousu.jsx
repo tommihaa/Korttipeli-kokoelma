@@ -390,7 +390,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     }));
     setTimerLeft(null);
     setGS({ ...g, finished: newFinished, phase: 'gameover' });
-    if (allBotsRef.current) { tm(() => setPendingResult({ ranking }), 800); }
+    if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 800); }
     else { onResult?.({ ranking }); }
   }
 
@@ -483,7 +483,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
       setGS({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
-      if (allBotsRef.current) { tm(() => setPendingResult({ ranking }), 800); } else { onResult?.({ ranking }); }
+      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 800); } else { onResult?.({ ranking }); }
       return;
     }
 
@@ -589,7 +589,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
           name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
         }));
         setGS({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
-        if (allBotsRef.current) { tm(() => setPendingResult({ ranking }), 800); } else { onResult?.({ ranking }); }
+        if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 800); } else { onResult?.({ ranking }); }
         return;
       }
 
@@ -884,7 +884,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   );
 
   // ── gameover-näkymä ───────────────────────────────────────────────────────
-  if (screen === 'game' && G?.phase === 'gameover') {
+  if (screen === 'game' && G?.phase === 'gameover' && !allBotsRef.current) {
     const { finished, players } = G;
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>

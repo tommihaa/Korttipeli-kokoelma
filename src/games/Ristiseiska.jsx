@@ -342,7 +342,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
       setGS({ ...g, players, rows, finished, phase: 'gameover' });
-      if (allBotsRef.current) { tm(() => setPendingResult({ ranking }), 800); }
+      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 800); }
       else { onResult?.({ ranking }); }
       return;
     }
@@ -572,7 +572,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   );
 
   // ── Gameover ────────────────────────────────────────────────
-  if (screen === 'game' && G?.phase === 'gameover') {
+  if (screen === 'game' && G?.phase === 'gameover' && !allBotsRef.current) {
     const { finished, players } = G;
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>

@@ -481,7 +481,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       const ranking = finished.map((idx, pos) => ({
         name: g2.players[idx].name, place: pos + 1, isHuman: g2.players[idx].isHuman,
       }));
-      setPendingResult({ ranking });
+      const isBotBattle = g2.players.every(p => !p.isHuman);
+      if (isBotBattle) {
+        tm(() => onResult?.({ ranking }), 800);
+      } else {
+        setPendingResult({ ranking });
+      }
       setGS({ ...g2, phase: 'finished' });
       if (sndRef.current) tm(() => SFX.fanfare(), 600);
       return;
@@ -850,7 +855,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   );
 
   // ── Gameover ────────────────────────────────────────────────
-  if (screen === 'game' && G?.phase === 'gameover') {
+  if (screen === 'game' && G?.phase === 'gameover' && !allBots) {
     const { finished, players } = G;
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>

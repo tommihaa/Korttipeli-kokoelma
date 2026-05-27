@@ -518,7 +518,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       const ranking = rankings.map((id, pos) => ({
         name: players[id].name, place: pos + 1, isHuman: players[id].isHuman,
       }));
-      if (allBotsRef.current) { setPendingResult({ ranking }); }
+      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 600); }
       else { onResult?.({ ranking }); }
       const g2 = { ...g, players, deck, trumpCard: tc, rankings, table: [], phase: 'gameover' };
       setGS(g2);
@@ -1040,7 +1040,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     </div>
   );
 
-  if (screen === 'game' && G?.phase === 'gameover') {
+  if (screen === 'game' && G?.phase === 'gameover' && !allBotsRef.current) {
     const sorted = [...G.players].sort((a, b) => (a.rank || 99) - (b.rank || 99));
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>

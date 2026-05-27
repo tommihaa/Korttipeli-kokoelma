@@ -314,7 +314,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     });
     const revealCards = players.map(p => ({ name: p.name, cards: p.cards }));
     if (allBotsRef.current) {
-      setPendingResult({ ranking });
+      tm(() => onResult?.({ ranking, revealCards }), 600);
     } else {
       onResult?.({ ranking, revealCards });
     }
@@ -673,7 +673,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     </div>
   );
 
-  if (screen === 'gameover' && G) {
+  if (screen === 'gameover' && G && !allBotsRef.current) {
     const sorted = [...G.players].sort((a, b) => pScore(a) - pScore(b));
     return (
       <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>

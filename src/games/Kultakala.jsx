@@ -612,7 +612,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       place: sortedSc.filter(q => q.total < p.total).length + 1,
     }));
     const revealCards = g.players.map(p => ({ name: p.name, cards: [p.unknown, ...p.row] }));
-    if (allBotsRef.current) { tm(() => setPendingResult({ ranking, revealCards }), 800); }
+    if (allBotsRef.current) { tm(() => onResult?.({ ranking, revealCards }), 800); }
     else { onResult?.({ ranking, revealCards }); }
     const tied = scores.filter(s => s.total === minScore);
     addLog(M.gameOverScores(scores));
@@ -657,7 +657,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     </div>
   );
 
-  if (screen === 'gameover' && G) {
+  if (screen === 'gameover' && G && !allBotsRef.current) {
     const scores = G.players.map(p => ({ ...p, total: p.unknown.v + p.row.reduce((s, c) => s + c.v, 0) })).sort((a, b) => a.total - b.total);
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>

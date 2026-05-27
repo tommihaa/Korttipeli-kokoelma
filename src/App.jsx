@@ -432,6 +432,7 @@ export default function App() {
     return groups[Math.floor(Math.random() * groups.length)];
   });
   const [resultData, setResultData] = useState(null);   // {ranking, revealCards?, scoreBreakdown?}
+  const [botResult, setBotResult]   = useState(null);   // bot-only result — stay on game view
   const [gameKey, setGameKey]       = useState(0);       // increment → remount game
   const [showGlossary, setShowGlossary] = useState(false);
   const [showEsittely, setShowEsittely] = useState(false);
@@ -446,6 +447,10 @@ export default function App() {
     if (active) window.history.pushState(null, '');
     window.scrollTo(0, 0);
   }, [active]);
+
+  useEffect(() => {
+    if (botResult) window.scrollTo(0, 0);
+  }, [botResult]);
 
   useEffect(() => {
     const handlePop = () => setActive(null);
@@ -471,9 +476,14 @@ export default function App() {
 
   function handleGameResult(gameId, result) {
     // result = {ranking, revealCards?, scoreBreakdown?}
-    const heroWon = result.ranking.find(r => r.isHuman)?.place === 1;
-    recordResult(gameId, heroWon);
-    setResultData(result);
+    const isBotOnly = !result.ranking.some(r => r.isHuman);
+    if (isBotOnly) {
+      setBotResult(result);
+    } else {
+      const heroWon = result.ranking.find(r => r.isHuman)?.place === 1;
+      recordResult(gameId, heroWon);
+      setResultData(result);
+    }
   }
 
   if (showAdmin) {
@@ -624,7 +634,7 @@ export default function App() {
             { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',                 val: showCounts,    set: setShowCounts    },
             { label: 'Näe muistipeleissä vastustajien katsomat korttipaikat korostettuina',       val: showAIKnown,   set: setShowAIKnown   },
             { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                       val: showLastPlay,  set: setShowLastPlay  },
-            { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska)', val: showIntention, set: setShowIntention },
+            { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska, Ristiseiska, Maija, Paskahousu, Moska)', val: showIntention, set: setShowIntention },
             { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                       val: showPlayHints, set: setShowPlayHints },
             { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
             { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
@@ -737,7 +747,7 @@ export default function App() {
     const GameComponent = game.component;
     const maxW = isMobile ? 'calc(100vw - 20px)' : game.maxWidth;
 
-    // Tulosruutu pelin jälkeen
+    // Tulosruutu pelin jälkeen (vain ihmispelaajan peli)
     if (resultData) {
       return (
         <GameResult
@@ -751,11 +761,39 @@ export default function App() {
       );
     }
 
+    // Bottien Taistelu päättyi — näytetään banneri pelin päällä, loki jää näkyviin
+    const botBanner = botResult && (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: isMobile ? '8px 12px' : '10px 18px',
+        background: `${C.gold}14`,
+        borderBottom: `1px solid ${C.gold}44`,
+        gap: 12,
+      }}>
+        <span style={{ fontFamily: 'Georgia,serif', fontSize: isMobile ? 12 : 13, color: C.gold }}>
+          🏆 {botResult.ranking[0]?.name} voitti
+        </span>
+        <button
+          onClick={() => { setBotResult(null); setActive(null); setGameKey(k => k + 1); }}
+          style={{
+            background: C.gold, border: 'none', borderRadius: 8,
+            padding: isMobile ? '6px 14px' : '7px 18px',
+            color: '#0d2118', fontFamily: 'Georgia,serif',
+            fontSize: isMobile ? 12 : 13, fontWeight: 700, cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        >
+          Pelivalinta →
+        </button>
+      </div>
+    );
+
     return (
       <div style={{ maxWidth: maxW, margin: '0 auto' }}>
         {settingsPanel}
         {glossaryScreen}
-        <GameHeader title={game.name} onBack={() => { setResultData(null); setActive(null); }} gearBtn={gearBtn} isMobile={isMobile} />
+        <GameHeader title={game.name} onBack={() => { setResultData(null); setBotResult(null); setActive(null); }} gearBtn={gearBtn} isMobile={isMobile} />
+        {botBanner}
         <GameComponent
           key={gameKey}
           game={game}

@@ -278,7 +278,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       }));
       setPhase('gameover'); phaseRef.current = 'gameover';
       setFinished(newFin); finRef.current = newFin;
-      if (allBotsRef.current) { tm(() => { setPendingResult({ ranking }); setScreen('gameover'); }, 1800); }
+      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 1800); }
       else { tm(() => onResult?.({ ranking }), 1800); }
       return { done:true, fin:newFin };
     }
@@ -631,7 +631,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   );
 
   // ── Peli päättyi ────────────────────────────────────────────────
-  if (screen === 'gameover' && G) {
+  if (screen === 'gameover' && G && !allBotsRef.current) {
     const sorted = [...G.players].map((p, i) => {
       const rank = finished.indexOf(i);
       const isLoser = !finished.includes(i);

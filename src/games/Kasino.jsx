@@ -573,7 +573,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         return { name: p.name, score: newScores[i].totalScore, items };
       }).sort((a, b) => b.score - a.score);
       if (allBotsRef.current) {
-        tm(() => setPendingResult({ ranking }), 1200);
+        tm(() => onResult?.({ ranking, scoreBreakdown }), 1200);
       } else {
         onResult?.({ ranking, scoreBreakdown });
       }
@@ -1112,7 +1112,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     </div>
   );
 
-  if (screen === 'gameover' && G) {
+  if (screen === 'gameover' && G && !allBotsRef.current) {
     const sorted = [...G.players].sort((a, b) => b.score - a.score);
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>

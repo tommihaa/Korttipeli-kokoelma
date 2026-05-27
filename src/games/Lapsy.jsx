@@ -492,7 +492,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         name: pName(idx), place: pos + 1, isHuman: idx === 0 && !allBotsRef.current,
       }));
       if (allBotsRef.current) {
-        tm(() => setPendingResult({ ranking }), 800);
+        tm(() => onResult?.({ ranking }), 800);
       } else {
         tm(() => onResult?.({ ranking }), 1800);
       }
@@ -533,7 +533,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     </div>
   );
 
-  if (screen === 'gameover') {
+  if (screen === 'gameover' && !allBotsRef.current) {
     const winnerIdx = piles.findIndex(p => p.length > 0);
     // Rakenna sijoituslista: voittaja ensin, sitten eliminointijärjestys käänteisesti
     const ranked = [
