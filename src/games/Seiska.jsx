@@ -644,12 +644,21 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
     // ── Ässä-bonusvuoro ─────────────────────────────────────
     if (aceBonus !== null) {
-      const bonusCard = p.hand.find(c => c.s === aceBonus && c.r !== '7');
+      // Bonuskortti: ässän maa, ei 7 eikä A (kettinkiässä pysytään siistinä)
+      const bonusCard = p.hand.find(c => c.s === aceBonus && c.r !== '7' && c.r !== 'A');
+      // Ryhmä: bonuskortti + saman arvon kortit muilla mailla (pari/kolmoset/neloset)
+      const bonusGroup = bonusCard
+        ? p.hand.filter(c => c.r === bonusCard.r && c.r !== '7' && c.r !== 'A')
+        : [];
       const applyLogic = level !== 'beginner' && (level !== 'normal' || Math.random() < 0.5);
       const threshold  = isSuper ? 2 : 3;
       let useBonus;
       if (!bonusCard) {
         useBonus = false;
+      } else if (p.hand.length === 1) {
+        useBonus = true; // voittava siirto — aina pelataan
+      } else if (bonusGroup.length >= 2) {
+        useBonus = true; // pari tai enemmän — aina kannattaa pelata ryhmänä
       } else if (!applyLogic) {
         useBonus = true;
       } else {
@@ -659,7 +668,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         useBonus = !anyoneAtOne && (p.hand.length - 1) <= threshold;
       }
       if (useBonus) {
-        doPlay({ ...gRef.current, aceBonus: null }, activePlayer, [bonusCard], null);
+        doPlay({ ...gRef.current, aceBonus: null }, activePlayer, bonusGroup, null);
       } else {
         const g2 = applyAcePenalty({ ...gRef.current, aceBonus: null }, activePlayer);
         advanceTurn(g2, activePlayer);
@@ -1096,10 +1105,16 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       {allBots && (
         <div style={{ background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', letterSpacing: 1 }}>🤖 KATSELUTILA</span>
-          <button onClick={togglePause} style={{ background: paused ? 'rgba(192,132,252,0.2)' : 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 12px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = +e.target.value; setAiDelayMs(v); aiDelayRef.current = v; }} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE' }} />
-          <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c084fc' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-          <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 10px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>↺</button>
+          <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: '#f0e6ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
+          <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 9, color: '#c084fc', opacity: 0.7, letterSpacing: 1, textTransform: 'uppercase' }}>Pelitahti</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <button onClick={() => changeDelay(-500)} disabled={aiDelayMs <= 200} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif', border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: aiDelayMs <= 200 ? 'rgba(255,255,255,0.15)' : '#bb88ff', cursor: aiDelayMs <= 200 ? 'default' : 'pointer' }}>−0.5s</button>
+              <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#f0e6ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+              <button onClick={() => changeDelay(+500)} disabled={aiDelayMs >= 3000} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif', border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: aiDelayMs >= 3000 ? 'rgba(255,255,255,0.15)' : '#bb88ff', cursor: aiDelayMs >= 3000 ? 'default' : 'pointer' }}>+0.5s</button>
+            </span>
+          </span>
+          <button onClick={startBotBattle} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: 'transparent', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>↺</button>
         </div>
       )}
 
@@ -1117,7 +1132,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
               {paused ? '▶ Jatka' : '⏸ Tauko'}
             </button>
             <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-              <span style={{ fontFamily: 'sans-serif', fontSize: 9, color: C.dim, opacity: 0.55, letterSpacing: 1, textTransform: 'uppercase' }}>Siirtoväli &amp; aikomusaika</span>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 9, color: C.dim, opacity: 0.55, letterSpacing: 1, textTransform: 'uppercase' }}>Pelitahti</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <button onClick={() => changeDelay(-500)} disabled={aiDelayMs <= 200} style={{
                   fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif',
