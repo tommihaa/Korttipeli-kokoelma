@@ -19,7 +19,7 @@ import Ristiseiska from './games/Ristiseiska.jsx';
 import Paskahousu from './games/Paskahousu.jsx';
 import Admin from './Admin.jsx';
 
-const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
+const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
 const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
 const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
 const KANSA            = ['Astraalitason tirehtööri','Boomer','Jonne','Justiina','Karen','Kukkahattutäti','Lumihiutale','NPC','Rane','Random','Setämies','Veeti'];
@@ -212,8 +212,8 @@ const MERKISTO = [
   { kategoria: 'ui',        icon: 'ℹ',  label: 'Info',             selitys: 'Tarkempi selite — esim. pisteytyssäännöt Kasinossa.' },
   { kategoria: 'ui',        icon: '🔊', label: 'Ääni päällä',      selitys: 'Korttitehosteet ja fanfaarit kuuluvat.' },
   { kategoria: 'ui',        icon: '🔇', label: 'Ääni pois',        selitys: 'Kaikki äänet mykistetty.' },
-  { kategoria: 'ui',        icon: '🔍', label: 'Cheat Mode pois',  selitys: 'Normaali tila — näet vain omat kortit.' },
-  { kategoria: 'ui',        icon: '🙈', label: 'Cheat Mode päällä',selitys: 'Näet kaikkien pelaajien käsikortit ja piilotetut kentän kortit.' },
+  { kategoria: 'ui',        icon: '🔍', label: 'Avoimet kortit pois',  selitys: 'Normaali tila — näet vain omat kortit.' },
+  { kategoria: 'ui',        icon: '🙈', label: 'Avoimet kortit päällä',selitys: 'Näet kaikkien pelaajien käsikortit ja piilotetut kentän kortit.' },
   { kategoria: 'ui',        icon: '🔮', label: 'Yliluonnollinen',  selitys: 'Koneälyn korkein taso — muistaa pakan menot ja optimoi täydellisesti.' },
 ];
 
@@ -409,6 +409,116 @@ function GameHeader({ title, onBack, gearBtn, isMobile }) {
   );
 }
 
+// ── Replay: mini-kortti ──────────────────────────────────────────────────────
+function MiniCard({ card }) {
+  if (!card) return (
+    <span style={{ display:'inline-block', background:'rgba(255,255,255,0.15)', borderRadius:3, padding:'0 3px', fontSize:11, fontFamily:'sans-serif', fontWeight:700, margin:1, border:'1px solid rgba(255,255,255,0.2)', lineHeight:'18px', minWidth:20, textAlign:'center', color:'#888' }}>?</span>
+  );
+  const color = SUIT_COLOR[card.s] ?? '#ccc';
+  return (
+    <span style={{ display:'inline-block', background:'rgba(255,255,255,0.9)', color, borderRadius:3, padding:'0 4px', fontSize:11, fontFamily:'sans-serif', fontWeight:700, margin:1, border:'1px solid rgba(0,0,0,0.15)', lineHeight:'18px', minWidth:20, textAlign:'center' }}>
+      {card.r}{card.s}
+    </span>
+  );
+}
+
+// ── Replay: askelnavigointinäkymä ────────────────────────────────────────────
+function ReplayView({ frames, onClose, isMobile }) {
+  const [idx, setIdx] = useState(frames.length - 1);
+  const safeIdx = Math.min(Math.max(idx, 0), frames.length - 1);
+  const frame   = frames[safeIdx];
+
+  useEffect(() => {
+    const h = e => {
+      if (e.key === 'ArrowLeft')  setIdx(i => Math.max(0, i - 1));
+      if (e.key === 'ArrowRight') setIdx(i => Math.min(frames.length - 1, i + 1));
+      if (e.key === 'Escape')     onClose();
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [frames.length, onClose]);
+
+  if (!frame) return null;
+
+  const navBtn = disabled => ({
+    background: disabled ? 'transparent' : `${C.gold}22`,
+    border: `1px solid ${disabled ? C.panelBorder : C.gold}`,
+    color: disabled ? C.panelBorder : C.gold,
+    borderRadius: 8, padding: '7px 16px',
+    cursor: disabled ? 'default' : 'pointer',
+    fontFamily: 'sans-serif', fontSize: 16, fontWeight: 700,
+  });
+
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:800, background:C.bg, display:'flex', flexDirection:'column', overflowY:'auto' }}>
+      {/* Navigaatiopalkki */}
+      <div style={{
+        position:'sticky', top:0, zIndex:10, background:'rgba(13,33,24,0.97)',
+        borderBottom:`1px solid ${C.panelBorder}`,
+        padding: isMobile ? '8px 10px' : '10px 16px',
+        display:'flex', alignItems:'center', gap:8,
+      }}>
+        <button onClick={() => setIdx(i => Math.max(0, i - 1))} disabled={safeIdx === 0} style={navBtn(safeIdx === 0)}>←</button>
+        <div style={{ flex:1, display:'flex', flexDirection:'column', gap:3 }}>
+          <div style={{ textAlign:'center', fontFamily:'sans-serif', fontSize:11, color:C.dim }}>
+            {safeIdx + 1} / {frames.length}
+          </div>
+          <input type="range" min={0} max={frames.length - 1} value={safeIdx}
+            onChange={e => setIdx(Number(e.target.value))}
+            style={{ width:'100%', cursor:'pointer', accentColor:C.gold }}
+          />
+        </div>
+        <button onClick={() => setIdx(i => Math.min(frames.length - 1, i + 1))} disabled={safeIdx === frames.length - 1} style={navBtn(safeIdx === frames.length - 1)}>→</button>
+        <button onClick={onClose} style={{ background:'transparent', border:`1px solid ${C.panelBorder}`, color:C.dim, borderRadius:8, padding:'7px 12px', cursor:'pointer', fontFamily:'sans-serif', fontSize:13 }}>✕</button>
+      </div>
+
+      {/* Sisältö */}
+      <div style={{ padding: isMobile ? '12px 10px' : '16px 20px', display:'flex', flexDirection:'column', gap:10 }}>
+        {/* Lokiteksti — logText voi olla HTML-string tai React-node */}
+        {typeof frame.logText === 'string'
+          ? <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${C.panelBorder}`, borderRadius:10, padding:'12px 14px', fontFamily:'sans-serif', fontSize: isMobile ? 13 : 14, color:C.text, lineHeight:1.5 }}
+              dangerouslySetInnerHTML={{ __html: frame.logText }} />
+          : <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${C.panelBorder}`, borderRadius:10, padding:'12px 14px', fontFamily:'sans-serif', fontSize: isMobile ? 13 : 14, color:C.text, lineHeight:1.5 }}>
+              {frame.logText}
+            </div>
+        }
+
+        {/* Pelaajat + käsikortit */}
+        {frame.players.map(p => (
+          <div key={p.name} style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`, borderRadius:8, padding:'8px 12px', display:'flex', alignItems:'flex-start', gap:10, flexWrap:'wrap' }}>
+            <div style={{ minWidth:72, flexShrink:0 }}>
+              <div style={{ fontFamily:'sans-serif', fontSize:12, color: p.isHuman ? C.gold : C.dim, fontWeight: p.isHuman ? 700 : 400 }}>{p.name}</div>
+              {p.score !== null && <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, opacity:0.8 }}>{p.score} pts</div>}
+              <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, opacity:0.5 }}>({p.cardCount}k)</div>
+            </div>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:2, flex:1, alignContent:'flex-start' }}>
+              {p.hand.length > 0
+                ? p.hand.map((c, ci) => <MiniCard key={ci} card={c} />)
+                : <span style={{ color:C.dim, fontSize:11, fontFamily:'sans-serif', opacity:0.4 }}>—</span>
+              }
+            </div>
+          </div>
+        ))}
+
+        {/* Pöytäkortit */}
+        {frame.tableCards?.length > 0 && (
+          <div style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`, borderRadius:8, padding:'8px 12px' }}>
+            <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.gold, letterSpacing:1.5, opacity:0.8, marginBottom:6, textTransform:'uppercase' }}>Pöytä</div>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:2 }}>
+              {frame.tableCards.map((c, ci) => <MiniCard key={ci} card={c} />)}
+            </div>
+          </div>
+        )}
+
+        {/* Extrateksti */}
+        {frame.extraText && (
+          <div style={{ textAlign:'center', fontFamily:'sans-serif', fontSize:12, color:C.dim, opacity:0.7 }}>{frame.extraText}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [active, setActive]         = useState(null);
   const [playerCount, setPlayerCount] = useState(4);
@@ -419,13 +529,12 @@ export default function App() {
   const [soundOn, setSoundOn]       = useState(true);
   const [seeAll, setSeeAll]         = useState(false);
   const [showCounts, setShowCounts] = useState(true);
-  const [showPlayHints, setShowPlayHints] = useState(true);
   const [teachMode, setTeachMode]   = useState(false);
   const [showLastPlay, setShowLastPlay] = useState(true);
   const [showIntention, setShowIntention] = useState(true);
   const [showNextBtn, setShowNextBtn]   = useState(true);
   const [showAIKnown, setShowAIKnown]   = useState(true);
-  const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard' | 'supernatural'
+  const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard'
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
   const [playerGroup, setPlayerGroup] = useState(() => {
     const groups = ['laituri', 'jumalat', 'puolue', 'kansa'];
@@ -436,6 +545,8 @@ export default function App() {
   const [gameKey, setGameKey]       = useState(0);       // increment → remount game
   const [showGlossary, setShowGlossary] = useState(false);
   const [showEsittely, setShowEsittely] = useState(false);
+  const [siirtorekisteri, setSiirtorekisteri] = useState([]); // allBots replay frames
+  const [replayOpen, setReplayOpen]     = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
@@ -451,6 +562,11 @@ export default function App() {
   useEffect(() => {
     if (botResult) window.scrollTo(0, 0);
   }, [botResult]);
+
+  useEffect(() => {
+    setSiirtorekisteri([]);
+    setReplayOpen(false);
+  }, [gameKey]);
 
   useEffect(() => {
     const handlePop = () => setActive(null);
@@ -472,6 +588,10 @@ export default function App() {
       ...prev,
       [gameId]: { played: prev[gameId].played + 1, wins: prev[gameId].wins + (heroWon ? 1 : 0) },
     }));
+  }
+
+  function handleSnapshot(frame) {
+    setSiirtorekisteri(prev => [...prev, frame]);
   }
 
   function handleGameResult(gameId, result) {
@@ -628,18 +748,20 @@ export default function App() {
 
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
           <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Peliasetukset</div>
-          {[
-            { label: 'Cheat Mode (Hero näkee kaikki pöytä- ja käsikortit)',                       val: seeAll,        set: setSeeAll        },
-            { label: '🔒 God Mode (manifestoi tulevat kortit)',                                    disabled: true                          },
-            { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',                 val: showCounts,    set: setShowCounts    },
-            { label: 'Näe muistipeleissä vastustajien katsomat korttipaikat korostettuina',       val: showAIKnown,   set: setShowAIKnown   },
-            { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                       val: showLastPlay,  set: setShowLastPlay  },
-            { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska, Ristiseiska, Maija, Paskahousu, Moska)', val: showIntention, set: setShowIntention },
-            { label: 'Pelattavat kortit näkyvillä (näytä mitä voi pelata)',                       val: showPlayHints, set: setShowPlayHints },
-            { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
-            { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
-            { label: 'Äänet',                                                                       val: soundOn,       set: setSoundOn       },
-          ].map(({ label, val, set, disabled }) => (
+          {(() => {
+            const isAllBots = siirtorekisteri.length > 0 || !!botResult;
+            return [
+              !isAllBots && { label: '👁 Näytä kaikki kortit',                                  val: seeAll,        set: setSeeAll        },
+              { label: '🔒 God Mode (manifestoi tulevat kortit)',                                    disabled: true                          },
+              { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',                 val: showCounts,    set: setShowCounts    },
+              !isAllBots && { label: 'Näe muistipeleissä vastustajien katsomat korttipaikat korostettuina',       val: showAIKnown,   set: setShowAIKnown   },
+              { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                       val: showLastPlay,  set: setShowLastPlay  },
+              { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska, Ristiseiska, Maija, Paskahousu, Moska)', val: showIntention, set: setShowIntention },
+              { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
+              { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
+              { label: 'Äänet',                                                                       val: soundOn,       set: setSoundOn       },
+            ].filter(Boolean);
+          })().map(({ label, val, set, disabled }) => (
             <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
               <input
                 type="checkbox" checked={disabled ? false : val} onChange={disabled ? undefined : () => set(v => !v)}
@@ -655,24 +777,23 @@ export default function App() {
           <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Koneälyn taso 🤖</div>
           <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
             {[
-              { key: 'beginner',     label: 'Aloittelija',     desc: 'tekee virheitä, voitettavissa' },
-              { key: 'normal',       label: 'Normaali',        desc: 'pelaa hyvin, mokaa joskus' },
-              { key: 'hard',         label: 'Vaativa',         desc: 'täysi strategia' },
-              { key: 'supernatural', label: 'Yliluonnollinen', desc: 'muistaa poistetut kortit' },
+              { key: 'beginner', label: 'Aloittelija', desc: 'tekee virheitä, voitettavissa' },
+              { key: 'normal',   label: 'Normaali',    desc: 'pelaa hyvin, mokaa joskus' },
+              { key: 'hard',     label: 'Vaativa',     desc: 'täysi strategia + muistaa kortit' },
             ].map(({ key, label, desc }) => (
               <button
                 key={key}
                 onClick={() => setAiLevel(key)}
                 style={{
-                  flex: 1, minWidth: 'calc(50% - 4px)', padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
+                  flex: 1, minWidth: 'calc(33% - 4px)', padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
                   fontFamily: 'sans-serif', fontSize: 12,
-                  background: aiLevel === key ? (key === 'supernatural' ? 'rgba(138,92,230,0.15)' : `${C.gold}22`) : 'transparent',
-                  border: `1px solid ${aiLevel === key ? (key === 'supernatural' ? '#8a5ce6' : C.gold) : C.panelBorder}`,
-                  color: aiLevel === key ? (key === 'supernatural' ? '#b48aff' : C.gold) : C.dim,
+                  background: aiLevel === key ? `${C.gold}22` : 'transparent',
+                  border: `1px solid ${aiLevel === key ? C.gold : C.panelBorder}`,
+                  color: aiLevel === key ? C.gold : C.dim,
                   transition: 'all 0.15s',
                 }}
               >
-                {key === 'supernatural' ? '🔮 ' : ''}{label}
+                {label}
                 <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{desc}</div>
               </button>
             ))}
@@ -773,23 +894,40 @@ export default function App() {
         <span style={{ fontFamily: 'Georgia,serif', fontSize: isMobile ? 12 : 13, color: C.gold }}>
           🏆 {botResult.ranking[0]?.name} voitti
         </span>
-        <button
-          onClick={() => { setBotResult(null); setActive(null); setGameKey(k => k + 1); }}
-          style={{
-            background: C.gold, border: 'none', borderRadius: 8,
-            padding: isMobile ? '6px 14px' : '7px 18px',
-            color: '#0d2118', fontFamily: 'Georgia,serif',
-            fontSize: isMobile ? 12 : 13, fontWeight: 700, cursor: 'pointer',
-            flexShrink: 0,
-          }}
-        >
-          Pelivalinta →
-        </button>
+        <div style={{ display:'flex', gap:8, flexShrink:0 }}>
+          {siirtorekisteri.length > 0 && (
+            <button
+              onClick={() => setReplayOpen(true)}
+              style={{
+                background: 'transparent', border: `1px solid ${C.gold}`, borderRadius: 8,
+                padding: isMobile ? '5px 10px' : '6px 14px',
+                color: C.gold, fontFamily: 'Georgia,serif',
+                fontSize: isMobile ? 11 : 12, cursor: 'pointer',
+              }}
+            >
+              ▶ Toisto ({siirtorekisteri.length})
+            </button>
+          )}
+          <button
+            onClick={() => { setBotResult(null); setActive(null); setGameKey(k => k + 1); }}
+            style={{
+              background: C.gold, border: 'none', borderRadius: 8,
+              padding: isMobile ? '6px 14px' : '7px 18px',
+              color: '#0d2118', fontFamily: 'Georgia,serif',
+              fontSize: isMobile ? 12 : 13, fontWeight: 700, cursor: 'pointer',
+            }}
+          >
+            Pelivalinta →
+          </button>
+        </div>
       </div>
     );
 
     return (
       <div style={{ maxWidth: maxW, margin: '0 auto' }}>
+        {replayOpen && siirtorekisteri.length > 0 && (
+          <ReplayView frames={siirtorekisteri} onClose={() => setReplayOpen(false)} isMobile={isMobile} />
+        )}
         {settingsPanel}
         {glossaryScreen}
         <GameHeader title={game.name} onBack={() => { setResultData(null); setBotResult(null); setActive(null); }} gearBtn={gearBtn} isMobile={isMobile} />
@@ -801,7 +939,6 @@ export default function App() {
           soundOn={soundOn}
           seeAll={seeAll}
           showCounts={showCounts}
-          showPlayHints={showPlayHints}
           teachMode={teachMode}
           showLastPlay={showLastPlay}
           showIntention={showIntention}
@@ -813,6 +950,7 @@ export default function App() {
           aiLevel={aiLevel}
           onAiLevelChange={setAiLevel}
           onResult={(result) => handleGameResult(active, result)}
+          onSnapshot={handleSnapshot}
         />
       </div>
     );

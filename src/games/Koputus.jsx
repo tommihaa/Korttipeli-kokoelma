@@ -106,7 +106,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
@@ -169,6 +169,12 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
     logRef.current = [entry, ...logRef.current].slice(0, 40);
     setLog([...logRef.current]);
+    if (allBotsRef.current && onSnapshot && gRef.current) {
+      const g = gRef.current;
+      onSnapshot({ step: logRef.current.length, logText: m,
+        players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.cards ?? [], cardCount: p.cards?.length ?? 0, score: null })),
+        tableCards: (g.discard ?? []).slice(-1), extraText: null });
+    }
   };
 
   function detectMoment(eventType, context) {
@@ -257,8 +263,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   }
 
   function startBotBattle() {
-    aiLevelRef.current = 'supernatural';
-    onAiLevelChange?.('supernatural');
+    aiLevelRef.current = 'hard';
+    onAiLevelChange?.('hard');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setDebug(true);
     startGame(nP, true);
@@ -448,8 +454,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         if (!stopReact.current) { stopReact.current = true; setRO(false); setMsg(M.reactEnd); advance(gState, byIdx); }
       }
     }, 500);
-    const level = allBotsRef.current ? 'supernatural' : aiLevelRef.current;
-    const missProbability   = level === 'beginner' ? 0.5  : level === 'normal' ? 0.25 : level === 'hard' ? 0.1 : 0.03;
+    const level = allBotsRef.current ? 'hard' : aiLevelRef.current;
+    const missProbability   = level === 'beginner' ? 0.5 : level === 'normal' ? 0.25 : 0.03;
     const wrongReactChance  = level === 'beginner' ? 0.15 : 0;
 
     gState.players.forEach((p, i) => {
@@ -572,7 +578,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       const uk = p.cards.filter(c => c !== null).length - p.known.size;
       const est = ks + uk * 5;
       // Aloittelija koputaa liian aikaisin — ylioptimistinen arvio omasta tilanteesta
-      const knockThreshold = aiShouldFumble(allBotsRef.current ? 'supernatural' : aiLevelRef.current) ? 14 : 8;
+      const knockThreshold = aiShouldFumble(allBotsRef.current ? 'hard' : aiLevelRef.current) ? 14 : 8;
       if (est <= knockThreshold) {
         setKB(playerIdx); knockRef.current = playerIdx;
         const lr = new Set(gState.players.filter((_, i) => i !== playerIdx).map(pl => pl.id));
@@ -666,7 +672,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita peli →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · Vaativa taso</span>
         </button>
       </div>
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
@@ -869,7 +875,6 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
           <button onClick={togglePause} style={{ background: paused ? 'rgba(192,132,252,0.2)' : 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 12px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
           <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = +e.target.value; setAiDelayMs(v); aiDelayRef.current = v; }} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE' }} />
           <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c084fc' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-          <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 10px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>↺</button>
         </div>
       )}
 
@@ -885,7 +890,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun koputus tai pakka loppuu</span>
         <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
       </div>
 
       <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>

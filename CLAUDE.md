@@ -19,16 +19,20 @@ Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 | `soundOn` | true | Äänet |
 | `seeAll` | false | Cheat Mode — Hero näkee kaikki kortit |
 | `showCounts` | true | Korttimäärät näkyvillä |
-| `showPlayHints` | true | Pelattavat kortit korostettu |
 | `teachMode` | false | Strategiatippejä (poistettu asetusvalikosta, prop silti olemassa) |
 | `showLastPlay` | true | Kelluva viimeisin siirto -indikaattori |
 
 ## Component signature (kaikki 9 peliä)
 ```jsx
 export default function PelinNimi({ onResult, hints, soundOn: initSoundOn, seeAll: initSeeAll,
-  showCounts, showPlayHints, teachMode, showLastPlay, isMobile, playerCount, playerNames }) {}
+  showCounts, teachMode, showLastPlay, isMobile, playerCount, playerNames,
+  aiLevel, onAiLevelChange }) {}
 ```
-Huom: `playerCount` välitetään propina, pelit eivät vielä kaikki hyödynnä sitä (wiring kesken).
+
+## AI-tasot (3 kpl)
+`Aloittelija | Normaali | Vaativa`
+- **Vaativa** = täysi strategia + muistaa pelattuja kortteja (aiempi "Yliluonnollinen"-logiikka)
+- Sisäiset avaimet: `'beginner'` | `'normal'` | `'hard'`
 
 ## Session start
 At the start of every session run `npm run dev` in the background so the dev server is available at http://localhost:5173/ for preview verification during development.

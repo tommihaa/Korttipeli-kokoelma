@@ -256,7 +256,7 @@ const M = {
   noBuildLeave: 'Sinulla on rakennelma pöydässä — kaappaa se ensin!',
 };
 
-export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
+export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -356,6 +356,12 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
     logRef.current = [e, ...logRef.current].slice(0, 60);
     setLog([...logRef.current]);
+    if (allBotsRef.current && onSnapshot && gRef.current) {
+      const g = gRef.current;
+      onSnapshot({ step: logRef.current.length, logText: m,
+        players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: p.score ?? 0 })),
+        tableCards: [...(g.table ?? []), ...(g.builds ?? []).flatMap(b => b.cards ?? [])], extraText: null });
+    }
   }
 
   function detectMoment(eventType, context) {
@@ -396,8 +402,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   }
 
   function startBotBattle() {
-    aiLevelRef.current = 'supernatural';
-    onAiLevelChange?.('supernatural');
+    aiLevelRef.current = 'hard';
+    onAiLevelChange?.('hard');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setDebug(true);
     startGame(nP, true);
@@ -915,9 +921,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     if (!g || phaseRef.current === 'idle') return;
     const p = g.players[playerIdx];
     if (!p.hand.length) { advance(g, playerIdx); return; }
-    const level = allBotsRef.current ? 'supernatural' : aiLevelRef.current;
+    const level = allBotsRef.current ? 'hard' : aiLevelRef.current;
     const isBeginner = level === 'beginner';
-    const isSuper = level === 'supernatural';
+    const isSuper = level === 'hard';
     const fumble = aiShouldFumble(level);
     const aDel = allBotsRef.current ? 400 : 1200; // animation delay
     const qDel = allBotsRef.current ? 200 : 700;  // quick action delay
@@ -989,7 +995,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           // Normal: rakenna aina kun voi
           doBuildAction = true;
         } else {
-          // Hard/supernatural: rakenna vain jos rakennusarvo > kaappauksen arvo
+          // Hard: rakenna vain jos rakennusarvo > kaappauksen arvo
           const captureScore = captureToUse ? captureToUse.score : 0;
           let stealRisk = 0;
           if (isSuper) {
@@ -1106,7 +1112,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · Vaativa taso</span>
         </button>
       </div>
     </div>
@@ -1397,7 +1403,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           <button onClick={togglePause} style={{ background: paused ? 'rgba(192,132,252,0.2)' : 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 12px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
           <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = +e.target.value; setAiDelayMs(v); aiDelayRef.current = v; }} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE' }} />
           <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c084fc' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-          <button onClick={startBotBattle} style={{ background: 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 10px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>↺</button>
         </div>
       )}
 
@@ -1519,7 +1524,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Cheat Mode
+          {debugOpen ? '🙈' : '🔍'} Avoimet kortit
         </button>
       </div>
 

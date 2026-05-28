@@ -180,7 +180,7 @@ function aiPickAddCard(addable, hand, ts) {
 }
 
 // ── Komponentti ───────────────────────────────────────────────
-export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
+export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -265,6 +265,13 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
     logRef.current = [e, ...logRef.current].slice(0, 60);
     setLog([...logRef.current]);
+    if (allBotsRef.current && onSnapshot && gRef.current) {
+      const g = gRef.current;
+      onSnapshot({ step: logRef.current.length, logText: m,
+        players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: null })),
+        tableCards: (g.table ?? []).flatMap(t => [t.atk, t.def].filter(Boolean)),
+        extraText: g.ts ? `Valtti: ${g.ts}` : null });
+    }
   }
 
   function setGS(g) { setG(g); gRef.current = g; }
@@ -413,8 +420,8 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
   function startBotBattle() {
     allBotsRef.current = true; setAllBots(true);
-    aiLevelRef.current = 'supernatural';
-    onAiLevelChange?.('supernatural');
+    aiLevelRef.current = 'hard';
+    onAiLevelChange?.('hard');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setDebug(true);
     startGame(nP, true);
@@ -741,7 +748,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       const lvl = aiLevelRef.current;
       const shouldAdd = lvl === 'beginner'
         ? g.table.length <= 1 && def.hand.length >= 5
-        : lvl === 'hard' || lvl === 'supernatural'
+        : lvl === 'hard'
           ? def.hand.length >= 2 && g.table.length < 5
           : def.hand.length >= 3 || g.table.length <= 2;
       if (shouldAdd) {
@@ -775,7 +782,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       if (p.isHuman) return;
       const lvlA = aiLevelRef.current;
       let cards;
-      if (lvlA === 'supernatural') {
+      if (lvlA === 'hard') {
         cards = aiPickAttackSN(p, ts, removedRef.current);
       } else {
         cards = aiPickAttack(p, players[defender].hand.length, ts);
@@ -834,7 +841,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         hand = hand.filter(c => c.id !== dc.id);
       }
 
-      const isSN = aiLevelRef.current === 'supernatural';
+      const isSN = aiLevelRef.current === 'hard';
       if (canBeatAll) {
         aiTmr.current = tm(() => {
           let cur = gRef.current;
@@ -1034,7 +1041,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · Vaativa taso</span>
         </button>
       </div>
     </div>
@@ -1295,7 +1302,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
             <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = Number(e.target.value); setAiDelayMs(v); aiDelayRef.current = v; }} style={{ width: 80, accentColor: '#7B2FBE', cursor: 'pointer' }} />
             <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9b6dc4' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
           </div>
-          <button onClick={startBotBattle} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 10, border: '1px solid rgba(123,47,190,0.4)', background: 'transparent', color: '#9b6dc4', cursor: 'pointer', fontFamily: 'sans-serif', marginLeft: 'auto' }}>↺ Uusi</button>
         </div>
       )}
 
@@ -1382,7 +1388,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Cheat Mode
+          {debugOpen ? '🙈' : '🔍'} Avoimet kortit
         </button>
       </div>
 

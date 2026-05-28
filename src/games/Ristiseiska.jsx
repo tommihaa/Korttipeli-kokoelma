@@ -143,7 +143,7 @@ function aiBestCard(hand, rows, level = 'normal') {
     return sevens.sort((a, b) => suitCount(hand, b.s) - suitCount(hand, a.s))[0];
   }
 
-  const isHard = level === 'hard' || level === 'supernatural';
+  const isHard = level === 'hard';
 
   // Normal: pidättele porttia aina kun samaa maata on useampi → pakotettu passaus
   // Hard/Super: pidättele vain jos kädessä on hyvä panttikandidaatti samaa maata
@@ -181,7 +181,7 @@ function aiWorstCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
+export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -228,6 +228,12 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
     logRef.current = [e, ...logRef.current].slice(0, 60);
     setLog([...logRef.current]);
+    if (allBotsRef.current && onSnapshot && gRef.current) {
+      const g = gRef.current;
+      onSnapshot({ step: logRef.current.length, logText: m,
+        players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: null })),
+        tableCards: [], extraText: null });
+    }
   }
 
   function flashLastPlay(name, card, isHuman = false) {
@@ -275,8 +281,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   }
 
   function startBotBattle() {
-    aiLevelRef.current = 'supernatural';
-    onAiLevelChange?.('supernatural');
+    aiLevelRef.current = 'hard';
+    onAiLevelChange?.('hard');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setDebug(true);
     setNP(4);
@@ -565,7 +571,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · Vaativa taso</span>
         </button>
       </div>
     </div>
@@ -620,7 +626,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     return ['J', 'Q', 'K'][v - 11];
   };
 
-  const StackRow = ({ suit, showPlayHints }) => {
+  const StackRow = ({ suit }) => {
     const row = G.rows[suit];
     const cW = isMobile ? 46 : 60;
     const cH = isMobile ? 52 : 85;
@@ -698,72 +704,55 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       </div>
     );
 
-    // Aputext: näytä tila tai pelattavat kortit (väreillä, jos showPlayHints)
+    // Aputext: näytä pelattavat kortit väreillä
     let helpText = '';
     let helpElements = null;
-    if (showPlayHints) {
-      if (!row.active) {
-        // Vain ♣7 voidaan pelata ensin, sitten muut 7:t
-        if (suit === '♣' || G.rows['♣'].active) {
-          helpElements = (
-            <>
-              pelaa:{' '}
-              <span style={{ color: tc }}>7{suit}</span>
-            </>
-          );
-        }
-      } else {
-        const lowerCast = row.low < 6;
-        const upperCast = row.high > 8;
-        const playable = [];
-        // Ala-pino: seuraava on row.low - 1
-        if (row.low > 1) {
-          const nextLower = row.low - 1;
-          // 5 vaatii 8:n ensin
-          if (nextLower !== 5 || row.high >= 8) {
-            playable.push(rankFromVal(nextLower));
-          }
-        }
-        // Ylä-pino: seuraava on row.high + 1
-        if (row.high < 13) {
-          const nextUpper = row.high + 1;
-          // 8 vaatii 6:n ensin
-          if (nextUpper !== 8 || row.low <= 6) {
-            playable.push(rankFromVal(nextUpper));
-          }
-        }
-        if (playable.length > 0) {
-          helpElements = (
-            <>
-              pelaa:{' '}
-              {playable.map((r, i) => (
-                <span key={i} style={{ color: tc }}>
-                  {r}{suit}
-                  {i < playable.length - 1 ? ', ' : ''}
-                </span>
-              ))}
-            </>
-          );
-        } else if (lowerComplete && upperComplete) {
-          helpText = 'Tämän maan pinot on kaadettu';
-        } else if (lowerCast && upperCast) {
-          helpText = 'Tämän maan pinot on avattu';
-        }
+    if (!row.active) {
+      // Vain ♣7 voidaan pelata ensin, sitten muut 7:t
+      if (suit === '♣' || G.rows['♣'].active) {
+        helpElements = (
+          <>
+            pelaa:{' '}
+            <span style={{ color: tc }}>7{suit}</span>
+          </>
+        );
       }
     } else {
-      // Näytä vain status (ei pelattavia kortteja)
-      if (!row.active) {
-        helpText = 'vaadittu: 7, 6, 8';
-      } else {
-        const lowerCast = row.low < 6;
-        const upperCast = row.high > 8;
-        if (lowerCast && upperCast) {
-          helpText = 'molemmat kaadettu';
-        } else if (lowerCast) {
-          helpText = 'ala-pino kaadettu';
-        } else if (upperCast) {
-          helpText = 'ylä-pino kaadettu';
+      const lowerCast = row.low < 6;
+      const upperCast = row.high > 8;
+      const playable = [];
+      // Ala-pino: seuraava on row.low - 1
+      if (row.low > 1) {
+        const nextLower = row.low - 1;
+        // 5 vaatii 8:n ensin
+        if (nextLower !== 5 || row.high >= 8) {
+          playable.push(rankFromVal(nextLower));
         }
+      }
+      // Ylä-pino: seuraava on row.high + 1
+      if (row.high < 13) {
+        const nextUpper = row.high + 1;
+        // 8 vaatii 6:n ensin
+        if (nextUpper !== 8 || row.low <= 6) {
+          playable.push(rankFromVal(nextUpper));
+        }
+      }
+      if (playable.length > 0) {
+        helpElements = (
+          <>
+            pelaa:{' '}
+            {playable.map((r, i) => (
+              <span key={i} style={{ color: tc }}>
+                {r}{suit}
+                {i < playable.length - 1 ? ', ' : ''}
+              </span>
+            ))}
+          </>
+        );
+      } else if (lowerComplete && upperComplete) {
+        helpText = 'Tämän maan pinot on kaadettu';
+      } else if (lowerCast && upperCast) {
+        helpText = 'Tämän maan pinot on avattu';
       }
     }
 
@@ -873,7 +862,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
           TORNIT · ala-pino [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; ylä-pino [8→K]
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? 6 : 16 }}>
-          {SUITS.map(s => <StackRow key={s} suit={s} showPlayHints={showPlayHints} />)}
+          {SUITS.map(s => <StackRow key={s} suit={s} />)}
         </div>
       </div>
 
@@ -964,7 +953,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
         </div>
       </div>
 

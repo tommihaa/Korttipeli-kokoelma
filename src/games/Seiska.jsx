@@ -182,7 +182,7 @@ function initSlots(count) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
+export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
   const [nP, setNP] = useState(playerCount);
@@ -270,6 +270,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
     logRef.current = [e, ...logRef.current].slice(0, 60);
     setLog([...logRef.current]);
+    if (onSnapshot && gRef.current?.players.every(p => !p.isHuman)) {
+      const g = gRef.current;
+      onSnapshot({ step: logRef.current.length, logText: m,
+        players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: null })),
+        tableCards: g.discardTop ? [g.discardTop] : [], extraText: null });
+    }
   }
 
   function setGS(g) { setG(g); gRef.current = g; }
@@ -340,13 +346,13 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     setGS(g);
     addLog(M.gameStart(lblColored(g.discardTop)));
     if (g.players.every(p => !p.isHuman)) {
-      if (aiLevelRef.current !== 'supernatural') {
-        onAiLevelChange?.('supernatural');
-        aiLevelRef.current = 'supernatural';
+      if (aiLevelRef.current !== 'hard') {
+        onAiLevelChange?.('hard');
+        aiLevelRef.current = 'hard';
       }
       aiDelayRef.current = 3000;
       setAiDelayMs(3000);
-      addLog('🔮 Katsomotila — kaikki botit pelaavat yliluonnollisella tasolla.');
+      addLog('🔮 Katsomotila — kaikki botit pelaavat Vaativalla tasolla.');
     }
     setScreen('game');
     setShuffling(true);
@@ -365,8 +371,8 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   }
 
   function startBotBattle() {
-    aiLevelRef.current = 'supernatural';
-    onAiLevelChange?.('supernatural');
+    aiLevelRef.current = 'hard';
+    onAiLevelChange?.('hard');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setDebug(true);
     const slots = Array(4).fill(null).map((_, i) => ({ name: '', isHuman: false, active: true }));
@@ -521,7 +527,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       g2 = { ...g2, aceBonus: card.s };
       if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
         if (!p.isHuman) {
-          const effectiveLevel = g2.players.every(pl => !pl.isHuman) ? 'supernatural' : aiLevelRef.current;
+          const effectiveLevel = g2.players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current;
           if (aiShouldFumble(effectiveLevel)) {
             g2 = { ...g2, pendingLappu: playerIdx };
           } else {
@@ -539,7 +545,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     // Lappu
     if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
       if (!p.isHuman) {
-        const effectiveLevel2 = g2.players.every(pl => !pl.isHuman) ? 'supernatural' : aiLevelRef.current;
+        const effectiveLevel2 = g2.players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current;
         if (aiShouldFumble(effectiveLevel2)) {
           g2 = { ...g2, pendingLappu: playerIdx };
           advanceTurn(g2, playerIdx);
@@ -638,9 +644,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
     // Katsomotilassa (kaikki botteja) käytetään aina yliluonnollista tasoa
-    const level  = players.every(pl => !pl.isHuman) ? 'supernatural' : aiLevelRef.current;
-    const isSuper = level === 'supernatural';
-    const isHard  = level === 'hard' || isSuper;
+    const level  = players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current;
+    const isSuper = level === 'hard';
+    const isHard  = isSuper;
 
     // ── Ässä-bonusvuoro ─────────────────────────────────────
     if (aceBonus !== null) {
@@ -857,7 +863,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · Vaativa taso</span>
         </button>
       </div>
     </div>
@@ -1106,15 +1112,12 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         <div style={{ background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', letterSpacing: 1 }}>🤖 KATSELUTILA</span>
           <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: '#f0e6ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 9, color: '#c084fc', opacity: 0.7, letterSpacing: 1, textTransform: 'uppercase' }}>Pelitahti</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <button onClick={() => changeDelay(-500)} disabled={aiDelayMs <= 200} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif', border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: aiDelayMs <= 200 ? 'rgba(255,255,255,0.15)' : '#bb88ff', cursor: aiDelayMs <= 200 ? 'default' : 'pointer' }}>−0.5s</button>
-              <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#f0e6ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-              <button onClick={() => changeDelay(+500)} disabled={aiDelayMs >= 3000} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif', border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: aiDelayMs >= 3000 ? 'rgba(255,255,255,0.15)' : '#bb88ff', cursor: aiDelayMs >= 3000 ? 'default' : 'pointer' }}>+0.5s</button>
-            </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: '#c084fc', opacity: 0.7 }}>tahti:</span>
+            <button onClick={() => changeDelay(-500)} disabled={aiDelayMs <= 200} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif', border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: aiDelayMs <= 200 ? 'rgba(255,255,255,0.15)' : '#bb88ff', cursor: aiDelayMs <= 200 ? 'default' : 'pointer' }}>−0.5s</button>
+            <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#f0e6ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
+            <button onClick={() => changeDelay(+500)} disabled={aiDelayMs >= 3000} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif', border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: aiDelayMs >= 3000 ? 'rgba(255,255,255,0.15)' : '#bb88ff', cursor: aiDelayMs >= 3000 ? 'default' : 'pointer' }}>+0.5s</button>
           </span>
-          <button onClick={startBotBattle} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: 'transparent', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>↺</button>
         </div>
       )}
 
@@ -1131,25 +1134,23 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
             }}>
               {paused ? '▶ Jatka' : '⏸ Tauko'}
             </button>
-            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-              <span style={{ fontFamily: 'sans-serif', fontSize: 9, color: C.dim, opacity: 0.55, letterSpacing: 1, textTransform: 'uppercase' }}>Pelitahti</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <button onClick={() => changeDelay(-500)} disabled={aiDelayMs <= 200} style={{
-                  fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif',
-                  border: `1px solid ${C.panelBorder}`, background: 'rgba(255,255,255,0.04)',
-                  color: aiDelayMs <= 200 ? 'rgba(255,255,255,0.15)' : C.dim,
-                  cursor: aiDelayMs <= 200 ? 'default' : 'pointer',
-                }}>−0.5s</button>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.text, minWidth: 30, textAlign: 'center' }}>
-                  {(aiDelayMs / 1000).toFixed(1)}s
-                </span>
-                <button onClick={() => changeDelay(+500)} disabled={aiDelayMs >= 3000} style={{
-                  fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif',
-                  border: `1px solid ${C.panelBorder}`, background: 'rgba(255,255,255,0.04)',
-                  color: aiDelayMs >= 3000 ? 'rgba(255,255,255,0.15)' : C.dim,
-                  cursor: aiDelayMs >= 3000 ? 'default' : 'pointer',
-                }}>+0.5s</button>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, opacity: 0.7 }}>tahti:</span>
+              <button onClick={() => changeDelay(-500)} disabled={aiDelayMs <= 200} style={{
+                fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif',
+                border: `1px solid ${C.panelBorder}`, background: 'rgba(255,255,255,0.04)',
+                color: aiDelayMs <= 200 ? 'rgba(255,255,255,0.15)' : C.dim,
+                cursor: aiDelayMs <= 200 ? 'default' : 'pointer',
+              }}>−0.5s</button>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.text, minWidth: 30, textAlign: 'center' }}>
+                {(aiDelayMs / 1000).toFixed(1)}s
               </span>
+              <button onClick={() => changeDelay(+500)} disabled={aiDelayMs >= 3000} style={{
+                fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif',
+                border: `1px solid ${C.panelBorder}`, background: 'rgba(255,255,255,0.04)',
+                color: aiDelayMs >= 3000 ? 'rgba(255,255,255,0.15)' : C.dim,
+                cursor: aiDelayMs >= 3000 ? 'default' : 'pointer',
+              }}>+0.5s</button>
             </span>
           </>
         )}
@@ -1203,7 +1204,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
         </div>
       </div>
 

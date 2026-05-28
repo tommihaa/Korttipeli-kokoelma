@@ -33,7 +33,7 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
+export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
   const [soundOn, setSnd]   = useState(initSoundOn);
@@ -87,6 +87,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const allBotNamesRef = useRef([]);
   const pausedRef    = useRef(false);
   const aiDelayRef   = useRef(2000);
+  const onSnapshotRef = useRef(onSnapshot);
+  useEffect(() => { onSnapshotRef.current = onSnapshot; }, [onSnapshot]);
 
   useEffect(() => { pilesRef.current = piles; }, [piles]);
   useEffect(() => { centerRef.current = center; }, [center]);
@@ -101,6 +103,13 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     logRef.current = [entry, ...logRef.current].slice(0, 50);
     setLog([...logRef.current]);
     setMsg(m);
+    if (allBotsRef.current && onSnapshotRef.current) {
+      onSnapshotRef.current({ step: logRef.current.length, logText: m,
+        players: (pilesRef.current ?? []).map((pile, i) => ({
+          name: allBotNamesRef.current[i] ?? `Bot${i + 1}`,
+          isHuman: false, hand: pile ?? [], cardCount: pile?.length ?? 0, score: null })),
+        tableCards: (centerRef.current ?? []).slice(-5), extraText: null });
+    }
   }, []);
 
   const detectMoment = useCallback((eventType, context) => {
@@ -181,8 +190,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
 
   function startBotBattle() {
     allBotNamesRef.current = shuffledAINames(playerNames).slice(0, 4);
-    aiLevelRef.current = 'supernatural';
-    onAiLevelChange?.('supernatural');
+    aiLevelRef.current = 'hard';
+    onAiLevelChange?.('hard');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setDebug(true);
     setNP(4);
@@ -356,13 +365,12 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     aiSlapTmrs.current = piles.map((pile, i) => {
       if ((i === 0 && !allBotsRef.current) || pile.length === 0) return null;
       // Per-level timing: avg = minDelay + spread/2 (before bonuses)
-      // beginner ~1550ms, normal ~1700ms, hard ~1300ms, supernatural ~1000ms
+      // beginner ~1550ms, normal ~1700ms, hard ~1000ms
       const { minDelay, spread } =
-        level === 'beginner'     ? { minDelay: 750,  spread: 1600 } :
-        level === 'normal'       ? { minDelay: 1100, spread: 1200 } :
-        level === 'hard'         ? { minDelay: 700,  spread: 1200 } :
-        level === 'supernatural' ? { minDelay: 500,  spread: 1000 } :
-                                   { minDelay: 1100, spread: 1200 };
+        level === 'beginner' ? { minDelay: 750,  spread: 1600 } :
+        level === 'normal'   ? { minDelay: 1100, spread: 1200 } :
+        level === 'hard'     ? { minDelay: 500,  spread: 1000 } :
+                               { minDelay: 1100, spread: 1200 };
       // Anticipation (card counting) and prediction shorten effective minimum
       const anticipationBonus = anticipation * 200;
       const predictBonus      = predicted ? 150 : 0;
@@ -527,7 +535,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · Vaativa taso</span>
         </button>
       </div>
     </div>
@@ -747,7 +755,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> voita kaikki kortit — viimeinen pelissä voittaa</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Cheat Mode</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
       </div>
 
       {allBots && phase !== 'gameover' && (

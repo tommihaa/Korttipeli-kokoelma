@@ -130,7 +130,7 @@ function fillHand(hand, draw) {
 // AI: valitse paras kortti tai kortit
 // pile = nykyinen kasa (ennen pelaamista) — tarvitaan 4x-kaatolaskennan tarkistukseen
 // drawLength = nostopakan koko — 0 = pakka loppu, siirry endgame-strategiaan
-// level = 'beginner'|'normal'|'hard'|'supernatural'
+// level = 'beginner'|'normal'|'hard'
 // allCards = kaikki 52 korttia pelin alussa (inferenssiä varten)
 // clearedCards = kasatut/poistetut kortit (inferenssiä varten)
 // activePlayers = aktiivisten (ei finished) pelaajien määrä
@@ -138,8 +138,8 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
   const opts = hand.filter(c => canPlay(c, top));
   if (!opts.length) return null;
 
-  const isHard  = level === 'hard' || level === 'supernatural';
-  const isSuper = level === 'supernatural';
+  const isHard  = level === 'hard';
+  const isSuper = level === 'hard';
   const isKova  = c => c.r === '2' && (c.s === '♠' || c.s === '♣');
 
   // Täydelliset tiedot: yliluonnollinen + kaksinpeli + pakka tyhjä
@@ -260,7 +260,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
-export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showPlayHints = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange }) {
+export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -308,7 +308,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + yliluonnollinen
   useEffect(() => {
     if (!G || G.phase === 'gameover' || suddenDeathStarted.current) return;
-    if (aiLevelRef.current !== 'supernatural') return;
+    if (aiLevelRef.current !== 'hard') return;
     const activeCount = G.players.filter((_, i) => !G.finished.includes(i)).length;
     if (G.draw.length === 0 && activeCount === 2) {
       suddenDeathStarted.current = true;
@@ -335,6 +335,12 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     };
     logRef.current = [e, ...logRef.current].slice(0, 60);
     setLog([...logRef.current]);
+    if (allBotsRef.current && onSnapshot && gRef.current) {
+      const g = gRef.current;
+      onSnapshot({ step: logRef.current.length, logText: m,
+        players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: null })),
+        tableCards: g.top ? [g.top] : [], extraText: null });
+    }
   }
 
   function setGS(g) { setG(g); gRef.current = g; }
@@ -416,8 +422,8 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   }
 
   function startBotBattle() {
-    aiLevelRef.current = 'supernatural';
-    onAiLevelChange?.('supernatural');
+    aiLevelRef.current = 'hard';
+    onAiLevelChange?.('hard');
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setDebug(true);
     setNP(4);
@@ -460,7 +466,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     if (g.draw.length > 0 && draw.length === 0) {
       setPakaAnim(true); // pakka on tyhjä
       const activeNow = g.players.length - g.finished.length;
-      if (!(aiLevelRef.current === 'supernatural' && activeNow === 2))
+      if (!(aiLevelRef.current === 'hard' && activeNow === 2))
         addLog('📦 Pakka on tyhjä — peli jatkuu käsikortein.');
     }
 
@@ -568,7 +574,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       if (draw.length === 0) {
         setPakaAnim(true); // pakka on tyhjä
         const activeNow = g.players.length - g.finished.length;
-        if (!(aiLevelRef.current === 'supernatural' && activeNow === 2))
+        if (!(aiLevelRef.current === 'hard' && activeNow === 2))
           addLog('📦 Pakka on tyhjä — peli jatkuu käsikortein.');
       }
 
@@ -877,7 +883,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · yliluonnollinen taso</span>
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · Vaativa taso</span>
         </button>
       </div>
     </div>
@@ -1180,7 +1186,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Cheat Mode
+          {debugOpen ? '🙈' : '🔍'} Avoimet kortit
         </button>
       </div>
 
