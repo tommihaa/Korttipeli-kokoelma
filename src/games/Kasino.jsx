@@ -2,10 +2,11 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, SUIT_COLOR_DARK } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble, newDeck } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames(pool) {
@@ -146,10 +147,6 @@ function pWeightedLeaveDanger(candidate, g, playerIdx) {
   return danger;
 }
 
-function newDeck() {
-  return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));
-}
-
 // ── Multi-capture: voidaanko valitut pöytäkortit jakaa ryhmiin,
 //    joista kukin summautuu kohdearvoon?
 function canPartition(cards, target) {
@@ -248,15 +245,12 @@ const M = {
   warning: (card, captured) => `⚠ Huom: ${card} olisi kaapattu ${captured} — klikkaa pöytäkortit ennen käsikorttia.`,
   invalidMove: (card) => `${card} ei kaappaa valittuja kortteja — tarkista valintasi tai peruuta.`,
   aiCapture: (name, handCard, captureStr, isMokki) => `${name}: ${handCard} ← ${captureStr}${isMokki ? ' 🏠 MÖKKI!' : ''}`,
-  tipMokki:   name => `💡 ${name} tekee MOKIN — kaappaa koko pöydän kerralla!`,
-  tipSpecial: (name, card) => `💡 ${name} kohdistaa ${card}:hin — arvokkain kaappaus!`,
-  tipLeave:   (name, card) => `💡 ${name} jättää pienen ${card} pöydälle — ei paljasta arvokorttia`,
   humanBuild: (who, value) => `${who} rakentaa rakennelman — arvo ${value}`,
   aiBuild:    (name, value) => `${name} rakentaa rakennelman — arvo ${value}`,
   noBuildLeave: 'Sinulla on rakennelma pöydässä — kaappaa se ensin!',
 };
 
-export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -303,7 +297,6 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const pausedRef  = useRef(false);
   const aiDelayRef = useRef(2000);
   const sndRef     = useRef(false);
-  const teachRef   = useRef(teachMode);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs    = useRef(new Set());
@@ -1226,7 +1219,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           })}
           {scores.some(s => s.totalScore >= 16) ? (
             allBots ? (
-              <div style={{ marginTop: 10, textAlign: 'center', fontFamily: 'sans-serif', fontSize: 12, color: '#c084fc' }}>🤖 Näytetään tulokset...</div>
+              <div style={{ marginTop: 10, textAlign: 'center', fontFamily: 'sans-serif', fontSize: 12, color: C.botMode }}>🤖 Näytetään tulokset...</div>
             ) : (
               <button onClick={() => setScreen('gameover')} style={{ marginTop: 10, width: '100%', background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 0', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>
                 Uusi ottelu →
@@ -1398,12 +1391,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
 
       {/* Bottien taistelu -hallintapalkki */}
       {allBots && (
-        <div style={{ background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', letterSpacing: 1 }}>🤖 KATSELUTILA</span>
-          <button onClick={togglePause} style={{ background: paused ? 'rgba(192,132,252,0.2)' : 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 12px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = +e.target.value; setAiDelayMs(v); aiDelayRef.current = v; }} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE' }} />
-          <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c084fc' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-        </div>
+        <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}
+          onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
       {/* Peruuta / Seuraava */}
@@ -1723,13 +1712,13 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       {/* PendingResult overlay — allBots-tilan loppunäyttö */}
       {pendingResult && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(0,0,0,0.88)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
-          <div style={{ fontSize: 26, color: '#c084fc', fontFamily: 'Georgia,serif', letterSpacing: 4 }}>🤖 TAISTELU PÄÄTTYI</div>
+          <div style={{ fontSize: 26, color: C.botMode, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>🤖 TAISTELU PÄÄTTYI</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
             {pendingResult.ranking.map((p, i) => (
               <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? 'rgba(123,47,190,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? 'rgba(192,132,252,0.5)' : 'rgba(255,255,255,0.08)'}` }}>
                 <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : '🤖'}</span>
-                <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? '#c084fc' : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: i === 0 ? '#c084fc' : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
+                <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? C.botMode : C.text }}>{p.name}</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: i === 0 ? C.botMode : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
               </div>
             ))}
           </div>

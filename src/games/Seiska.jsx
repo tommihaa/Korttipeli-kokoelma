@@ -6,6 +6,7 @@ import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } f
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import BotBattleBar from '../shared/BotBattleBar.jsx';
 import HandoffScreen from '../shared/HandoffScreen.jsx';
 import PlayerSetup, { slotsToPlayers } from '../shared/PlayerSetup.jsx';
 
@@ -182,7 +183,7 @@ function initSlots(count) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
   const [nP, setNP] = useState(playerCount);
@@ -210,7 +211,6 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const aiTmr  = useRef(null);
   const logRef = useRef([]);
   const sndRef = useRef(true);
-  const teachRef = useRef(teachMode);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const prevDeckRef  = useRef(null);
@@ -321,10 +321,6 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     drawnNoGood:  (card, left) => `${card} ei käy. Nosta uudelleen (${left} jäljellä) tai lopeta vuoro.`,
     wrongSuit:    'Valitse sama maa kuin ässä.',
     badCards:     'Nämä kortit eivät käy.',
-    tipMultiPlay: (name, count) => `💡 ${name} lyö ${count} samanarvoiset — jatkaa vuoroaan!`,
-    tipSaveSeven: (name, suit) => `💡 ${name} valitsee ${suit} — eniten kortteja siinä maassa`,
-    tipDraw:      name => `💡 ${name} nostaa — ei sopivaa korttia kädessä`,
-    tipPassAfterDraws: name => `💡 ${name} lopettaa nostelun 3 jälkeen — vuoro siirtyy`,
     suitSelected: suit => `Valitsit maan: ${coloredSuit(suit)}`,
     lappuSelf:    'Lappu! Sinulla on yksi kortti jäljellä.',
   };
@@ -684,7 +680,6 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
     const playIsOnlySeven = bestPlay && bestPlay.length === 1 && bestPlay[0].r === '7';
     if (playIsOnlySeven && drawsThisTurn < 3 && aiShouldFumble(level)) {
-      if (teachRef.current) addLog(`💡 ${p.name} unohti että 7 käy aina — nostaa pakasta`);
       doDraw(gRef.current, activePlayer);
       return;
     }
@@ -711,10 +706,6 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       const suit = play[0].r === '7'
         ? aiSuit(p.hand.filter(c => c.id !== play[0].id))
         : null;
-      if (teachRef.current) {
-        if (play.length > 1) addLog(M.tipMultiPlay(p.name, play.length));
-        else if (play[0].r === '7' && suit) addLog(M.tipSaveSeven(p.name, coloredSuit(suit)));
-      }
       // Näytä aikomus ennen lyöntiä (skaalautuu tahdin mukana)
       if (initShowIntention) {
         const intentionMs = Math.min(2500, Math.max(800, aiDelayRef.current * 0.7));
@@ -727,10 +718,8 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         doPlay(gRef.current, activePlayer, play, suit);
       }
     } else if (drawsThisTurn < 3) {
-      if (teachRef.current) addLog(M.tipDraw(p.name));
       doDraw(gRef.current, activePlayer);
     } else {
-      if (teachRef.current) addLog(M.tipPassAfterDraws(p.name));
       advanceTurn(gRef.current, activePlayer);
     }
   }
@@ -1105,16 +1094,8 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
 
       {/* Bottien taistelu -hallintapalkki */}
       {allBots && (
-        <div style={{ background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', letterSpacing: 1 }}>🤖 KATSELUTILA</span>
-          <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: '#f0e6ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: '#c084fc', opacity: 0.7 }}>tahti:</span>
-            <button onClick={() => changeDelay(-500)} disabled={aiDelayMs <= 200} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif', border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: aiDelayMs <= 200 ? 'rgba(255,255,255,0.15)' : '#bb88ff', cursor: aiDelayMs <= 200 ? 'default' : 'pointer' }}>−0.5s</button>
-            <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#f0e6ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-            <button onClick={() => changeDelay(+500)} disabled={aiDelayMs >= 3000} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, fontFamily: 'sans-serif', border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: aiDelayMs >= 3000 ? 'rgba(255,255,255,0.15)' : '#bb88ff', cursor: aiDelayMs >= 3000 ? 'default' : 'pointer' }}>+0.5s</button>
-          </span>
-        </div>
+        <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}
+          onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
       {/* Toiminnot */}

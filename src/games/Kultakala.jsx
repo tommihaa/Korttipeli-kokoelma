@@ -2,10 +2,11 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, SUITS, RANKS, VAL, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, aiShouldFumble, truncName, newDeck } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames(pool) {
@@ -15,15 +16,6 @@ function shuffledAINames(pool) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
-}
-
-function newDeck() {
-  // Tavallinen 52-kortin pakka. Jokainen maa näkyy omalla värillään.
-  const deck = [];
-  SUITS.forEach(s => RANKS.forEach(r => {
-    deck.push({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` });
-  }));
-  return shuffle(deck);
 }
 
 
@@ -40,10 +32,6 @@ const M = {
   aiSwapRow: (p, idx, newCard, oldCard) => `${p.name} vaihtaa: paikka ${idx + 1}: ${lblColored(newCard)} (${newCard.v} p) sisään, ${lblColored(oldCard)} poistopakkaan.`,
   aiDiscard: (p, c) => `${p.name} heittää ${lblColored(c)} poistopakkaan.`,
   aiCannotForceSwap: (p, c, reason) => `${p.name} ei voi vaihtaa ${lblColored(c)} pakosta: ${reason}`,
-  tipTakeDiscard: (name, card, old) => `💡 ${name} ottaa ${card} poistopakasta — parempi kuin käden ${old}`,
-  tipDrawDeck:    name => `💡 ${name} nostaa pakasta — poistopakka ei paranna käsiä`,
-  tipSwap:        (name, newC, oldC) => `💡 ${name} vaihtaa ${oldC} → ${newC} — pienentää pistelukua`,
-  tipNoSwap:      name => `💡 ${name} ei vaihda — nostettu kortti on huonompi kuin käden kortit`,
   humanDrawDiscard: (c, v) => `Nostit ${lblColored(c)} (${v} p) poistopakasta — pakollinen vaihto. Klikkaa kenttäkorttia.`,
   humanDrawDeck: (c, v) => `Nostit ${lblColored(c)} (${v} p). Jos haluat sen kenttäkorteihisi, niin Vaihda se tai Heitä poistopakkaan.`,
   humanSwappedEnd: (idx, c, v, oldName) => `Paikka ${idx + 1}: ${lblColored(c)} (${v} p) sisään, ${oldName} poistopakkaan.`,
@@ -152,7 +140,7 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
+export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
   const [soundOn, setSnd]     = useState(initSoundOn);
@@ -185,7 +173,6 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const aiTmr       = useRef(null);
   const logRef      = useRef([]);
   const sndRef      = useRef(true);
-  const teachRef    = useRef(teachMode);
   const aiLevelRef  = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
@@ -386,7 +373,6 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;
       addLog(M.aiDrawDiscard(p));
-      if (teachRef.current) addLog(M.tipTakeDiscard(p.name, lblColored(top), lblColored(p.row[worstKnownIdx])));
       setG(newG); gRef.current = newG;
       if (sndRef.current) SFX.flip();
       tm(() => aiDoSwap(idx, gRef.current, card, worstKnownIdx), 1000);
@@ -394,7 +380,6 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
       addLog(M.aiDrawDeck(p));
-      if (teachRef.current) addLog(M.tipDrawDeck(p.name));
       setG(newG); gRef.current = newG;
       if (sndRef.current) SFX.flip();
       tm(() => {
@@ -495,12 +480,10 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
           // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
           const swapChain = swaps.map(s => `paikka ${s.pos}: ${lblColored(s.card)}`).join(' → ');
           addLog(`${g2.players[idx].name} vaihtaa: ${swapChain}, ${lblColored(held)} poistopakkaan.`);
-          if (teachRef.current) addLog(M.tipSwap(g2.players[idx].name, lblColored(swaps[swaps.length - 1].card), lblColored(held)));
 
           tm(() => advance(newG, idx), 700);
         } else {
           // Ei vaihtoja - discardata kortti suoraan
-          if (teachRef.current) addLog(M.tipNoSwap(g2.players[idx].name));
           aiDoDiscard(idx, g2, card);
         }
       }, 1000);
@@ -869,15 +852,8 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
 
       {/* Bottien taistelu -ohjauspaneeli */}
       {allBots && (
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 10 }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', fontWeight: 700 }}>🤖 KATSELUTILA</span>
-          <button onClick={togglePause} style={{ fontSize: 11, padding: '4px 12px', borderRadius: 10, border: '1px solid rgba(123,47,190,0.5)', background: paused ? 'rgba(123,47,190,0.35)' : 'transparent', color: '#c084fc', cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: '#9b6dc4' }}>Nopeus</span>
-            <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = Number(e.target.value); setAiDelayMs(v); aiDelayRef.current = v; }} style={{ width: 80, accentColor: '#7B2FBE', cursor: 'pointer' }} />
-            <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9b6dc4' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-          </div>
-        </div>
+        <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}
+          onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
       {/* Tilarivi */}
@@ -892,12 +868,12 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, zIndex: 300 }}>
           <div style={{ background: '#1a0a2e', border: '2px solid rgba(123,47,190,0.7)', borderRadius: 20, padding: '32px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, maxWidth: 360 }}>
             <span style={{ fontSize: 32 }}>🐟</span>
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, color: '#c084fc', letterSpacing: 4 }}>KATSELUTILA PÄÄTTYI</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, color: C.botMode, letterSpacing: 4 }}>KATSELUTILA PÄÄTTYI</span>
             {pendingResult.ranking.map((p, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', width: '100%' }}>
                 <span style={{ fontSize: 16 }}>{i === 0 ? '🏆' : i === pendingResult.ranking.length - 1 ? '🐟' : '🎯'}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: i === 0 ? '#c084fc' : '#9b6dc4', flex: 1 }}>{p.name}</span>
-                <span style={{ fontFamily: 'monospace', fontSize: 14, color: i === 0 ? '#c084fc' : '#6b4a9a' }}>{p.score} p</span>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: i === 0 ? C.botMode : C.botModeDim, flex: 1 }}>{p.name}</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 14, color: i === 0 ? C.botMode : C.botModeDimmer }}>{p.score} p</span>
               </div>
             ))}
             <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, SUITS, RANKS, shuffle, aiNoise } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, aiNoise, newDeck } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -23,9 +23,6 @@ const isSpec = r => r in SPEC;
 const kk = n => n === 1 ? 'kortti' : 'korttia';
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
-function newDeck() {
-  return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, id: `${r}${s}_${Math.random()}` }))));
-}
 function deal(nPlayers) {
   const deck = newDeck();
   const piles = Array.from({ length: nPlayers }, () => []);
@@ -33,7 +30,7 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
   const [soundOn, setSnd]   = useState(initSoundOn);

@@ -2,10 +2,11 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, SUITS, RANKS, VAL, shuffle, aiShouldFumble } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, aiShouldFumble, newDeck } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
@@ -18,10 +19,6 @@ function shuffledAINames(pool) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
-}
-
-function newDeck() {
-  return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));
 }
 
 function initGame(n, pool, allBots = false) {
@@ -62,11 +59,6 @@ const M = {
   aiKnock:   n => `${n} koputtaa — luottaa käteensä!`,
   aiReact:   (n, c) => `${n} reagoi lyömällä ${lblColored(c)} — kortti poistuu!`,
   aiWrongReact: n => `${n} reagoi — väärä kortti! Rangaistus.`,
-  tipKnock:  (n, est) => `💡 ${n} koputti — arvioitu pistemäärä ≤${est}, pienin kädessä!`,
-  tipTakeDiscard: (n, card, old) => `💡 ${n} ottaa ${card} poistopakasta — parempi kuin käden ${old}`,
-  tipDrawDeck: n => `💡 ${n} nostaa pakasta — poistopakan kortti ei paranna käsiä`,
-  tipSwap:   (n, newC, oldC) => `💡 ${n} vaihtaa ${oldC} → ${newC} — pienentää pistelukua`,
-  tipDiscard: (n, c) => `💡 ${n} heittää ${c} — nostamasi kortti ei paranna käsiä`,
 };
 
 function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true, intentSlot }) {
@@ -106,7 +98,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
+export default function Koputus({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
@@ -124,7 +116,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const [lastRound, setLR]      = useState(null);
   const [specState, setSS]      = useState(null);
   const [lastSwap, setLastSwap] = useState(null);
-  const [soundOn, setSoundOn]   = useState(initSoundOn);
+  const [soundOn, setSnd]   = useState(initSoundOn);
   const [logOpen, setLogOpen]   = useState(hints);
   const cardBack = 'ilves';
   const [pakaAnim, setPakaAnim] = useState(false);
@@ -145,7 +137,6 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   const stopReact = useRef(false);
   const reactInt  = useRef(null);
   const aiTmr     = useRef(null);
-  const teachRef  = useRef(teachMode);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs      = useRef(new Set());
@@ -513,13 +504,13 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
             const afterLoss = [...cur.players[i].cards]; afterLoss[wrongIdx] = null;
             const draws = cur.deck.slice(0, 2); let dIdx = 0;
             const withPenalty = afterLoss.map(c => { if (c === null && dIdx < draws.length) return draws[dIdx++]; return c; });
-            const newDeck = cur.deck.slice(2);
+            const remainingDeck = cur.deck.slice(2);
             const players = cur.players.map((pl, pi) => {
               if (pi !== i) return pl;
               const kn = new Set([...pl.known].filter(k => k !== wrongIdx));
               return { ...pl, cards: withPenalty, known: kn };
             });
-            const newG = { ...cur, players, deck: newDeck, discard: [...cur.discard, wrongCard] };
+            const newG = { ...cur, players, deck: remainingDeck, discard: [...cur.discard, wrongCard] };
             setG(newG); gRef.current = newG;
             tm(() => advance(newG, byIdx), 1200);
           }
@@ -560,10 +551,10 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       const afterLoss = [...g.players[0].cards]; afterLoss[cardIdx] = null;
       const draws = g.deck.slice(0, 2); let dIdx = 0;
       const withPenalty = afterLoss.map(c => { if (c === null && dIdx < draws.length) return draws[dIdx++]; return c; });
-      const newDeck = g.deck.slice(2);
+      const remainingDeck = g.deck.slice(2);
       const newKn = new Set([...g.players[0].known].filter(k => k !== cardIdx));
       const players = g.players.map((p, i) => i === 0 ? { ...p, cards: withPenalty, known: newKn } : p);
-      const newG = { ...g, players, deck: newDeck, discard: [...g.discard, lostCard] };
+      const newG = { ...g, players, deck: remainingDeck, discard: [...g.discard, lostCard] };
       setG(newG); gRef.current = newG;
       tm(() => advance(newG, curRef.current), 2200);
     }
@@ -870,12 +861,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
 
       {/* Bottien taistelu -hallintapalkki */}
       {allBots && (
-        <div style={{ background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#c084fc', letterSpacing: 1 }}>🤖 KATSELUTILA</span>
-          <button onClick={togglePause} style={{ background: paused ? 'rgba(192,132,252,0.2)' : 'transparent', border: '1px solid rgba(192,132,252,0.4)', borderRadius: 8, padding: '5px 12px', color: '#c084fc', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = +e.target.value; setAiDelayMs(v); aiDelayRef.current = v; }} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE' }} />
-          <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c084fc' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-        </div>
+        <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}
+          onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 36 : 44, alignItems: 'center' }}>
@@ -889,7 +876,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun koputus tai pakka loppuu</span>
-        <button onClick={() => setSoundOn(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
+        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
       </div>
 
@@ -922,13 +909,13 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       {/* PendingResult overlay — allBots-tilan loppunäyttö */}
       {pendingResult && screen === 'game' && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(0,0,0,0.88)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
-          <div style={{ fontSize: 26, color: '#c084fc', fontFamily: 'Georgia,serif', letterSpacing: 4 }}>🤖 TAISTELU PÄÄTTYI</div>
+          <div style={{ fontSize: 26, color: C.botMode, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>🤖 TAISTELU PÄÄTTYI</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
             {pendingResult.ranking.map((p, i) => (
               <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? 'rgba(123,47,190,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? 'rgba(192,132,252,0.5)' : 'rgba(255,255,255,0.08)'}` }}>
                 <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : '🤖'}</span>
-                <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? '#c084fc' : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: i === 0 ? '#c084fc' : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
+                <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? C.botMode : C.text }}>{p.name}</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: i === 0 ? C.botMode : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
               </div>
             ))}
           </div>

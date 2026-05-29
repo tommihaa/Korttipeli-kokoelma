@@ -5,6 +5,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 // A=14 for combat comparisons — different from shared helpers (A=1)
 const VAL = { A:14,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13 };
@@ -107,7 +108,7 @@ function initGame(nPlayers, pool, allBots = false) {
 }
 
 // ── Pääkomponentti ──────────────────────────────────────────────────
-export default function Maija({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Maija({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -139,7 +140,6 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   const aiTmr = useRef(null);
   const logRef = useRef([]);
   const sndRef     = useRef(false);
-  const teachRef   = useRef(teachMode);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const finRef = useRef([]);
@@ -207,10 +207,6 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     maijaNotValid: 'Patakuningatar ei kelpaa kaatokortiksi!',
     cardTooSmall: (defCard, attCard) => `${defCard} ei kaada ${attCard} — liian pieni tai väärä maa.`,
     beatWith: (attCard, defCard) => `Kaadoit ${attCard} kortilla ${defCard}.`,
-    tipAttackSuit: (name, count, suit) => `💡 ${name} lyö ${count} samaa maata — vaikea puolustaa eri maita`,
-    tipDefendMin:  (name, def, atk) => `💡 ${name} kaataa ${atk} pienimmällä — säästää isot kortit`,
-    tipDefendAll:  name => `💡 ${name} kaataa kaikki — erinomainen puolustus!`,
-    tipCannotAll:  name => `💡 ${name} ei pysty kaatamaan kaikkia — ottaa kortit`,
   };
 
   function flashLastPlay(name, cards, isHuman = false) {
@@ -399,10 +395,6 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         }
       }
       if (!toPlay.length) { toPlay = maija ? [maija] : [hand[0]]; }
-      if (teachRef.current && toPlay.length > 1) {
-        const suitSpan = `<span style="color:${SUIT_COLOR[toPlay[0].s]}">${toPlay[0].s}</span>`;
-        addLog(M.tipAttackSuit(g2.players[g2.attackerIdx].name, toPlay.length, suitSpan));
-      }
       if (initShowIntention) {
         const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
         setIntention({ playerIdx: g2.attackerIdx, cards: toPlay });
@@ -523,19 +515,11 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         if (g2.defenderIdx === 0 && beaten >= 4) {
           detectMoment('epic_defense_win', { unbeatenCount: beaten });
         }
-        if (teachRef.current && !defName.isHuman) {
-          if (beaten >= 2) addLog(M.tipDefendAll(defName.name));
-          else {
-            const row = newTbl.find(r => r.def);
-            if (row) addLog(M.tipDefendMin(defName.name, lblColored(row.def), lblColored(row.att)));
-          }
-        }
         addLog(M.defenderWinRound(defName.id === 0 ? null : defName.name));
         if (sndRef.current) SFX.fanfare();
         tm(() => resolveDefenseWin({ ...g2, players }, newTbl, finRef.current), 2200);
       } else {
         const n = g2.players[g2.defenderIdx];
-        if (teachRef.current && !n.isHuman) addLog(M.tipCannotAll(n.name));
         const msg = n.id===0
           ? M.defenderCannotWin(null, unbeaten.length)
           : `${n.name} kaataa ${newTbl.length - unbeaten.length}/${newTbl.length} — nostaa ${kortin(unbeaten.length)}.`;
@@ -849,15 +833,8 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
 
       {/* Bottien taistelu -ohjauspaneeli */}
       {allBots && (
-        <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap', background:'rgba(123,47,190,0.12)', border:'1px solid rgba(123,47,190,0.4)', borderRadius:12, padding:'8px 14px', marginBottom: isMobile ? 4 : 10 }}>
-          <span style={{ fontFamily:'sans-serif', fontSize:11, color:'#c084fc', fontWeight:700 }}>🤖 KATSELUTILA</span>
-          <button onClick={togglePause} style={{ fontSize:11, padding:'4px 12px', borderRadius:10, border:'1px solid rgba(123,47,190,0.5)', background:paused ? 'rgba(123,47,190,0.35)' : 'transparent', color:'#c084fc', cursor:'pointer', fontFamily:'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-            <span style={{ fontFamily:'sans-serif', fontSize:10, color:'#9b6dc4' }}>Nopeus</span>
-            <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => { const v = Number(e.target.value); setAiDelayMs(v); aiDelayRef.current = v; }} style={{ width:80, accentColor:'#7B2FBE', cursor:'pointer' }} />
-            <span style={{ fontFamily:'monospace', fontSize:10, color:'#9b6dc4' }}>{(aiDelayMs/1000).toFixed(1)}s</span>
-          </div>
-        </div>
+        <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}
+          onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
       {/* Toimintopainikkeet */}
@@ -921,12 +898,12 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         <div style={{ position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.75)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:16, zIndex:300 }}>
           <div style={{ background:'#1a0a2e', border:'2px solid rgba(123,47,190,0.7)', borderRadius:20, padding:'32px 40px', display:'flex', flexDirection:'column', alignItems:'center', gap:14, maxWidth:360 }}>
             <span style={{ fontSize:32 }}>🂭</span>
-            <span style={{ fontFamily:'Georgia,serif', fontSize:20, color:'#c084fc', letterSpacing:4 }}>KATSELUTILA PÄÄTTYI</span>
+            <span style={{ fontFamily:'Georgia,serif', fontSize:20, color:C.botMode, letterSpacing:4 }}>KATSELUTILA PÄÄTTYI</span>
             {pendingResult.ranking.map((p, i) => (
               <div key={i} style={{ display:'flex', gap:10, alignItems:'center', width:'100%' }}>
                 <span style={{ fontSize:16 }}>{i===0 ? '🏆' : i===pendingResult.ranking.length-1 ? '🂭' : '🎯'}</span>
-                <span style={{ fontFamily:'sans-serif', fontSize:13, color:i===0 ? '#c084fc' : '#9b6dc4', flex:1 }}>{p.name}</span>
-                <span style={{ fontFamily:'monospace', fontSize:12, color:i===0 ? '#c084fc' : '#6b4a9a' }}>{p.place}. sija</span>
+                <span style={{ fontFamily:'sans-serif', fontSize:13, color:i===0 ? C.botMode : C.botModeDim, flex:1 }}>{p.name}</span>
+                <span style={{ fontFamily:'monospace', fontSize:12, color:i===0 ? C.botMode : C.botModeDimmer }}>{p.place}. sija</span>
               </div>
             ))}
             <div style={{ display:'flex', gap:12, marginTop:8 }}>

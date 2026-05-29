@@ -19,15 +19,18 @@ Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 | `soundOn` | true | Äänet |
 | `seeAll` | false | Cheat Mode — Hero näkee kaikki kortit |
 | `showCounts` | true | Korttimäärät näkyvillä |
-| `teachMode` | false | Strategiatippejä (poistettu asetusvalikosta, prop silti olemassa) |
 | `showLastPlay` | true | Kelluva viimeisin siirto -indikaattori |
 
-## Component signature (kaikki 9 peliä)
-```jsx
-export default function PelinNimi({ onResult, hints, soundOn: initSoundOn, seeAll: initSeeAll,
-  showCounts, teachMode, showLastPlay, isMobile, playerCount, playerNames,
-  aiLevel, onAiLevelChange }) {}
-```
+## Component props (kaikki 9 peliä)
+App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa** — yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, hints, soundOn, seeAll, showCounts, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange`.
+
+Yhteiset (kaikki destrukturoivat): `onResult, hints, soundOn: initSoundOn, seeAll: initSeeAll, showCounts, showLastPlay, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange, onSnapshot`.
+
+Pelikohtaiset (vain osa ottaa):
+- `game` — vain Kasino
+- `showNextBtn` — vain Kasino, Moska
+- `showAIKnown` — vain Koputus, Kultakala
+- `showIntention: initShowIntention` — Kasino, Koputus, Maija, Seiska, Ristiseiska, Paskahousu, Moska (ei Läpsy/Kultakala)
 
 ## AI-tasot (3 kpl)
 `Oppipoika | Kisälli | Mestari`
@@ -38,6 +41,11 @@ export default function PelinNimi({ onResult, hints, soundOn: initSoundOn, seeAl
 At the start of every session run `npm run dev` in the background so the dev server is available at http://localhost:5173/ for preview verification during development.
 
 ## Deploy
+**Ennen deployta (käsin — ei automatisoitua):**
+- Lisää `CHANGELOG`-merkintä `src/App.jsx`:ään (näkyy Asetukset → Muutosloki). `npm run deploy` EI päivitä tätä automaattisesti.
+- Päivitä `TODO`-taulukko `src/App.jsx`:ssä (Asetukset → Tulossa), jos jokin kohta valmistui tai lisättiin.
+- `APP_VERSION` kasvaa buildissa automaattisesti (`__APP_VERSION__`) — sitä ei tarvitse koskea.
+
 Production deploy: `npm run deploy`  (= `vercel build --prod && vercel deploy --prebuilt --prod`)
 One-time setup per machine: `npx vercel pull --yes --environment production`
 Live URL: https://tommi-jako52.vercel.app
@@ -78,7 +86,6 @@ Erikoistapaukset (silti yllä olevissa luokissa):
 - **Opetustila** – `hints=true`, move hints visible, tapahtumaloki auki oletuksena
 - **Vapaa tila** – `hints=false`, ei ohjeviestejä, loki kiinni oletuksena
 - Toggle-napit pelin aikana oikeassa yläkulmassa (menu ← | pelinimi)
-- `teachMode` prop on olemassa mutta oletuksena false eikä enää asetusvalikossa
 
 ## SFX (`src/shared/audio.js` — `SFX` objekti)
 Korttitoiminnot:

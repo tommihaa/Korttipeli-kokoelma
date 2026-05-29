@@ -1,1 +1,10 @@
-Stage all modified tracked files and new files in src/, public/, and index.html. Ask the user for a short commit message if they haven't provided one as an argument, then commit and push to origin main. Report the commit hash and confirm the push succeeded. Remind the user that Vercel will auto-deploy in ~30 seconds.
+Julkaise projekti: build → commit → deploy.
+
+1. Aja `npm run build`. Jos build epäonnistuu, pysähdy ja raportoi virhe.
+2. Tarkista muutokset: `git diff --stat` ja `git log --oneline -5` tyylin varmistamiseksi.
+3. **Päivitä CHANGELOG**: lisää uusin merkintä `CHANGELOG`-taulukkoon `src/App.jsx`:ssä (heti taulukon alkuun, uusi `{ date, items }` -objekti). Kirjoita muutokset lyhyesti, käyttäjäystävällisesti — ei teknistä jargonia.
+4. Stage muutetut tiedostot: `src/`-kansio ja `CLAUDE.md`. Jätä pois `.claude/`, `package-lock.json`, `node_modules/`.
+5. Jos käyttäjä antoi viestin argumenttina (`$ARGUMENTS`), käytä sitä commit-viestinä. Muuten tee lyhyt suomenkielinen viesti muutosten perusteella (tyyli: "fix: ..." tai "feat: ...").
+6. Aja `git commit`.
+7. Aja `npm run deploy` (= vercel build + deploy --prebuilt --prod, avaa selaimen automaattisesti).
+8. Raportoi commit-hash ja Vercel-URL.

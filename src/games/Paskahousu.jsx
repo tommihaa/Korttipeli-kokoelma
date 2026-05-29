@@ -260,7 +260,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
-export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -290,7 +290,6 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const swapTmr = useRef(null);
   const logRef  = useRef([]);
   const sndRef     = useRef(true);
-  const teachRef   = useRef(teachMode);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs    = useRef(new Set());
@@ -368,10 +367,6 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     aiSwaps:      name => `${name} vaihtaa!`,
     aiStuck:      name => `${name}: ei pysty tekemään mitään.`,
     badCard:      'Kortti ei kelpaa tähän.',
-    tipQuad:      (name, rank) => `💡 ${name} täydentää nelosen (${rank}) — kaataa kasan!`,
-    tipSaveSpecial:(name, card) => `💡 ${name} säästää ${card} — erityiskortti hätävaraus`,
-    tipPlaySmall: (name, cards) => `💡 ${name} lyö pienimmät kortit — pois hankalimmista`,
-    tipSwap:      name => `💡 ${name} vaihtaa poistopakasta — sai edullisemman kortin`,
   };
 
   function triggerKasaAnim(type) {

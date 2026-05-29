@@ -222,6 +222,14 @@ const CHANGELOG = [
   {
     date: '29.5.2026',
     items: [
+      'Katselutila-palkki yhtenäistetty: kaikissa peleissä sama tahtisäädin (Seiskan +/- napit korvattu liukusäätimellä)',
+      'Sisäinen siivous: kuollut koodi poistettu, korttipakan luonti ja katselutila-palkki jaettu yhteisiksi moduuleiksi',
+      'Strategiatippi-tila (teachMode) poistettu kokonaan',
+    ],
+  },
+  {
+    date: '29.5.2026',
+    items: [
       'Bottien Taistelu: AI-taso seuraa Asetuksista valittua tasoa (Oppipoika/Kisälli/Mestari)',
       'Bottien Taistelu -nappi näyttää valitun tason dynaamisesti',
     ],
@@ -588,7 +596,6 @@ export default function App() {
   const [soundOn, setSoundOn]       = useState(true);
   const [seeAll, setSeeAll]         = useState(false);
   const [showCounts, setShowCounts] = useState(true);
-  const [teachMode, setTeachMode]   = useState(false);
   const [showLastPlay, setShowLastPlay] = useState(true);
   const [showIntention, setShowIntention] = useState(true);
   const [showNextBtn, setShowNextBtn]   = useState(true);
@@ -1082,7 +1089,6 @@ export default function App() {
           soundOn={soundOn}
           seeAll={seeAll}
           showCounts={showCounts}
-          teachMode={teachMode}
           showLastPlay={showLastPlay}
           showIntention={showIntention}
           isMobile={isMobile}

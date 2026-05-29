@@ -181,7 +181,7 @@ function aiWorstCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, teachMode = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [soundOn,  setSnd]     = useState(initSoundOn);
@@ -206,7 +206,6 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const lastPlayTmr = useRef(null);
   const logRef     = useRef([]);
   const sndRef     = useRef(true);
-  const teachRef   = useRef(teachMode);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const tmrs       = useRef(new Set());
@@ -259,9 +258,6 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     badCard:    'Tämä kortti ei käy tähän — valitse toinen.',
     cantPass:   'Sinulla on pelattavissa oleva kortti — passata ei voi.',
     humanGives: (card, receiver) => `Sinä annat ${card} pelaajalle ${receiver}.`,
-    tipSeven:   (name, suit) => `💡 ${name} avaa tornin — ${suit}:ssa eniten kortteja kädessä`,
-    tipHoldGate:(name, card, suit) => `💡 ${name} pidättää ${card} — avaa portin vasta kun lisää ${suit}-kortteja`,
-    tipGiveWorst:(name, card) => `💡 ${name} antaa ${card} panttiin — kaukaisin kortti pelattavuudesta`,
   };
 
   function startGame(forcedCount, allBotsMode = false) {
@@ -408,7 +404,6 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       if (sndRef.current) SFX.leave();
       addLog(M.passGive(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
       if (sndRef.current) SFX.take();
-      if (teachRef.current && !giver.isHuman) addLog(M.tipGiveWorst(giver.name, lblColored(toGive)));
     } else {
       addLog(M.passOnly(isH, p.name));
     }
@@ -466,23 +461,6 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     }
 
     if (bestCard) {
-      if (teachRef.current) {
-        if (card.r === '7') {
-          const bestSuit = SUITS.reduce((a, b) =>
-            suitCount(p.hand, a) >= suitCount(p.hand, b) ? a : b);
-          const suitSpan = `<span style="color:${SUIT_COLOR[bestSuit]}">${bestSuit}</span>`;
-          addLog(M.tipSeven(p.name, suitSpan));
-        } else {
-          const heldGates = p.hand.filter(c =>
-            (c.r === '6' || c.r === '8') && isPlayable(c, rows) && suitCount(p.hand, c.s) > 1
-          );
-          if (heldGates.length > 0) {
-            const hg = heldGates[0];
-            const suitSpan = `<span style="color:${SUIT_COLOR[hg.s]}">${hg.s}</span>`;
-            addLog(M.tipHoldGate(p.name, lblColored(hg), suitSpan));
-          }
-        }
-      }
       if (initShowIntention) {
         const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
         setIntention({ playerIdx: activePlayer, cards: [bestCard] });

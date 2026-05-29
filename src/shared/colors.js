@@ -11,6 +11,9 @@ export const C = {
   build: '#9b59b6',
   maija: '#8b1a1a',
   trump: '#4a8a30',
+  botMode: '#c084fc',       // Bottien Taistelu / katselutila — pääväri
+  botModeDim: '#9b6dc4',    // katselutila — himmeämpi (labelit, ei-voittajat)
+  botModeDimmer: '#6b4a9a', // katselutila — himmein (sija-/pistemerkinnät)
 };
 
 export const SUIT_COLOR = {
