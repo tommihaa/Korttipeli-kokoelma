@@ -214,7 +214,59 @@ const MERKISTO = [
   { kategoria: 'ui',        icon: '🔇', label: 'Ääni pois',        selitys: 'Kaikki äänet mykistetty.' },
   { kategoria: 'ui',        icon: '🔍', label: 'Avoimet kortit pois',  selitys: 'Normaali tila — näet vain omat kortit.' },
   { kategoria: 'ui',        icon: '🙈', label: 'Avoimet kortit päällä',selitys: 'Näet kaikkien pelaajien käsikortit ja piilotetut kentän kortit.' },
-  { kategoria: 'ui',        icon: '🔮', label: 'Yliluonnollinen',  selitys: 'Koneälyn korkein taso — muistaa pakan menot ja optimoi täydellisesti.' },
+  { kategoria: 'ui',        icon: '🔮', label: 'Mestari',          selitys: 'Koneälyn korkein taso — muistaa pakan menot ja optimoi täydellisesti.' },
+];
+
+// ── Muutosloki ────────────────────────────────────────────────────────────────
+const CHANGELOG = [
+  {
+    date: '29.5.2026',
+    items: [
+      'Koneälyn tasot nimetty uudelleen: Oppipoika · Kisälli · Mestari',
+      'Asetukset: kaikki osiot suljettu oletuksena, avautuvat napautuksella',
+      'Asetukset: Muutosloki ja Tulossa -osiot lisätty',
+      '/deploy-komento päivittää Muutoslokin automaattisesti',
+    ],
+  },
+  {
+    date: '28.5.2026',
+    items: [
+      'Asetukset: "Näytä kaikki kortit" ja muistipeliasetus piilotettu Bottien Taistelu -tilassa',
+      '"Bottien Taistelu" -nappi näyttää "Mestari" — kaikki 9 peliä',
+      'Debug-näkymän nappi nimetty "Avoimet kortit" — kaikki 9 peliä',
+      'Replay: väritetyt korttimerkit renderöityvät lokissa oikein',
+      'Seiska: katselutila-palkki ja AI-ässäbonus-bugit korjattu',
+    ],
+  },
+  {
+    date: '27.5.2026',
+    items: [
+      'Bottien Taistelu: tapahtumaloki ja pelaajatilat näkyvät pelin aikana',
+      'Kultakala: allBots — pelaaja 0 ei enää näy muiden bottien joukossa',
+    ],
+  },
+  {
+    date: '26.5.2026',
+    items: [
+      'Bottien Taistelu: askelpalautus — selaa jokaista siirtoa taaksepäin',
+      'AllBots-parannukset: vuoroviestit, pakkasekoitus, AI-maanvaihto',
+      'AI-tasot 3 kpl: Oppipoika · Kisälli · Mestari',
+    ],
+  },
+  {
+    date: '25.5.2026',
+    items: [
+      'Paskahousu: AI-inferenssi, äkkikuolema, parannettuja viestejä',
+      'AllBots-katselutila: pelattavat kortit korostettu, järjestys yhtenäistetty',
+    ],
+  },
+];
+
+// ── Tulossa ───────────────────────────────────────────────────────────────────
+const TODO = [
+  { label: 'Bottien Taistelu: anna valita AI-taso (nyt aina Vaativa)', status: 'open' },
+  { label: 'Kieliversiointi (FI/EN)', status: 'deferred' },
+  { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
 ];
 
 const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));
@@ -547,6 +599,11 @@ export default function App() {
   const [showEsittely, setShowEsittely] = useState(false);
   const [siirtorekisteri, setSiirtorekisteri] = useState([]); // allBots replay frames
   const [replayOpen, setReplayOpen]     = useState(false);
+  const [showChangelog, setShowChangelog]       = useState(false);
+  const [showTodo, setShowTodo]                 = useState(false);
+  const [showPeliasetukset, setShowPeliasetukset] = useState(false);
+  const [showKonealy, setShowKonealy]           = useState(false);
+  const [showPelaajat, setShowPelaajat]         = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
@@ -746,58 +803,78 @@ export default function App() {
           )}
         </div>
 
-        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Peliasetukset</div>
-          {(() => {
-            const isAllBots = siirtorekisteri.length > 0 || !!botResult;
-            return [
-              !isAllBots && { label: '👁 Näytä kaikki kortit',                                  val: seeAll,        set: setSeeAll        },
-              { label: '🔒 God Mode (manifestoi tulevat kortit)',                                    disabled: true                          },
-              { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',                 val: showCounts,    set: setShowCounts    },
-              !isAllBots && { label: 'Näe muistipeleissä vastustajien katsomat korttipaikat korostettuina',       val: showAIKnown,   set: setShowAIKnown   },
-              { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                       val: showLastPlay,  set: setShowLastPlay  },
-              { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska, Ristiseiska, Maija, Paskahousu, Moska)', val: showIntention, set: setShowIntention },
-              { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
-              { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
-              { label: 'Äänet',                                                                       val: soundOn,       set: setSoundOn       },
-            ].filter(Boolean);
-          })().map(({ label, val, set, disabled }) => (
-            <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
-              <input
-                type="checkbox" checked={disabled ? false : val} onChange={disabled ? undefined : () => set(v => !v)}
-                disabled={!!disabled}
-                style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
-              />
-              <span style={{ fontSize: isMobile ? 11 : 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
-            </label>
-          ))}
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowPeliasetukset(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Peliasetukset</span>
+            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPeliasetukset ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showPeliasetukset && (
+            <div style={{ padding: '0 14px 14px' }}>
+              {(() => {
+                const isAllBots = siirtorekisteri.length > 0 || !!botResult;
+                return [
+                  !isAllBots && { label: '👁 Näytä kaikki kortit',                                  val: seeAll,        set: setSeeAll        },
+                  { label: '🔒 God Mode (manifestoi tulevat kortit)',                                    disabled: true                          },
+                  { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',                 val: showCounts,    set: setShowCounts    },
+                  !isAllBots && { label: 'Näe muistipeleissä vastustajien katsomat korttipaikat korostettuina',       val: showAIKnown,   set: setShowAIKnown   },
+                  { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                       val: showLastPlay,  set: setShowLastPlay  },
+                  { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska, Ristiseiska, Maija, Paskahousu, Moska)', val: showIntention, set: setShowIntention },
+                  { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
+                  { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
+                  { label: 'Äänet',                                                                       val: soundOn,       set: setSoundOn       },
+                ].filter(Boolean);
+              })().map(({ label, val, set, disabled }) => (
+                <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
+                  <input
+                    type="checkbox" checked={disabled ? false : val} onChange={disabled ? undefined : () => set(v => !v)}
+                    disabled={!!disabled}
+                    style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
+                  />
+                  <span style={{ fontSize: isMobile ? 11 : 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
+                </label>
+              ))}
+            </div>
+          )}
         </div>
 
-        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Koneälyn taso 🤖</div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-            {[
-              { key: 'beginner', label: 'Aloittelija', desc: 'tekee virheitä, voitettavissa' },
-              { key: 'normal',   label: 'Normaali',    desc: 'pelaa hyvin, mokaa joskus' },
-              { key: 'hard',     label: 'Vaativa',     desc: 'täysi strategia + muistaa kortit' },
-            ].map(({ key, label, desc }) => (
-              <button
-                key={key}
-                onClick={() => setAiLevel(key)}
-                style={{
-                  flex: 1, minWidth: 'calc(33% - 4px)', padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
-                  fontFamily: 'sans-serif', fontSize: 12,
-                  background: aiLevel === key ? `${C.gold}22` : 'transparent',
-                  border: `1px solid ${aiLevel === key ? C.gold : C.panelBorder}`,
-                  color: aiLevel === key ? C.gold : C.dim,
-                  transition: 'all 0.15s',
-                }}
-              >
-                {label}
-                <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{desc}</div>
-              </button>
-            ))}
-          </div>
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowKonealy(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Koneälyn taso 🤖</span>
+            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showKonealy ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showKonealy && (
+            <div style={{ padding: '0 14px 14px' }}>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+                {[
+                  { key: 'beginner', label: 'Oppipoika', desc: 'tekee virheitä, voitettavissa' },
+                  { key: 'normal',   label: 'Kisälli',    desc: 'pelaa hyvin, mokaa joskus' },
+                  { key: 'hard',     label: 'Mestari',    desc: 'täysi strategia + muistaa kortit' },
+                ].map(({ key, label, desc }) => (
+                  <button
+                    key={key}
+                    onClick={() => setAiLevel(key)}
+                    style={{
+                      flex: 1, minWidth: 'calc(33% - 4px)', padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
+                      fontFamily: 'sans-serif', fontSize: 12,
+                      background: aiLevel === key ? `${C.gold}22` : 'transparent',
+                      border: `1px solid ${aiLevel === key ? C.gold : C.panelBorder}`,
+                      color: aiLevel === key ? C.gold : C.dim,
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    {label}
+                    <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <button
@@ -808,8 +885,16 @@ export default function App() {
           <span style={{ color: C.gold, fontSize: 16 }}>›</span>
         </button>
 
-        <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 10, opacity: 0.8 }}>Pelaajat 👥</div>
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowPelaajat(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Pelaajat 👥</span>
+            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPelaajat ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showPelaajat && (
+          <div style={{ padding: '0 14px 14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 3, color: C.dim, opacity: 0.7 }}>PELAAJIA</span>
             {[2, 3, 4].map(n => (
@@ -857,6 +942,57 @@ export default function App() {
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.8, opacity: 0.7 }}>
             {playerPool.join(' · ')}
           </div>
+          </div>
+          )}
+        </div>
+
+        {/* Muutosloki */}
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowChangelog(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Muutosloki 📋</span>
+            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showChangelog ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showChangelog && (
+            <div style={{ padding: '0 14px 14px' }}>
+              {CHANGELOG.map((entry, i) => (
+                <div key={i} style={{ marginBottom: 12 }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1, opacity: 0.8, marginBottom: 4, textTransform: 'uppercase' }}>{entry.date}</div>
+                  {entry.items.map((item, j) => (
+                    <div key={j} style={{ display: 'flex', gap: 6, marginBottom: 3 }}>
+                      <span style={{ color: C.gold, fontSize: 10, flexShrink: 0, marginTop: 3 }}>▸</span>
+                      <span style={{ fontSize: 11, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.55 }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Tulossa */}
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowTodo(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Tulossa 🗺</span>
+            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showTodo ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showTodo && (
+            <div style={{ padding: '0 14px 14px' }}>
+              {TODO.map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: 8, padding: '6px 0', borderBottom: `1px solid ${C.panelBorder}33`, alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: 13, flexShrink: 0, marginTop: 1 }}>
+                    {item.status === 'open' ? '🎯' : item.status === 'done' ? '✅' : '⏸'}
+                  </span>
+                  <span style={{ fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.55, color: item.status === 'done' ? C.dim : C.text, textDecoration: item.status === 'done' ? 'line-through' : 'none', opacity: item.status === 'deferred' ? 0.55 : 1 }}>{item.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
       </div>

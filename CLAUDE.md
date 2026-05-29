@@ -30,8 +30,8 @@ export default function PelinNimi({ onResult, hints, soundOn: initSoundOn, seeAl
 ```
 
 ## AI-tasot (3 kpl)
-`Aloittelija | Normaali | Vaativa`
-- **Vaativa** = täysi strategia + muistaa pelattuja kortteja (aiempi "Yliluonnollinen"-logiikka)
+`Oppipoika | Kisälli | Mestari`
+- **Mestari** = täysi strategia + muistaa pelattuja kortteja (aiempi "Yliluonnollinen"-logiikka)
 - Sisäiset avaimet: `'beginner'` | `'normal'` | `'hard'`
 
 ## Session start
