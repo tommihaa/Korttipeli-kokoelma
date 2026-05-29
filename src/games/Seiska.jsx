@@ -346,13 +346,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     setGS(g);
     addLog(M.gameStart(lblColored(g.discardTop)));
     if (g.players.every(p => !p.isHuman)) {
-      if (aiLevelRef.current !== 'hard') {
-        onAiLevelChange?.('hard');
-        aiLevelRef.current = 'hard';
-      }
       aiDelayRef.current = 3000;
       setAiDelayMs(3000);
-      addLog('🔮 Katsomotila — kaikki botit pelaavat Vaativalla tasolla.');
+      addLog('🔮 Katsomotila');
     }
     setScreen('game');
     setShuffling(true);
@@ -371,8 +367,8 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   }
 
   function startBotBattle() {
-    aiLevelRef.current = 'hard';
-    onAiLevelChange?.('hard');
+    aiLevelRef.current = aiLevel;
+    onAiLevelChange?.(aiLevel);
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     setDebug(true);
     const slots = Array(4).fill(null).map((_, i) => ({ name: '', isHuman: false, active: true }));
@@ -863,7 +859,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · Mestari</span>
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>4 bottia · {({beginner:'Oppipoika',normal:'Kisälli',hard:'Mestari'})[aiLevel]}</span>
         </button>
       </div>
     </div>

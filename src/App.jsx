@@ -222,6 +222,13 @@ const CHANGELOG = [
   {
     date: '29.5.2026',
     items: [
+      'Bottien Taistelu: AI-taso seuraa Asetuksista valittua tasoa (Oppipoika/Kisälli/Mestari)',
+      'Bottien Taistelu -nappi näyttää valitun tason dynaamisesti',
+    ],
+  },
+  {
+    date: '29.5.2026',
+    items: [
       'Koneälyn tasot nimetty uudelleen: Oppipoika · Kisälli · Mestari',
       'Asetukset: kaikki osiot suljettu oletuksena, avautuvat napautuksella',
       'Asetukset: Muutosloki ja Tulossa -osiot lisätty',
@@ -264,7 +271,7 @@ const CHANGELOG = [
 
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
-  { label: 'Bottien Taistelu: anna valita AI-taso (nyt aina Vaativa)', status: 'open' },
+  { label: 'Bottien Taistelu: AI-taso seuraa Asetuksista valittua tasoa', status: 'done' },
   { label: 'Kieliversiointi (FI/EN)', status: 'deferred' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
 ];
