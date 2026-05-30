@@ -222,6 +222,15 @@ const CHANGELOG = [
   {
     date: '30.5.2026',
     items: [
+      'Versio 0.3 — Bottien Taistelu -kokonaisuus valmis 🎉',
+      'Tekoäly: Maija pelaa nyt Maija-kortin (♠Q) pois patojen mukana; Seiska osaa voittaa ässä-bonusketjulla (ässä ensin, nostettu kortti perään)',
+      'Kasino (Bottien Taistelu): rakennelman omistajan nimi näkyy katselutilassa (ei enää "oma"); kierrosten välissä katsoja etenee "Seuraava peli →" -napilla',
+      'Koputus (Bottien Taistelu): aikomus-kortti näkyy nyt kokonaan',
+    ],
+  },
+  {
+    date: '30.5.2026',
+    items: [
       'Pelaajamäärä valitaan vain pelin aloitusnäytöllä (poistettu päällekkäinen säädin Asetuksista)',
       'Katselutila-palkki (tahtisäädin) nyt kaikissa 9 pelissä — myös Läpsy, Ristiseiska ja Paskahousu',
       'Vuoroviesti yhtenäistetty: "Vuorossa X." kaikissa vuoropohjaisissa peleissä',
@@ -294,6 +303,7 @@ const CHANGELOG = [
 const TODO = [
   { label: 'Bottien Taistelu: AI-taso seuraa Asetuksista valittua tasoa', status: 'done' },
   { label: 'Pelikohtaiset sääntövalinnat pelin valinta-näyttöön (pelaajamäärän viereen). Paskahousu: 5 vai 6 korttia, ovatko kakkoset kovia, minkä päälle kuvakortin saa laskea (7/8/9). Kasino: salli rakennelmat erikoiskorttien arvoille — ässä 14, pata 2 = 15, ruutu 10 = 16', status: 'deferred' },
+  { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'deferred' },
   { label: 'Kieliversiointi (FI/EN)', status: 'deferred' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
 ];

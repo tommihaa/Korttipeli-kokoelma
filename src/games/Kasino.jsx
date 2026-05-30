@@ -330,15 +330,16 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     prevDeckRef.current = cur;
   }, [G?.deck?.length]);
 
-  // Automaattieteneminen pistepaneelista allBots-tilassa
+  // allBots: kierrosten välissä EI edetä automaattisesti — katsoja näkee pisteiden
+  // kertymisen ja klikkaa "Seuraava peli →". Vain pelin lopussa (joku ≥16p) siirrytään
+  // automaattisesti tulosnäkymään.
   useEffect(() => {
     if (!scores || !allBotsRef.current) return;
-    const anyAt16 = scores.some(s => s.totalScore >= 16);
+    if (!scores.some(s => s.totalScore >= 16)) return;
     let tid;
     const tryAdv = () => {
       if (pausedRef.current) { tid = tm(tryAdv, 500); return; }
-      if (anyAt16) setScores(null); // pendingResult overlay ottaa vallan
-      else startNextRound();
+      setScores(null); // pendingResult overlay ottaa vallan
     };
     tid = tm(tryAdv, 3000);
     return () => clearTimeout(tid);
@@ -1321,7 +1322,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, marginBottom: 6 }}>RAKENNELMAT</div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {G.builds.map(build => {
-                const isMine = build.ownerIdx === 0;
+                const isMine = G.players[build.ownerIdx]?.isHuman;
                 const isSel = selBuilds.includes(build.id);
                 const borderColor = isSel ? C.gold : isMine ? '#4caf7d' : '#e05c3b';
                 return (

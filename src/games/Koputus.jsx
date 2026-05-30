@@ -755,7 +755,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
                     <span style={{ minWidth: 64, flexShrink: 0, fontFamily: 'sans-serif', fontSize: 11, color: curIdx === pi ? C.gold : C.dim }}>
                       🤖 {ai.name.slice(0, 8)}{curIdx === pi ? ' ●' : ''}
                     </span>
-                    <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1 }}>
+                    <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1, paddingTop: 8 }}>
                       {ai.cards.map((c, ci) =>
                         c
                           ? <Card key={ci} card={c} small backStyle={BACKS[cardBack]} faceUp={debugOpen}

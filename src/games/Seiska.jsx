@@ -589,16 +589,32 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       const wd = Math.max(300, aiDelayRef.current * 0.6); // nostoketjun viive skaalautuu tahdin mukana
       if (valid) {
         addLog(M.aiDraws(pName, debugOpen ? lblColored(drawn) : null));
-        // Näytä nostettu kortti aiottuna ennen kuin se lyödään (skaalautuu tahdin mukana)
+        // Valitse paras siirto KOKO kädestä — ei vain nostettua korttia. Tärkeä
+        // erikoistapaus: jos kädessä on pelattava ässä ja loppukäsi on yhtä arvoa
+        // (ässän maata), pelaa ässä ensin → ässäbonus jatkaa lopuilla → käsi tyhjäksi.
+        // (Ässällä ei voi mennä ulos viimeisenä, joten ässä kannattaa pelata ennen muita.)
+        const opponents = g2.players.filter((pl, i) => i !== playerIdx && !g2.finished.includes(i));
+        let best = aiBestPlay(hand, g2.discardTop, g2.reqSuit, opponents) || [drawn];
+        const aceWin = validSingles(hand, g2.discardTop, g2.reqSuit)
+          .filter(c => c.r === 'A')
+          .find(ace => {
+            const rest  = hand.filter(c => c.id !== ace.id);
+            const ranks = new Set(rest.map(c => c.r));
+            return rest.length > 0 && ranks.size === 1
+              && rest.some(c => c.s === ace.s && c.r !== '7' && c.r !== 'A');
+          });
+        if (aceWin) best = [aceWin];
+        const playSuit = best[0].r === '7' ? aiSuit(hand.filter(c => c.id !== best[0].id)) : null;
+        // Näytä aiottu siirto ennen lyöntiä (skaalautuu tahdin mukana)
         if (initShowIntention) {
           const intentionMs = Math.min(2500, Math.max(800, aiDelayRef.current * 0.7));
-          setIntention({ playerIdx, cards: [drawn] });
+          setIntention({ playerIdx, cards: best });
           aiTmr.current = aiTm(() => {
             setIntention(null);
-            doPlay(gRef.current, playerIdx, [drawn], null);
+            doPlay(gRef.current, playerIdx, best, playSuit);
           }, intentionMs);
         } else {
-          doPlay(gRef.current, playerIdx, [drawn], null);
+          doPlay(gRef.current, playerIdx, best, playSuit);
         }
       } else {
         // Nostettu kortti ei käy — tarkista onko koko käteen nyt pelattava kortti

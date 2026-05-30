@@ -381,13 +381,11 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
         }
       }
 
-      // Maija-prioriteetti: luovu padoista heti jos muita patoja kädessä tai pakka tyhjä
+      // Maija-prioriteetti: päästä Maijasta eroon. Sillä ei voi kaataa, ja viimeisenä
+      // patana se on pelkkä häviöriski kädessä — hyökkää padoilla Maija mukana (priorisoituna).
       if (maija && !aiShouldFumble(aiLevelRef.current)) {
-        const hasOtherSpades = hand.some(c => c.s === '♠' && !isMaija(c));
-        if (hasOtherSpades || deckEmpty) {
-          const spadeAttack = hand.filter(c => c.s === '♠' && !isMaija(c)).slice(0, defHandSize);
-          if (spadeAttack.length > 0) toPlay = spadeAttack;
-        }
+        const otherSpades = hand.filter(c => c.s === '♠' && !isMaija(c)).sort((a, b) => a.v - b.v);
+        toPlay = [maija, ...otherSpades].slice(0, defHandSize);
       }
       if (!toPlay.length) { toPlay = maija ? [maija] : [hand[0]]; }
       if (initShowIntention) {
