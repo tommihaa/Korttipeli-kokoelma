@@ -7,6 +7,7 @@ import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames(pool) {
@@ -115,7 +116,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     }
   }, [hints]);
 
-  const pName = i => allBots ? (allBotNamesRef.current[i] ?? `Bot${i + 1}`) : (i === 0 ? 'Hero' : aiNames[i - 1]);
+  const pName = i => allBotsRef.current ? (allBotNamesRef.current[i] ?? `Bot${i + 1}`) : (i === 0 ? 'Hero' : aiNames[i - 1]);
 
   const M = {
     gameStart: 'Peli alkaa! Jokainen kääntää vuorollaan pinonsa päällimmäisen kortin.',
@@ -135,7 +136,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     },
     heroTooSlow: 'Hero oli hieman hitaampi — ei rangaistusta.',
     heroSlapNoMatch: 'Hero läpsäsi — mutta ei täsmäystä! Menettää päällimmäisen kortin.',
-    gameOver: (playerName) => playerName ? `${playerName === 'Hero' ? 'Veit voiton' : playerName + ' vei voiton'}! 🏆🎉` : 'Peli päättyi!',
+    gameOver: (playerName) => playerName ? `${playerName} vei voiton! 🏆🎉` : 'Peli päättyi!',
     duelStart: (a, b) => `⚔️ Kaksintaistelu! ${a} vs ${b} — pinot puolitetaan 30 s välein.`,
     duelHalved: (counts) => `✂️ Pinot puolitettu! ${counts}`,
   };
@@ -400,7 +401,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
     if (sndRef.current) { SFX.slap(); tm(() => SFX.winPile(), 200); }
     const n = curCenter.length;
     addLog(M.correctSlap(pName(playerIdx), ms, n));
-    if (playerIdx === 0 && ms) {
+    if (playerIdx === 0 && ms && !allBotsRef.current) {
       setBestMs(prev => prev === null || ms < prev ? ms : prev);
       if (ms < 400) detectMoment('epic_fast_slap', { ms });
     }
@@ -693,7 +694,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
                   {flipAnim.card.r}{flipAnim.card.s}
                 </span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>
-                  {flipAnim.playerIdx === 0 ? 'Hero' : aiNames[flipAnim.playerIdx - 1]}
+                  {pName(flipAnim.playerIdx)}
                 </span>
               </div>
             )}
@@ -756,13 +757,8 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
       </div>
 
       {allBots && phase !== 'gameover' && (
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', padding: '6px 10px', background: 'rgba(123,47,190,0.08)', border: '1px solid rgba(123,47,190,0.25)', borderRadius: 10, marginBottom: 8 }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#bb88ff' }}>🔮 Katsomotila</span>
-          <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: paused ? '#f0e6ff' : '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <button onClick={() => { aiDelayRef.current = Math.max(500, aiDelayRef.current - 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>−0.5s</button>
-          <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#bb88ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-          <button onClick={() => { aiDelayRef.current = Math.min(4000, aiDelayRef.current + 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>+0.5s</button>
-        </div>
+        <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}
+          onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
       {pendingResult && allBots && (

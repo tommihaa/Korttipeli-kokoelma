@@ -38,7 +38,7 @@ const M = {
   peekStart: 'Kortit on jaettu! Kurkkaa kaksi omaa kenttäkorttia — muista ne, sillä ne pysyvät piilossa koko pelin.',
   peekOne:   'Hyvä! Kurkkaa vielä toinen kortti.',
   peekDone:  'Pelaajat katsoivat kaksi korttiaan. Peli voi alkaa.',
-  yourTurn:  'Sinun vuorosi — nosta kortti pakasta tai poistopakasta. Voit koputtaa ennen nostoa, jos uskot pisteidesi olevan pienimmät.',
+  yourTurn:  'Vuorossa Hero. Nosta kortti pakasta tai poistopakasta. Voit koputtaa ennen nostoa, jos uskot pisteidesi olevan pienimmät.',
   drawn:     c => `Nostit ${lblColored(c)} (${c.v} p). Vaihda se johonkin pöytäkorteistasi tai heitä poistopakkaan.`,
   drawnD:    c => `Nostit ${lblColored(c)} (${c.v} p) poistopakasta. Vaihda pöytäkorttiin vai heitä takaisin?`,
   swapped:   c => `Vaihdoit — ${lblColored(c)} siirtyi poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
@@ -53,7 +53,7 @@ const M = {
   kingMsg:   'Kuningas! Kurkkaa ensin yksi omistasi — valitse se.',
   knocked:   n => `${n} koputtaa! Peli päättyy kunkin pelattua vuoronsa.`,
   gameOver:  'Peli päättyi! Pienin pistesumma voittaa.',
-  aiTurn:    n => `${n} miettii...`,
+  aiTurn:    n => `Vuorossa ${n}.`,
   aiSwapped: (n, c) => `${n} vaihtoi pöytäkortin — ${lblColored(c)} poistopakkaan.`,
   aiDiscard: (n, c) => `${n} heitti ${lblColored(c)} poistopakkaan.`,
   aiKnock:   n => `${n} koputtaa — luottaa käteensä!`,
@@ -281,7 +281,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         setPhase('draw');
         const si = 1 % nP;
         setCurIdx(si); curRef.current = si;
-        if (si === 0) setMsg(M.yourTurn);
+        if (newG.players[si].isHuman) setMsg(M.yourTurn);
         else { setMsg(M.aiTurn(newG.players[si].name)); aiTmr.current = tm(() => runAI(si, gRef.current), 600); }
       }, 1600);
     }

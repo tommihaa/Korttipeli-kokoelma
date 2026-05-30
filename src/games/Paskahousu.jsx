@@ -7,6 +7,7 @@ import Card from '../shared/Card.jsx';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames(pool) {
@@ -345,25 +346,23 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   function setGS(g) { setG(g); gRef.current = g; }
 
   const M = {
-    gameStart:    (isH, name, lowest) => `Paskahousu alkaa! ${isH
-      ? `Kellään ei ole pienempää kuin ${lowest}, joten sinä aloitat. Voit lyödä useammankin samanarvoisen kerralla.`
-      : `${name} aloittaa (pienin kortti).`}`,
-    played:       (isH, name, cards) => `${isH ? 'Sinä' : name}: ${cards}`,
-    won:          (isH, name) => `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉`,
-    loser:        (isH, name) => `${isH ? 'Sinä jäit' : `${name} jäi`} Paskahousuksi.`,
-    swept:        (isH, name, count) => `${isH ? 'Sinä kaadat' : `${name} kaataa`} ${count} kortin kasan! Jatkaa.`,
+    gameStart:    (isH, name, lowest) => `Paskahousu alkaa! ${name} aloittaa (pienin kortti).${isH ? ' Voit lyödä useammankin samanarvoisen kerralla.' : ''}`,
+    played:       (isH, name, cards) => `${name}: ${cards}`,
+    won:          (isH, name) => `${name} vei voiton! 🏆🎉`,
+    loser:        (isH, name) => `${name} jäi Paskahousuksi.`,
+    swept:        (isH, name, count) => `${name} kaataa ${count} kortin kasan! Jatkaa.`,
     turnOf:       name => `Vuorossa ${name}.`,
-    yourTurnCont: 'Sinä jatkat vuoroasi.',
+    yourTurnCont: 'Hero jatkaa vuoroaan.',
     emptyPenalty: (card, nextName) => `${card} tyhjälle — ${nextName} nostaa ja menettää vuoronsa!`,
     emptyPenalty2:(card, nextName) => `${card} tyhjälle — ${nextName} menettää vuoronsa!`,
-    blindSwept:   (isH, name, card, count) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — kaatoi ${count} kortin kasan! ${isH ? 'Jatkat.' : 'Jatkaa.'}`,
-    blindGood:    (isH, name, card) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — kortti kävi!`,
-    blindBad:     (isH, name, card) => `${isH ? 'Sinä vedät sokkona' : `${name} veti sokkona`} ${card} pakasta — ei käynyt, nosta kasa!`,
-    tookPile:     (isH, name, count) => `${isH ? `Sinä nostat ${count} kortin kasan.` : `${name} nostaa ${count} kortin kasan.`}`,
-    skipCard:     (isH, name, card) => `${isH ? 'Sinä nostat' : `${name} nostaa`} (${card}) ja ${isH ? 'menetät' : 'menettää'} vuoronsa.`,
-    skipNoCard:   (isH, name) => `${isH ? 'Sinä menetät' : `${name} menettää`} vuoronsa.`,
-    swapped:      (isH, name, cards) => `${isH ? 'Sinä vaihdat' : `${name} vaihtaa`}! ${cards} kasaan.`,
-    swapSwept:    (isH, name, count, cards) => `${isH ? `Sinä kaadat ${count} kortin kasan vaihdossa saamallasi ${cards}! Jatkat.` : `${name} kaataa ${count} kortin kasan vaihdossa saamallaan ${cards}! Jatkaa.`}`,
+    blindSwept:   (isH, name, card, count) => `${name} veti sokkona ${card} pakasta — kaatoi ${count} kortin kasan! Jatkaa.`,
+    blindGood:    (isH, name, card) => `${name} veti sokkona ${card} pakasta — kortti kävi!`,
+    blindBad:     (isH, name, card) => `${name} veti sokkona ${card} pakasta — ei käynyt, nosta kasa!`,
+    tookPile:     (isH, name, count) => `${name} nostaa ${count} kortin kasan.`,
+    skipCard:     (isH, name, card) => `${name} nostaa (${card}) ja menettää vuoronsa.`,
+    skipNoCard:   (isH, name) => `${name} menettää vuoronsa.`,
+    swapped:      (isH, name, cards) => `${name} vaihtaa! ${cards} kasaan.`,
+    swapSwept:    (isH, name, count, cards) => `${name} kaataa ${count} kortin kasan vaihdossa saamallaan ${cards}! Jatkaa.`,
     aiSwaps:      name => `${name} vaihtaa!`,
     aiStuck:      name => `${name}: ei pysty tekemään mitään.`,
     badCard:      'Kortti ei kelpaa tähän.',
@@ -447,7 +446,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
     if (sndRef.current) SFX.play();
     setJP(ids);
-    setLP({ name: isH ? 'Sinä' : p.name, cards, isHuman: isH });
+    setLP({ name: p.name, cards, isHuman: isH });
     tm(() => setJP(new Set()), 1900);
     tm(() => setLP(null), 1900);
 
@@ -1186,13 +1185,8 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       </div>
 
       {allBots && G?.phase !== 'gameover' && (
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', padding: '6px 10px', background: 'rgba(123,47,190,0.08)', border: '1px solid rgba(123,47,190,0.25)', borderRadius: 10, marginBottom: 8 }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#bb88ff' }}>🔮 Katsomotila</span>
-          <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: '#f0e6ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <button onClick={() => { aiDelayRef.current = Math.max(500, aiDelayRef.current - 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>−0.5s</button>
-          <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#bb88ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-          <button onClick={() => { aiDelayRef.current = Math.min(4000, aiDelayRef.current + 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>+0.5s</button>
-        </div>
+        <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}
+          onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
       {pendingResult && allBots && (

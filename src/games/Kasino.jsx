@@ -233,13 +233,13 @@ function sortHand(hand) {
 const lblColored = c => c ? `${c.r}${c.s}` : '—';
 
 const M = {
-  gameStart: (hint) => `Kasino alkaa! Pöydässä kortit. Sinun vuorosi. ${hint}`,
+  gameStart: (hint) => `Kasino alkaa! Pöydässä kortit. Vuorossa Hero. ${hint}`,
   newDeal: (left) => `Uusi jako — ${left} pakassa jäljellä.`,
   forcedLeave: 'Pakollinen siirto — yksi kortti kädessä, pöytä tyhjä.',
-  yourTurn: (count, hint) => `Sinun vuorosi — ${count} kädessä. ${hint}`,
-  aiThinking: (name) => `${name} miettii...`,
+  yourTurn: (count, hint) => `Vuorossa Hero. ${count} kädessä. ${hint}`,
+  aiThinking: (name) => `Vuorossa ${name}.`,
   endRound: 'Kierros päättyi! Pisteet lasketaan...',
-  newRound: (scores, hint) => `Uusi peli! Pisteet: ${scores}. Sinun vuorosi — ${hint}`,
+  newRound: (scores, hint) => `Uusi peli! Pisteet: ${scores}. Vuorossa Hero. ${hint}`,
   humanCapture: (who, handCard, captureStr, isMokki) => `${who}: ${handCard} ← ${captureStr}${isMokki ? ' 🏠 MÖKKI!' : ''}`,
   humanLeave: (who, card) => `${who} ${card} pöytään.`,
   warning: (card, captured) => `⚠ Huom: ${card} olisi kaapattu ${captured} — klikkaa pöytäkortit ennen käsikorttia.`,
@@ -662,9 +662,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     const newG = { ...g, players, table: newTable, lastCapture: playerIdx };
     if (sndRef.current) SFX.capture();
     if (isMökki && sndRef.current) tm(() => SFX.tikki(), 200);
-    flashLastPlay(playerIdx === 0 ? 'Sinä' : g.players[playerIdx].name, handCard, playerIdx === 0);
+    flashLastPlay(g.players[playerIdx].name, handCard, g.players[playerIdx].isHuman);
     if (!silent) {
-      const who = playerIdx === 0 ? 'Kaappasit' : `${g.players[playerIdx].name} kaappasi`;
+      const who = `${g.players[playerIdx].name} kaappasi`;
       const groups = findGroups(tableCards, handVal(handCard));
       const captureStr = groups.length > 1
         ? groups.map(grp => grp.map(id => lbl(tableCards.find(c => c.id === id))).join('+')).join(' ja ')
@@ -683,9 +683,9 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     setJP(handCard.id);
     tm(() => setJP(null), 2200);
     if (sndRef.current) SFX.leave();
-    const who = playerIdx === 0 ? 'Jätit' : `${g.players[playerIdx].name} jätti`;
+    const who = `${g.players[playerIdx].name} jätti`;
     addLog(M.humanLeave(who, lblColored(handCard)));
-    flashLastPlay(playerIdx === 0 ? 'Sinä' : g.players[playerIdx].name, handCard, playerIdx === 0);
+    flashLastPlay(g.players[playerIdx].name, handCard, g.players[playerIdx].isHuman);
     return newG;
   }
 
@@ -718,9 +718,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       : p
     );
     if (sndRef.current) SFX.build();
-    const buildMsg = playerIdx === 0
-      ? `Sinä rakennat rakennelman — arvo ${buildValue}`
-      : `${g.players[playerIdx].name} rakentaa rakennelman — arvo ${buildValue}`;
+    const buildMsg = `${g.players[playerIdx].name} rakentaa rakennelman — arvo ${buildValue}`;
     addLog(buildMsg);
     return { ...g, players, table: newTable, builds: [...g.builds, build] };
   }
@@ -745,16 +743,16 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     }
     if (sndRef.current) SFX.capture();
     if (isMökki && sndRef.current) tm(() => SFX.tikki(), 200);
-    flashLastPlay(playerIdx === 0 ? 'Sinä' : g.players[playerIdx].name, handCard, playerIdx === 0);
+    flashLastPlay(g.players[playerIdx].name, handCard, g.players[playerIdx].isHuman);
     const isSteal = capturedBuilds.some(b => b.ownerIdx !== playerIdx);
-    const actor = playerIdx === 0 ? 'Sinä' : g.players[playerIdx].name;
+    const actor = g.players[playerIdx].name;
     const buildVal = capturedBuilds[0]?.value ?? handCard.v;
     if (!silent) {
       if (isSteal) {
-        const verb = playerIdx === 0 ? 'kähvelsit' : 'kähveltää';
+        const verb = 'kähveltää';
         addLog(`${actor} ${verb} rakennelman (${buildVal})!`);
       } else {
-        const [viet, rakennelmasi] = playerIdx === 0 ? ['viet', 'rakennelmasi'] : ['vie', 'rakennelmansa'];
+        const [viet, rakennelmasi] = ['vie', 'rakennelmansa'];
         addLog(`${actor} ${viet} ${rakennelmasi} (${buildVal})`);
       }
     }

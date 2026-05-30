@@ -220,6 +220,19 @@ const MERKISTO = [
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
   {
+    date: '30.5.2026',
+    items: [
+      'Pelaajamäärä valitaan vain pelin aloitusnäytöllä (poistettu päällekkäinen säädin Asetuksista)',
+      'Katselutila-palkki (tahtisäädin) nyt kaikissa 9 pelissä — myös Läpsy, Ristiseiska ja Paskahousu',
+      'Vuoroviesti yhtenäistetty: "Vuorossa X." kaikissa vuoropohjaisissa peleissä',
+      'Tapahtumaviestit yhtenäistetty kolmanteen persoonaan (pohjaa kieliversioinnille)',
+      'Ristiseiska: pelatun kortin vaikutus näkyy lokissa (esim. "avaa maan", "alapino ei avaudu vielä")',
+      'Bottien Taistelu: korjattu kohtia joissa bottia puhuteltiin pelaajana',
+      'Seiska: Bottien Taistelu -rivin korkeus — aikomus-kortti ei enää leikkaudu',
+      'Sisäinen siivous: Moskasta poistettu vähän käytetty Momentti-tallennus, korjattu kirjoitusasu',
+    ],
+  },
+  {
     date: '29.5.2026',
     items: [
       'Katselutila-palkki yhtenäistetty: kaikissa peleissä sama tahtisäädin (Seiskan +/- napit korvattu liukusäätimellä)',
@@ -280,6 +293,7 @@ const CHANGELOG = [
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
   { label: 'Bottien Taistelu: AI-taso seuraa Asetuksista valittua tasoa', status: 'done' },
+  { label: 'Pelikohtaiset sääntövalinnat pelin valinta-näyttöön (pelaajamäärän viereen). Paskahousu: 5 vai 6 korttia, ovatko kakkoset kovia, minkä päälle kuvakortin saa laskea (7/8/9). Kasino: salli rakennelmat erikoiskorttien arvoille — ässä 14, pata 2 = 15, ruutu 10 = 16', status: 'deferred' },
   { label: 'Kieliversiointi (FI/EN)', status: 'deferred' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
 ];
@@ -588,7 +602,9 @@ function ReplayView({ frames, onClose, isMobile }) {
 
 export default function App() {
   const [active, setActive]         = useState(null);
-  const [playerCount, setPlayerCount] = useState(4);
+  // Oletuspelaajamäärä, jolla pelit alustetaan. Varsinainen valinta tehdään
+  // kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4), joten globaalia säädintä ei ole.
+  const playerCount = 4;
   const [showAdmin, setShowAdmin]   = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [stats, setStats]           = useState(mkStats);
@@ -909,23 +925,6 @@ export default function App() {
           </button>
           {showPelaajat && (
           <div style={{ padding: '0 14px 14px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 3, color: C.dim, opacity: 0.7 }}>PELAAJIA</span>
-            {[2, 3, 4].map(n => (
-              <button
-                key={n}
-                onClick={() => setPlayerCount(n)}
-                style={{
-                  width: 40, height: 40, borderRadius: 10,
-                  border: `2px solid ${playerCount === n ? C.gold : C.panelBorder}`,
-                  background: playerCount === n ? `${C.gold}18` : 'transparent',
-                  color: playerCount === n ? C.gold : C.dim,
-                  fontSize: 18, cursor: 'pointer',
-                  fontFamily: 'Georgia,serif', transition: 'all 0.15s',
-                }}
-              >{n}</button>
-            ))}
-          </div>
           <p style={{ margin: '0 0 10px', fontSize: 11, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>
             Vastustajat arvotaan valitusta ryhmästä.
           </p>

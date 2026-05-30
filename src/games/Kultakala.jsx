@@ -25,8 +25,8 @@ const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}
 const M = {
   gameStart: 'Kortit on jaettu. Jokaisella on tuntematon kortti ja viisi kenttäkorttia. Aloita klikkaamalla nostopakkaa. Myöhemmillä kierroksilla voit nostaa myös poistopakasta.',
   deckEmpty: 'Nostopakka ehtyi — paljastetaan tuntemattomat!',
-  yourTurn: 'Sinun vuorosi — nosta nostopakasta tai poistopakasta.',
-  aiThinking: p => `${p.name} miettii...`,
+  yourTurn: 'Vuorossa Hero. Nosta nostopakasta tai poistopakasta.',
+  aiThinking: p => `Vuorossa ${p.name}.`,
   aiDrawDiscard: p => `${p.name} nostaa poistopakasta.`,
   aiDrawDeck: p => `${p.name} nostaa nostopakasta.`,
   aiSwapRow: (p, idx, newCard, oldCard) => `${p.name} vaihtaa: paikka ${idx + 1}: ${lblColored(newCard)} (${newCard.v} p) sisään, ${lblColored(oldCard)} poistopakkaan.`,
@@ -297,7 +297,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     setPhase('drawing'); phaseRef.current = 'drawing';
     setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
     const p = g.players[next];
-    addLog(p.id === 0 ? M.yourTurn : M.aiThinking(p));
+    addLog(p.isHuman ? M.yourTurn : M.aiThinking(p));
     aiTmr.current = tm(() => maybeAI(next, g), 600);
   }
 
@@ -584,7 +584,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
     const newG = { ...g, discard: [...g.discard, held] };
     setG(newG); gRef.current = newG;
     addLog(M.humanDiscard(held));
-    flashLastPlay('Sinä', held, true);
+    flashLastPlay(g.players[0].name, held, true);
     setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
     setPhase('drawing'); phaseRef.current = 'drawing';
     tm(() => advance(newG, 0), 300);

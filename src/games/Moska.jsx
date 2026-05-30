@@ -5,7 +5,6 @@ import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed, aiShouldFumble } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 // ── Moska (Durak) ─────────────────────────────────────────────
@@ -204,15 +203,12 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const [awaitingPlayerContinue, setAwaitingPlayerContinue] = useState(false); // odottaa seuraavaa kierrosta
   const [pendingDraw, setPendingDraw] = useState(null); // odottaa nostojen tekemistä
 
-  // Momentti-palaute
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
-  const momentsRef = useRef([]);
 
   const removedRef = useRef(new Set()); // korttien rs-avaimet ("A♠") jotka ovat poistuneet pelistä
 
@@ -258,7 +254,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   }, [G?.deck?.length, G?.trumpCard]);
 
   // Kielioppiapuri: Hero = 2. persoona, AI = nimi + 3. persoona
-  const act = (p, v2, v3) => p.isHuman ? `Sinä ${v2}` : `${p.name} ${v3}`;
+  const act = (p, v2, v3) => `${p.name} ${v3}`;
 
   function addLog(m) {
     setMsg_(m);
@@ -275,78 +271,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   }
 
   function setGS(g) { setG(g); gRef.current = g; }
-
-  // Momenttien havaitseminen — onko tämä erikoinen hetkki?
-  function detectMoment(eventType, context, deckGone) {
-    if (eventType === 'defender_won') {
-      const difficulty = context.unbeatenCount || 0;
-      let momentType = 'defense_success';
-      let title = '🛡️ Onnistunut puolustus';
-      let description = `Puolustaja onnistui kaatamaan ${difficulty} hyökkäyskortin.`;
-      let rarity = 'uncommon'; // Uncommon by default
-
-      // Epic: Vaikea tilanne (4+ korttia lyötävänä)
-      if (difficulty >= 4) {
-        momentType = 'difficult_defense';
-        title = '⚔️ Epic Puolustus!';
-        description = `Puolustaja kaatoi ${difficulty} hyökkäyskortin isoilla valteilla. Herkulline pelastus!`;
-        rarity = 'epic';
-      }
-
-      // Legendary: Pakka ehtyi juuri kun puolustaja voitti! (~0.3% todennäköisyys)
-      if (deckGone && Math.random() < 0.003) {
-        momentType = 'legendary_defense';
-        title = '🟠 LEGENDARY! Pakka loppui juuri oikeaan aikaan!';
-        description = `Pakka ehtyi juuri kun puolustaja kaatoi kaikki kortit. Täydellinen ajoitus!`;
-        rarity = 'legendary';
-      }
-
-      const moment = {
-        type: momentType,
-        game: 'Moska',
-        title,
-        description,
-        context,
-        timestamp: new Date().toISOString(),
-        rarity,
-      };
-
-      // Vain Legendary-momentit näyttävät popupin, muut tallennetaan silenceerilla
-      if (rarity === 'legendary') {
-        setCurrentMoment(moment);
-      } else {
-        saveMomentSilently(moment);
-      }
-
-      return moment;
-    }
-  }
-
-  function saveMomentSilently(moment) {
-    const feedback = {
-      momentType: moment.type,
-      game: moment.game,
-      rarity: moment.rarity,
-      comment: '',
-      timestamp: moment.timestamp,
-      context: moment.context,
-    };
-
-    const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
-    stored.push(feedback);
-    localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
-
-    if (hints) {
-      addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
-    }
-  }
-
-  function saveMomentFeedback(feedback) {
-    momentsRef.current.push(feedback);
-    if (hints) {
-      addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
-    }
-  }
 
   const M = {
     gameStart:      (trump, att, def) => `Moska alkaa! Valttimaa: ${trump}. ${att}, ${def}.`,
@@ -477,18 +401,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       }
     }
 
-    // Havaitse erikoismoment JOS puolustaja voitti
-    if (defWon) {
-      const unbeatenCount = g.table.length; // Montako korttia oli pöydällä
-      // Tarkista onko pakka ehtyä JUURI NYTÄ
-      const willDeckGone = deck.length === 0 && tc === null;
-      detectMoment('defender_won', {
-        defender: defPlayer.name,
-        unbeatenCount,
-        attackerCount: g.attackers.length,
-      }, willDeckGone);
-    }
-
     // Tarkista valmistuneet (pakkaa ei enää, käsi tyhjä)
     const deckGone = deck.length === 0 && tc === null;
     let rankings = [...g.rankings];
@@ -587,7 +499,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const newTable = cards.map(c => ({ atk: c, def: null, atkBy: atkIdx }));
     const players = g.players.map((pl, i) => i === atkIdx ? { ...pl, hand: newHand } : pl);
     addLog(M.attack(act(p, 'hyökkäsit', 'hyökkäsi'), cards.map(lblColored).join(', ')));
-    flashLastPlay(p.isHuman ? 'Sinä' : p.name, cards, p.isHuman);
+    flashLastPlay(p.name, cards, p.isHuman);
     if (sndRef.current) SFX.leave();
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
@@ -610,7 +522,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     const statusMsg = unbeaten > 0 ? `(${beaten}🛡️/${unbeaten}⚔️ pöydällä)` : '(kaikki kaadettu)';
 
     addLog(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
-    flashLastPlay(def.isHuman ? 'Sinä' : def.name, defCard, def.isHuman);
+    flashLastPlay(def.name, defCard, def.isHuman);
     if (sndRef.current) SFX.beat();
     return { ...g, players, table: newTable };
   }
@@ -1097,12 +1009,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={saveMomentFeedback}
-      />
-
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>⚔️</span>
@@ -1371,7 +1277,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
 
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pääse korteistasi eroon — jäljimmäinen on Moska</span>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pääse korteistasi eroon — jälkimmäinen on Moska</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>

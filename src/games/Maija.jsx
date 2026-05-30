@@ -188,25 +188,20 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       return `Peli alkaa! Valttimaa: ${trumpSpan}. ${attacker} hyökkää, ${defender} puolustaa.`;
     },
     finishedGame: (name, rank) => rank === 1
-      ? `${name.includes('Pääsit') ? 'Veit voiton' : name.split(' ')[0] + ' vei voiton'}! 🏆🎉`
-      : `${name.includes('Pääsit') ? 'Poistuit pelistä' : name.split(' ')[0] + ' poistui pelistä'}. 👏`,
+      ? `${name.split(' ')[0]} vei voiton! 🏆🎉`
+      : `${name.split(' ')[0]} poistui pelistä. 👏`,
     maija: (name, hadMaija) => `${name} jäi ${hadMaija ? 'patakuningattaren kanssa — ' : ''}Maijaksi.`,
     newAttack: (attacker, defender) => `${attacker} hyökkää — ${defender} puolustaa.`,
     defendTake: (name, unbeatenCount, detail) => `${name} ${kortin(unbeatenCount)} kaatamatta jääneistä${detail}.`,
-    humanAttack: (cards) => `Löit: ${cards}.`,
     aiAttack: (name, cards) => `${name} löi: ${cards}.`,
     aiDefense: (name, count) => `${name} puolustaa — ${korttia(count)} kaadettavana.`,
     maijaWarning: 'Maija pöydällä — puolustajan on nostettava se käteen!',
-    defenderWinRound: (name) => name ? `${name} kaataa kaikki!` : 'Kaadoit kaikki!',
-    defenderWinRoundNext: 'Kaadoit kaikki! Hyökkäät seuraavaksi.',
-    defenderCannotWin: (name, unbeaten) => {
-      const cardStr = kortin(unbeaten);
-      return name ? `${name} ei kaada kaikkia — nosta ${cardStr}.` : `Et kaada kaikkia — nostat ${cardStr}.`;
-    },
+    defenderWinRound: (name) => `${name} kaataa kaikki!`,
+    defenderWinRoundNext: 'Hero kaatoi kaikki! Hyökkää seuraavaksi.',
     tooManyCards: 'Liikaa kortteja — puolustajalla ei riitä käsi kaatamaan.',
     maijaNotValid: 'Patakuningatar ei kelpaa kaatokortiksi!',
     cardTooSmall: (defCard, attCard) => `${defCard} ei kaada ${attCard} — liian pieni tai väärä maa.`,
-    beatWith: (attCard, defCard) => `Kaadoit ${attCard} kortilla ${defCard}.`,
+    beatWith: (attCard, defCard) => `Hero kaatoi ${attCard} kortilla ${defCard}.`,
   };
 
   function flashLastPlay(name, cards, isHuman = false) {
@@ -262,7 +257,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     g.players.forEach((p, i) => {
       if (!newFin.includes(i) && p.hand.length===0 && g.deck.length===0) {
         newFin.push(i);
-        const name = p.id === 0 ? 'Pääsit eroon kaikista korteistasi' : `${p.name} pääsi eroon kaikista korteistaan`;
+        const name = `${p.name} pääsi eroon kaikista korteistaan`;
         addLog(M.finishedGame(name, newFin.length));
       }
     });
@@ -330,7 +325,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
     const players = g.players.map((p,i) => i===g.defenderIdx ? { ...p, hand:[...p.hand, ...unbeaten] } : p);
     let g2 = { ...g, players, discard:[...g.discard, ...beaten] };
     if (sndRef.current) SFX.take();
-    const who = g.players[g.defenderIdx].id===0 ? 'Nostit' : `${g.players[g.defenderIdx].name} nosti`;
+    const who = `${g.players[g.defenderIdx].name} nosti`;
     const detail = beaten.length > 0 ? ` (${beaten.length >> 1} kaatoa poistopakkaan)` : '';
     addLog(M.defendTake(who, unbeaten.length, detail));
     g2 = drawHand(g2, g2.attackerIdx);
@@ -408,9 +403,9 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   function doAttack(g, cards) {
     if (sndRef.current) SFX.play();
     const attName = g.players[g.attackerIdx];
-    const msg = attName.id===0 ? M.humanAttack(cards.map(lblColored).join(', ')) : M.aiAttack(attName.name, cards.map(lblColored).join(', '));
+    const msg = M.aiAttack(attName.name, cards.map(lblColored).join(', '));
     addLog(msg);
-    flashLastPlay(attName.id===0 ? 'Sinä' : attName.name, cards, attName.id===0);
+    flashLastPlay(attName.name, cards, attName.isHuman);
     const players = g.players.map((p,i) => i===g.attackerIdx
       ? { ...p, hand:p.hand.filter(c => !cards.find(x => x.id===c.id)) } : p);
     const tbl = cards.map(c => ({ att:c, def:null }));
@@ -512,17 +507,15 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       if (unbeaten.length === 0) {
         const defName = g2.players[g2.defenderIdx];
         const beaten = newTbl.length;
-        if (g2.defenderIdx === 0 && beaten >= 4) {
+        if (g2.players[g2.defenderIdx].isHuman && beaten >= 4) {
           detectMoment('epic_defense_win', { unbeatenCount: beaten });
         }
-        addLog(M.defenderWinRound(defName.id === 0 ? null : defName.name));
+        addLog(M.defenderWinRound(defName.name));
         if (sndRef.current) SFX.fanfare();
         tm(() => resolveDefenseWin({ ...g2, players }, newTbl, finRef.current), 2200);
       } else {
         const n = g2.players[g2.defenderIdx];
-        const msg = n.id===0
-          ? M.defenderCannotWin(null, unbeaten.length)
-          : `${n.name} kaataa ${newTbl.length - unbeaten.length}/${newTbl.length} — nostaa ${kortin(unbeaten.length)}.`;
+        const msg = `${n.name} kaataa ${newTbl.length - unbeaten.length}/${newTbl.length} — nostaa ${kortin(unbeaten.length)}.`;
         addLog(msg);
         tm(() => resolveDefenseLoss({ ...g2, players }, newTbl, finRef.current), 1500);
       }

@@ -9,7 +9,7 @@ Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
-- `playerCount` valitaan Asetukset-paneelin Pelaajat-osiossa [2][3][4]
+- `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.
 - Ristiseiska: `Math.max(playerCount, game.minPlayers)` — varmistaa min 3 pelaajaa
 
 ## Global settings (App.jsx → props to all games)
@@ -139,6 +139,10 @@ Virstanpylväät:
 - Finnish variable names for game logic (e.g. `kortti`, `pelaaja`, `vuoro`)
 - English for React/component internals
 - Destructure imports: `import { useState } from "react"`
+
+## Viestit (loki/viestikupla) — i18n-konventio
+- **Tapahtumailmoitukset kolmannessa persoonassa** kaikille pelaajille, myös ihmiselle: `${name}: ...`, `Vuorossa ${name}.`, `${name} vei voiton`. Ihmisen nimi on aina `Hero`, joten "Vuorossa Hero.", "Hero: 7♣". Ei erillistä `isHuman ? 'Sinä…' : '${name}…'` -haaraa — yksi käännösmalli per viesti.
+- **Poikkeus: säilytä toimintaohjeet/vihjeet 2. persoonassa** kun ne neuvovat ihmistä tekemään jotain (esim. Koputus/Kultakala "Nostit X. Vaihda…", Kasinon dynaaminen vihje, Ristiseiskan "…joten Passaa"). Nämä eivät ole ilmoituksia vaan ohjeita.
 
 ## DO NOT
 - Break single-file structure without asking

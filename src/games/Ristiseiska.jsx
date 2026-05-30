@@ -6,6 +6,7 @@ import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } f
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
+import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 // ── Ristiseiska ─────────────────────────────────────────────────
 // Järjestys per maa: 7 → 6 → 8 → ala-pino (5,4,3,2,A) + ylä-pino (9,T,J,Q,K)
@@ -50,6 +51,14 @@ function isPlayable(card, rows) {
 
 function hasAnyPlay(hand, rows) {
   return hand.some(c => isPlayable(c, rows));
+}
+
+// Kuvaa pelatun kortin vaikutus (kiusanteko-mekaniikka: 5 vaatii 8:n, 8 vaatii 6:n).
+function playEffect(v) {
+  if (v === 7) return 'avaa maan';
+  if (v === 6) return 'alapino ei avaudu vielä';
+  if (v === 8) return 'avaa maan ala- ja yläpinot';
+  return v <= 5 ? 'pelaa alapinoon' : 'pelaa yläpinoon';
 }
 
 function mkDeck() {
@@ -245,19 +254,20 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
 
   const M = {
     gameStart:  (starter, card) => `Ristiseiska alkaa! ${starter} aloittaa ${card}:llä.`,
-    yourTurn:   canPlay => canPlay ? 'Sinun vuorosi.' : 'Sinun vuorosi. Mikään korttisi ei käy, joten Passaa.',
-    played:     (isH, name, card) => `${isH ? 'Sinä' : name}: ${card}`,
-    won:        (isH, name, rank) => rank === 1 ? `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉` : `${isH ? 'Tulit' : `${name} tuli`} ${rank}. sijalle.`,
+    yourTurn:   canPlay => canPlay ? 'Vuorossa Hero.' : 'Vuorossa Hero. Mikään korttisi ei käy, joten Passaa.',
+    turnOf:     name => `Vuorossa ${name}.`,
+    played:     (isH, name, card, effect) => `${name}: ${card} (${effect})`,
+    won:        (isH, name, rank) => rank === 1 ? `${name} vei voiton! 🏆🎉` : `${name} tuli ${rank}. sijalle.`,
     aiBonus:    (name, suit, pile) => `${name}: Kaatoi ${suit} ${pile} — voi jatkaa!`,
-    humanBonus: (suit, pile) => `Kaadoit ${suit} ${pile}. Saat jatkaa — jos voit ja haluat.`,
-    passFirst:  (isH, name) => `${isH ? 'Sinä passaat' : `${name} passaa`} (1. kierros — ei rangaistusta).`,
-    passGiveMe: (isH, name) => `${isH ? 'Sinä passaat' : `${name} passaa`} — valitse kortti annettavaksi.`,
+    humanBonus: (suit, pile) => `Hero kaatoi ${suit} ${pile}. Saa jatkaa, jos voi ja haluaa.`,
+    passFirst:  (isH, name) => `${name} passaa (1. kierros — ei rangaistusta).`,
+    passGiveMe: (isH, name) => `${name} passaa — valitse kortti annettavaksi.`,
     passGive:   (isH, name, giverH, giverName, card) =>
-      `${isH ? 'Sinä passaat' : `${name} passaa`} — ${giverH ? 'sinä annat' : `${giverName} antaa`} ${card}.`,
-    passOnly:   (isH, name) => `${isH ? 'Sinä passaat' : `${name} passaa`}.`,
+      `${name} passaa — ${giverName} antaa ${card}.`,
+    passOnly:   (isH, name) => `${name} passaa.`,
     badCard:    'Tämä kortti ei käy tähän — valitse toinen.',
     cantPass:   'Sinulla on pelattavissa oleva kortti — passata ei voi.',
-    humanGives: (card, receiver) => `Sinä annat ${card} pelaajalle ${receiver}.`,
+    humanGives: (card, receiver) => `Hero antaa ${card} pelaajalle ${receiver}.`,
   };
 
   function startGame(forcedCount, allBotsMode = false) {
@@ -295,6 +305,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const g2 = { ...g, activePlayer: nextIdx, turnCount, firstRoundDone };
     setGS(g2);
     if (!g.players[nextIdx].isHuman) {
+      addLog(M.turnOf(g.players[nextIdx].name));
       const d = allBotsRef.current ? aiDelayRef.current : 1100;
       aiTmr.current = tm(() => {
         if (pausedRef.current) { const w = () => { if (!pausedRef.current) runAI(g2); else tm(w, 300); }; w(); return; }
@@ -313,8 +324,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     const v   = rv(card);
 
     if (sndRef.current) SFX.play();
-    addLog(M.played(isH, p.name, lblColored(card)));
-    flashLastPlay(isH ? 'Sinä' : p.name, card, isH);
+    addLog(M.played(isH, p.name, lblColored(card), playEffect(v)));
+    flashLastPlay(p.name, card, isH);
 
     const rows = { ...g.rows };
     const row  = rows[card.s];
@@ -936,13 +947,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       </div>
 
       {allBots && G?.phase !== 'gameover' && (
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', padding: '6px 10px', background: 'rgba(123,47,190,0.08)', border: '1px solid rgba(123,47,190,0.25)', borderRadius: 10, marginBottom: 8 }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: '#bb88ff' }}>🔮 Katsomotila</span>
-          <button onClick={togglePause} style={{ padding: '4px 12px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.4)', background: paused ? 'rgba(123,47,190,0.3)' : 'transparent', color: '#f0e6ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? '▶ Jatka' : '⏸ Tauko'}</button>
-          <button onClick={() => { aiDelayRef.current = Math.max(500, aiDelayRef.current - 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>−0.5s</button>
-          <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#bb88ff', minWidth: 36, textAlign: 'center' }}>{(aiDelayMs / 1000).toFixed(1)}s</span>
-          <button onClick={() => { aiDelayRef.current = Math.min(4000, aiDelayRef.current + 500); setAiDelayMs(aiDelayRef.current); }} style={{ padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(123,47,190,0.3)', background: 'transparent', color: '#bb88ff', fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>+0.5s</button>
-        </div>
+        <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}
+          onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
       {pendingResult && allBots && (

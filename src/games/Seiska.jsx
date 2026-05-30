@@ -300,16 +300,16 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const M = {
     gameStart:    card => `Seiska alkaa! Päällimmäinen: ${card}.`,
     turnOf:       name => `Vuorossa ${name}.`,
-    yourTurnSuit: cl => `Sinun vuorosi — ${cl}`,
-    aceDrawn:     (isH, name, card) => `${isH ? 'Sinä nostat' : `${name} nostaa`} ässärangaistuksena ${card}.`,
+    yourTurnSuit: cl => `Vuorossa Hero — ${cl}`,
+    aceDrawn:     (isH, name, card) => `${name} nostaa ässärangaistuksena ${card}.`,
     forgotLappu:  (name, count) => `${name} unohti sanoa Lappu — +${count} korttia sakkona!`,
-    played:       (isH, name, cards) => `${isH ? 'Sinä' : name}: ${cards}`,
-    won:          (isH, name, rank) => rank === 1 ? `${isH ? 'Veit voiton' : `${name} vei voiton`}! 🏆🎉` : `${isH ? 'Tulit' : `${name} tuli`} ${rank}. sijalle.`,
-    sevenPlayed:  (isH, name, suit) => `${isH ? 'Sinä pelaat' : `${name} pelaa`} seiskan ja vaatii pelattavaksi maata: ${coloredSuit(suit)}`,
-    sevenOnSeven: (isH, name, suit) => `${isH ? 'Sinä pelaat' : `${name} pelaa`} seiskan seiskan päälle — vaadittu maa on päällimmäisen seiskan maa: ${coloredSuit(suit)}`,
+    played:       (isH, name, cards) => `${name}: ${cards}`,
+    won:          (isH, name, rank) => rank === 1 ? `${name} vei voiton! 🏆🎉` : `${name} tuli ${rank}. sijalle.`,
+    sevenPlayed:  (isH, name, suit) => `${name} pelaa seiskan ja vaatii pelattavaksi maata: ${coloredSuit(suit)}`,
+    sevenOnSeven: (isH, name, suit) => `${name} pelaa seiskan seiskan päälle — vaadittu maa on päällimmäisen seiskan maa: ${coloredSuit(suit)}`,
     chooseSuit:   'Valitse vaadittu maa seiskan jälkeen.',
     lappu:        name => `${name}: Lappu!`,
-    aceBonus:     (isH, name, suit) => `Ässä! ${isH ? 'Sinä voit' : `${name} voi`} jatkaa ${coloredSuit(suit)}-maalla.`,
+    aceBonus:     (isH, name, suit) => `Ässä! ${name} voi jatkaa ${coloredSuit(suit)}-maalla.`,
     reshuffle:    'Pakka loppui. Lyöntipakka juuri sekoitettiin uudeksi Pakaksi.',
     deckEmpty:    'Pakka tyhjä — vuoro päättyy.',
     aiDraws:      (name, card) => card ? `${name} nostaa ${card}.` : `${name} nostaa.`,
@@ -936,7 +936,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
                 {debugOpen ? (
-                  <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
+                  <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0, paddingTop: 8 }}>
                     {p.hand.map(c => {
                       const isIntended = intention?.playerIdx === p.id
                         && intention.cards?.some(ic => ic.id === c.id);
