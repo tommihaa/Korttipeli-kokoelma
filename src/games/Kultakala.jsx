@@ -719,11 +719,11 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 5, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '5px 8px' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: isActive ? C.gold : C.dim, minWidth: 54, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
-                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
                   <div style={{ display: 'flex', gap: 2 }}>
                     {p.row.map((c, ci) => (
                       <div key={ci} style={{ borderRadius: 4, border: showAIKnown && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: showAIKnown && p.known.has(ci) ? `0 0 6px ${C.gold}66` : 'none', padding: showAIKnown && p.known.has(ci) ? 1 : 0 }}>
-                        <KaCard card={c} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                        <KaCard card={c} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
                       </div>
                     ))}
                   </div>
@@ -739,11 +739,11 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
-                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
                   <div style={{ display: 'flex', gap: 2 }}>
                     {p.row.map((c, ci) => (
                       <div key={ci} style={{ borderRadius: 6, border: showAIKnown && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: showAIKnown && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: showAIKnown && p.known.has(ci) ? 2 : 0 }}>
-                        <KaCard card={c} faceUp={revealed || debugOpen} small backStyle={BACKS[cardBack]} />
+                        <KaCard card={c} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
                       </div>
                     ))}
                   </div>

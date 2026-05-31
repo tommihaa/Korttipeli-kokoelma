@@ -989,7 +989,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
                     {sortHand(p.hand).map(c => {
                       const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
                       const isPlayable = playableSet?.has(c.id);
-                      return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]}
+                      return <Card key={c.id} card={c} xsmall backStyle={BACKS[cardBack]}
                         selected={isIntended}
                         highlight={!isIntended && !!isPlayable}
                         dim={!isIntended && playableSet !== null && !isPlayable}

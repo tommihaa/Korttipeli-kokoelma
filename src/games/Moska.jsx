@@ -1057,7 +1057,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
                       {sortHand(p.hand).map(c => {
                         const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
                         const isPlayable = playableSet?.has(c.id);
-                        return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]}
+                        return <Card key={c.id} card={c} xsmall backStyle={BACKS[cardBack]}
                           selected={isIntended}
                           highlight={!isIntended && isActive && !!isPlayable}
                           dim={!isIntended && isActive && !isPlayable}
@@ -1081,7 +1081,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
                     {debugOpen
                       ? p.hand.map(c => {
                           const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
-                          return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} selected={isIntended} />;
+                          return <Card key={c.id} card={c} xsmall backStyle={BACKS[cardBack]} selected={isIntended} />;
                         })
                       : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
                     }

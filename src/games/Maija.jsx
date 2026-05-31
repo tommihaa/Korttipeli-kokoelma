@@ -28,9 +28,9 @@ function canBeat(attCard, defCard, trump) {
 
 
 // ── Kortti ──────────────────────────────────────────────────────────
-function Card({ card, small, highlight, dim, selected, onClick, backStyle, faceDown }) {
+function Card({ card, small, xsmall, highlight, dim, selected, onClick, backStyle, faceDown }) {
   const [h, setH] = useState(false);
-  const w = small ? 44 : 58, ht = small ? 60 : 80;
+  const w = xsmall ? 38 : small ? 44 : 58, ht = xsmall ? 52 : small ? 60 : 80;
   const back = backStyle || BACKS.ilves;
   const clickable = !!onClick;
   const mjBorder = card && isMaija(card);
@@ -61,8 +61,8 @@ function Card({ card, small, highlight, dim, selected, onClick, backStyle, faceD
       }}>
       <div style={{ textAlign:'center', fontFamily:'Georgia,serif', lineHeight:1.1,
         pointerEvents:'none', color:mjBorder ? C.maija : SUIT_COLOR[card.s] }}>
-        <div style={{ fontSize:small ? 12 : 16, fontWeight:700 }}>{card.r}</div>
-        <div style={{ fontSize:small ? 13 : 19 }}>{card.s}</div>
+        <div style={{ fontSize:xsmall ? 11 : small ? 12 : 16, fontWeight:700 }}>{card.r}</div>
+        <div style={{ fontSize:xsmall ? 12 : small ? 13 : 19 }}>{card.s}</div>
         {mjBorder && <div style={{ fontSize:8, color:C.maija, letterSpacing:0.5 }}>MAIJA</div>}
       </div>
     </div>
@@ -701,7 +701,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
                     <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', flex: 1 }}>
                       {sortHand(p.hand).map(c => {
                         const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
-                        return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} selected={isIntended} />;
+                        return <Card key={c.id} card={c} xsmall backStyle={BACKS[cardBack]} selected={isIntended} />;
                       })}
                     </div>
                   </div>
@@ -723,7 +723,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
                       {debugOpen
                         ? p.hand.map(c => {
                             const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
-                            return <Card key={c.id} card={c} small backStyle={BACKS[cardBack]} selected={isIntended} />;
+                            return <Card key={c.id} card={c} xsmall backStyle={BACKS[cardBack]} selected={isIntended} />;
                           })
                         : p.hand.map((_, ci) => <div key={ci} style={{ width: 22, height: 33, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
                       }

@@ -230,6 +230,12 @@ const CHANGELOG = [
   {
     date: '31.5.2026',
     items: [
+      'Ristiseiska, Moska, Maija, Kultakala ja Paskahousu: vastustajien kortit pienennetty Seiskan kokoon (xsmall) — mahtuvat ruudulle paremmin puhelimella, etenkin Bottien Taistelu -tilassa',
+    ],
+  },
+  {
+    date: '31.5.2026',
+    items: [
       'Ristiseiska: uusi sääntövalinta aloitusnäytöllä — panttikortti "Valittu" (vakio: edellinen pelaaja valitsee kortin) tai "Satunnainen" (kortti arvotaan antajan kädestä)',
       'Paskahousu: "kovat kakkoset" -napissa ♠2 ♣2 nyt maaväreissä (musta pata, vihreä risti) — selkeämpää mitä vakiosääntö tarkoittaa',
       'Valikko: Maijan ikoni nyt selkeä Q♠-pikkukortti ja Kasino kultakolikko 🪙 (entiset tummat korttiglyyfit näkyivät huonosti)',
