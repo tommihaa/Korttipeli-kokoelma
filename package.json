@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "npx vercel build --prod && npx vercel deploy --prebuilt --prod && start https://tommi-jako52.vercel.app"
+    "deploy": "npx vercel build --prod && npx vercel deploy --prebuilt --prod && start https://tommi-jako.vercel.app"
   },
   "dependencies": {
     "react": "^18.3.1",

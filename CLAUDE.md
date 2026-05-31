@@ -48,7 +48,8 @@ At the start of every session run `npm run dev` in the background so the dev ser
 
 Production deploy: `npm run deploy`  (= `vercel build --prod && vercel deploy --prebuilt --prod`)
 One-time setup per machine: `npx vercel pull --yes --environment production`
-Live URL: https://tommi-jako52.vercel.app
+Live URL: https://tommi-jako.vercel.app  (ensisijainen)
+Vanha URL: https://tommi-jako52.vercel.app  (yhä voimassa — jaettu linkki kesälomalaisille; molemmat ovat tuotantodomaineja ja päivittyvät joka deployssa)
 
 ## Games & Terminology
 Nine games with unified Finnish UI terms:
