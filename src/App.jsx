@@ -7,7 +7,7 @@ const APP_VERSION = __APP_VERSION__;
 const BUILD_DATE  = __BUILD_DATE__;
 const BUILD_TIME  = __BUILD_TIME__;
 /* eslint-enable no-undef */
-const MAILTO = `mailto:no.jopas@gmail.com?subject=${encodeURIComponent(`Version ${APP_VERSION}, Deploy ${BUILD_DATE}, Jako52 palaute`)}`;
+const MAILTO = `mailto:no.jopas@gmail.com?subject=${encodeURIComponent(`Version ${APP_VERSION}, Deploy ${BUILD_DATE}, Jako palaute`)}`;
 import Koputus from './games/Koputus.jsx';
 import Lapsy from './games/Lapsy.jsx';
 import Kultakala from './games/Kultakala.jsx';
@@ -1206,7 +1206,7 @@ export default function App() {
             background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`,
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
           }}>
-            JAKO<span style={{ fontSize: isMobile ? 15 : 22, verticalAlign: 'super', letterSpacing: 2 }}>52</span>
+            JAKO<span style={{ fontSize: isMobile ? 15 : 22, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
           </h1>
         </div>
         <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8 }}>{infoBtn}{gearBtn}</div>
