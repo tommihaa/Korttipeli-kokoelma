@@ -73,7 +73,11 @@ function initRows() {
   return rows;
 }
 
-function initGame(nP, pool, allBots = false) {
+// Sääntövariaatio (aloitusnäytöltä): randomPantti=false (vakio) → antaja valitsee panttikortin;
+// true → kortti arvotaan antajan kädestä (koskee myös ihmistä). Antaja säilyy samana (edeltävä pelaaja).
+const DEFAULT_RULES = { randomPantti: false };
+
+function initGame(nP, pool, allBots = false, rules = DEFAULT_RULES) {
   const aiNames = shuffledAINames(pool);
   const deck = mkDeck();
   const per  = Math.floor(52 / nP);
@@ -96,6 +100,7 @@ function initGame(nP, pool, allBots = false) {
     bonusTurn: null,
     givingCardTo: null,
     givingPlayerIdx: null,
+    rules,
     phase: 'play',
     turnCount: 0,
     firstRoundDone: false,
@@ -193,6 +198,7 @@ function aiWorstCard(hand, rows) {
 export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
+  const [rules,    setRules]   = useState(DEFAULT_RULES);
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G,        setG]       = useState(null);
@@ -264,6 +270,8 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     passGiveMe: (isH, name) => `${name} passaa — valitse kortti annettavaksi.`,
     passGive:   (isH, name, giverH, giverName, card) =>
       `${name} passaa — ${giverName} antaa ${card}.`,
+    passGiveRandom: (isH, name, giverH, giverName, card) =>
+      `${name} passaa — ${giverName} antaa satunnaisesti ${card}.`,
     passOnly:   (isH, name) => `${name} passaa.`,
     badCard:    'Tämä kortti ei käy tähän — valitse toinen.',
     cantPass:   'Sinulla on pelattavissa oleva kortti — passata ei voi.',
@@ -276,7 +284,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     setPendingResult(null);
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
-    const g = initGame(count, playerNames, allBotsMode);
+    const g = initGame(count, playerNames, allBotsMode, rules);
     logRef.current = []; setLog([]); setSel(null); setLastPlay(null);
     setGS(g);
     const s = g.players[g.activePlayer];
@@ -392,8 +400,11 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     }
 
     const giverIdx = prevWithCards(g.players, playerIdx, g.finished);
+    const randomPantti = g.rules?.randomPantti;
 
-    if (giverIdx !== -1 && g.players[giverIdx].isHuman) {
+    // Vakiosääntö: ihminen antajana valitsee itse panttikortin (pysähdytään valintaan).
+    // Satunnais-variaatiossa kortti arvotaan myös ihmiseltä → valintavaihe ohitetaan.
+    if (!randomPantti && giverIdx !== -1 && g.players[giverIdx].isHuman) {
       const g2 = { ...g, givingCardTo: playerIdx, givingPlayerIdx: giverIdx };
       setGS(g2);
       addLog(M.passGiveMe(isH, p.name));
@@ -403,9 +414,12 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     let players = g.players;
     if (giverIdx !== -1) {
       const giver = g.players[giverIdx];
-      // Aloittelija-virhe: antaa satunnaisen kortin eikä strategisesti huonointa
-      const toGive = (!giver.isHuman && aiShouldFumble(aiLevelRef.current))
-        ? giver.hand[Math.floor(Math.random() * giver.hand.length)]
+      const randomCard = giver.hand[Math.floor(Math.random() * giver.hand.length)];
+      // Satunnais-variaatio: aina arvottu kortti (kuka tahansa antaja).
+      // Vakio: strategisesti huonoin — AI:n aloittelija-virhe antaa silti satunnaisen.
+      const toGive = randomPantti
+        ? randomCard
+        : (!giver.isHuman && aiShouldFumble(aiLevelRef.current)) ? randomCard
         : aiWorstCard(giver.hand, g.rows);
       players = g.players.map((pl, i) => {
         if (i === giverIdx)  return { ...pl, hand: pl.hand.filter(c => c.id !== toGive.id) };
@@ -413,7 +427,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
         return pl;
       });
       if (sndRef.current) SFX.leave();
-      addLog(M.passGive(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
+      addLog((randomPantti ? M.passGiveRandom : M.passGive)(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
       if (sndRef.current) SFX.take();
     } else {
       addLog(M.passOnly(isH, p.name));
@@ -555,6 +569,27 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
             <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: isMobile ? 300 : 360 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5 }}>PANTTIKORTTI</span>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[['Valittu', false], ['Satunnainen', true]].map(([lab, val]) => {
+              const active = rules.randomPantti === val;
+              return (
+                <button key={lab} onClick={() => setRules(r => ({ ...r, randomPantti: val }))}
+                  style={{ minWidth: 40, height: 36, padding: '0 12px', borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${active ? C.gold : '#2a4a32'}`, background: active ? C.gold + '18' : 'transparent', color: active ? C.gold : C.dim, transition: 'all 0.2s' }}>
+                  {lab}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, opacity: 0.75, lineHeight: 1.4 }}>
+          {rules.randomPantti
+            ? 'Kun passaat, edellinen pelaaja antaa sinulle arvotun kortin kädestään.'
+            : 'Kun passaat, edellinen pelaaja antaa sinulle itse valitsemansa kortin (vakio).'}
+        </span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>

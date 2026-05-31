@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
+import { C, SUIT_COLOR, SUIT_COLOR_DARK, suitColor } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
@@ -884,7 +884,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: isMobile ? 300 : 360 }}>
         {[
           { key: 'handSize', label: 'KORTTEJA',        opts: [5, 6] },
-          { key: 'hardTwos', label: 'KOVAT KAKKOSET',  opts: [['Kaikki', true], ['♠2 ♣2', false]] },
+          { key: 'hardTwos', label: 'KOVAT KAKKOSET',  opts: [['Kaikki', true], [<span><span style={{ color: SUIT_COLOR['♠'] }}>♠2</span> <span style={{ color: SUIT_COLOR_DARK['♣'] }}>♣2</span></span>, false]] },
           { key: 'faceMin',  label: 'KUVAKORTTI VÄH.', opts: [7, 8, 9] },
         ].map(row => (
           <div key={row.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>

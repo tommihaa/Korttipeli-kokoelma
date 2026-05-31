@@ -24,6 +24,14 @@ const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'
 const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
 const KANSA            = ['Astraalitason tirehtööri','Boomer','Jonne','Justiina','Karen','Kukkahattutäti','Lumihiutale','NPC','Rane','Random','Setämies','Veeti'];
 
+// Pikkukortti-ikoni valikon ruutuun (esim. Maija = Q♠) — luettavampi kuin tumma Unicode-korttiglyyfi
+const CardIcon = ({ rank, suit, suitColor = '#1a1a1a' }) => (
+  <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 26, height: 34, background: '#f6efdd', borderRadius: 4, lineHeight: 1.05, boxShadow: '0 1px 3px rgba(0,0,0,0.4)', fontFamily: 'Georgia,serif' }}>
+    <span style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a' }}>{rank}</span>
+    <span style={{ fontSize: 13, color: suitColor }}>{suit}</span>
+  </span>
+);
+
 const GAMES = [
   {
     id: 'kultakala', name: 'Kultakala', emoji: '🐟',
@@ -82,7 +90,7 @@ const GAMES = [
     ],
   },
   {
-    id: 'kasino', name: 'Kasino', emoji: '🂺',
+    id: 'kasino', name: 'Kasino', emoji: '🪙',
     desc: 'Kaappaa koko pöytä',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Keskitaso', diffColor: '#e0a93b',
@@ -109,7 +117,7 @@ const GAMES = [
     ],
   },
   {
-    id: 'maija', name: 'Maija', emoji: '🂭',
+    id: 'maija', name: 'Maija', emoji: <CardIcon rank="Q" suit="♠" />,
     desc: 'Osittainen kaato — torjuntavoitto. Täyskaato — hyökkäät.',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Keskitaso', diffColor: '#e0a93b',
@@ -219,6 +227,15 @@ const MERKISTO = [
 
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
+  {
+    date: '31.5.2026',
+    items: [
+      'Ristiseiska: uusi sääntövalinta aloitusnäytöllä — panttikortti "Valittu" (vakio: edellinen pelaaja valitsee kortin) tai "Satunnainen" (kortti arvotaan antajan kädestä)',
+      'Paskahousu: "kovat kakkoset" -napissa ♠2 ♣2 nyt maaväreissä (musta pata, vihreä risti) — selkeämpää mitä vakiosääntö tarkoittaa',
+      'Valikko: Maijan ikoni nyt selkeä Q♠-pikkukortti ja Kasino kultakolikko 🪙 (entiset tummat korttiglyyfit näkyivät huonosti)',
+      'Kasino: tekoälyn jättöriskin arvio huomioi nyt myös ♠2- ja ♦10-kaappaukset (sisäinen viilaus)',
+    ],
+  },
   {
     date: '31.5.2026',
     items: [

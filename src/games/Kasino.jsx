@@ -141,7 +141,7 @@ function pWeightedLeaveDanger(candidate, g, playerIdx) {
   // Epäsuora: yhdistelmä candidaten + pöytäkortin kaappaus
   for (const t of g.table) {
     const sum = cv + tableVal(t);
-    if (sum > 14) continue; // ässän handVal = 14, K = 13
+    if (sum > 16) continue; // korkein kaappausarvo: ♦10 = 16, ♠2 = 15, ässä = 14
     danger += pAnyOpponentHas(g, playerIdx, sum) * cardW(t);
   }
   return danger;
