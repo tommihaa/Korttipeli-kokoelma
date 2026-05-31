@@ -230,6 +230,12 @@ const CHANGELOG = [
   {
     date: '31.5.2026',
     items: [
+      'Bottien Taistelu käynnistää nyt valitun pelaajamäärän verran botteja kaikissa peleissä (ei enää aina 4); napin teksti seuraa valintaa ("3 bottia")',
+    ],
+  },
+  {
+    date: '31.5.2026',
+    items: [
       'Ristiseiska, Moska, Maija, Kultakala ja Paskahousu: vastustajien kortit pienennetty Seiskan kokoon (xsmall) — mahtuvat ruudulle paremmin puhelimella, etenkin Bottien Taistelu -tilassa',
     ],
   },
