@@ -220,6 +220,21 @@ const MERKISTO = [
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
   {
+    date: '31.5.2026',
+    items: [
+      'Valikko: Info eriytetty omaksi paneeliksi (ℹ-nappi rattaan vieressä) — Asetukset sisältää enää muutettavat arvot, Info luettavat tekstit (Esittely, Sanasto & Merkistö, Muutosloki, Tulossa)',
+      'Pelikohtaiset sääntövalinnat aloitusnäyttöön (pelaajamäärän viereen)',
+      'Paskahousu: käsikoko 5/6 · kovat kakkoset — napit "Kaikki" (kaikki 2 = 15) tai "♠2 ♣2" (vakio: vain mustat kakkoset kovia, ♥2/♦2 tavalliset) · kuvakortin minimikynnys 7/8/9',
+      'Kasino: salli erikoisrakennelmat arvoille 14–16 (A = 14, ♠2 = 15, ♦10 = 16)',
+    ],
+  },
+  {
+    date: '30.5.2026',
+    items: [
+      'Moska: loppupelin loki yhtenäistetty Maijan tyyliin — "X poistui pelistä 👏" ja "X hävisi." (poistettu kömpelö verbitaivutus)',
+    ],
+  },
+  {
     date: '30.5.2026',
     items: [
       'Versio 0.3 — Bottien Taistelu -kokonaisuus valmis 🎉',
@@ -301,8 +316,6 @@ const CHANGELOG = [
 
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
-  { label: 'Bottien Taistelu: AI-taso seuraa Asetuksista valittua tasoa', status: 'done' },
-  { label: 'Pelikohtaiset sääntövalinnat pelin valinta-näyttöön (pelaajamäärän viereen). Paskahousu: 5 vai 6 korttia, ovatko kakkoset kovia, minkä päälle kuvakortin saa laskea (7/8/9). Kasino: salli rakennelmat erikoiskorttien arvoille — ässä 14, pata 2 = 15, ruutu 10 = 16', status: 'deferred' },
   { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'deferred' },
   { label: 'Kieliversiointi (FI/EN)', status: 'deferred' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
@@ -617,6 +630,7 @@ export default function App() {
   const playerCount = 4;
   const [showAdmin, setShowAdmin]   = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showInfo, setShowInfo]     = useState(false);
   const [stats, setStats]           = useState(mkStats);
   const [showLog, setShowLog]       = useState(() => window.innerWidth >= 600);
   const [soundOn, setSoundOn]       = useState(true);
@@ -735,12 +749,25 @@ export default function App() {
     >⚙</button>
   );
 
+  const infoBtn = (
+    <button
+      onClick={() => setShowInfo(v => !v)}
+      style={{
+        background: 'transparent', border: `1px solid ${showInfo ? C.gold : C.panelBorder}`,
+        color: showInfo ? C.gold : C.dim, borderRadius: 9, padding: '9px 12px',
+        fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
+        flexShrink: 0,
+      }}
+      aria-label="Info"
+    >ℹ</button>
+  );
+
   const glossaryScreen = showGlossary && (
     <div style={{ position: 'fixed', inset: 0, zIndex: 600, overflowY: 'auto', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: isMobile ? '16px 12px' : '32px 24px' }}>
       <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13 }}>← Asetukset</button>
+          <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13 }}>← Info</button>
           <span style={{ fontFamily: 'Georgia,serif', fontSize: 16, color: C.gold, letterSpacing: 2 }}>Sanasto & Merkistö</span>
           <div style={{ width: 90 }} />
         </div>
@@ -791,7 +818,7 @@ export default function App() {
           ))}
         </div>
 
-        <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '10px 0', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13, width: '100%' }}>← Takaisin asetuksiin</button>
+        <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '10px 0', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13, width: '100%' }}>← Takaisin infoon</button>
       </div>
     </div>
   );
@@ -814,33 +841,6 @@ export default function App() {
               cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13,
             }}
           >✕ Sulje</button>
-        </div>
-
-        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
-          <button
-            onClick={() => setShowEsittely(v => !v)}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
-          >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Esittely</span>
-            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showEsittely ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
-          </button>
-          {showEsittely && (
-            <div style={{ padding: '0 14px 14px' }}>
-              {[
-                'Hei!',
-                'Tämän sovelluksen missiona on auttaa pelihaluisia viettämään rattoisaa aikaa yhteisen pöydän ääressä. Mukana on yhdeksän peliä, joiden kulun oppii ymmärtämään lukuisien toistojen kautta. Tämä sovellus on digitaalinen, vuorovaikutteinen ympäristö, jossa kenelläkään ei ole kiire.',
-                'Korttipelien rikkaus piilee paikallisissa säännöissä. Yritin olla reilu omissa tulkinnoissani ja vivahteissani, mutta saattaahan sieltä joku "bugi, ei ominaisuus" seasta löytyä.',
-                'Kiitos ja kumarrus,\nTommi Haanranta',
-              ].map((t, i) => (
-                <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>
-              ))}
-              <a href={MAILTO} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
-                color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
-                border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
-              }}>✉ Lähetä risut ja ruusut</a>
-            </div>
-          )}
         </div>
 
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
@@ -917,14 +917,6 @@ export default function App() {
           )}
         </div>
 
-        <button
-          onClick={() => setShowGlossary(true)}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
-        >
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Sanasto & Merkistö 📖</span>
-          <span style={{ color: C.gold, fontSize: 16 }}>›</span>
-        </button>
-
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
           <button
             onClick={() => setShowPelaajat(v => !v)}
@@ -968,6 +960,67 @@ export default function App() {
           </div>
           )}
         </div>
+
+      </div>
+    </div>
+  );
+
+  const infoPanel = showInfo && (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 500, overflowY: 'auto',
+      background: C.bg,
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      padding: isMobile ? '16px 12px' : '32px 24px',
+    }}>
+      <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}>ℹ Info</span>
+          <button
+            onClick={() => setShowInfo(false)}
+            style={{
+              background: 'transparent', border: `1px solid ${C.panelBorder}`,
+              color: C.dim, borderRadius: 8, padding: '6px 14px',
+              cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13,
+            }}
+          >✕ Sulje</button>
+        </div>
+
+        {/* Esittely */}
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowEsittely(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Esittely</span>
+            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showEsittely ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showEsittely && (
+            <div style={{ padding: '0 14px 14px' }}>
+              {[
+                'Hei!',
+                'Tämän sovelluksen missiona on auttaa pelihaluisia viettämään rattoisaa aikaa yhteisen pöydän ääressä. Mukana on yhdeksän peliä, joiden kulun oppii ymmärtämään lukuisien toistojen kautta. Tämä sovellus on digitaalinen, vuorovaikutteinen ympäristö, jossa kenelläkään ei ole kiire.',
+                'Korttipelien rikkaus piilee paikallisissa säännöissä. Yritin olla reilu omissa tulkinnoissani ja vivahteissani, mutta saattaahan sieltä joku "bugi, ei ominaisuus" seasta löytyä.',
+                'Kiitos ja kumarrus,\nTommi Haanranta',
+              ].map((t, i) => (
+                <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>
+              ))}
+              <a href={MAILTO} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
+                color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
+              }}>✉ Lähetä risut ja ruusut</a>
+            </div>
+          )}
+        </div>
+
+        {/* Sanasto & Merkistö */}
+        <button
+          onClick={() => setShowGlossary(true)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
+        >
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Sanasto & Merkistö 📖</span>
+          <span style={{ color: C.gold, fontSize: 16 }}>›</span>
+        </button>
 
         {/* Muutosloki */}
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
@@ -1123,6 +1176,7 @@ export default function App() {
       fontFamily: 'Georgia,serif', color: C.text,
     }}>
       {settingsPanel}
+      {infoPanel}
       {glossaryScreen}
 
       <div style={{
@@ -1138,7 +1192,7 @@ export default function App() {
             JAKO<span style={{ fontSize: isMobile ? 15 : 22, verticalAlign: 'super', letterSpacing: 2 }}>52</span>
           </h1>
         </div>
-        <div style={{ position: 'absolute', right: 0 }}>{gearBtn}</div>
+        <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8 }}>{infoBtn}{gearBtn}</div>
       </div>
 
       <div style={{

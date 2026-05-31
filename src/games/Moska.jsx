@@ -278,8 +278,8 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
     defenderTook:   (player, count, table) => `${player} ${count}. Pöydällä oli: ${table}`,
     playerDrew:     (player, count) => `${player} ${count}.`,
     won:            player => `${player} voiton! 🏆🎉`,
-    out:            player => `${player} pelistä pois.`,
-    lost:           player => `${player} jäi Moskaksi.`,
+    out:            player => `${player} poistui pelistä. 👏`,
+    lost:           player => `${player} hävisi.`,
     nextRound:      (att, def) => `${att} → ${def}.`,
     attack:         (player, cards) => `${player}: ${cards}.`,
     beat:           (defName, defCard, atkCard, status) => `${defName}: ${defCard} kaataa ${atkCard}. ${status}`,
@@ -413,7 +413,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
         if (rank === 1) {
           addLog(M.won(act(p, 'Veit', 'Vei')));
         } else {
-          addLog(M.out(act(p, 'Pääsit', 'Pääsi')));
+          addLog(M.out(p.name));
         }
       }
     });
@@ -426,7 +426,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
           const rank = rankings.length + 1;
           players[p.id] = { ...p, rank };
           rankings = [...rankings, p.id];
-          addLog(M.lost(act(p, 'Kärsit', 'Kärsi')));
+          addLog(M.lost(p.name));
         }
       });
       const ranking = rankings.map((id, pos) => ({

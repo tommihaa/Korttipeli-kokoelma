@@ -35,21 +35,26 @@ const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}
 const SUITS      = ['♠','♥','♦','♣'];
 const BASE_RANKS = ['3','4','5','6','7','8','9','10','J','Q','K','A'];
 const BASE_VAL   = Object.fromEntries(BASE_RANKS.map((r, i) => [r, i + 3])); // 3=3 … A=14
-const HAND_SZ    = 6;
+const HAND_SZ    = 6; // oletuskäsikoko (sääntövalinta 5/6 ohittaa)
 const LOW        = new Set(['3','4','5','6','7','8','9']);
 const FACES      = new Set(['J','Q','K']);
 // Kaikki kortit käyvät tyhjälle pöydälle (STARTERS-rajoitus poistettu)
 
-function cardVal(card) {
+// Sääntövalinnat (aloitusnäytöltä): käsikoko 5/6, kovat kakkoset, kuvakortin minimikynnys 7/8/9
+// hardTwos=false (oletus/vakio): ♠2/♣2 = 15, ♥2/♦2 = 2 · hardTwos=true (kotisääntö): kaikki 2 = 15
+const DEFAULT_RULES = { handSize: 6, hardTwos: false, faceMin: 7 };
+
+function cardVal(card, hardTwos = false) {
   if (card.r !== '2') return BASE_VAL[card.r];
-  return (card.s === '♠' || card.s === '♣') ? 15 : 2; // musta=korkein, punainen=pienin
+  if (hardTwos) return 15;                            // kotisääntö: kaikki 2 = 15
+  return (card.s === '♠' || card.s === '♣') ? 15 : 2; // vakio: mustat 2 = 15 (vahvin), punaiset 2 = 2 (pienin)
 }
 
-function mkDeck() {
+function mkDeck(hardTwos = false) {
   return shuffle(SUITS.flatMap(s =>
     [...BASE_RANKS, '2'].map(r => {
       const card = { s, r, id: `${r}${s}_${Math.random()}` };
-      card.v = cardVal(card);
+      card.v = cardVal(card, hardTwos);
       return card;
     })
   ));
@@ -59,11 +64,13 @@ function sortHand(hand) {
   return [...hand].sort((a, b) => b.v - a.v);
 }
 
-function canPlay(card, top) {
+function canPlay(card, top, rules = DEFAULT_RULES) {
   if (!top) return true;
   if (card.r === '10') return top.v <= 9;          // 10 vain alle-10 päälle (kaataa tai rangaistus)
   if (card.r === 'A')  return FACES.has(top.r);    // A vain kuvakortin päälle
-  if (FACES.has(card.r) && top.v < 7) return false;
+  if (card.r === '2' && rules.hardTwos)            // kova kakkonen: minkä tahansa päälle paitsi kaatokortit A/10
+    return top.r !== 'A' && top.r !== '10';
+  if (FACES.has(card.r) && top.v < rules.faceMin) return false; // kuvakortti vain kynnyksen (7/8/9) päälle
   return card.v >= top.v;
 }
 
@@ -89,13 +96,13 @@ function pileClears(cards, top, pile) {
 
 function emptyPenalty(card) { return card.r === '10' || card.r === 'A'; }
 
-function mkGame(nP, pool, allBots = false) {
+function mkGame(nP, pool, allBots = false, rules = DEFAULT_RULES) {
   const aiNames = shuffledAINames(pool);
-  const deck    = mkDeck();
+  const deck    = mkDeck(rules.hardTwos);
   const allCards = [...deck]; // kaikki 52 korttia ennen jakoa — AI-inferenssiä varten
   const players = Array.from({ length: nP }, (_, i) => ({
     id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1],
-    isHuman: allBots ? false : i === 0, hand: deck.splice(0, HAND_SZ),
+    isHuman: allBots ? false : i === 0, hand: deck.splice(0, rules.handSize),
   }));
   const starter = players.reduce((best, p, i) => {
     const m = Math.min(...p.hand.map(c => c.v));
@@ -104,7 +111,7 @@ function mkGame(nP, pool, allBots = false) {
   return {
     players, draw: deck, pile: [], top: null,
     turn: starter, skipNext: -1, finished: [], phase: 'play',
-    allCards, clearedCards: [],
+    allCards, clearedCards: [], rules,
   };
 }
 
@@ -117,10 +124,10 @@ function nextActive(players, from, finished) {
   return -1;
 }
 
-function fillHand(hand, draw) {
+function fillHand(hand, draw, handSize = HAND_SZ) {
   const h = [...hand];
   const drawn = [];
-  while (h.length < HAND_SZ && draw.length) {
+  while (h.length < handSize && draw.length) {
     const c = draw.shift();
     h.push(c);
     drawn.push(c);
@@ -135,13 +142,13 @@ function fillHand(hand, draw) {
 // allCards = kaikki 52 korttia pelin alussa (inferenssiä varten)
 // clearedCards = kasatut/poistetut kortit (inferenssiä varten)
 // activePlayers = aktiivisten (ei finished) pelaajien määrä
-function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null, clearedCards = null, activePlayers = 4) {
-  const opts = hand.filter(c => canPlay(c, top));
+function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null, clearedCards = null, activePlayers = 4, rules = DEFAULT_RULES) {
+  const opts = hand.filter(c => canPlay(c, top, rules));
   if (!opts.length) return null;
 
   const isHard  = level === 'hard';
   const isSuper = level === 'hard';
-  const isKova  = c => c.r === '2' && (c.s === '♠' || c.s === '♣');
+  const isKova  = c => c.r === '2' && (rules.hardTwos || c.s === '♠' || c.s === '♣'); // arvo-15 kakkonen: vakiona mustat, kotisäännöllä kaikki
 
   // Täydelliset tiedot: yliluonnollinen + kaksinpeli + pakka tyhjä
   // Vastustajan käsi = kaikki kortit − oma käsi − kasa − kasatut kortit
@@ -196,14 +203,14 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
   // Endgame: pakka loppu — tähtää hyviin kortteihin, aiheuta hankaluuksia
   if (drawLength === 0) {
     // Tyhjä pöytä: punainen 2 (♥/♦2, arvo 2) käy vain tyhjälle pöydälle — pelaa se nyt pois
-    if (!top) {
-      const redTwos = opts.filter(c => c.r === '2' && (c.s === '♥' || c.s === '♦'));
+    if (!top && !rules.hardTwos) {
+      const redTwos = opts.filter(c => c.r === '2' && (c.s === '♥' || c.s === '♦')); // pehmeät punaiset 2 (arvo 2) vain tyhjälle — pelaa pois
       if (redTwos.length > 0) return redTwos;
     }
 
     // Yliluonnollinen + täydelliset tiedot: valitse kortti taktisesti
     if (knownOpponentHand !== null) {
-      const canOpponentBeat = myCard => knownOpponentHand.some(oc => canPlay(oc, myCard));
+      const canOpponentBeat = myCard => knownOpponentHand.some(oc => canPlay(oc, myCard, rules));
       // Prioriteetti 1: kortti jota vastustaja ei voi lyödä → pakottaa nostamaan kasan
       const unbeatable = opts.filter(c => !canOpponentBeat(c));
       if (unbeatable.length > 0) {
@@ -211,7 +218,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
       }
       // Prioriteetti 2: kaikki voidaan lyödä — pelaa se joka vaatii vastustajalta korkeimman kortin
       const costOf = c => knownOpponentHand
-        .filter(oc => canPlay(oc, c))
+        .filter(oc => canPlay(oc, c, rules))
         .reduce((mn, oc) => oc.v < mn ? oc.v : mn, Infinity);
       const best = opts.reduce((a, b) => costOf(b) > costOf(a) ? b : a);
       return [best];
@@ -264,6 +271,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
+  const [rules,    setRules]   = useState(DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G,        setG]       = useState(null);
@@ -404,7 +412,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     clearTimeout(aiTmr.current);
     setSel([]); setPakaAnim(false);
     const count = forcedCount ?? nP;
-    const g = mkGame(count, playerNames, allBotsMode);
+    const g = mkGame(count, playerNames, allBotsMode, rules);
     logRef.current = []; setLog([]);
     setGS(g);
     const s = g.players[g.turn];
@@ -454,7 +462,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     pile = [...pile, ...cards];
     const newTop = cards[cards.length - 1];
 
-    const filled = fillHand(p.hand, draw);
+    const filled = fillHand(p.hand, draw, g.rules.handSize);
     p.hand = filled.hand;
     const newlyDrawn = filled.drawn;
     if (g.draw.length > 0 && draw.length === 0) {
@@ -518,8 +526,8 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     if (!finished.includes(pidx) && newlyDrawn.length > 0) {
       const minPlayed = Math.min(...cards.map(c => c.v));
       const baseEligible = newlyDrawn.filter(c =>
-        canPlay(c, topBefore) &&
-        (c.v < minPlayed || pileClears([c], topBefore) || (c.r === '2' && (c.s === '♠' || c.s === '♣')))
+        canPlay(c, topBefore, g.rules) &&
+        (c.v < minPlayed || pileClears([c], topBefore) || (c.r === '2' && (g.rules.hardTwos || c.s === '♠' || c.s === '♣')))
       );
       // Lisää käden samanarvoisia — jos vedät 8:n ja sinulla on toinen 8, voit lyödä molemmat
       const eligibleRanks  = new Set(baseEligible.map(c => c.r));
@@ -558,13 +566,13 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     const knocked = draw.shift();
 
-    if (canPlay(knocked, topBefore)) {
+    if (canPlay(knocked, topBefore, g.rules)) {
       if (sndRef.current) SFX.flip();
       pile = [...pile, knocked];
       setJP(new Set([knocked.id]));
       tm(() => setJP(new Set()), 2000);
 
-      p.hand = fillHand(p.hand, draw).hand;
+      p.hand = fillHand(p.hand, draw, g.rules.handSize).hand;
       if (draw.length === 0) {
         setPakaAnim(true); // pakka on tyhjä
         const activeNow = g.players.length - g.finished.length;
@@ -783,11 +791,11 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
 
     addLog(M.turnOf(p.name));
     const activePlayers = g.players.length - g.finished.length;
-    let cards = aiCards(p.hand, top, g.pile, draw.length, aiLevelRef.current, g.allCards, g.clearedCards, activePlayers);
+    let cards = aiCards(p.hand, top, g.pile, draw.length, aiLevelRef.current, g.allCards, g.clearedCards, activePlayers, g.rules);
     if (cards) {
       if (cards.every(c => c.r !== '10' && c.r !== 'A') && aiShouldFumble(aiLevelRef.current)) {
         // Aloittelija-virhe: pelaa 10 tai A turhaan — erikoiskortti kun normaali kävisi
-        const specials = p.hand.filter(c => (c.r === '10' || c.r === 'A') && canPlay(c, top));
+        const specials = p.hand.filter(c => (c.r === '10' || c.r === 'A') && canPlay(c, top, g.rules));
         if (specials.length > 0) cards = [specials[0]];
       } else if (cards.length > 1 && aiShouldFumble(aiLevelRef.current)) {
         // Aloittelija-virhe: pelaa vain yhden samanarvoisen kerralla
@@ -840,7 +848,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   function humanPlay() {
     if (!selected.length || !G) return;
     const top = G.top;
-    if (!canPlay(selected[0], top)) {
+    if (!canPlay(selected[0], top, G.rules)) {
       addLog(M.badCard);
       return;
     }
@@ -872,6 +880,30 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
             <button key={n} onClick={() => setNP(n)} style={{ width: 44, height: 44, borderRadius: 10, cursor: 'pointer', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: isMobile ? 300 : 360 }}>
+        {[
+          { key: 'handSize', label: 'KORTTEJA',        opts: [5, 6] },
+          { key: 'hardTwos', label: 'KOVAT KAKKOSET',  opts: [['Kaikki', true], ['♠2 ♣2', false]] },
+          { key: 'faceMin',  label: 'KUVAKORTTI VÄH.', opts: [7, 8, 9] },
+        ].map(row => (
+          <div key={row.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5 }}>{row.label}</span>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {row.opts.map(o => {
+                const val = Array.isArray(o) ? o[1] : o;
+                const lab = Array.isArray(o) ? o[0] : o;
+                const active = rules[row.key] === val;
+                return (
+                  <button key={String(val)} onClick={() => setRules(r => ({ ...r, [row.key]: val }))}
+                    style={{ minWidth: 40, height: 36, padding: '0 12px', borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${active ? C.gold : '#2a4a32'}`, background: active ? C.gold + '18' : 'transparent', color: active ? C.gold : C.dim, transition: 'all 0.2s' }}>
+                    {lab}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
@@ -916,10 +948,10 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const human      = G.players[0];
   const isMyTurn   = G.phase === 'play' && G.turn === 0 && !allBots;
   const mustSkip   = isMyTurn && G.skipNext === 0;
-  const myPlayable = human.hand.filter(c => canPlay(c, G.top));
+  const myPlayable = human.hand.filter(c => canPlay(c, G.top, G.rules));
   const canKnock   = isMyTurn && !mustSkip && G.draw.length > 0;
   const canTake    = isMyTurn && !mustSkip && G.pile.length > 0;
-  const selValid   = selected.length > 0 && canPlay(selected[0], G.top);
+  const selValid   = selected.length > 0 && canPlay(selected[0], G.top, G.rules);
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
@@ -944,7 +976,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
             const cw = 20, ch = 30, ov = 10;
             const fanW = count > 0 ? cw + Math.max(0, count - 1) * ov : cw;
             const canHighlight = allBots && isActive && G.phase === 'play' && !isDone;
-            const playableSet = canHighlight ? new Set(p.hand.filter(c => canPlay(c, G.top)).map(c => c.id)) : null;
+            const playableSet = canHighlight ? new Set(p.hand.filter(c => canPlay(c, G.top, G.rules)).map(c => c.id)) : null;
             return (
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : willSkip ? C.red + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : willSkip ? C.red : C.dim, minWidth: 70, flexShrink: 0 }}>
@@ -1113,7 +1145,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
           {sortHand(human.hand).map(c => {
             const isSwapPhase  = G.phase === 'swap_offer' && G.swapData?.pidx === 0;
             const isSel    = !!selected.find(s => s.id === c.id);
-            const playable = isMyTurn && !mustSkip && canPlay(c, G.top);
+            const playable = isMyTurn && !mustSkip && canPlay(c, G.top, G.rules);
             const sameRank = selected.length > 0 && selected[0].r === c.r;
             const hl       = isMyTurn && !mustSkip && playable && !isSel && (selected.length === 0 || sameRank);
             const dimmed   = (isMyTurn && !mustSkip && !playable && !isSel) || (isSwapPhase && !isSel);

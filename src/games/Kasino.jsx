@@ -203,7 +203,10 @@ function findGroups(cards, target) {
   return [];
 }
 
-function initGame(nPlayers, pool, allBots = false) {
+// Sääntövalinta (aloitusnäytöltä): salli rakennelmat erikoiskorttien arvoille (A=14, ♠2=15, ♦10=16)
+const KASINO_DEFAULT_RULES = { specialBuilds: false };
+
+function initGame(nPlayers, pool, allBots = false, rules = KASINO_DEFAULT_RULES) {
   const aiNames = shuffledAINames(pool);
   const deck = newDeck();
   const players = Array.from({ length: nPlayers }, (_, i) => ({
@@ -212,7 +215,7 @@ function initGame(nPlayers, pool, allBots = false) {
   }));
   const table = deck.splice(0, 4);
   players.forEach(p => p.hand = deck.splice(0, 4));
-  return { players, deck, table, builds: [], lastCapture: null, round: 1 };
+  return { players, deck, table, builds: [], lastCapture: null, round: 1, rules };
 }
 
 function dealHands(g) {
@@ -253,6 +256,8 @@ const M = {
 export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
+  const [rules, setRules] = useState(KASINO_DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä
+  const buildCap = rules.specialBuilds ? 16 : 13; // rakennelman max-arvo (13=K, 16=♦10 erikoissäännöllä)
   const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
@@ -377,7 +382,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     pausedRef.current = false; setPaused(false);
     setPendingResult(null);
     const cnt = forcedCount || nP;
-    const g = initGame(cnt, playerNames, allBotsMode);
+    const g = initGame(cnt, playerNames, allBotsMode, rules);
     setG(g); gRef.current = g;
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
@@ -459,7 +464,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       for (let mask = 0; mask < (1 << n); mask++) {
         const sel = table.filter((_, i) => (mask >> i) & 1);
         const buildValue = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-        if (buildValue > 13) continue;
+        if (buildValue > buildCap) continue;
         if (hand.some(c => c.id !== hc.id && handVal(c) === buildValue)) {
           buildCreateHCards.push(hc); break;
         }
@@ -589,7 +594,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   function startNextRound() {
     const g = gRef.current;
     const finalPlayers = g.players;
-    const newG = initGame(nP, playerNames, allBotsRef.current);
+    const newG = initGame(nP, playerNames, allBotsRef.current, rules);
     const withScores = {
       ...newG,
       players: newG.players.map((p, i) => ({ ...p, score: finalPlayers[i]?.score || 0 })),
@@ -701,7 +706,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     const handV = handVal(handCard);
     const tableSum = tableCards.reduce((s, c) => s + tableVal(c), 0);
     const buildValue = handV + tableSum;
-    if (buildValue > 13) return null; // max rakennelman arvo = kuningas (13)
+    if (buildValue > buildCap) return null; // max rakennelman arvo: 13 (K) tai 16 (♦10) erikoissäännöllä
     const hasCapturer = hand.some(c => c.id !== handCard.id && handVal(c) === buildValue);
     return hasCapturer ? buildValue : null;
   }
@@ -898,7 +903,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       for (let mask = 0; mask < (1 << n); mask++) {
         const sel = table.filter((_, i) => (mask >> i) & 1);
         const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-        if (bv > 13) continue;
+        if (bv > buildCap) continue;
         const capturer = p.hand.find(c => c.id !== handCard.id && handVal(c) === bv);
         if (!capturer) continue;
         const score = aiCardScore([handCard, ...sel, capturer]);
@@ -1099,6 +1104,25 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', maxWidth: 360 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, width: '100%' }}>
+          <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5 }}>ERIKOISRAKENNELMAT</span>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[['Kyllä', true], ['Ei', false]].map(([lab, val]) => {
+              const active = rules.specialBuilds === val;
+              return (
+                <button key={lab} onClick={() => setRules(r => ({ ...r, specialBuilds: val }))}
+                  style={{ minWidth: 48, height: 36, padding: '0 12px', borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${active ? C.gold : '#2a4a32'}`, background: active ? C.gold + '18' : 'transparent', color: active ? C.gold : C.dim, transition: 'all 0.2s' }}>
+                  {lab}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, opacity: 0.7, textAlign: 'center', lineHeight: 1.4 }}>
+          Salli rakennelmat arvoille 14–16: A&nbsp;=&nbsp;14, ♠2&nbsp;=&nbsp;15, ♦10&nbsp;=&nbsp;16
+        </span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
         <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
@@ -1433,7 +1457,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
                   for (let mask = 0; mask < (1 << n); mask++) {
                     const sel = t.filter((_, i) => (mask >> i) & 1);
                     const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-                    if (bv > 13) continue;
+                    if (bv > buildCap) continue;
                     if (h.some(c => c.id !== hc.id && handVal(c) === bv)) { ok = true; break outer; }
                   }
                 }
@@ -1465,7 +1489,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
                     for (let mask = 0; mask < (1 << n); mask++) {
                       const sel = t.filter((_, i) => (mask >> i) & 1);
                       const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-                      if (bv > 13) continue;
+                      if (bv > buildCap) continue;
                       if (h.some(c => c.id !== hc.id && handVal(c) === bv)) return true;
                     }
                   }
@@ -1599,7 +1623,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           for (let mask = 0; mask < (1 << n); mask++) {
             const sel = table.filter((_, i) => (mask >> i) & 1);
             const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-            if (bv > 13) continue;
+            if (bv > buildCap) continue;
             const capturer = hand.find(c => c.id !== hc.id && handVal(c) === bv);
             if (capturer) builds.push({ hc, tableCards: sel, value: bv, capturer,
               score: optScore([hc, ...sel, capturer]) });
