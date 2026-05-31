@@ -228,6 +228,13 @@ const MERKISTO = [
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
   {
+    date: '1.6.2026',
+    items: [
+      'Paskahousu: poistumisviestit eritelty sijoituksen mukaan (voitto 🏆 / poistui pelistä 👏 / jäi Paskahousuksi 💩) — ei enää useaa "vei voiton"',
+      'Paskahousu: korjattu bugi jossa vastustaja pelasi 10/A:n tyhjälle ja vaihtoi sen pienempään korttiin, mutta seuraava pelaaja menetti silti vuoronsa',
+    ],
+  },
+  {
     date: '31.5.2026',
     items: [
       'Bottien Taistelu käynnistää nyt valitun pelaajamäärän verran botteja kaikissa peleissä (ei enää aina 4); napin teksti seuraa valintaa ("3 bottia")',

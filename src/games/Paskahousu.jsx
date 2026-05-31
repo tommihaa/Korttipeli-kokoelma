@@ -356,8 +356,9 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const M = {
     gameStart:    (isH, name, lowest) => `Paskahousu alkaa! ${name} aloittaa (pienin kortti).${isH ? ' Voit lyödä useammankin samanarvoisen kerralla.' : ''}`,
     played:       (isH, name, cards) => `${name}: ${cards}`,
-    won:          (isH, name) => `${name} vei voiton! 🏆🎉`,
-    loser:        (isH, name) => `${name} jäi Paskahousuksi.`,
+    won:          name => `${name} vei voiton! 🏆🎉`,
+    out:          name => `${name} poistui pelistä. 👏`,
+    loser:        name => `${name} jäi Paskahousuksi.`,
     swept:        (isH, name, count) => `${name} kaataa ${count} kortin kasan! Jatkaa.`,
     turnOf:       name => `Vuorossa ${name}.`,
     yourTurnCont: 'Hero jatkaa vuoroaan.',
@@ -474,7 +475,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
     let finished = [...g.finished];
     if (p.hand.length === 0 && !finished.includes(pidx)) {
       finished = [...finished, pidx];
-      addLog(M.won(isH, p.name));
+      addLog(finished.length === 1 ? M.won(p.name) : M.out(p.name));
       if (sndRef.current) SFX.capture();
       if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
     }
@@ -485,7 +486,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       const f = [...finished];
       remaining.forEach(pl => { if (!f.includes(pl.id)) f.push(pl.id); });
       const loser = players[f[f.length - 1]];
-      addLog(M.loser(loser.isHuman, loser.name));
+      addLog(M.loser(loser.name));
       const ranking = f.map((idx, pos) => ({
         name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
@@ -582,7 +583,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       let finished = [...g.finished];
       if (p.hand.length === 0 && !finished.includes(pidx)) {
         finished = [...finished, pidx];
-        addLog(M.won(isH, p.name));
+        addLog(finished.length === 1 ? M.won(p.name) : M.out(p.name));
         if (sndRef.current) SFX.capture();
       }
 
@@ -591,7 +592,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         const f = [...finished];
         remaining.forEach(pl => { if (!f.includes(pl.id)) f.push(pl.id); });
         const loserK = players[f[f.length - 1]];
-        addLog(M.loser(loserK.isHuman, loserK.name));
+        addLog(M.loser(loserK.name));
         const ranking = f.map((idx, pos) => ({
           name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
         }));
@@ -740,7 +741,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       if (sndRef.current) SFX.capture();
       triggerKasaAnim('clear');
       const contP = g.finished.includes(pidx) ? nextActive(players, pidx, g.finished) : pidx;
-      const g2 = { ...g, players, pile: [], top: null, turn: contP, phase: 'play', swapData: null,
+      const g2 = { ...g, players, pile: [], top: null, turn: contP, skipNext: -1, phase: 'play', swapData: null,
         clearedCards: [...(g.clearedCards || []), ...newPile] };
       setGS(g2);
       if (players[contP] && !players[contP].isHuman)
@@ -748,8 +749,18 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       else addLog(M.yourTurnCont);
       return;
     }
+    // Vaihto korvaa pelatut kortit: tyhjän pöydän rangaistus lasketaan uudelleen
+    // vaihdetuista korteista. Alkuperäinen 10/A palasi käteen, joten vanha rangaistus raukeaa.
+    let skipNext = -1;
+    if (!prevTop && emptyPenalty(swapCards[0])) {
+      const nextP = nextActive(players, pidx, g.finished);
+      if (nextP !== -1) {
+        skipNext = nextP;
+        addLog(M.emptyPenalty(lblColored(swapCards[0]), players[nextP].name));
+      }
+    }
     const advTurn = nextActive(players, pidx, g.finished);
-    const g2 = { ...g, players, pile: newPile, top: newTop, turn: advTurn, skipNext: g.skipNext, phase: 'play', swapData: null };
+    const g2 = { ...g, players, pile: newPile, top: newTop, turn: advTurn, skipNext, phase: 'play', swapData: null };
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
       aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
