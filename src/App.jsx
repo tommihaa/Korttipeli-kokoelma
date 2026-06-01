@@ -1221,6 +1221,7 @@ export default function App() {
           key={gameKey}
           game={game}
           hints={hints}
+          showLog={showLog}
           soundOn={soundOn}
           seeAll={seeAll}
           showCounts={showCounts}

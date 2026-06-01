@@ -196,7 +196,7 @@ function aiWorstCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Ristiseiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Ristiseiska({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [rules,    setRules]   = useState(DEFAULT_RULES);
@@ -205,7 +205,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
   const [G,        setG]       = useState(null);
   const [msg,      setMsg_]    = useState('');
   const [log,      setLog]     = useState([]);
-  const [logOpen,  setLO]      = useState(hints);
+  const [logOpen,  setLO]      = useState(showLog);
   const [selCard,  setSel]     = useState(null);
   const [debugOpen,setDebug]   = useState(initSeeAll);
   const [shuffling, setShuffling] = useState(false);

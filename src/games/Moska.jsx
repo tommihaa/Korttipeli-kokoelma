@@ -182,7 +182,7 @@ function aiPickAddCard(addable, hand, ts) {
 }
 
 // ── Komponentti ───────────────────────────────────────────────
-export default function Moska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Moska({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -190,7 +190,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
   const [G, setG] = useState(null);
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(hints);
+  const [logOpen, setLO] = useState(showLog);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);

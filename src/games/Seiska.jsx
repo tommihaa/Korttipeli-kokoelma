@@ -184,7 +184,7 @@ function initSlots(count) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Seiska({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
   const [nP, setNP] = useState(playerCount);
@@ -194,7 +194,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const [G,           setG]       = useState(null);
   const [msg,         setMsg_]    = useState('');
   const [log,         setLog]     = useState([]);
-  const [logOpen,     setLO]      = useState(hints);
+  const [logOpen,     setLO]      = useState(showLog);
   const [selected,    setSel]     = useState([]);
   const [debugOpen,   setDebug]   = useState(initSeeAll);
   const [pakaAnim,    setPakaAnim] = useState(false);

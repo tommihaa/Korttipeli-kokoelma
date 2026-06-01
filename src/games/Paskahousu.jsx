@@ -269,7 +269,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
-export default function Paskahousu({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Paskahousu({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [rules,    setRules]   = useState(DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä
@@ -278,7 +278,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   const [G,        setG]       = useState(null);
   const [msg,      setMsg_]    = useState('');
   const [log,      setLog]     = useState([]);
-  const [logOpen,  setLO]      = useState(hints);
+  const [logOpen,  setLO]      = useState(showLog);
   const [jpIds,    setJP]      = useState(new Set());
   const [lastPlay, setLP]      = useState(null);
   const [selected, setSel]     = useState([]);

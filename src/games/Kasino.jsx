@@ -255,7 +255,7 @@ const M = {
   noBuildLeave: 'Sinulla on rakennelma pöydässä — kaappaa se ensin!',
 };
 
-export default function Kasino({ game, onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Kasino({ game, onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [rules, setRules] = useState(KASINO_DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä
@@ -272,7 +272,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
   const [leaveMode, setLeaveMode] = useState(false); // jättämistila
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(hints);
+  const [logOpen, setLO] = useState(showLog);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [scores, setScores] = useState(null);
   const [pakaAnim, setPakaAnim] = useState(false);

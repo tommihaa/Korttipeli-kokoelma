@@ -31,7 +31,7 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Lapsy({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
   const [soundOn, setSnd]   = useState(initSoundOn);
@@ -43,7 +43,7 @@ export default function Lapsy({ onResult, hints = true, soundOn: initSoundOn = t
   const [msg, setMsg]       = useState('');
   const [log, setLog]       = useState([]);
   const cardBack = 'ilves';
-  const [logOpen, setLO]    = useState(hints);
+  const [logOpen, setLO]    = useState(showLog);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [shuffling, setShuffling] = useState(false);
   const [slapResult, setSR]   = useState(null);

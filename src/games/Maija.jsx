@@ -110,7 +110,7 @@ function initGame(nPlayers, pool, allBots = false) {
 }
 
 // ── Pääkomponentti ──────────────────────────────────────────────────
-export default function Maija({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Maija({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -122,7 +122,7 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
   const [selDefTargetIdx, setSelDefTargetIdx] = useState(null);
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(hints);
+  const [logOpen, setLO] = useState(showLog);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [finished, setFinished] = useState([]);
   const [pakaAnim, setPakaAnim] = useState(false);

@@ -141,7 +141,7 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
+export default function Kultakala({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
   const [soundOn, setSnd]     = useState(initSoundOn);
@@ -153,7 +153,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
   const [swapIdx, setSwapIdx] = useState(null);
   const [msg, setMsg_]        = useState('');
   const [log, setLog]         = useState([]);
-  const [logOpen, setLO]      = useState(hints);
+  const [logOpen, setLO]      = useState(showLog);
   const [revealed, setRevealed] = useState(false);
   const [drawnFromDeck, setFromDeck] = useState(false);
   const [debugOpen, setDebug] = useState(initSeeAll);
