@@ -230,6 +230,26 @@ const CHANGELOG = [
   {
     date: '1.6.2026',
     items: [
+      'Sisäinen siivous: tekoälytasojen nimistö yhtenäistetty (poistettu vanhentunut "Yliluonnollinen"-jäänne koodista, joka oli jo sulautettu Mestari-tasoon) ja sen jättämää kuollutta koodia karsittu — ei muutoksia pelin toimintaan. Pelikohtaiset sääntödokumentit (Seiska, Paskahousu) ajantasaistettu vastaamaan kolmea tekoälytasoa',
+    ],
+  },
+  {
+    date: '1.6.2026',
+    items: [
+      'Seiska: kun et voi lyödä, on pakko nostaa pakasta (enintään 3) — poistettu virheellinen "Lopeta vuoro" -nappi joka antoi passata kesken nostoja. Kolmannen noston jälkeen vuoro siirtyy yhä automaattisesti; nostetun pelattavan kortin saa silti jättää lyömättä ja nostaa lisää (ässä/maanvaihto taktiikkana)',
+    ],
+  },
+  {
+    date: '1.6.2026',
+    items: [
+      'Pakka näytetään nyt yhtenäisesti kaikissa peleissä: termi "PAKKA" ja korttimäärä Pöydän yhteydessä (Koputuksen ja Kultakalan "NOSTOPAKKA" → "PAKKA"; Kultakala näyttää nyt myös "TYHJÄ!"-tilan)',
+      'Viimeisin siirto -merkki kelluu nyt pöydän päällä eikä varaa omaa riviään — tiiviimpi näkymä, etenkin puhelimella',
+      'Sisäinen siivous: Pöytä- ja pakkanäkymät jaettu yhteisiksi komponenteiksi; poistettu päällekkäistä koodia ja kaksi eri "pakka ehtyi" -animaatiota yhdistetty yhdeksi',
+    ],
+  },
+  {
+    date: '1.6.2026',
+    items: [
       'Paskahousu: poistumisviestit eritelty sijoituksen mukaan (voitto 🏆 / poistui pelistä 👏 / jäi Paskahousuksi 💩) — ei enää useaa "vei voiton"',
       'Paskahousu: korjattu bugi jossa vastustaja pelasi 10/A:n tyhjälle ja vaihtoi sen pienempään korttiin, mutta seuraava pelaaja menetti silti vuoronsa',
     ],

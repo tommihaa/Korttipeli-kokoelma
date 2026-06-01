@@ -7,6 +7,8 @@ import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import PakkaCount from '../shared/PakkaCount.jsx';
+import PoytaPanel from '../shared/PoytaPanel.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames(pool) {
@@ -81,7 +83,7 @@ function aiCardScore(cards, isMokki = false) {
   return pts * 10000 + spades * 100 + cards.length;
 }
 
-// ── Supernatural AI: tuntematon korttipankki ─────────────────────────────
+// ── Mestari-AI (hard): tuntematon korttipankki ─────────────────────────────
 // Palauttaa kaikki kortit joita em. pelaaja ei varmuudella tiedä
 function getUnknownPool(g, playerIdx) {
   const known = new Set();
@@ -920,7 +922,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     if (!p.hand.length) { advance(g, playerIdx); return; }
     const level = allBotsRef.current ? 'hard' : aiLevelRef.current;
     const isBeginner = level === 'beginner';
-    const isSuper = level === 'hard';
+    const isHard = level === 'hard';
     const fumble = aiShouldFumble(level);
     const aDel = allBotsRef.current ? 400 : 1200; // animation delay
     const qDel = allBotsRef.current ? 200 : 700;  // quick action delay
@@ -992,19 +994,11 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
           // Normal: rakenna aina kun voi
           doBuildAction = true;
         } else {
-          // Hard: rakenna vain jos rakennusarvo > kaappauksen arvo
+          // Mestari (hard): rakenna vain jos rakennusarvo > kaappauksen arvo.
+          // Varastusriski lasketaan korttipankki-inferenssistä (täydellinen tieto).
           const captureScore = captureToUse ? captureToUse.score : 0;
-          let stealRisk = 0;
-          if (isSuper) {
-            stealRisk = pAnyOpponentHas(g, playerIdx, buildResult.value);
-          } else {
-            // Hard: arvio varastusriskistä pöydän korttitilanteen mukaan
-            const deckRemaining = 52 - g.players.flatMap(p2 => p2.captured).length
-              - g.players.reduce((s, p2) => s + p2.hand.length, 0)
-              - g.table.length - g.builds.flatMap(b => b.cards).length;
-            stealRisk = deckRemaining > 20 ? 0.3 : 0.15;
-          }
-          const discount = isSuper ? (1 - stealRisk) * 0.85 : (1 - stealRisk) * 0.8;
+          const stealRisk = pAnyOpponentHas(g, playerIdx, buildResult.value);
+          const discount = (1 - stealRisk) * 0.85;
           const effectiveBuildScore = buildResult.score * discount;
           doBuildAction = effectiveBuildScore > captureScore * 1.5;
         }
@@ -1044,8 +1038,8 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
     let toLeave;
     if (fumble) {
       toLeave = p.hand[Math.floor(Math.random() * p.hand.length)];
-    } else if (isSuper) {
-      // Supernatural: minimoi probabilistinen varastusriski, suojele pistekortit
+    } else if (isHard) {
+      // Mestari (hard): minimoi probabilistinen varastusriski, suojele pistekortit
       const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c) && c.r !== 'A');
       const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
       toLeave = [...leavePool].sort((a, b) => {
@@ -1054,7 +1048,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         return da !== db ? da - db : tableVal(a) - tableVal(b);
       })[0];
     } else {
-      // Normal/hard: heuristinen varastusriski
+      // Oppipoika/Kisälli: heuristinen varastusriski
       const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
       const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
       toLeave = [...leavePool].sort((a, b) => {
@@ -1293,10 +1287,11 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
       )}
 
       {/* Pöytä */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 90 : 220 }}>
-        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <span>PÖYTÄ — {G.table.length === 0 && G.builds.length === 0 ? 'tyhjä' : `${korttia(G.table.length)}${G.builds.length > 0 ? ` + ${G.builds.length} rakennelma` : ''}`}</span>
-          <span style={{ color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>PAKKA — {G.deck.length === 0 ? 'TYHJÄ!' : `${G.deck.length} korttia`}</span>
+      <PoytaPanel isMobile={isMobile}
+        minHeight={{ m: 90, t: 220 }}
+        title={<span>PÖYTÄ — {G.table.length === 0 && G.builds.length === 0 ? 'tyhjä' : `${korttia(G.table.length)}${G.builds.length > 0 ? ` + ${G.builds.length} rakennelma` : ''}`}</span>}
+        right={<>
+          <PakkaCount count={G.deck.length} flash={pakaAnim} />
           {(selTable.length > 0 || selBuilds.length > 0) && (
             <span style={{ color: selBuilds.length > 0 ? '#e05c3b' : multiGroupDisplay ? C.gold : C.blue }}>
               {selBuilds.length > 0
@@ -1307,7 +1302,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
               }
             </span>
           )}
-        </div>
+        </>}>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {G.table.map(c => {
             const isSel = selTable.find(x => x.id === c.id);
@@ -1369,12 +1364,12 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
             </div>
           </div>
         )}
-      </div>
+      </PoytaPanel>
 
       {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+      <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
@@ -1752,7 +1747,7 @@ export default function Kasino({ game, onResult, hints = true, soundOn: initSoun
         </div>
       )}
 
-      <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
+      <style>{`button:active{transform:scale(0.97)}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>
   );
 }

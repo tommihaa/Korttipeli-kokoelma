@@ -7,6 +7,7 @@ import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import PoytaPanel from '../shared/PoytaPanel.jsx';
 
 // ── Ristiseiska ─────────────────────────────────────────────────
 // Järjestys per maa: 7 → 6 → 8 → ala-pino (5,4,3,2,A) + ylä-pino (9,T,J,Q,K)
@@ -170,7 +171,7 @@ function aiBestCard(hand, rows, level = 'normal') {
       // Normal: pidättele jos samaa maata on useampi (cnt > 1), muuten pelaa
       return cnt <= 1;
     }
-    // Hard/Supernatural: porttikortti on placeholder — pihtaa se niin kauan kuin
+    // Mestari (hard): porttikortti on placeholder — pihtaa se niin kauan kuin
     // kädessä on huonoja kortteja joista haluaa päästä eroon panttina.
     // Huono kortti = kaukana pelattavuudesta (dist ≥ 3), mistä maasta tahansa.
     // cnt = 1 (vain tämä portti maassa) → pidättele silti: puhdas blokkaus.
@@ -880,20 +881,19 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       )}
 
       {/* Pöytä: pinot */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '14px 16px', marginBottom: isMobile ? 4 : 10 }}>
-        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, marginBottom: 12 }}>
-          TORNIT · ala-pino [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; ylä-pino [8→K]
-        </div>
+      <PoytaPanel isMobile={isMobile} minHeight={null}
+        title={<span>TORNIT · ala-pino [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; ylä-pino [8→K]</span>}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? 6 : 16 }}>
           {SUITS.map(s => <StackRow key={s} suit={s} />)}
         </div>
-      </div>
+      </PoytaPanel>
 
       {/* Viimeisin lyönti -badge — kiinteä 36px wrapper, ei nytkähtelyä */}
-      <div style={{ height: 36, display: 'flex', alignItems: 'center', marginBottom: 6 }}>
+      <div style={{ position: 'relative', height: 0 }}>
         {showLastPlay && lastPlay && (
           <div key={lastPlay.card.id}
             style={{
+              position: 'absolute', bottom: 4, left: 0, zIndex: 5,
               display: 'flex', alignItems: 'center', gap: 8,
               background: 'rgba(13,22,18,0.95)',
               border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`,

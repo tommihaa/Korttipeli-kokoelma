@@ -7,6 +7,7 @@ import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import PakkaCount from '../shared/PakkaCount.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
@@ -795,7 +796,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       {(() => { const cw = isMobile ? 62 : 82; const ch = isMobile ? 88 : 112; return (
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', padding: isMobile ? '6px 8px' : '14px 16px', background: 'rgba(255,255,255,0.013)', border: '1px solid #1a3a22', borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>NOSTOPAKKA</div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
           <div onClick={isHuman && phase === 'draw' && G.deck.length ? humanDrawDeck : undefined}
             style={{ cursor: isHuman && phase === 'draw' && G.deck.length ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {G.deck.length === 0
@@ -808,8 +809,8 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
                 </div>
               </>}
           </div>
-          <div style={{ fontSize: 10, fontFamily: 'sans-serif', marginTop: 6, color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
-            {G.deck.length === 0 ? 'TYHJÄ!' : `${G.deck.length} kpl`}
+          <div style={{ marginTop: 6 }}>
+            <PakkaCount variant="count" count={G.deck.length} flash={pakaAnim} style={{ fontSize: 10, fontFamily: 'sans-serif' }} />
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: isMobile ? 52 : 72, flexShrink: 0 }}>
@@ -931,7 +932,6 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
         @keyframes slotFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9),0 0 18px rgba(201,168,76,0.6)}60%{box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 0 10px rgba(201,168,76,0.3)}100%{box-shadow:none}}
         @keyframes reactPulse{0%,100%{border-color:#e05c3b;box-shadow:0 0 8px rgba(224,92,59,0.4)}50%{border-color:#ff7a5a;box-shadow:0 0 16px rgba(224,92,59,0.7)}}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
-        @keyframes pakaFlash{0%{opacity:0.4;letter-spacing:1.5px}12%{opacity:1;letter-spacing:3px;text-shadow:0 0 14px rgba(224,92,59,0.9),0 0 30px rgba(224,92,59,0.5)}40%{opacity:1;letter-spacing:2px;text-shadow:0 0 8px rgba(224,92,59,0.5)}70%{opacity:1;letter-spacing:1.5px;text-shadow:none}100%{opacity:1}}
       `}</style>
     </div>
   );

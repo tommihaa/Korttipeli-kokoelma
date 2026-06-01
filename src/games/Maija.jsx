@@ -6,6 +6,8 @@ import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import PakkaCount from '../shared/PakkaCount.jsx';
+import PoytaPanel from '../shared/PoytaPanel.jsx';
 
 // A=14 for combat comparisons — different from shared helpers (A=1)
 const VAL = { A:14,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13 };
@@ -736,14 +738,10 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
       )}
 
       {/* Pöytä */}
-      <div style={{ background:'rgba(255,255,255,0.02)', border:`1px solid ${C.panelBorder}`,
-        borderRadius:14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 12, minHeight: isMobile ? 170 : 220 }}>
-        <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, marginBottom:8, letterSpacing:1.5, display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' }}>
-          <span>PÖYTÄ — {phase==='attacking' ? 'hyökkäys' : 'puolustus'}</span>
-          <span style={{ color:G.deck.length===0 ? C.red : C.dim, fontWeight:G.deck.length===0 ? 700 : 400, animation:pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
-            PAKKA — {G.deck.length===0 ? 'TYHJÄ!' : `${G.deck.length} korttia`}
-          </span>
-        </div>
+      <PoytaPanel isMobile={isMobile}
+        minHeight={{ m: 170, t: 220 }}
+        title={<span>PÖYTÄ — {phase==='attacking' ? 'hyökkäys' : 'puolustus'}</span>}
+        right={<PakkaCount count={G.deck.length} flash={pakaAnim} />}>
         {table.length === 0
           ? <div style={{ textAlign:'center', color:C.dim, fontFamily:'sans-serif', fontSize:12,
               opacity:0.5, paddingTop:40 }}>
@@ -771,12 +769,12 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
               })}
             </div>
         }
-      </div>
+      </PoytaPanel>
 
-      {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+      {/* Viimeisin siirto — kelluva, ei varaa korkeutta */}
+      <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
@@ -940,7 +938,6 @@ export default function Maija({ onResult, hints = true, soundOn: initSoundOn = t
 
       <style>{`
         button:active{transform:scale(0.97)}
-        @keyframes pakaFlash{0%{opacity:0.4;letter-spacing:1.5px}12%{opacity:1;letter-spacing:3px;text-shadow:0 0 14px rgba(224,92,59,0.9),0 0 30px rgba(224,92,59,0.5)}40%{opacity:1;letter-spacing:2px;text-shadow:0 0 8px rgba(224,92,59,0.5)}70%{opacity:1;letter-spacing:1.5px;text-shadow:none}100%{opacity:1}}
         @keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}
       `}</style>
     </div>

@@ -85,11 +85,11 @@ Kun nostopakka loppuu:
 
 - **Vuorossa [Pelaaja].** — jokaisen uuden vuoron alussa
 - **📦 Pakka on tyhjä — peli jatkuu käsikortein.** — nostopakka loppui
-- **⏱ Pakka tyhjä — Yhtäkkinen kuolema! 2:30 laskuri käy.** — supernatural + 2 pelaajaa
+- **⏱ Pakka tyhjä — Yhtäkkinen kuolema! 2:30 laskuri käy.** — Mestari (`hard`) + 2 pelaajaa
 
 ## Yhtäkkinen kuolema (Sudden Death)
 
-**Ehto**: yliluonnollinen tekoäly + tasan 2 aktiivista pelaajaa + pakka tyhjä
+**Ehto**: Mestari-tekoäly (`hard`) + tasan 2 aktiivista pelaajaa + pakka tyhjä
 
 - 2:30 (150 s) laskuri käynnistyy
 - Ajan loputtua: **vähemmän kortteja kädessä voittaa**
@@ -99,12 +99,13 @@ Kun nostopakka loppuu:
 
 ### Tasot
 
+Kolme tasoa (UI-nimet: **Oppipoika / Kisälli / Mestari**):
+
 | Taso | Kuvaus |
 |---|---|
-| `beginner` | Pelaa 10/A turhaan, pelaa yhden kerralla vaikka useampi kävisi |
-| `normal` | Pelaa pienimmät kortit, ryhmittää samanarvoiset, säästää 10/A |
-| `hard` | Proaktiivinen 10/A-kaato kasan rakenteen perusteella |
-| `supernatural` | Täysi strategia + täydellinen informaatio loppupelissä |
+| `beginner` (Oppipoika) | Pelaa 10/A turhaan, pelaa yhden kerralla vaikka useampi kävisi |
+| `normal` (Kisälli) | Pelaa pienimmät kortit, ryhmittää samanarvoiset, säästää 10/A |
+| `hard` (Mestari) | Proaktiivinen 10/A-kaato kasan rakenteen perusteella **+ täydellinen informaatio loppupelissä** (täysi strategia). Vastaa aiempaa "Yliluonnollinen"-logiikkaa, joka yhdistettiin tähän. |
 
 ### Normaali peli (pakka ei tyhjä)
 
@@ -113,13 +114,13 @@ Kun nostopakka loppuu:
 3. **Säästä 10 ja A** — käytä vain jos ei muuta vaihtoehtoa
 4. 10 ja A pelataan yksi kerrallaan (yksikin tyhjentää kasan)
 
-### Proaktiivinen kaato (hard + supernatural)
+### Proaktiivinen kaato (Mestari, `hard`)
 
 Jos kasassa ≥ 3 eri arvoa, arvioidaan käden rakenne:
 
 - **10-kaato**: lyödään kun top ≤ 9 ja kädessä on pieniä + kuvakortteja
 - **A-kaato**: lyödään kun top on kuvakortti ja kädessä on pieniä
-- Supernatural: vaatii ≥ 1 pienen kortin kädessä; hard: vaatii ≥ 2
+- Vaatii ≥ 1 pienen kortin (arvo ≤ 6) kädessä
 
 ### Endgame-strategia (pakka tyhjä)
 
@@ -132,9 +133,9 @@ Jos kasassa ≥ 3 eri arvoa, arvioidaan käden rakenne:
 5. **Säästettävät** (9, 10, A, ♠2/♣2) — pelaa vain kun muuta ei ole
    - Järjestys: 9 ensin → 10/A → musta kakkonen viimeiseksi
 
-### Täydellinen informaatio (supernatural)
+### Täydellinen informaatio (Mestari, `hard`)
 
-**Ehto**: yliluonnollinen + 2 aktiivista pelaajaa + pakka tyhjä
+**Ehto**: Mestari (`hard`) + 2 aktiivista pelaajaa + pakka tyhjä
 
 - Vastustajan käsi lasketaan:
   `kaikki 52 korttia − oma käsi − kasa − poistetut kortit`

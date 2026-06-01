@@ -13,8 +13,8 @@ Tavoite: pääse eroon käsikorteista ensimmäisenä.
 3. Kortin on **täsmättävä** maalta **tai** arvoltaan päällimmäisen kanssa:
    - **Sama maa**: yksi kortti kerrallaan
    - **Sama arvo**: useamman saman arvoisen voi lyödä **yhdellä kertaa**
-4. Jos ei pysty lyödä → nosta pakasta **enintään 3 korttia**
-5. Nostamisen jälkeen jos silti ei sovi → sano "Ohi" ja vuoro siirtyy
+4. Jos ei pysty lyödä → **on pakko nostaa pakasta, enintään 3 korttia** (ei vapaaehtoista passia)
+5. Nostetun pelattavan kortin saa joko lyödä tai jättää lyömättä ja nostaa lisää (jos nostoja jäljellä); jos kolmannenkaan noston jälkeen mikään ei käy → **vuoro siirtyy automaattisesti**
 6. Jos nostopakka loppuu → lyöntipakan päällimmäinen jätetään paikalleen, muut sekoitetaan uudeksi nostopakaksi
 
 ## Erityiskortit
@@ -33,7 +33,19 @@ Tavoite: pääse eroon käsikorteista ensimmäisenä.
 ## Lappu-sääntö
 
 - Kun pelaajalla on **enää yksi kortti jäljellä**, hänen on sanottava **"Lappu"**
-- Jos unohtaa eikä sitä huomata ennen seuraavan vuoron alkua → **sakoksi nostetaan 5 korttia**
+- Jos unohtaa eikä sitä huomata ennen seuraavan vuoron alkua → **sakoksi nostetaan 3 korttia**
+  - Korttipelioppaiden tavanomainen sakko on 5; tässä käytetään armollisempaa **3:a** tietoisena pehmennyksenä (`applyLappu`, `deck.slice(0, 3)`).
+
+### Ihmisen ja botin epäsymmetria (tietoinen design)
+
+Lappu-velvollisuus toteutuu eri tavoin ihmiselle ja botille — tämä on **tietoinen valinta**, ei bugi:
+
+- **Ihminen**: putoaa yhteen korttiin → saa **4 sekunnin ikkunan**, jonka aikana on klikattava **"LAPPU!"**-nappia. Jos ei ehdi → sakko. Reaktiotaitomekaniikka kuten oikeassa UNO:ssa.
+- **Botti**: deterministinen. **`hard` (Mestari) -taso ja kaikki allBots-pelit sanovat Lapun aina automaattisesti** (ei koskaan sakkoa). `beginner`/`normal` unohtaa `aiShouldFumble`-todennäköisyydellä.
+
+**Seuraus, joka on syytä tiedostaa:** ihmisen lappu-riski **ei skaalaudu valitun vaikeustason mukaan**. Vaikka pelaaja valitsee Oppipoika-tason, ihminen saa silti täyden 4 s reaktiotestin — kun taas botin erehtyväisyys nimenomaan kytkeytyy tasoon. "Helpoin taso" ei siis helpota ihmisen Lappua lainkaan. Tämä on sama epäsymmetrian laji kuin nostosäännössä (vuoron kulku, kohta 4–5): sääntö on botille pakotettu/virheetön, ihmiselle elävä riski.
+
+> Ässä-bonushaarassa Lapun ajoitus eroaa hieman: botti ilmoittaa Lapun heti, ihminen lykkää sen ässän bonusvuoron ratkaisuun (`humanSkipAceBonus` / `humanChooseSuit`). Molemmat toimivat oikein.
 
 ## Nostopakan uudelleensekoitus
 
@@ -63,12 +75,14 @@ Tavoite: pääse eroon käsikorteista ensimmäisenä.
 ## AI-strategia
 
 ### Tasot
+
+Kolme tasoa (UI-nimet: **Oppipoika / Kisälli / Mestari**):
+
 | Taso | Kuvaus |
 |---|---|
-| `beginner` | Tekee satunnaisia virheitä: unohtaa että 7 käy aina, pelaa ryhmän yksittäisenä |
-| `normal` | Kortinlaskuri — muistaa nähtyjen arvojen määrät, ennakoinnin perusteella |
-| `hard` (tosilaskija) | Muistaa kasan järjestyksen voitetun pöydän pohjalta, ennakoi täsmäyksiä |
-| `supernatural` | Ei virheitä, täysi strategia |
+| `beginner` (Oppipoika) | Tekee satunnaisia virheitä: unohtaa että 7 käy aina, pelaa ryhmän yksittäisenä |
+| `normal` (Kisälli) | Kortinlaskuri — muistaa nähtyjen arvojen määrät, ennakoinnin perusteella |
+| `hard` (Mestari) | Täysi strategia ilman virheitä + **muistaa pelatut kortit** (kasan järjestyksen voitetun pöydän pohjalta) ja ennakoi täsmäykset. Vastaa aiempaa "Yliluonnollinen"-logiikkaa, joka yhdistettiin tähän. |
 
 ### Ryhmälyöntilogiikka (`aiBestPlay`)
 

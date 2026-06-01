@@ -7,6 +7,7 @@ import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import PakkaCount from '../shared/PakkaCount.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames(pool) {
@@ -758,7 +759,7 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: isMobile ? '8px 10px' : '12px 16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
         {(() => { const pw = isMobile ? 58 : 72, ph = isMobile ? 80 : 98; return (<>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>NOSTOPAKKA</div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
           <div onClick={canDraw ? () => humanDraw(false) : undefined}>
             <FanStack
               count={G.deck.length}
@@ -768,7 +769,9 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
               glowColor={canDraw ? C.gold : undefined}
             />
           </div>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 5 }}>{G.deck.length} kpl</div>
+          <div style={{ marginTop: 5 }}>
+            <PakkaCount variant="count" count={G.deck.length} style={{ fontSize: 10, fontFamily: 'sans-serif' }} />
+          </div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
@@ -798,9 +801,9 @@ export default function Kultakala({ onResult, hints = true, soundOn: initSoundOn
       </div>
 
       {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+      <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>

@@ -8,6 +8,8 @@ import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import PakkaCount from '../shared/PakkaCount.jsx';
+import PoytaPanel from '../shared/PoytaPanel.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames(pool) {
@@ -147,13 +149,12 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
   if (!opts.length) return null;
 
   const isHard  = level === 'hard';
-  const isSuper = level === 'hard';
   const isKova  = c => c.r === '2' && (rules.hardTwos || c.s === '♠' || c.s === '♣'); // arvo-15 kakkonen: vakiona mustat, kotisäännöllä kaikki
 
-  // Täydelliset tiedot: yliluonnollinen + kaksinpeli + pakka tyhjä
+  // Täydelliset tiedot: Mestari (hard) + kaksinpeli + pakka tyhjä
   // Vastustajan käsi = kaikki kortit − oma käsi − kasa − kasatut kortit
   let knownOpponentHand = null;
-  if (isSuper && activePlayers === 2 && drawLength === 0 && allCards && clearedCards) {
+  if (isHard && activePlayers === 2 && drawLength === 0 && allCards && clearedCards) {
     const ownIds     = new Set(hand.map(c => c.id));
     const pileIds    = new Set(pile.map(c => c.id));
     const clearedIds = new Set(clearedCards.map(c => c.id));
@@ -182,7 +183,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
   if (isHard && top && drawLength > 0 && pile) {
     const distinctInPile = new Set(pile.map(c => c.r)).size;
     if (distinctInPile > 2) {
-      const lowThreshold = isSuper ? 1 : 2;
+      const lowThreshold = 1; // Mestari (hard): riittää ≥1 pieni kortti kädessä
       const lowInHand   = hand.filter(c => c.v <= 6 && !isKova(c)).length;
       const facesInHand = hand.filter(c => FACES.has(c.r)).length;
 
@@ -208,7 +209,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
       if (redTwos.length > 0) return redTwos;
     }
 
-    // Yliluonnollinen + täydelliset tiedot: valitse kortti taktisesti
+    // Mestari (hard) + täydelliset tiedot: valitse kortti taktisesti
     if (knownOpponentHand !== null) {
       const canOpponentBeat = myCard => knownOpponentHand.some(oc => canPlay(oc, myCard, rules));
       // Prioriteetti 1: kortti jota vastustaja ei voi lyödä → pakottaa nostamaan kasan
@@ -313,7 +314,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);
   useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearInterval(swapTmr.current); clearInterval(suddenDeathTmr.current); }, []);
 
-  // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + yliluonnollinen
+  // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + Mestari (hard)
   useEffect(() => {
     if (!G || G.phase === 'gameover' || suddenDeathStarted.current) return;
     if (aiLevelRef.current !== 'hard') return;
@@ -1020,9 +1021,10 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       )}
 
       {/* Viimeisin lyönti -badge — kiinteä korkeus, ei nytkähtelyä */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+      <div style={{ position: 'relative', height: 0 }}>
         {showLastPlay && lastPlay && (
           <div key={lastPlay.cards[0].id} style={{
+            position: 'absolute', bottom: 4, left: 0, zIndex: 5,
             display: 'flex', alignItems: 'center', gap: 8,
             background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`,
             borderRadius: 12, padding: '4px 12px',
@@ -1039,17 +1041,12 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
       </div>
 
       {/* Pino */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${G.top ? C.gold + '33' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 16px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 90 : 130, animation: kasaAnim === 'quad' ? 'kasaQuad 2s ease forwards' : kasaAnim === 'clear' ? 'kasaClear 1.4s ease forwards' : kasaAnim === 'take' ? 'kasaTake 0.85s ease forwards' : undefined }}>
-        <div style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ color: C.dim }}>KASA — {G.pile.length === 0 ? 'tyhjä' : `${G.pile.length} korttia`}</span>
-          <span style={{
-            color: G.draw.length === 0 ? C.red : C.dim,
-            animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined,
-            fontWeight: G.draw.length === 0 ? 700 : 400,
-          }}>
-            PAKKA — {G.draw.length === 0 ? 'TYHJÄ!' : `${G.draw.length} korttia`}
-          </span>
-        </div>
+      <PoytaPanel isMobile={isMobile}
+        border={G.top ? C.gold + '33' : C.panelBorder}
+        minHeight={{ m: 90, t: 130 }}
+        animation={kasaAnim === 'quad' ? 'kasaQuad 2s ease forwards' : kasaAnim === 'clear' ? 'kasaClear 1.4s ease forwards' : kasaAnim === 'take' ? 'kasaTake 0.85s ease forwards' : undefined}
+        title={<span style={{ color: C.dim }}>KASA — {G.pile.length === 0 ? 'tyhjä' : `${G.pile.length} korttia`}</span>}
+        right={<PakkaCount count={G.draw.length} flash={pakaAnim} />}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {G.top
             ? <FanStack
@@ -1095,7 +1092,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
             );
           })()}
         </div>
-      </div>
+      </PoytaPanel>
 
       {/* Ohje */}
       {isMyTurn && !mustSkip && (
@@ -1307,13 +1304,6 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
           30%  { opacity: 0.75; transform: scale(1.02) translateY(-5px); }
           65%  { opacity: 0.3; transform: scale(0.97) translateY(6px); }
           100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes pakaFlash {
-          0%   { opacity: 0.4; letter-spacing: 1.5px; }
-          12%  { opacity: 1; letter-spacing: 3px; text-shadow: 0 0 14px rgba(224,92,59,0.9), 0 0 30px rgba(224,92,59,0.5); }
-          40%  { opacity: 1; letter-spacing: 2px; text-shadow: 0 0 8px rgba(224,92,59,0.5); }
-          70%  { opacity: 1; letter-spacing: 1.5px; text-shadow: none; }
-          100% { opacity: 1; }
         }
         @keyframes timerPulse {
           0%   { opacity: 1; transform: scale(1); }

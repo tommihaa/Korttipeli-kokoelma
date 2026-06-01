@@ -7,6 +7,7 @@ import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import PakkaCount from '../shared/PakkaCount.jsx';
 import HandoffScreen from '../shared/HandoffScreen.jsx';
 import PlayerSetup, { slotsToPlayers } from '../shared/PlayerSetup.jsx';
 
@@ -318,7 +319,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     humanDraws:   card => `Nostat ${card}.`,
     drawnPlayable:(card, left) => `${card} on pelattavissa! Lyö se tai nosta uudelleen (${left} jäljellä).`,
     draws3Used:   '3 nostoa käytetty — vuoro päättyy automaattisesti.',
-    drawnNoGood:  (card, left) => `${card} ei käy. Nosta uudelleen (${left} jäljellä) tai lopeta vuoro.`,
+    drawnNoGood:  (card, left) => `${card} ei käy. Nosta uudelleen (${left} jäljellä).`,
     wrongSuit:    'Valitse sama maa kuin ässä.',
     badCards:     'Nämä kortit eivät käy.',
     suitSelected: suit => `Valitsit maan: ${coloredSuit(suit)}`,
@@ -651,10 +652,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     const { activePlayer, players, discardTop, reqSuit, drawsThisTurn, aceBonus } = g;
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
-    // Katsomotilassa (kaikki botteja) käytetään aina yliluonnollista tasoa
+    // Katsomotilassa (kaikki botteja) käytetään aina Mestari-tasoa (hard)
     const level  = players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current;
-    const isSuper = level === 'hard';
-    const isHard  = isSuper;
+    const isHard = level === 'hard';
 
     // ── Ässä-bonusvuoro ─────────────────────────────────────
     if (aceBonus !== null) {
@@ -665,7 +665,7 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         ? p.hand.filter(c => c.r === bonusCard.r && c.r !== '7' && c.r !== 'A')
         : [];
       const applyLogic = level !== 'beginner' && (level !== 'normal' || Math.random() < 0.5);
-      const threshold  = isSuper ? 2 : 3;
+      const threshold  = isHard ? 2 : 3;
       let useBonus;
       if (!bonusCard) {
         useBonus = false;
@@ -818,12 +818,6 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
     doDraw(gRef.current, G.activePlayer);
   }
 
-  function humanEndTurn() {
-    if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff || G.drawsThisTurn === 0) return;
-    setSel([]);
-    advanceTurn(gRef.current, G.activePlayer);
-  }
-
   function humanLappu() {
     const g = gRef.current;
     if (!g) return;
@@ -912,7 +906,6 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   const spectatorAct  = !isMyTurn && G.phase === 'play' && displayP?.id === G.activePlayer;
   const hasValid  = canAct && validSingles(activeP.hand, G.discardTop, G.reqSuit).length > 0;
   const canDraw   = canAct && G.drawsThisTurn < 3 && G.aceBonus === null;
-  const canEnd    = canAct && G.drawsThisTurn > 0 && G.aceBonus === null;
   const showLappu = activeP?.hand.length === 1
     && !G.lappuSaid.has(G.activePlayer)
     && G.pendingLappu === G.activePlayer
@@ -990,12 +983,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
           <div style={{ width: 60, height: 82, borderRadius: 7, background: BACKS[cardBack].bg, border: `2px solid ${BACKS[cardBack].border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 11,
-              color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : C.dim,
-              fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 400,
-              animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
-              {G.deck.length === 0 && G.discardPile.length <= 1 ? 'TYHJÄ!' : G.deck.length}
-            </span>
+            <PakkaCount variant="number" count={G.deck.length}
+              empty={G.deck.length === 0 && G.discardPile.length <= 1} flash={pakaAnim}
+              style={{ fontFamily: 'sans-serif', fontSize: 11 }} />
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
@@ -1049,9 +1039,9 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       )}
 
       {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+      <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
@@ -1170,12 +1160,6 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
               <button onClick={humanDraw}
                 style={{ background: 'rgba(91,168,212,0.12)', border: `1px solid ${C.blue}55`, borderRadius: 10, padding: '10px 18px', color: C.blue, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
                 Nosta ({3 - G.drawsThisTurn} jäljellä)
-              </button>
-            )}
-            {!selected.length && canEnd && (
-              <button onClick={humanEndTurn}
-                style={{ background: 'rgba(106,138,114,0.12)', border: `1px solid ${C.dim}55`, borderRadius: 10, padding: '10px 18px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                Lopeta vuoro
               </button>
             )}
           </>

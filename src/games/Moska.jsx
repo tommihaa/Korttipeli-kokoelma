@@ -6,6 +6,8 @@ import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed, aiShouldFumble
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import PakkaCount from '../shared/PakkaCount.jsx';
+import PoytaPanel from '../shared/PoytaPanel.jsx';
 
 // ── Moska (Durak) ─────────────────────────────────────────────
 // A=14 kaikissa taisteluvertailuissa
@@ -1093,16 +1095,14 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       )}
 
       {/* Pöytä */}
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${G.table.length > 0 ? '#e05c3b33' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 130 : 200 }}>
-        <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 8, letterSpacing: 1.5, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <span>PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : `${G.table.length} paria`}
-            {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>✓ {defBeaten} kaadettu</span>}
-            {unbeatenSlots.length > 0 && <span style={{ color: C.red, marginLeft: 8 }}>! {unbeatenSlots.length} lyömättä</span>}
-          </span>
-          <span style={{ color: G.deck.length === 0 ? C.red : C.dim, fontWeight: G.deck.length === 0 ? 700 : 400, animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
-            PAKKA — {G.deck.length === 0 ? 'TYHJÄ!' : `${G.deck.length} korttia`}
-          </span>
-        </div>
+      <PoytaPanel isMobile={isMobile}
+        minHeight={{ m: 130, t: 200 }}
+        border={G.table.length > 0 ? '#e05c3b33' : C.panelBorder}
+        title={<span>PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : `${G.table.length} paria`}
+          {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>✓ {defBeaten} kaadettu</span>}
+          {unbeatenSlots.length > 0 && <span style={{ color: C.red, marginLeft: 8 }}>! {unbeatenSlots.length} lyömättä</span>}
+        </span>}
+        right={<PakkaCount count={G.deck.length} flash={pakaAnim} />}>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {G.table.map((slot, si) => {
             const isTargeted = selDefTarget?.atk.id === slot.atk.id;
@@ -1127,7 +1127,7 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
             <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, opacity: 0.5, padding: '24px 0' }}>Pöytä tyhjä</div>
           )}
         </div>
-      </div>
+      </PoytaPanel>
 
       {/* Ohje */}
       {myTurn && (
@@ -1142,9 +1142,9 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       )}
 
       {/* Viimeisin siirto */}
-      <div style={{ height: 28, marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+      <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
@@ -1306,7 +1306,6 @@ export default function Moska({ onResult, hints = true, soundOn: initSoundOn = t
       <style>{`
         button:active{transform:scale(0.97)}
         @keyframes slotFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9),0 0 20px rgba(201,168,76,0.6)}60%{box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 0 10px rgba(201,168,76,0.3)}100%{box-shadow:0 2px 6px rgba(0,0,0,0.3)}}
-        @keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}
         @keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}
       `}</style>
     </div>
