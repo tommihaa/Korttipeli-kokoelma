@@ -272,7 +272,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     passGive:   (isH, name, giverH, giverName, card) =>
       `${name} passaa — ${giverName} antaa ${card}.`,
     passGiveRandom: (isH, name, giverH, giverName, card) =>
-      `${name} passaa — ${giverName} antaa satunnaisesti ${card}.`,
+      `${name} passaa ja vetää pelaajan ${giverName} viuhkasta korttipantikseen satunnaisen ${card}.`,
     passOnly:   (isH, name) => `${name} passaa.`,
     badCard:    'Tämä kortti ei käy tähän — valitse toinen.',
     cantPass:   'Sinulla on pelattavissa oleva kortti — passata ei voi.',
@@ -532,9 +532,10 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
     advanceTurnRS({ ...g, bonusTurn: null }, 0);
   }
 
-  function humanGiveCard(card) {
+  function humanGiveCard() {
     const g = gRef.current;
-    if (!g || g.givingCardTo === null) return;
+    const card = selCard;
+    if (!g || g.givingCardTo === null || !card) return;
     const receiverIdx = g.givingCardTo;
     const players = g.players.map((pl, i) => {
       if (i === 0)           return { ...pl, hand: pl.hand.filter(c => c.id !== card.id) };
@@ -542,6 +543,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
       return pl;
     });
     addLog(M.humanGives(lblColored(card), g.players[receiverIdx].name));
+    setSel(null);
     const g2 = { ...g, players, givingCardTo: null, givingPlayerIdx: null };
     advanceTurnRS(g2, receiverIdx);
   }
@@ -929,7 +931,7 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
             const hl       = isGiving ? !isSel : (playable && !isSel);
             const dimmed   = isGiving ? false : ((isMyTurn || isBonusTurn) && !playable && !isSel);
             const onClick  = isGiving
-              ? () => humanGiveCard(c)
+              ? () => setSel(prev => prev?.id === c.id ? null : c)
               : (isMyTurn || isBonusTurn) ? () => humanSelect(c) : undefined;
             return (
               <Card key={c.id} card={c} small={!isMobile} xsmall={isMobile}
@@ -962,6 +964,17 @@ export default function Ristiseiska({ onResult, hints = true, soundOn: initSound
             {isBonusTurn && (
               <button onClick={humanEndBonusTurn} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 10, padding: '10px 16px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Lopeta</button>
             )}
+            {selCard && (
+              <button onClick={() => setSel(null)} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
+            )}
+          </>
+        )}
+        {isGiving && (
+          <>
+            <button onClick={humanGiveCard} disabled={!selCard}
+              style={{ background: selCard ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selCard ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 20px', color: selCard ? '#0d2118' : C.dim, fontSize: 13, cursor: selCard ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
+              Anna {selCard ? lbl(selCard) : 'kortti'}
+            </button>
             {selCard && (
               <button onClick={() => setSel(null)} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
             )}

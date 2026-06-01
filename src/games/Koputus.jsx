@@ -311,6 +311,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       return { name: p.name, place: sorted.filter(q => pScore(q) < s).length + 1, score: s, isHuman: p.isHuman };
     });
     const revealCards = players.map(p => ({ name: p.name, cards: p.cards }));
+    if (sndRef.current) { SFX.reveal(); tm(() => SFX.fanfare(), 500); }
     if (allBotsRef.current) {
       tm(() => onResult?.({ ranking, revealCards }), 600);
     } else {
@@ -335,6 +336,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   }
   function humanKnock() {
     if (knockRef.current !== null) return;
+    if (soundOn) SFX.tikki();
     detectMoment('epic_knock', { knockedBy: 'Hero' });
     setKB(0); knockRef.current = 0;
     const lr = new Set(gRef.current.players.filter((_, i) => i !== 0).map(p => p.id));
@@ -350,7 +352,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   function humanSwap(cardIdx) {
     const g = gRef.current, oldCard = g.players[0].cards[cardIdx];
     flashSlot(0, cardIdx);
-    if (soundOn) SFX.flip();
+    if (soundOn) SFX.swap();
     const players = g.players.map((p, i) => {
       if (i !== 0) return p;
       const cards = [...p.cards]; cards[cardIdx] = drawn;
@@ -364,6 +366,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
   }
   function humanDiscard() {
     const g = gRef.current;
+    if (soundOn) SFX.play();
     const newG = { ...g, discard: [...g.discard, drawn] };
     setG(newG); gRef.current = newG; setMsg(M.discarded(drawn));
     if (drawn.r === 'J') { setPhase('spec_j'); setMsg(M.jackMsg); return; }
@@ -573,6 +576,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       const knockThreshold = aiShouldFumble(allBotsRef.current ? 'hard' : aiLevelRef.current) ? 14 : 8;
       if (est <= knockThreshold) {
         setKB(playerIdx); knockRef.current = playerIdx;
+        if (sndRef.current) SFX.tikki();
         const lr = new Set(gState.players.filter((_, i) => i !== playerIdx).map(pl => pl.id));
         setLR(lr); lrRef.current = lr; setMsg(M.aiKnock(p.name));
       }
@@ -583,7 +587,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
     const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
     const thinkMs = allBotsRef.current ? Math.min(aiDelayRef.current * 0.25, 500) : 1600;
     const reactMs = allBotsRef.current ? 400 : 1200;
-    tm(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); }, thinkMs);
+    tm(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); if (sndRef.current) SFX.flip(); }, thinkMs);
     schedAI(() => {
       const gNow = gRef.current; if (!gNow) return;
       const pNow = gNow.players[playerIdx];
@@ -610,6 +614,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
           });
           const updG = { ...gNow, players, deck, discard: [...discard, old] };
           setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
+          if (sndRef.current) SFX.swap();
           flashSlot(playerIdx, wo);
           tm(() => openReaction(updG, old, playerIdx), reactMs);
         };
@@ -623,6 +628,7 @@ export default function Koputus({ onResult, hints = true, soundOn: initSoundOn =
       } else {
         const updG = { ...gNow, deck, discard: [...discard, card] };
         setG(updG); gRef.current = updG; setMsg(M.aiDiscard(p.name, card));
+        if (sndRef.current) SFX.play();
         tm(() => openReaction(updG, card, playerIdx), reactMs);
       }
     }, 3600);

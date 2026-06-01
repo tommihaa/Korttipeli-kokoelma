@@ -376,14 +376,19 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
   function applyAcePenalty(g, fromIdx) {
     let g2 = reshuffleIfNeeded(g);
     let deck = [...g2.deck];
+    const drew = new Set();
     const players = g2.players.map((p, i) => {
       if (i === fromIdx || g2.finished.includes(i)) return p;
       if (!deck.length) return p;
       const drawn = deck.shift();
+      drew.add(i);
       addLog(M.aceDrawn(p.isHuman, p.name, lblColored(drawn)));
       return { ...p, hand: [...p.hand, drawn] };
     });
-    return { ...g2, players, deck };
+    // Nostanut pelaaja sai +1 kortin (käsi > 1) → poista lappuSaid-joukosta,
+    // jotta häneltä kysytään Lappu uudelleen kun hän pelaa itsensä takaisin yhteen korttiin.
+    const lappuSaid = new Set([...g2.lappuSaid].filter(id => !drew.has(id)));
+    return { ...g2, players, deck, lappuSaid };
   }
 
   // ── Lappu-tarkistus ennen seuraavaa vuoroa ──────────────────
@@ -398,7 +403,10 @@ export default function Seiska({ onResult, hints = true, soundOn: initSoundOn = 
       deck: g2.deck.slice(pen.length),
       players: g2.players.map((p, i) => i !== g.pendingLappu ? p
         : { ...p, hand: [...p.hand, ...pen] }),
-      lappuSaid: new Set([...g2.lappuSaid, g.pendingLappu]),
+      // Sakotettu pelaaja EI ole ilmoittanut Lappua ja saa nyt +3 korttia (käsi > 1).
+      // Älä merkitse häntä lappuSaid-joukkoon — muuten häneltä ei enää koskaan kysytä
+      // Lappua kun hän pelaa itsensä takaisin yhteen korttiin.
+      lappuSaid: new Set([...g2.lappuSaid].filter(id => id !== g.pendingLappu)),
       pendingLappu: null,
     };
     if (sndRef.current) SFX.take();

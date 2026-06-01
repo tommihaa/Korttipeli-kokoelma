@@ -230,6 +230,16 @@ const CHANGELOG = [
   {
     date: '1.6.2026',
     items: [
+      'Koputus: lisätty puuttuneet äänet — nosto, vaihto, kortin heitto, koputus, korttien paljastus ja voitto soivat nyt myös tekoälyn vuoroilla (peli oli aiemmin lähes mykkä)',
+      'Seiska: korjattu bugi jossa "Lappu" jäi vaatimatta kun käsi oli kasvanut takaisin yhteen korttiin sakkokorttien tai ässärangaistuksen jälkeen — Lappu vaaditaan nyt aina yhteen korttiin tultaessa',
+      'Ristiseiska: kun annat passaajalle panttikortin, valinta vahvistetaan nyt erillisellä "Anna"-napilla — ei enää vahinkolahjoituksia yhdellä klikkauksella. Satunnaispantin loki muotoiltu luettavammaksi',
+      'Paskahousu: kuvakortin minimikynnykseen kaksi uutta vaihtoehtoa — "0" (kuvakortin saa minkä tahansa ei-erityiskortin päälle) ja "6"',
+      'Läpsy: haasteviestit selkeytetty — "siirsi haasteen kortilla X" ja "haastaa kortilla X pelaajan Y" (vähemmän toistoa, selvempää kuka haastaa ketä)',
+    ],
+  },
+  {
+    date: '1.6.2026',
+    items: [
       'Sisäinen siivous: tekoälytasojen nimistö yhtenäistetty (poistettu vanhentunut "Yliluonnollinen"-jäänne koodista, joka oli jo sulautettu Mestari-tasoon) ja sen jättämää kuollutta koodia karsittu — ei muutoksia pelin toimintaan. Pelikohtaiset sääntödokumentit (Seiska, Paskahousu) ajantasaistettu vastaamaan kolmea tekoälytasoa',
     ],
   },

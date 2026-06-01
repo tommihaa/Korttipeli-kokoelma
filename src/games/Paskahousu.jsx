@@ -896,7 +896,7 @@ export default function Paskahousu({ onResult, hints = true, soundOn: initSoundO
         {[
           { key: 'handSize', label: 'KORTTEJA',        opts: [5, 6] },
           { key: 'hardTwos', label: 'KOVAT KAKKOSET',  opts: [['Kaikki', true], [<span><span style={{ color: SUIT_COLOR['♠'] }}>♠2</span> <span style={{ color: SUIT_COLOR_DARK['♣'] }}>♣2</span></span>, false]] },
-          { key: 'faceMin',  label: 'KUVAKORTTI VÄH.', opts: [7, 8, 9] },
+          { key: 'faceMin',  label: 'KUVAKORTTI VÄH.', opts: [0, 6, 7, 8, 9] },
         ].map(row => (
           <div key={row.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
             <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5 }}>{row.label}</span>
