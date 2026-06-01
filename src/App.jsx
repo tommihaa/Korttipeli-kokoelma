@@ -1068,8 +1068,11 @@ export default function App() {
             <div style={{ padding: '0 14px 14px' }}>
               {[
                 'Hei!',
-                'Tämän sovelluksen missiona on auttaa pelihaluisia viettämään rattoisaa aikaa yhteisen pöydän ääressä. Mukana on yhdeksän peliä, joiden kulun oppii ymmärtämään lukuisien toistojen kautta. Tämä sovellus on digitaalinen, vuorovaikutteinen ympäristö, jossa kenelläkään ei ole kiire.',
-                'Korttipelien rikkaus piilee paikallisissa säännöissä. Yritin olla reilu omissa tulkinnoissani ja vivahteissani, mutta saattaahan sieltä joku "bugi, ei ominaisuus" seasta löytyä.',
+                'Seurapelit ja varsinkin korttipelaaminen yhdessä on hauskaa. 52-kortin pakka ei paljoa maksa ja kulkee mukana.',
+                'Uusia korttipelejä on kuitenkin hidas oppia. Säännöt muuttuvat usein sen mukaan, kenen kanssa pelaat. Aina ei myöskään ole helppoa löytää peliseuraa ja aikaa rauhalliseen harjoitteluun.',
+                'Mitä jos pelit voisi oppia toisella tavalla?',
+                'Tässä sovelluksessa on yhdeksän (9) eri peliä. Opit säännöt parhaiten pelaamalla vielä yhden pelin. Täällä sinun ei tarvitse kiirehtiä, vaan voit harjoitella rauhassa väsymättömien bottien kanssa.',
+                'Iloisia pelihetkiä!',
                 'Kiitos ja kumarrus,\nTommi Haanranta',
               ].map((t, i) => (
                 <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>
