@@ -141,7 +141,7 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
+export default function Kultakala({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
   const [soundOn, setSnd]     = useState(initSoundOn);
@@ -241,10 +241,6 @@ export default function Kultakala({ onResult, hints = true, showLog = true, soun
     const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
     stored.push(feedback);
     localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
-
-    if (hints) {
-      addLog(`💾 Momentti tallennettu: ${feedback.rarity}`);
-    }
   }
 
   function flashLastPlay(name, card, isHuman = false) {
@@ -830,7 +826,7 @@ export default function Kultakala({ onResult, hints = true, showLog = true, soun
               <div key={i} style={{ textAlign: 'center', flexShrink: 0 }}>
                 <KaCard card={c} faceUp={debugOpen || allBots || human.known.has(i)} small={!isMobile} tiny={isMobile}
                   highlight={isSwapTarget}
-                  pulse={hints && human.known.has(i) && !isSwapTarget}
+                  pulse={human.known.has(i) && !isSwapTarget}
                   backStyle={BACKS[cardBack]} />
                 <div style={{ fontFamily: 'sans-serif', fontSize: 9, color: isSwapTarget ? C.gold : C.dim, marginTop: 3 }}>{i + 1}</div>
               </div>

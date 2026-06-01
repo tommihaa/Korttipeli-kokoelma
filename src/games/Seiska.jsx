@@ -184,7 +184,7 @@ function initSlots(count) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
-export default function Seiska({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
   const [nP, setNP] = useState(playerCount);
@@ -357,7 +357,7 @@ export default function Seiska({ onResult, hints = true, showLog = true, soundOn
       addLog(M.turnOf(firstPlayer.name));
       if (multiHuman) {
         setHandoff({ name: firstPlayer.name });
-      } else if (hints) {
+      } else {
         addLog(M.yourTurnSuit(`lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`));
       }
     }
@@ -429,7 +429,7 @@ export default function Seiska({ onResult, hints = true, showLog = true, soundOn
       addLog(M.turnOf(nextPlayer.name));
       if (multiHuman) {
         setHandoff({ name: nextPlayer.name });
-      } else if (hints) {
+      } else {
         const cl = g3.reqSuit
           ? `Vaadittu maa: ${coloredSuit(g3.reqSuit)} — lyö ${coloredSuit(g3.reqSuit)}-maa tai nosta.`
           : `Lyö ${coloredSuit(g3.discardTop.s)}-maa tai ${g3.discardTop.r}-arvo tai nosta.`;
@@ -442,7 +442,7 @@ export default function Seiska({ onResult, hints = true, showLog = true, soundOn
   function onHandoffReady() {
     setHandoff(null);
     const g = gRef.current;
-    if (!g || !hints) return;
+    if (!g) return;
     const cl = g.reqSuit
       ? `Vaadittu maa: ${coloredSuit(g.reqSuit)} — lyö ${coloredSuit(g.reqSuit)}-maa tai nosta.`
       : `Lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}-arvo tai nosta.`;

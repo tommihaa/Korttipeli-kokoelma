@@ -99,7 +99,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
-export default function Koputus({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
+export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
@@ -208,10 +208,6 @@ export default function Koputus({ onResult, hints = true, showLog = true, soundO
     const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
     stored.push(feedback);
     localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
-
-    if (hints) {
-      setMsg(`💾 Momentti tallennettu: ${feedback.rarity}`);
-    }
   }
 
   useEffect(() => { gRef.current = G; }, [G]);

@@ -255,7 +255,7 @@ const M = {
   noBuildLeave: 'Sinulla on rakennelma pöydässä — kaappaa se ensin!',
 };
 
-export default function Kasino({ game, onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Kasino({ game, onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [rules, setRules] = useState(KASINO_DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä
@@ -365,11 +365,7 @@ export default function Kasino({ game, onResult, hints = true, showLog = true, s
     }
   }
 
-  function detectMoment(eventType, context) {
-    if (eventType === 'epic_score' && context.score >= 12) {
-      if (hints) addLog(`💾 Momentti: ${context.score} pistettä — kasino kuumenee!`);
-    }
-  }
+  function detectMoment() {}
 
   function flashLastPlay(name, card, isHuman = false) {
     if (!showLastPlay) return;

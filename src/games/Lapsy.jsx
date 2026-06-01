@@ -31,7 +31,7 @@ function deal(nPlayers) {
   return piles;
 }
 
-export default function Lapsy({ onResult, hints = true, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
   const [soundOn, setSnd]   = useState(initSoundOn);
@@ -110,11 +110,7 @@ export default function Lapsy({ onResult, hints = true, showLog = true, soundOn:
     }
   }, []);
 
-  const detectMoment = useCallback((eventType, context) => {
-    if (eventType === 'epic_fast_slap' && context.ms && context.ms < 400) {
-      if (hints) addLog(`💾 Momentti: ${context.ms}ms — salamannopea reaktio!`);
-    }
-  }, [hints]);
+  const detectMoment = useCallback(() => {}, []);
 
   const pName = i => allBotsRef.current ? (allBotNamesRef.current[i] ?? `Bot${i + 1}`) : (i === 0 ? 'Hero' : aiNames[i - 1]);
 

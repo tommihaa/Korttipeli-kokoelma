@@ -231,7 +231,7 @@ const CHANGELOG = [
     date: '1.6.2026',
     items: [
       'Oletusasetukset: äänet pois päältä ja tapahtumaloki auki oletuksena (myös puhelimen kokoisella näytöllä)',
-      'Ohjevihjeet (opetustila) eriytetty tapahtumalokista omaksi asetuksekseen — pois oletuksena, kytkettävissä Asetuksista',
+      'Ohjevihjeet (esim. Seiskan "lyö ♠-maa tai 4") näytetään nyt aina — erillinen opetustila-kytkin poistettu',
       'Koputus: lisätty puuttuneet äänet — nosto, vaihto, kortin heitto, koputus, korttien paljastus ja voitto soivat nyt myös tekoälyn vuoroilla (peli oli aiemmin lähes mykkä)',
       'Seiska: korjattu bugi jossa "Lappu" jäi vaatimatta kun käsi oli kasvanut takaisin yhteen korttiin sakkokorttien tai ässärangaistuksen jälkeen — Lappu vaaditaan nyt aina yhteen korttiin tultaessa',
       'Ristiseiska: kun annat passaajalle panttikortin, valinta vahvistetaan nyt erillisellä "Anna"-napilla — ei enää vahinkolahjoituksia yhdellä klikkauksella. Satunnaispantin loki muotoiltu luettavammaksi',
@@ -701,7 +701,6 @@ export default function App() {
   const [showInfo, setShowInfo]     = useState(false);
   const [stats, setStats]           = useState(mkStats);
   const [showLog, setShowLog]       = useState(true);   // tapahtumaloki auki oletuksena myös pienellä näytöllä
-  const [hints,   setHints]         = useState(false);  // ohjevihjeet (opetustila) pois oletuksena — eriytetty lokista
   const [soundOn, setSoundOn]       = useState(false);  // äänet pois oletuksena
   const [seeAll, setSeeAll]         = useState(false);
   const [showCounts, setShowCounts] = useState(true);
@@ -933,7 +932,6 @@ export default function App() {
                   { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska, Ristiseiska, Maija, Paskahousu, Moska)', val: showIntention, set: setShowIntention },
                   { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
                   { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
-                  { label: 'Ohjevihjeet (opetustila): siirtovihjeet ja opastavat viestit',               val: hints,         set: setHints         },
                   { label: 'Äänet',                                                                       val: soundOn,       set: setSoundOn       },
                 ].filter(Boolean);
               })().map(({ label, val, set, disabled }) => (
@@ -1220,7 +1218,6 @@ export default function App() {
         <GameComponent
           key={gameKey}
           game={game}
-          hints={hints}
           showLog={showLog}
           soundOn={soundOn}
           seeAll={seeAll}
