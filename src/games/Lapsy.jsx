@@ -6,7 +6,6 @@ import { isRed, lbl, shuffle, aiNoise, newDeck } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
@@ -52,7 +51,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   const [flipAnim,  setFA]   = useState(null); // { playerIdx, card }
   const [cardBackState]      = [cardBack];
   const [aiNames]            = useState(() => shuffledAINames(playerNames));
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [finishOrder, setFinishOrder] = useState([]); // eliminointijärjestys, ensin poistunut ensin
   const [allBots, setAllBots]         = useState(false);
   const [paused, setPaused]           = useState(false);
@@ -110,7 +108,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     }
   }, []);
 
-  const detectMoment = useCallback(() => {}, []);
 
   const pName = i => allBotsRef.current ? (allBotNamesRef.current[i] ?? `Bot${i + 1}`) : (i === 0 ? 'Hero' : aiNames[i - 1]);
 
@@ -398,7 +395,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     addLog(M.correctSlap(pName(playerIdx), ms, n));
     if (playerIdx === 0 && ms && !allBotsRef.current) {
       setBestMs(prev => prev === null || ms < prev ? ms : prev);
-      if (ms < 400) detectMoment('epic_fast_slap', { ms });
     }
     setSR({ winner: playerIdx, ms, n }); tm(() => setSR(null), 2000);
     giveCenter(playerIdx, curPiles, curCenter, ms);
@@ -813,14 +809,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
         button:active{transform:scale(0.96)}
       `}</style>
 
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={() => {
-          addLog('💾 Momentti tallennettu! Loistava reaktio!');
-          setCurrentMoment(null);
-        }}
-      />
     </div>
   );
 }

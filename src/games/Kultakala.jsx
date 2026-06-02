@@ -5,7 +5,6 @@ import { SFX } from '../shared/audio.js';
 import { isRed, lbl, shuffle, aiShouldFumble, truncName, newDeck } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 
@@ -161,7 +160,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   const [showDice, setShowDice] = useState(false);
   const [tiedPlayers, setTiedPlayers] = useState([]);
   const [kohahdus, setKohahdus] = useState(null);
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
@@ -211,36 +209,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
           cardCount: 1 + (p.row?.length ?? 0), score: null })),
         tableCards: (g.discard ?? []).slice(-1), extraText: null });
     }
-  }
-
-  function detectMoment(eventType, context) {
-    if (eventType === 'epic_high_value_swap' && context.cardValue >= 10) {
-      const moment = {
-        type: 'epic_high_value_swap',
-        game: 'Kultakala',
-        title: '🧠 EPIC! Muisti loistaa!',
-        description: `Muistit paikan, jossa oli ${lbl(context.card)} (${context.cardValue} p)! Erinomainen muistipeli-suoritus!`,
-        timestamp: new Date().toISOString(),
-        rarity: 'epic',
-        context,
-      };
-      saveMomentSilently(moment);
-    }
-  }
-
-  function saveMomentSilently(moment) {
-    const feedback = {
-      momentType: moment.type,
-      game: moment.game,
-      rarity: moment.rarity,
-      comment: '',
-      timestamp: moment.timestamp,
-      context: moment.context,
-    };
-
-    const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
-    stored.push(feedback);
-    localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
   }
 
   function flashLastPlay(name, card, isHuman = false) {
@@ -544,9 +512,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     const old = p.row[rowIdx];
     newRow[rowIdx] = held;
     known.add(rowIdx);
-    if (held && held.v >= 10) {
-      detectMoment('epic_high_value_swap', { card: held, cardValue: held.v });
-    }
     const players = g.players.map((pl, i) => i === 0 ? { ...pl, row: newRow, known } : pl);
     if (sndRef.current) SFX.swap();
     const wasKnown = p.known.has(rowIdx);
@@ -899,15 +864,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
           </div>
         )}
       </div>
-
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={() => {
-          addLog('💾 Momentti tallennettu! Loistava muisti!');
-          setCurrentMoment(null);
-        }}
-      />
 
       <style>{`
         @keyframes revealFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9)}100%{box-shadow:none}}

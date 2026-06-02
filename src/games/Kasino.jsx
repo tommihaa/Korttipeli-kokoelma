@@ -5,7 +5,6 @@ import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble, newDeck } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
@@ -281,7 +280,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const [pendingCapture, setPendingCapture] = useState(null); // odottaa Seuraava-nappia
   const [jpId, setJP] = useState(null);
   const [shuffling, setShuffling] = useState(false);
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -365,7 +363,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     }
   }
 
-  function detectMoment() {}
 
   function flashLastPlay(name, card, isHuman = false) {
     if (!showLastPlay) return;
@@ -553,9 +550,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       bd.tikki       += r.tikkiPts;
     });
 
-    if (newScores[0].totalScore >= 12 && (g2.players[0].score || 0) < 12) {
-      detectMoment('epic_score', { score: newScores[0].totalScore });
-    }
     const anyAt16 = newScores.some(s => s.totalScore >= 16);
     if (anyAt16) {
       const ranking = g2.players.map((p, i) => ({
@@ -1549,14 +1543,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
         )}
       </div>
 
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={() => {
-          addLog('💾 Momentti tallennettu! Hyvä peli!');
-          setCurrentMoment(null);
-        }}
-      />
 
       {/* Vaihtoehdot-modaali */}
       {showOptions && isMyTurn && (() => {

@@ -17,7 +17,6 @@ import Moska from './games/Moska.jsx';
 import Seiska from './games/Seiska.jsx';
 import Ristiseiska from './games/Ristiseiska.jsx';
 import Paskahousu from './games/Paskahousu.jsx';
-import Admin from './Admin.jsx';
 
 const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
 const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
@@ -237,6 +236,7 @@ const CHANGELOG = [
       'Ristiseiska: kun annat passaajalle panttikortin, valinta vahvistetaan nyt erillisellä "Anna"-napilla — ei enää vahinkolahjoituksia yhdellä klikkauksella. Satunnaispantin loki muotoiltu luettavammaksi',
       'Paskahousu: kuvakortin minimikynnykseen kaksi uutta vaihtoehtoa — "0" (kuvakortin saa minkä tahansa ei-erityiskortin päälle) ja "6"',
       'Läpsy: haasteviestit selkeytetty — "siirsi haasteen kortilla X" ja "haastaa kortilla X pelaajan Y" (vähemmän toistoa, selvempää kuka haastaa ketä)',
+      'Sisäinen siivous: poistettu käyttämätön Momentti-keruu (kehittäjän palautetyökalu + localStorage) ja siihen liittynyt saavuttamaton Admin-näkymä kaikista peleistä — ei vaikutusta pelaamiseen',
     ],
   },
   {
@@ -696,7 +696,6 @@ export default function App() {
   // Oletuspelaajamäärä, jolla pelit alustetaan. Varsinainen valinta tehdään
   // kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4), joten globaalia säädintä ei ole.
   const playerCount = 4;
-  const [showAdmin, setShowAdmin]   = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showInfo, setShowInfo]     = useState(false);
   const [stats, setStats]           = useState(mkStats);
@@ -783,25 +782,6 @@ export default function App() {
       recordResult(gameId, heroWon);
       setResultData(result);
     }
-  }
-
-  if (showAdmin) {
-    return (
-      <div>
-        <button
-          onClick={() => setShowAdmin(false)}
-          style={{
-            position: 'fixed', top: 12, left: 12, zIndex: 300,
-            background: 'rgba(13,33,24,0.92)', border: '1px solid #2a4a32',
-            color: C.dim, padding: '6px 14px', borderRadius: 9,
-            fontSize: 12, fontFamily: 'Georgia,serif', cursor: 'pointer',
-          }}
-        >
-          ← Päävalikko
-        </button>
-        <Admin />
-      </div>
-    );
   }
 
   const gearBtn = (

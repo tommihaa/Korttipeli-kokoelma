@@ -6,7 +6,6 @@ import { lbl, korttia, shuffle, aiShouldFumble, truncName } from '../shared/help
 import Card from '../shared/Card.jsx';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
@@ -287,7 +286,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   const [kasaAnim, setKasaAnim] = useState(null); // 'clear' | 'quad' | 'take' | null
   const [pakaAnim, setPakaAnim] = useState(false); // pakka ehtyi -animaatio
   const [shuffling, setShuffling] = useState(false);
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
@@ -1268,14 +1266,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         )}
       </div>
 
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={() => {
-          setMsg_('💾 Momentti tallennettu! Hyvä peli!');
-          setCurrentMoment(null);
-        }}
-      />
 
       <style>{`
         button:active { transform: scale(0.97); }

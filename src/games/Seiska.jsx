@@ -5,7 +5,6 @@ import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import HandoffScreen from '../shared/HandoffScreen.jsx';
@@ -200,7 +199,6 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
   const [pakaAnim,    setPakaAnim] = useState(false);
   const [jpId,        setJP]      = useState(null);
   const [shuffling,   setShuffling] = useState(false);
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay,    setLastPlay] = useState(null);
   const [lappuSecsLeft, setLappuSecsLeft] = useState(null);
   const [paused,    setPaused]   = useState(false);
@@ -1211,14 +1209,6 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
         )}
       </div>
 
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={() => {
-          setMsg_('💾 Momentti tallennettu! Loistava peli!');
-          setCurrentMoment(null);
-        }}
-      />
 
       <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>

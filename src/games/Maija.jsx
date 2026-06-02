@@ -4,7 +4,6 @@ import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle, aiShouldFumble } fr
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
@@ -127,7 +126,6 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   const [finished, setFinished] = useState([]);
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
@@ -178,7 +176,6 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
     }
   }
 
-  function detectMoment() {}
 
   const M = {
     gameStart: (trumpCard, attacker, defender) => {
@@ -503,9 +500,6 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       if (unbeaten.length === 0) {
         const defName = g2.players[g2.defenderIdx];
         const beaten = newTbl.length;
-        if (g2.players[g2.defenderIdx].isHuman && beaten >= 4) {
-          detectMoment('epic_defense_win', { unbeatenCount: beaten });
-        }
         addLog(M.defenderWinRound(defName.name));
         if (sndRef.current) SFX.fanfare();
         tm(() => resolveDefenseWin({ ...g2, players }, newTbl, finRef.current), 2200);
@@ -922,15 +916,6 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
           </div>
         )}
       </div>
-
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={() => {
-          addLog('💾 Momentti tallennettu! Loistava puolustus!');
-          setCurrentMoment(null);
-        }}
-      />
 
       <style>{`
         button:active{transform:scale(0.97)}

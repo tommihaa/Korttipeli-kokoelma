@@ -5,7 +5,6 @@ import { SFX } from '../shared/audio.js';
 import { isRed, lbl, shuffle, aiShouldFumble, newDeck } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 
@@ -122,7 +121,6 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   const cardBack = 'ilves';
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [allBots, setAllBots]   = useState(false);
   const [paused, setPaused]     = useState(false);
   const [aiDelayMs, setAiDelayMs] = useState(2000);
@@ -168,47 +166,6 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         tableCards: (g.discard ?? []).slice(-1), extraText: null });
     }
   };
-
-  function detectMoment(eventType, context) {
-    if (eventType === 'legendary_reaction' && context.isLastCard && Math.random() < 0.003) {
-      const moment = {
-        type: 'legendary_reaction',
-        game: 'Koputus',
-        title: '🟠 LEGENDARY! Viimeinen reaktio!',
-        description: '1 kortti jäljellä ja osasit lyödä samanarvoisella? Täydellinen ajoitus!',
-        timestamp: new Date().toISOString(),
-        rarity: 'legendary',
-        context,
-      };
-      setCurrentMoment(moment);
-    } else if (eventType === 'epic_knock') {
-      const moment = {
-        type: 'epic_knock',
-        game: 'Koputus',
-        title: '⚔️ EPIC! Koputus laukaistaan!',
-        description: 'Kopautit — nyt seuraavat kierrokset ovat kireät ja draamallisia!',
-        timestamp: new Date().toISOString(),
-        rarity: 'epic',
-        context,
-      };
-      saveMomentSilently(moment);
-    }
-  }
-
-  function saveMomentSilently(moment) {
-    const feedback = {
-      momentType: moment.type,
-      game: moment.game,
-      rarity: moment.rarity,
-      comment: '',
-      timestamp: moment.timestamp,
-      context: moment.context,
-    };
-
-    const stored = JSON.parse(localStorage.getItem('_JAKO_MOMENTS_') || '[]');
-    stored.push(feedback);
-    localStorage.setItem('_JAKO_MOMENTS_', JSON.stringify(stored));
-  }
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { knockRef.current = knockedBy; }, [knockedBy]);
@@ -333,7 +290,6 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   function humanKnock() {
     if (knockRef.current !== null) return;
     if (soundOn) SFX.tikki();
-    detectMoment('epic_knock', { knockedBy: 'Hero' });
     setKB(0); knockRef.current = 0;
     const lr = new Set(gRef.current.players.filter((_, i) => i !== 0).map(p => p.id));
     setLR(lr); lrRef.current = lr;
@@ -535,7 +491,6 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       });
       const newG = { ...g, players }; setG(newG); gRef.current = newG;
       if (isLastCard) {
-        detectMoment('legendary_reaction', { cardIdx, discardCard: top });
         if (soundOn) SFX.lastCardWin();
         setMsg('Löit viimeisen korttisi — peli päättyy sinulle! Erinomainen!');
         tm(() => endGame(newG), 2200);
@@ -899,15 +854,6 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
           </div>
         )}
       </div>
-
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={() => {
-          setMsg('💾 Momentti tallennettu! Hyvä peli!');
-          setCurrentMoment(null);
-        }}
-      />
 
       {/* PendingResult overlay — allBots-tilan loppunäyttö */}
       {pendingResult && screen === 'game' && (

@@ -5,7 +5,6 @@ import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
-import MomentFeedback from '../shared/MomentFeedback.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 
@@ -210,7 +209,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   const [debugOpen,setDebug]   = useState(initSeeAll);
   const [shuffling, setShuffling] = useState(false);
   const [lastPlay, setLastPlay] = useState(null);
-  const [currentMoment, setCurrentMoment] = useState(null);
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
@@ -1037,14 +1035,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
           </div>
         )}
       </div>
-      <MomentFeedback
-        moment={currentMoment}
-        onClose={() => setCurrentMoment(null)}
-        onRate={() => {
-          setMsg_('💾 Momentti tallennettu!');
-          setCurrentMoment(null);
-        }}
-      />
 
       <style>{`
         button:active { transform: scale(0.97); }
