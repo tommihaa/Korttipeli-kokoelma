@@ -755,6 +755,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
           <div onClick={isHuman && phase === 'draw' && G.deck.length ? humanDrawDeck : undefined}
+            {...(isHuman && phase === 'draw' && G.deck.length ? { role: 'button', tabIndex: 0, 'aria-label': 'Nosta pakasta', onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDrawDeck(); } } } : {})}
             style={{ cursor: isHuman && phase === 'draw' && G.deck.length ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {G.deck.length === 0
               ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.3 }} />
@@ -781,6 +782,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
           <div onClick={isHuman && phase === 'draw' && discardTop ? humanDrawDiscard : undefined}
+            {...(isHuman && phase === 'draw' && discardTop ? { role: 'button', tabIndex: 0, 'aria-label': 'Nosta poistopakasta', onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDrawDiscard(); } } } : {})}
             style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {!discardTop
               ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, shuffle, aiShouldFumble, truncName, newDeck } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, aiShouldFumble, truncName, newDeck, cardName } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -62,8 +62,12 @@ function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknow
   const clickable = !!onClick;
 
   if (unknown) {
+    const a11yU = onClick
+      ? { role: 'button', tabIndex: 0, 'aria-label': 'tuntematon kortti',
+          onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
+      : { 'aria-hidden': 'true' };
     return (
-      <div onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+      <div {...a11yU} onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
         style={{ width: w, height: ht, borderRadius: 7, position: 'relative', overflow: 'hidden', flexShrink: 0, border: '2px solid #4a6a9a', boxShadow: `0 0 ${h ? '14px' : '7px'} rgba(74,106,154,0.${h ? '5' : '28'})`, cursor: 'default', transition: 'box-shadow 0.2s' }}>
         {back.render(w, ht)}
         <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(20,30,60,0.35)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
@@ -77,8 +81,15 @@ function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknow
   const borderCol = highlight ? C.gold : pulse ? 'rgba(210,215,235,0.75)' : back.border;
   const shadow = highlight ? '0 0 16px rgba(201,168,76,0.6)' : pulse ? '0 0 10px rgba(210,215,255,0.35)' : h && clickable ? '0 6px 16px rgba(0,0,0,0.5)' : '0 2px 6px rgba(0,0,0,0.3)';
 
+  const a11y = clickable
+    ? { role: 'button', tabIndex: 0, 'aria-label': faceUp && card ? cardName(card) : 'kortti',
+        onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
+    : faceUp && card
+      ? { role: 'img', 'aria-label': cardName(card) }
+      : { 'aria-hidden': 'true' };
+
   return (
-    <div onClick={clickable ? onClick : undefined} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+    <div {...a11y} onClick={clickable ? onClick : undefined} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
       style={{ width: w, height: ht, borderRadius: 7, position: 'relative', overflow: 'hidden', flexShrink: 0, border: `2px solid ${borderCol}`, background: faceUp ? C.card : back.bg, cursor: clickable ? 'pointer' : 'default', transition: 'transform 0.15s,box-shadow 0.15s', transform: h && clickable ? 'translateY(-4px) scale(1.06)' : 'none', boxShadow: shadow, opacity: dim ? 0.4 : 1, animation: pulse ? 'platina 2.4s ease-in-out infinite' : undefined }}>
       {faceUp && card
         ? <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
@@ -721,7 +732,8 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
         {(() => { const pw = isMobile ? 58 : 72, ph = isMobile ? 80 : 98; return (<>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
-          <div onClick={canDraw ? () => humanDraw(false) : undefined}>
+          <div onClick={canDraw ? () => humanDraw(false) : undefined}
+            {...(canDraw ? { role: 'button', tabIndex: 0, 'aria-label': 'Nosta pakasta', onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDraw(false); } } } : {})}>
             <FanStack
               count={G.deck.length}
               w={pw} h={ph}

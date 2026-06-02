@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { C, SUIT_COLOR, SUIT_COLOR_DARK } from './shared/colors.js';
 import GameResult from './shared/GameResult.jsx';
+import Announcer from './shared/Announcer.jsx';
 
 /* eslint-disable no-undef */
 const APP_VERSION = __APP_VERSION__;
@@ -8,15 +9,17 @@ const BUILD_DATE  = __BUILD_DATE__;
 const BUILD_TIME  = __BUILD_TIME__;
 /* eslint-enable no-undef */
 const MAILTO = `mailto:no.jopas@gmail.com?subject=${encodeURIComponent(`Version ${APP_VERSION}, Deploy ${BUILD_DATE}, Jako palaute`)}`;
-import Koputus from './games/Koputus.jsx';
-import Lapsy from './games/Lapsy.jsx';
-import Kultakala from './games/Kultakala.jsx';
-import Maija from './games/Maija.jsx';
-import Kasino from './games/Kasino.jsx';
-import Moska from './games/Moska.jsx';
-import Seiska from './games/Seiska.jsx';
-import Ristiseiska from './games/Ristiseiska.jsx';
-import Paskahousu from './games/Paskahousu.jsx';
+// Pelit ladataan laiskasti (code splitting) — kukin oma chunkkinsa, haetaan vasta
+// kun peli avataan. Valikko ei enää kanna kaikkien 9 pelin koodia kerralla.
+const Koputus = lazy(() => import('./games/Koputus.jsx'));
+const Lapsy = lazy(() => import('./games/Lapsy.jsx'));
+const Kultakala = lazy(() => import('./games/Kultakala.jsx'));
+const Maija = lazy(() => import('./games/Maija.jsx'));
+const Kasino = lazy(() => import('./games/Kasino.jsx'));
+const Moska = lazy(() => import('./games/Moska.jsx'));
+const Seiska = lazy(() => import('./games/Seiska.jsx'));
+const Ristiseiska = lazy(() => import('./games/Ristiseiska.jsx'));
+const Paskahousu = lazy(() => import('./games/Paskahousu.jsx'));
 
 const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
 const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
@@ -226,6 +229,15 @@ const MERKISTO = [
 
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
+  {
+    date: '2.6.2026',
+    items: [
+      'Saavutettavuus: pelikortteja, nostopakkoja ja nappeja voi nyt käyttää myös näppäimistöllä (Tab-selaus, Enter tai väli pelaa) ja kohdistettu elementti saa selkeän kullanvärisen reunuksen — peliä voi pelata ilman hiirtä',
+      'Saavutettavuus: ruudunlukija lukee nyt korttien nimet (esim. "pata 7") ja ilmoittaa pelin tapahtumat ääneen jokaisessa pelissä',
+      'Saavutettavuus: jos laitteessa on "vähennä liikettä" -asetus käytössä, peli kunnioittaa sitä eikä toista animaatioita',
+      'Nopeampi avautuminen: sovelluksen ensilataus kevennetty noin puoleen — kunkin pelin koodi haetaan vasta kun peli avataan',
+    ],
+  },
   {
     date: '1.6.2026',
     items: [
@@ -517,32 +529,37 @@ function GameBtn({ g, stats, onSelect }) {
       borderLeft: `4px solid ${g.diffColor}`,
       boxShadow: '0 2px 12px rgba(0,0,0,0.45)',
     }}>
-      <button
-        onClick={() => onSelect(g.id)}
-        style={{
-          background: 'transparent', border: 'none',
-          padding: '14px 12px 14px 16px',
-          display: 'flex', alignItems: 'center', gap: 12,
-          cursor: 'pointer', textAlign: 'left', width: '100%',
-        }}
-        onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.06)'}
-        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-      >
-        <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 }}>{g.name}</div>
-          <StatBadge s={stats[g.id]} />
-        </div>
-        <span
-          onClick={e => { e.stopPropagation(); setShowDesc(v => !v); }}
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <button
+          onClick={() => onSelect(g.id)}
           style={{
-            flexShrink: 0, border: `1px solid ${C.panelBorder}`,
-            borderRadius: 6, width: 24, height: 24, fontSize: 11, cursor: 'pointer',
+            background: 'transparent', border: 'none',
+            padding: '14px 4px 14px 16px',
+            display: 'flex', alignItems: 'center', gap: 12,
+            cursor: 'pointer', textAlign: 'left', flex: 1, minWidth: 0,
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.06)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+        >
+          <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 }}>{g.name}</div>
+            <StatBadge s={stats[g.id]} />
+          </div>
+        </button>
+        <button
+          onClick={() => setShowDesc(v => !v)}
+          aria-label={`${g.name}: näytä säännöt`}
+          aria-expanded={showDesc}
+          style={{
+            flexShrink: 0, margin: '0 12px 0 4px', background: 'transparent',
+            border: `1px solid ${C.panelBorder}`,
+            borderRadius: 6, width: 28, height: 28, fontSize: 12, cursor: 'pointer',
             color: showDesc ? C.gold : C.dim, fontFamily: 'sans-serif', lineHeight: 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
-        >ℹ</span>
-      </button>
+        >ℹ</button>
+      </div>
       {showDesc && (
         <div style={{ padding: '0 14px 12px 52px' }}>
           <div style={{ fontSize: 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.5, fontStyle: 'italic', marginBottom: g.rules ? 8 : 0 }}>
@@ -1188,6 +1205,7 @@ export default function App() {
 
     return (
       <div style={{ maxWidth: maxW, margin: '0 auto' }}>
+        <Announcer message={siirtorekisteri[siirtorekisteri.length - 1]?.logText} />
         {replayOpen && siirtorekisteri.length > 0 && (
           <ReplayView frames={siirtorekisteri} onClose={() => setReplayOpen(false)} isMobile={isMobile} />
         )}
@@ -1195,6 +1213,11 @@ export default function App() {
         {glossaryScreen}
         <GameHeader title={game.name} onBack={() => { setResultData(null); setBotResult(null); setActive(null); }} gearBtn={gearBtn} isMobile={isMobile} />
         {botBanner}
+        <Suspense fallback={
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '40vh', color: C.dim, fontFamily: 'Georgia,serif', fontSize: 14, letterSpacing: 2 }}>
+            Ladataan…
+          </div>
+        }>
         <GameComponent
           key={gameKey}
           game={game}
@@ -1214,12 +1237,13 @@ export default function App() {
           onResult={(result) => handleGameResult(active, result)}
           onSnapshot={handleSnapshot}
         />
+        </Suspense>
       </div>
     );
   }
 
   return (
-    <div style={{
+    <main style={{
       background: C.bg, minHeight: '100vh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center',
@@ -1258,9 +1282,9 @@ export default function App() {
           {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={selectGame} />)}
         </div>
       </div>
-      <div style={{ fontSize: 10, color: C.dim, opacity: 0.35, fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
+      <div style={{ fontSize: 10, color: '#b9c7b2', fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
         v{APP_VERSION} · {BUILD_DATE} {BUILD_TIME}
       </div>
-    </div>
+    </main>
   );
 }

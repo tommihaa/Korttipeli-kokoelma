@@ -6,6 +6,10 @@ export const isRed    = s => s === '♥' || s === '♦';
 // Lyhentää nimen korttirivejä varten — estää pitkiä nimiä työntämästä kortteja ulos
 export const truncName = (name, len = 8) => name && name.length > len ? name.slice(0, len) + '…' : (name || '');
 export const lbl    = c => c ? `${c.r}${c.s}` : '—';
+// Ruudunlukijalle: maa + arvo suomeksi (esim. "pata 7", "hertta ässä")
+const SUIT_NAME = { '♠': 'pata', '♥': 'hertta', '♦': 'ruutu', '♣': 'risti' };
+const RANK_NAME = { A: 'ässä', J: 'jätkä', Q: 'rouva', K: 'kuningas' };
+export const cardName = c => c ? `${SUIT_NAME[c.s] || ''} ${RANK_NAME[c.r] || c.r}`.trim() : 'tyhjä';
 export const korttia = n => n === 1 ? '1 kortti' : `${n} korttia`;
 export const kortin  = n => n === 1 ? '1 kortin' : `${n} korttia`;
 

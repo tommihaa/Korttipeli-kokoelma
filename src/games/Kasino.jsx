@@ -283,6 +283,13 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const [lastPlay, setLastPlay] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  // Esc sulkee vaihtoehdot-modaalin
+  useEffect(() => {
+    if (!showOptions) return;
+    const onEsc = e => { if (e.key === 'Escape') setShowOptions(false); };
+    window.addEventListener('keydown', onEsc);
+    return () => window.removeEventListener('keydown', onEsc);
+  }, [showOptions]);
   const [helpTerm, setHelpTerm] = useState(null); // 'kaappaus' | 'rakennus'
   const [allBots, setAllBots] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -1629,10 +1636,10 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
 
         return (
           <div style={{ position: 'fixed', inset: 0, zIndex: 400, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }} onClick={() => setShowOptions(false)}>
-            <div style={{ background: C.bg, border: `1px solid ${C.panelBorder}`, borderRadius: '16px 16px 0 0', padding: '16px', maxHeight: '65vh', overflowY: 'auto', maxWidth: 560, width: '100%', margin: '0 auto' }} onClick={e => e.stopPropagation()}>
+            <div role="dialog" aria-modal="true" aria-label="Vaihtoehdot" style={{ background: C.bg, border: `1px solid ${C.panelBorder}`, borderRadius: '16px 16px 0 0', padding: '16px', maxHeight: '65vh', overflowY: 'auto', maxWidth: 560, width: '100%', margin: '0 auto' }} onClick={e => e.stopPropagation()}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                 <span style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: C.gold, letterSpacing: 1 }}>📋 Vaihtoehdot</span>
-                <button onClick={() => setShowOptions(false)} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>✕</button>
+                <button onClick={() => setShowOptions(false)} aria-label="Sulje" style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>✕</button>
               </div>
 
               {!hasAny && <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, padding: '8px 0' }}>Ei kaappaus- tai rakennusvaihtoehtoja.</div>}

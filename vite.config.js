@@ -14,6 +14,7 @@ const patch = String(commitCount).padStart(3, '0');
 export default defineConfig({
   plugins: [react()],
   server: { port: 5174 },
+  build: { sourcemap: true },
   define: {
     __APP_VERSION__: JSON.stringify(`${MINOR_VERSION}.${patch}`),
     __BUILD_DATE__: JSON.stringify(new Date().toLocaleDateString('fi-FI', { timeZone: 'Europe/Helsinki' })),

@@ -112,7 +112,6 @@ export default function PlayerSetup({ slots, onChange, playerNames = [], maxHuma
                 border: `1.5px solid rgba(255,255,255,0.14)`,
                 borderRadius: 8, color: '#e8dcc8',
                 fontSize: 14, fontFamily: 'Georgia,serif',
-                outline: 'none',
                 minWidth: 0,
               }}
             />

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { C, suitColor } from './colors.js';
 import { BACKS } from './BACKS.jsx';
-import { isRed } from './helpers.js';
+import { isRed, cardName } from './helpers.js';
 
 const isRuutuKymppi = c => c && c.r === '10' && c.s === '♦';
 const isPataKakkonen = c => c && c.r === '2' && c.s === '♠';
@@ -32,11 +32,19 @@ export default function Card({
   const clickable = !!onClick && !disabled;
 
   if (empty) return (
-    <div style={{
+    <div aria-hidden="true" style={{
       width: w, height: ht, borderRadius: 7, flexShrink: 0,
       border: '1.5px dashed #1a3a22', opacity: 0.3, background: 'transparent',
     }} />
   );
+
+  // Ruudunlukija/näppäimistö: klikattava kortti = nappi, paljas kortti = kuva, selkäpuoli piiloon
+  const a11y = clickable
+    ? { role: 'button', tabIndex: 0, 'aria-label': faceUp && card ? cardName(card) : 'kortti', 'aria-disabled': disabled || undefined,
+        onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
+    : faceUp && card
+      ? { role: 'img', 'aria-label': cardName(card) }
+      : { 'aria-hidden': 'true' };
 
   const borderCol = justPlaced ? C.gold
     : reactHL ? C.red
@@ -62,6 +70,7 @@ export default function Card({
 
   return (
     <div
+      {...a11y}
       onClick={clickable ? onClick : undefined}
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}

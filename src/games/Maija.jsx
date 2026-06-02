@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
-import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle, aiShouldFumble } from '../shared/helpers.js';
+import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle, aiShouldFumble, cardName } from '../shared/helpers.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -37,11 +37,16 @@ function Card({ card, small, xsmall, highlight, dim, selected, onClick, backStyl
   const mjBorder = card && isMaija(card);
 
   if (faceDown) return (
-    <div style={{ width:w, height:ht, borderRadius:7, position:'relative', overflow:'hidden',
+    <div aria-hidden="true" style={{ width:w, height:ht, borderRadius:7, position:'relative', overflow:'hidden',
       flexShrink:0, border:`1px solid ${back.border}` }}>
       {back.render(w, ht)}
     </div>
   );
+
+  const a11y = clickable
+    ? { role:'button', tabIndex:0, 'aria-label':cardName(card),
+        onKeyDown:e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
+    : { role:'img', 'aria-label':cardName(card) };
 
   const borderCol = mjBorder ? C.maija : selected ? C.blue : highlight ? C.gold : back.border;
   const shadow = selected ? '0 0 14px rgba(91,168,212,0.6)' :
@@ -50,7 +55,7 @@ function Card({ card, small, xsmall, highlight, dim, selected, onClick, backStyl
                  h && clickable ? '0 6px 16px rgba(0,0,0,0.5)' : '0 2px 6px rgba(0,0,0,0.3)';
 
   return (
-    <div onClick={clickable ? onClick : undefined}
+    <div {...a11y} onClick={clickable ? onClick : undefined}
       onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
       style={{ width:w, height:ht, borderRadius:7, flexShrink:0,
         background:C.card, border:`2px solid ${borderCol}`,
