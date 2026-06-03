@@ -159,6 +159,12 @@ const CHANGELOG = [
   {
     date: '3.6.2026',
     items: [
+      'Valikko: englanninkielisessä tilassa pelin nimen alla näkyy nyt kansainvälinen vastine (esim. Kasino → "Classic Cassino", Moska → "a Finnish Durak variant", Paskahousu → "Finnish Palace variant") — tutut pelit on helpompi tunnistaa',
+    ],
+  },
+  {
+    date: '3.6.2026',
+    items: [
       'Kielivalinta: sovellus on nyt kokonaan käytettävissä myös englanniksi — valikot, pelien kuvaukset ja säännöt, sanasto sekä pelinaikaiset tapahtumaviestit ja vihjeet. Kieli tunnistetaan selaimesta ja sen voi vaihtaa Info-paneelin FI | EN -napista',
       'Kasino: omalla vuorollasi eniten pisteitä kaappaava kortti siirtyy kätesi vasempaan reunaan — paras siirto on helpompi bongata',
       'Kasino: rakennelman tekemisestä kertova lokiviesti näyttää nyt myös käytetyt kortit (esim. "rakentaa rakennelman (5♣ + 4♦) — arvo 9")',
@@ -468,6 +474,7 @@ function StatBadge({ s }) {
 
 function GameBtn({ g, stats, onSelect }) {
   const t = useT();
+  const { lang } = useLang();
   const [showDesc, setShowDesc] = useState(false);
   const desc = t(`games.${g.id}.desc`);
   const rules = t(`games.${g.id}.rules`);
@@ -495,6 +502,11 @@ function GameBtn({ g, stats, onSelect }) {
           <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 }}>{g.name}</div>
+            {lang === 'en' && (
+              <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', fontStyle: 'italic', marginBottom: 3 }}>
+                {renderSelitys(t(`games.${g.id}.altName`))}
+              </div>
+            )}
             <StatBadge s={stats[g.id]} />
           </div>
         </button>
