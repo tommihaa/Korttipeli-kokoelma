@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { C, SUIT_COLOR, SUIT_COLOR_DARK } from './shared/colors.js';
 import GameResult from './shared/GameResult.jsx';
 import Announcer from './shared/Announcer.jsx';
+import { useT, useLang, LANGS } from './shared/i18n.jsx';
 
 /* eslint-disable no-undef */
 const APP_VERSION = __APP_VERSION__;
@@ -37,131 +38,57 @@ const CardIcon = ({ rank, suit, suitColor = '#1a1a1a' }) => (
 const GAMES = [
   {
     id: 'kultakala', name: 'Kultakala', emoji: '🐟',
-    desc: 'Muistipeli, jos katsot niin vaihdat',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Helppo', diffColor: '#4caf7d',
     component: Kultakala, maxWidth: 560, pakka: 'taydennetty',
-    rules: [
-      'Kenttäsi: 6 piilossa — 1 tuntematon pistelaskuun asti, 5 muuta voit katsoa',
-      'Nosta pakasta tai poistopakasta',
-      'Vaihda nostettu huonompaan tai hylkää poistopakkaan',
-      'Pakka loppuu → kaikki paljastetaan ja pisteet lasketaan',
-    ],
   },
   {
     id: 'lapsy', name: 'Läpsy', emoji: '👋',
-    desc: 'Reaktiopeli',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Helppo', diffColor: '#4caf7d',
     component: Lapsy, maxWidth: 520, pakka: 'jaettu',
-    rules: [
-      'Läpsää kasaa, kun kaksi päällimmäistä korttia täsmäävät',
-      'Oikein → voitat kasan · Väärin → lisäät kortin kasaan',
-      'Kasaan käännetty kuvakortti on haaste seuraavalle pelaajalle, 1–4 korttia aikaa siirtää haaste seuraavalle kääntämällä pinostaan kuvakortti',
-      'Viimeinen, jolla kortteja voittaa',
-    ],
   },
   {
     id: 'ristiseiska', name: 'Ristiseiska', emoji: '♣',
-    desc: 'Kiusantekoa, korttipantteja ja kärsivällisyyttä',
     players: '3–4', minPlayers: 3, maxPlayers: 4,
     diff: 'Helppo', diffColor: '#4caf7d',
     component: Ristiseiska, maxWidth: 620, pakka: 'jaettu',
-    rules: [
-      '7♣ aloittaa · jatka 6♣:lla tai avaa uusi maa toisella 7:llä',
-      'Saman maan sarjassa pelatut 7→6→8 avaa maan alapinon (6→A) ja yläpinon (8→K)',
-      'Jos käsikorteista ei löydy käypää → korttipantti: edellinen pelaaja (jolla enemmän kuin 1 kortti jäljellä) antaa sinulle käsikorteistaan vaikeasti pelattavan',
-      'Ensin korteitta → voittaa',
-      'Viimeisenä kortteja kädessä → häviää',
-    ],
   },
   {
     id: 'seiska', name: 'Seiska', emoji: '7️⃣',
-    desc: 'UNO-tyyppinen kilpajuoksu kortittomuuteen',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Helppo', diffColor: '#4caf7d',
     component: Seiska, maxWidth: 580, pakka: 'kierratetty', suosikki: true,
-    rules: [
-      'Lyö sama maa (1 kerralla) TAI sama arvo (useampi kerralla)',
-      'Ei sovi → nosta max 3 korttia, pelaa heti jos löytyy',
-      '7 → valitse vaadittu maa',
-      'A → bonusvuoro saman maan kortilla',
-      '1 kortti → ilmoita LAPPU tai myöhästyessäsi saat 3 lisäkorttia',
-      'Ensin korteitta → voittaa',
-      'Viimeisenä kortteja kädessä → häviää',
-    ],
   },
   {
     id: 'kasino', name: 'Kasino', emoji: '🪙',
-    desc: 'Kaappaa koko pöytä',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Kasino, maxWidth: 560, pakka: 'taydennetty', suosikki: true,
-    rules: [
-      'Laske pöydän korteista täsmääkö joku summa käsikorttisi arvon kanssa — tee kaappaus',
-      'Tai jätä kortti pöytään — muut voivat käyttää sitä omien käsikorttiensa summiin',
-      'Rakennelma: valitse pöytäkortteja + käsikortti → summa, jonka kaappaat myöhemmin toisella saman arvoisella kortilla',
-      'Mökki: kaappaa kaikki pöydältä → 1 lisäpiste',
-      'Ensimmäisenä 16+ pistettä voittaa',
-    ],
   },
   {
     id: 'koputus', name: 'Koputus', emoji: '🤜',
-    desc: 'Muistipeli yllätysmomentein',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Koputus, maxWidth: 560, pakka: 'taydennetty',
-    rules: [
-      'Alussa saat kurkata kaksi korttia. Opi pelin aikana muutkin tai vaihda pakasta vedettyyn.',
-      'Kun poistopakka ja kortti kentästäsi täsmää → käännä kortti poistopakkaan nopeiten',
-      'Koputus käynnistää viimeisen kierroksen',
-      'Pienin pistemäärä paljastuksessa voittaa',
-    ],
   },
   {
     id: 'maija', name: 'Maija', emoji: <CardIcon rank="Q" suit="♠" />,
-    desc: 'Osittainen kaato — torjuntavoitto. Täyskaato — hyökkäät.',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Maija, maxWidth: 560, pakka: 'taydennetty',
-    rules: [
-      'Hyökkääjä lyö kortteja — puolustaja torjuu',
-      'Torju samalla maalla korkeammalla tai valtilla',
-      'Täyskaato → sinä hyökkäät seuraavaksi',
-      'Q♠ = Maija — ei voi torjua eikä torju muita',
-      'Valttimaa paljastetaan alussa',
-      'Ensin korteitta → voittaa',
-      'Viimeisenä kortteja kädessä → häviää',
-    ],
   },
   {
     id: 'paskahousu', name: 'Paskahousu', emoji: '🃏',
-    desc: <>Lähes se perinteinen paskahousu kuudella kortilla. <span style={{color:SUIT_COLOR_DARK['♦']}}>2♦</span> <span style={{color:SUIT_COLOR_DARK['♥']}}>2♥</span>{' arvo 2 · '}<span style={{color:SUIT_COLOR_DARK['♠']}}>2♠</span> <span style={{color:SUIT_COLOR_DARK['♣']}}>2♣</span>{' kovia'}</>,
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Keskitaso', diffColor: '#e0a93b',
     component: Paskahousu, maxWidth: 580, pakka: 'taydennetty', suosikki: true,
-    rules: [
-      'Pelaa samaa tai suurempaa arvoa kasaan, vaikka useampi. Neljä samaa kaataa kasan pelistä pois.',
-      '2♠ / 2♣ = kova kakkonen — lyö minkä tahansa ei-kaatokortin päälle',
-      '10 tai A kaataa kasan · neljä samaa kaataa myös',
-      'Ensin korteitta → voittaa',
-      'Viimeisenä kortteja kädessä → häviää',
-    ],
   },
   {
     id: 'moska', name: 'Moska', emoji: '⚔️',
-    desc: 'Totaalinen korttisota: hyökkää, siirrä, puolusta ja muista iskeä kylkeen.',
     players: '2–4', minPlayers: 2, maxPlayers: 4,
     diff: 'Vaativa', diffColor: '#e05c3b',
     component: Moska, maxWidth: 580, pakka: 'taydennetty',
-    rules: [
-      'Hyökkääjä lyö kortteja — puolustaja voi siirtää samanarvoisella, puolustautua kaatamalla kaikki tai nostaa kaikki',
-      'Muut voivat vuorollaan lyödä sivusta hyökkäykseen tai puolustukseen käytetyillä arvoilla',
-      'Torju samalla maalla korkeammalla tai valttikortilla',
-      'Valttimaa paljastetaan alussa',
-      'Ensin korteitta → voittaa',
-      'Viimeisenä kortteja kädessä → häviää',
-    ],
   },
 ];
 
@@ -229,6 +156,15 @@ const MERKISTO = [
 
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
+  {
+    date: '3.6.2026',
+    items: [
+      'Kielivalinta: sovellus on nyt kokonaan käytettävissä myös englanniksi — valikot, pelien kuvaukset ja säännöt, sanasto sekä pelinaikaiset tapahtumaviestit ja vihjeet. Kieli tunnistetaan selaimesta ja sen voi vaihtaa Info-paneelin FI | EN -napista',
+      'Kasino: omalla vuorollasi eniten pisteitä kaappaava kortti siirtyy kätesi vasempaan reunaan — paras siirto on helpompi bongata',
+      'Kasino: rakennelman tekemisestä kertova lokiviesti näyttää nyt myös käytetyt kortit (esim. "rakentaa rakennelman (5♣ + 4♦) — arvo 9")',
+      'Ristiseiska: kun kaadat pinon ja saat jatkaa, napin teksti on nyt selkeämpi "En jatka" (aiemmin "Lopeta")',
+    ],
+  },
   {
     date: '2.6.2026',
     items: [
@@ -397,7 +333,7 @@ const CHANGELOG = [
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
   { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'deferred' },
-  { label: 'Kieliversiointi (FI/EN)', status: 'deferred' },
+  { label: 'Kieliversiointi (FI/EN)', status: 'done' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
 ];
 
@@ -456,9 +392,14 @@ function renderSelitys(text) {
 
 /** Yksi sääntörivi korostettavilla termeillä — laajenee paikalleen */
 function RuleRow({ text }) {
+  const t = useT();
+  const { lang } = useLang();
+  const isEn = lang !== 'fi';
   const [openTerm, setOpenTerm] = useState(null);
   const parts = splitWithGlossary(text);
   const defn = openTerm ? SANASTO.find(s => s.term === openTerm) : null;
+  const defnTerm = defn ? (isEn ? t(`glossary.sanasto.${defn.term}.term`) : defn.term) : '';
+  const defnSelitys = defn ? (isEn ? t(`glossary.sanasto.${defn.term}.selitys`) : defn.selitys) : '';
   return (
     <div style={{ marginBottom: 4 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 5 }}>
@@ -477,7 +418,7 @@ function RuleRow({ text }) {
       </div>
       {defn && (
         <div style={{ marginLeft: 14, marginTop: 3, padding: '5px 10px', background: `${C.gold}12`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>{defn.emoji} {defn.term}</span>{' — '}{renderSelitys(defn.selitys)}
+          <span style={{ color: C.gold, fontWeight: 700 }}>{defn.emoji} {defnTerm}</span>{' — '}{renderSelitys(defnSelitys)}
         </div>
       )}
     </div>
@@ -486,21 +427,27 @@ function RuleRow({ text }) {
 
 /** Sanasto-rivi Asetuksissa: termi + expand-selitys */
 function SanastoRivi({ s }) {
+  const t = useT();
+  const { lang } = useLang();
   const [open, setOpen] = useState(false);
-  const gameNames = s.pelitLabel ?? (s.pelit || []).map(id => GAMES.find(g => g.id === id)?.name ?? id).join(', ');
+  const isEn = lang !== 'fi';
+  const term = isEn ? t(`glossary.sanasto.${s.term}.term`) : s.term;
+  const selitys = isEn ? t(`glossary.sanasto.${s.term}.selitys`) : s.selitys;
+  const pelitLabel = s.pelitLabel ? (isEn ? t(`glossary.pelitLabels.${s.pelitLabel}`) : s.pelitLabel) : null;
+  const gameNames = pelitLabel ?? (s.pelit || []).map(id => GAMES.find(g => g.id === id)?.name ?? id).join(', ');
   return (
     <div style={{ borderBottom: `1px solid ${C.panelBorder}33` }}>
       <button
         onClick={() => setOpen(v => !v)}
         style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 2px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
         <span style={{ fontSize: 15, flexShrink: 0, minWidth: 22, ...(s.emojiStyle || {}) }}>{s.emoji}</span>
-        <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: open ? C.gold : C.text, transition: 'color 0.15s' }}>{s.term}</span>
+        <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: open ? C.gold : C.text, transition: 'color 0.15s' }}>{term}</span>
         {gameNames && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, opacity: 0.6, marginRight: 4 }}>{gameNames}</span>}
         <span style={{ fontSize: 13, color: C.dim, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
       </button>
       {open && (
         <div style={{ padding: '0 4px 10px 30px', fontSize: 12, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
-          {renderSelitys(s.selitys)}
+          {renderSelitys(selitys)}
         </div>
       )}
     </div>
@@ -508,18 +455,22 @@ function SanastoRivi({ s }) {
 }
 
 function StatBadge({ s }) {
+  const t = useT();
   if (!s || s.played === 0) return null;
   const pct = Math.round(s.wins / s.played * 100);
   const color = pct >= 60 ? '#4caf7d' : pct >= 40 ? '#c9a84c' : '#e05c3b';
   return (
     <div style={{ fontFamily: 'sans-serif', fontSize: 10, color, marginTop: 2, letterSpacing: 0.5 }}>
-      {s.wins}V / {s.played}P · {pct}%
+      {t('ui.stat', { w: s.wins, p: s.played, pct })}
     </div>
   );
 }
 
 function GameBtn({ g, stats, onSelect }) {
+  const t = useT();
   const [showDesc, setShowDesc] = useState(false);
+  const desc = t(`games.${g.id}.desc`);
+  const rules = t(`games.${g.id}.rules`);
   return (
     <div style={{
       background: 'rgba(255,255,255,0.05)',
@@ -549,7 +500,7 @@ function GameBtn({ g, stats, onSelect }) {
         </button>
         <button
           onClick={() => setShowDesc(v => !v)}
-          aria-label={`${g.name}: näytä säännöt`}
+          aria-label={t('ui.rulesAria', { name: g.name })}
           aria-expanded={showDesc}
           style={{
             flexShrink: 0, margin: '0 12px 0 4px', background: 'transparent',
@@ -562,10 +513,10 @@ function GameBtn({ g, stats, onSelect }) {
       </div>
       {showDesc && (
         <div style={{ padding: '0 14px 12px 52px' }}>
-          <div style={{ fontSize: 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.5, fontStyle: 'italic', marginBottom: g.rules ? 8 : 0 }}>
-            {g.desc}
+          <div style={{ fontSize: 12, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.5, fontStyle: 'italic', marginBottom: rules ? 8 : 0 }}>
+            {renderSelitys(desc)}
           </div>
-          {g.rules && g.rules.map((rule, i) => <RuleRow key={i} text={rule} />)}
+          {Array.isArray(rules) && rules.map((rule, i) => <RuleRow key={i} text={rule} />)}
         </div>
       )}
     </div>
@@ -573,6 +524,7 @@ function GameBtn({ g, stats, onSelect }) {
 }
 
 function GameHeader({ title, onBack, gearBtn, isMobile }) {
+  const t = useT();
   const btnBase = {
     background: 'rgba(13,33,24,0.92)', borderRadius: 9,
     padding: isMobile ? '9px 16px' : '10px 20px', cursor: 'pointer', fontFamily: 'Georgia,serif',
@@ -587,7 +539,7 @@ function GameHeader({ title, onBack, gearBtn, isMobile }) {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <button onClick={onBack} style={{ ...btnBase, flexShrink: 0, position: 'absolute', left: 8 }}>
-          ← Valikko
+          {t('ui.menu.back')}
         </button>
         <div style={{ fontFamily: 'Georgia,serif', fontSize: isMobile ? 12 : 14, color: C.text, letterSpacing: 1 }}>
           {title}
@@ -613,6 +565,7 @@ function MiniCard({ card }) {
 
 // ── Replay: askelnavigointinäkymä ────────────────────────────────────────────
 function ReplayView({ frames, onClose, isMobile }) {
+  const t = useT();
   const [idx, setIdx] = useState(frames.length - 1);
   const safeIdx = Math.min(Math.max(idx, 0), frames.length - 1);
   const frame   = frames[safeIdx];
@@ -677,7 +630,7 @@ function ReplayView({ frames, onClose, isMobile }) {
           <div key={p.name} style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`, borderRadius:8, padding:'8px 12px', display:'flex', alignItems:'flex-start', gap:10, flexWrap:'wrap' }}>
             <div style={{ minWidth:72, flexShrink:0 }}>
               <div style={{ fontFamily:'sans-serif', fontSize:12, color: p.isHuman ? C.gold : C.dim, fontWeight: p.isHuman ? 700 : 400 }}>{p.name}</div>
-              {p.score !== null && <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, opacity:0.8 }}>{p.score} pts</div>}
+              {p.score !== null && <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, opacity:0.8 }}>{p.score} {t('ui.replay.pts')}</div>}
               <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, opacity:0.5 }}>({p.cardCount}k)</div>
             </div>
             <div style={{ display:'flex', flexWrap:'wrap', gap:2, flex:1, alignContent:'flex-start' }}>
@@ -692,7 +645,7 @@ function ReplayView({ frames, onClose, isMobile }) {
         {/* Pöytäkortit */}
         {frame.tableCards?.length > 0 && (
           <div style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`, borderRadius:8, padding:'8px 12px' }}>
-            <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.gold, letterSpacing:1.5, opacity:0.8, marginBottom:6, textTransform:'uppercase' }}>Pöytä</div>
+            <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.gold, letterSpacing:1.5, opacity:0.8, marginBottom:6, textTransform:'uppercase' }}>{t('ui.replay.table')}</div>
             <div style={{ display:'flex', flexWrap:'wrap', gap:2 }}>
               {frame.tableCards.map((c, ci) => <MiniCard key={ci} card={c} />)}
             </div>
@@ -709,6 +662,8 @@ function ReplayView({ frames, onClose, isMobile }) {
 }
 
 export default function App() {
+  const t = useT();
+  const { lang, setLang } = useLang();
   const [active, setActive]         = useState(null);
   // Oletuspelaajamäärä, jolla pelit alustetaan. Varsinainen valinta tehdään
   // kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4), joten globaalia säädintä ei ole.
@@ -810,7 +765,7 @@ export default function App() {
         fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
-      aria-label="Asetukset"
+      aria-label={t('ui.menu.settings')}
     >⚙</button>
   );
 
@@ -823,7 +778,7 @@ export default function App() {
         fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
-      aria-label="Info"
+      aria-label={t('ui.menu.info')}
     >ℹ</button>
   );
 
@@ -832,16 +787,16 @@ export default function App() {
       <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13 }}>← Info</button>
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 16, color: C.gold, letterSpacing: 2 }}>Sanasto & Merkistö</span>
+          <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13 }}>{t('glossary.backInfo')}</button>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 16, color: C.gold, letterSpacing: 2 }}>{t('glossary.title')}</span>
           <div style={{ width: 90 }} />
         </div>
 
         {/* Sanasto */}
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}>Sanasto 📖</div>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}>{t('glossary.sanastoTitle')}</div>
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
-            Napauta termiä — selitys aukeaa alle. Korostetut termit aukeavat myös pelivalikon säännöistä.
+            {t('glossary.sanastoIntro')}
           </div>
           {[
             { key: 'perus',  label: 'Perustermit' },
@@ -849,7 +804,7 @@ export default function App() {
             { key: 'alue',   label: 'Alueet ja vyöhykkeet' },
           ].map(({ key, label }) => (
             <div key={key} style={{ marginBottom: 10 }}>
-              <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{label}</div>
+              <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{t('glossary.cat.' + key)}</div>
               {SANASTO.filter(s => s.kategoria === key).map(s => <SanastoRivi key={s.term} s={s} />)}
             </div>
           ))}
@@ -857,9 +812,9 @@ export default function App() {
 
         {/* Merkistö */}
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}>Merkistö 🔣</div>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}>{t('glossary.merkistoTitle')}</div>
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
-            Sovelluksessa käytetyt ikonit ja niiden merkitykset.
+            {t('glossary.merkistoIntro')}
           </div>
           {[
             { key: 'toiminnot', label: 'Pelitoiminnot' },
@@ -868,13 +823,13 @@ export default function App() {
             { key: 'ui',        label: 'Käyttöliittymä' },
           ].map(({ key, label }) => (
             <div key={key} style={{ marginBottom: 10 }}>
-              <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{label}</div>
+              <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{t('glossary.cat.' + key)}</div>
               {MERKISTO.filter(m => m.kategoria === key).map(m => (
                 <div key={m.label} style={{ display: 'flex', alignItems: 'baseline', gap: 8, padding: '5px 0', borderBottom: `1px solid ${C.panelBorder}33` }}>
                   <span style={{ fontSize: 15, flexShrink: 0, minWidth: 22, textAlign: 'center', lineHeight: 1 }}>{m.icon}</span>
-                  <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text, flexShrink: 0, minWidth: 130 }}>{m.label}</span>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text, flexShrink: 0, minWidth: 130 }}>{lang === 'fi' ? m.label : t(`glossary.merkisto.${m.label}.label`)}</span>
                   <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.45, flex: 1 }}>
-                    {m.selitys}
+                    {lang === 'fi' ? m.selitys : t(`glossary.merkisto.${m.label}.selitys`)}
                     {m.peli && <span style={{ color: C.gold, opacity: 0.6, marginLeft: 4 }}>({m.peli})</span>}
                   </span>
                 </div>
@@ -883,7 +838,7 @@ export default function App() {
           ))}
         </div>
 
-        <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '10px 0', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13, width: '100%' }}>← Takaisin infoon</button>
+        <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '10px 0', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13, width: '100%' }}>{t('glossary.backToInfo')}</button>
       </div>
     </div>
   );
@@ -897,7 +852,7 @@ export default function App() {
     }}>
       <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}>⚙ Asetukset</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}>{t('ui.settings.title')}</span>
           <button
             onClick={() => setShowSettings(false)}
             style={{
@@ -905,7 +860,7 @@ export default function App() {
               color: C.dim, borderRadius: 8, padding: '6px 14px',
               cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13,
             }}
-          >✕ Sulje</button>
+          >{t('ui.settings.close')}</button>
         </div>
 
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
@@ -913,7 +868,7 @@ export default function App() {
             onClick={() => setShowPeliasetukset(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Peliasetukset</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.settings.gameSettings')}</span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPeliasetukset ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showPeliasetukset && (
@@ -921,15 +876,15 @@ export default function App() {
               {(() => {
                 const isAllBots = siirtorekisteri.length > 0 || !!botResult;
                 return [
-                  !isAllBots && { label: '👁 Näytä kaikki kortit',                                  val: seeAll,        set: setSeeAll        },
-                  { label: '🔒 God Mode (manifestoi tulevat kortit)',                                    disabled: true                          },
-                  { label: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',                 val: showCounts,    set: setShowCounts    },
-                  !isAllBots && { label: 'Näe muistipeleissä vastustajien katsomat korttipaikat korostettuina',       val: showAIKnown,   set: setShowAIKnown   },
-                  { label: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',                       val: showLastPlay,  set: setShowLastPlay  },
-                  { label: 'Lyönti- ja nostoaikomus — botti näyttää etukäteen mitä korttia se pelaa seuraavaksi (Seiska, Ristiseiska, Maija, Paskahousu, Moska)', val: showIntention, set: setShowIntention },
-                  { label: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)', val: showNextBtn,   set: setShowNextBtn   },
-                  { label: 'Tapahtumaloki auki',                                                         val: showLog,       set: setShowLog       },
-                  { label: 'Äänet',                                                                       val: soundOn,       set: setSoundOn       },
+                  !isAllBots && { label: t('ui.settings.seeAll'),       val: seeAll,        set: setSeeAll        },
+                  { label: t('ui.settings.godMode'),                    disabled: true                          },
+                  { label: t('ui.settings.showCounts'),                 val: showCounts,    set: setShowCounts    },
+                  !isAllBots && { label: t('ui.settings.showAIKnown'),  val: showAIKnown,   set: setShowAIKnown   },
+                  { label: t('ui.settings.showLastPlay'),               val: showLastPlay,  set: setShowLastPlay  },
+                  { label: t('ui.settings.showIntention'),              val: showIntention, set: setShowIntention },
+                  { label: t('ui.settings.showNextBtn'),                val: showNextBtn,   set: setShowNextBtn   },
+                  { label: t('ui.settings.showLog'),                    val: showLog,       set: setShowLog       },
+                  { label: t('ui.settings.sound'),                      val: soundOn,       set: setSoundOn       },
                 ].filter(Boolean);
               })().map(({ label, val, set, disabled }) => (
                 <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
@@ -950,16 +905,16 @@ export default function App() {
             onClick={() => setShowKonealy(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Koneälyn taso 🤖</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.settings.aiTitle')}</span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showKonealy ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showKonealy && (
             <div style={{ padding: '0 14px 14px' }}>
               <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
                 {[
-                  { key: 'beginner', label: 'Oppipoika', desc: 'tekee virheitä, voitettavissa' },
-                  { key: 'normal',   label: 'Kisälli',    desc: 'pelaa hyvin, mokaa joskus' },
-                  { key: 'hard',     label: 'Mestari',    desc: 'täysi strategia + muistaa kortit' },
+                  { key: 'beginner', label: t('ui.settings.ai.beginner.label'), desc: t('ui.settings.ai.beginner.desc') },
+                  { key: 'normal',   label: t('ui.settings.ai.normal.label'),   desc: t('ui.settings.ai.normal.desc') },
+                  { key: 'hard',     label: t('ui.settings.ai.hard.label'),     desc: t('ui.settings.ai.hard.desc') },
                 ].map(({ key, label, desc }) => (
                   <button
                     key={key}
@@ -987,20 +942,20 @@ export default function App() {
             onClick={() => setShowPelaajat(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Pelaajat 👥</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.settings.playersTitle')}</span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPelaajat ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showPelaajat && (
           <div style={{ padding: '0 14px 14px' }}>
           <p style={{ margin: '0 0 10px', fontSize: 11, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>
-            Vastustajat arvotaan valitusta ryhmästä.
+            {t('ui.settings.playersIntro')}
           </p>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
             {[
-              { key: 'laituri', label: '🏖 Laiturin tyypit',  pool: LAITURI_SPECIAL  },
-              { key: 'jumalat', label: '⚡ Onnen jumalat',    pool: ONNEN_JUMALAT    },
-              { key: 'puolue',  label: '🗳 Ihmisten puolue',  pool: IHMISTEN_PUOLUE  },
-              { key: 'kansa',   label: '🧑‍🤝‍🧑 Kansa',           pool: KANSA            },
+              { key: 'laituri', label: t('ui.settings.groups.laituri'),  pool: LAITURI_SPECIAL  },
+              { key: 'jumalat', label: t('ui.settings.groups.jumalat'),  pool: ONNEN_JUMALAT    },
+              { key: 'puolue',  label: t('ui.settings.groups.puolue'),   pool: IHMISTEN_PUOLUE  },
+              { key: 'kansa',   label: t('ui.settings.groups.kansa'),    pool: KANSA            },
             ].map(({ key, label, pool }) => (
               <button
                 key={key}
@@ -1015,7 +970,7 @@ export default function App() {
                 }}
               >
                 {label}
-                <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{pool.length} nimeä</div>
+                <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{t('ui.settings.namesCount', { n: pool.length })}</div>
               </button>
             ))}
           </div>
@@ -1039,7 +994,7 @@ export default function App() {
     }}>
       <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}>ℹ Info</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}>{t('ui.info.title')}</span>
           <button
             onClick={() => setShowInfo(false)}
             style={{
@@ -1047,7 +1002,32 @@ export default function App() {
               color: C.dim, borderRadius: 8, padding: '6px 14px',
               cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13,
             }}
-          >✕ Sulje</button>
+          >{t('ui.info.close')}</button>
+        </div>
+
+        {/* Kieli / Language */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.lang.label')}</span>
+          <div role="group" aria-label={t('ui.lang.label')} style={{ display: 'flex', gap: 4 }}>
+            {LANGS.map(({ code, label, name }) => {
+              const activeLang = lang === code;
+              return (
+                <button
+                  key={code}
+                  onClick={() => setLang(code)}
+                  aria-pressed={activeLang}
+                  title={name}
+                  style={{
+                    background: activeLang ? `${C.gold}22` : 'transparent',
+                    border: `1px solid ${activeLang ? C.gold : C.panelBorder}`,
+                    color: activeLang ? C.gold : C.dim, borderRadius: 8,
+                    padding: '6px 12px', cursor: 'pointer',
+                    fontFamily: 'Georgia,serif', fontSize: 13, letterSpacing: 1,
+                  }}
+                >{label}</button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Esittely */}
@@ -1056,27 +1036,19 @@ export default function App() {
             onClick={() => setShowEsittely(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Esittely</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.esittely')}</span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showEsittely ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showEsittely && (
             <div style={{ padding: '0 14px 14px' }}>
-              {[
-                'Hei!',
-                'Seurapelit ja varsinkin korttipelaaminen yhdessä on hauskaa. 52-kortin pakka ei paljoa maksa ja kulkee mukana.',
-                'Uusia korttipelejä on kuitenkin hidas oppia. Säännöt muuttuvat usein sen mukaan, kenen kanssa pelaat. Aina ei myöskään ole helppoa löytää peliseuraa ja aikaa rauhalliseen harjoitteluun.',
-                'Mitä jos pelit voisi oppia toisella tavalla?',
-                'Tässä sovelluksessa on yhdeksän (9) eri peliä. Opit säännöt parhaiten pelaamalla vielä yhden pelin. Täällä sinun ei tarvitse kiirehtiä, vaan voit harjoitella rauhassa väsymättömien bottien kanssa.',
-                'Iloisia pelihetkiä!',
-                'Kiitos ja kumarrus,\nTommi Haanranta',
-              ].map((t, i) => (
-                <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{t}</p>
+              {t('ui.infoPanel.esittelyParas').map((para, i) => (
+                <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{para}</p>
               ))}
               <a href={MAILTO} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
                 color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
                 border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
-              }}>✉ Lähetä risut ja ruusut</a>
+              }}>{t('ui.infoPanel.feedback')}</a>
             </div>
           )}
         </div>
@@ -1086,7 +1058,7 @@ export default function App() {
           onClick={() => setShowGlossary(true)}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
         >
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Sanasto & Merkistö 📖</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.glossaryLink')}</span>
           <span style={{ color: C.gold, fontSize: 16 }}>›</span>
         </button>
 
@@ -1096,7 +1068,7 @@ export default function App() {
             onClick={() => setShowChangelog(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Muutosloki 📋</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.changelog')}</span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showChangelog ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showChangelog && (
@@ -1122,7 +1094,7 @@ export default function App() {
             onClick={() => setShowTodo(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>Tulossa 🗺</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.todo')}</span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showTodo ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showTodo && (
@@ -1132,7 +1104,7 @@ export default function App() {
                   <span style={{ fontSize: 13, flexShrink: 0, marginTop: 1 }}>
                     {item.status === 'open' ? '🎯' : item.status === 'done' ? '✅' : '⏸'}
                   </span>
-                  <span style={{ fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.55, color: item.status === 'done' ? C.dim : C.text, textDecoration: item.status === 'done' ? 'line-through' : 'none', opacity: item.status === 'deferred' ? 0.55 : 1 }}>{item.label}</span>
+                  <span style={{ fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.55, color: item.status === 'done' ? C.dim : C.text, textDecoration: item.status === 'done' ? 'line-through' : 'none', opacity: item.status === 'deferred' ? 0.55 : 1 }}>{t('ui.infoPanel.todoItems')[i] ?? item.label}</span>
                 </div>
               ))}
             </div>
@@ -1172,7 +1144,7 @@ export default function App() {
         gap: 12,
       }}>
         <span style={{ fontFamily: 'Georgia,serif', fontSize: isMobile ? 12 : 13, color: C.gold }}>
-          🏆 {botResult.ranking[0]?.name} voitti
+          {t('ui.botBanner.won', { name: botResult.ranking[0]?.name })}
         </span>
         <div style={{ display:'flex', gap:8, flexShrink:0 }}>
           {siirtorekisteri.length > 0 && (
@@ -1185,7 +1157,7 @@ export default function App() {
                 fontSize: isMobile ? 11 : 12, cursor: 'pointer',
               }}
             >
-              ▶ Toisto ({siirtorekisteri.length})
+              {t('ui.botBanner.replay', { n: siirtorekisteri.length })}
             </button>
           )}
           <button
@@ -1197,7 +1169,7 @@ export default function App() {
               fontSize: isMobile ? 12 : 13, fontWeight: 700, cursor: 'pointer',
             }}
           >
-            Pelivalinta →
+            {t('ui.botBanner.toMenu')}
           </button>
         </div>
       </div>
@@ -1215,7 +1187,7 @@ export default function App() {
         {botBanner}
         <Suspense fallback={
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '40vh', color: C.dim, fontFamily: 'Georgia,serif', fontSize: 14, letterSpacing: 2 }}>
-            Ladataan…
+            {t('ui.loading')}
           </div>
         }>
         <GameComponent

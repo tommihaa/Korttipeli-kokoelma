@@ -1,4 +1,5 @@
 import { C } from './colors.js';
+import { useT } from './i18n.jsx';
 
 // Yksi kanoninen "pakka ehtyi" -välähdys (korvaa pelikohtaiset pakaFlash-duplikaatit).
 // Injektoidaan kerran <head>:iin moduulin latautuessa — eri nimi (pakkaFlash) kuin
@@ -22,11 +23,15 @@ if (typeof document !== 'undefined' && !document.getElementById(FLASH_ID)) {
 // flash: true käynnistää välähdyksen kun pakka juuri ehtyi.
 // style: ulkoasun säätö (fontSize, fontFamily, marginit) kutsupaikan mukaan.
 export default function PakkaCount({ count, empty, flash = false, variant = 'header', style }) {
+  const t = useT();
   const isEmpty = empty === undefined ? count === 0 : empty;
+  const deck = t('ui.shared.deck');
+  const emptyLabel = t('ui.shared.empty');
+  const cards = t('ui.shared.cards', { n: count });
   const text =
-    variant === 'header' ? (isEmpty ? 'PAKKA — TYHJÄ!' : `PAKKA — ${count} korttia`)
-    : variant === 'number' ? (isEmpty ? 'TYHJÄ!' : `${count}`)
-    : (isEmpty ? 'TYHJÄ!' : `${count} korttia`);
+    variant === 'header' ? (isEmpty ? `${deck} — ${emptyLabel}` : `${deck} — ${cards}`)
+    : variant === 'number' ? (isEmpty ? emptyLabel : `${count}`)
+    : (isEmpty ? emptyLabel : cards);
   return (
     <span style={{
       color: isEmpty ? C.red : C.dim,

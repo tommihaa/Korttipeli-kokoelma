@@ -1,5 +1,6 @@
 import { C, SUIT_COLOR } from './colors.js';
 import Card from './Card.jsx';
+import { useT } from './i18n.jsx';
 
 // ranking:        [{name, place, score?, isHuman}]  – sorted by place asc
 // revealCards:    [{name, cards: [...], label}]       – Koputus, Kultakala
@@ -36,6 +37,7 @@ export default function GameResult({
   onMenu,
   isMobile = false,
 }) {
+  const t = useT();
   const total = ranking.length;
   const hasScores = ranking.some(r => r.score != null);
 
@@ -61,7 +63,7 @@ export default function GameResult({
         margin: 0,
         textAlign: 'center',
       }}>
-        PELI PÄÄTTYI
+        {t('ui.result.title')}
       </h1>
 
       {/* Ranking-lista */}
@@ -94,7 +96,7 @@ export default function GameResult({
             }}>
               {r.name}
               {r.place === 1 && !r.isHuman &&
-                <span style={{ fontSize: 11, color: C.dim, marginLeft: 8, fontFamily: 'sans-serif' }}>voitti</span>
+                <span style={{ fontSize: 11, color: C.dim, marginLeft: 8, fontFamily: 'sans-serif' }}>{t('ui.result.won')}</span>
               }
             </div>
             {/* Pisteet */}
@@ -105,7 +107,7 @@ export default function GameResult({
                 color: r.isHuman ? C.gold : C.dim,
                 fontFamily: 'Georgia,serif',
               }}>
-                {r.score}<span style={{ fontSize: 11, opacity: 0.55 }}> p</span>
+                {r.score}<span style={{ fontSize: 11, opacity: 0.55 }}> {t('ui.result.pts')}</span>
               </div>
             )}
           </div>
@@ -122,7 +124,7 @@ export default function GameResult({
             letterSpacing: 1.5,
             marginBottom: 10,
           }}>
-            KENTTÄ — PALJASTETTU
+            {t('ui.result.revealed')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {revealCards.map(p => (
@@ -182,7 +184,7 @@ export default function GameResult({
             letterSpacing: 1.5,
             marginBottom: 10,
           }}>
-            PISTEIDEN ERITTELY
+            {t('ui.result.breakdown')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {scoreBreakdown.map(p => (
@@ -205,7 +207,7 @@ export default function GameResult({
                     {p.name}
                   </span>
                   <span style={{ fontFamily: 'Georgia,serif', fontSize: 16, color: C.gold, fontWeight: 700 }}>
-                    {p.score}<span style={{ fontSize: 10, opacity: 0.6 }}> p</span>
+                    {p.score}<span style={{ fontSize: 10, opacity: 0.6 }}> {t('ui.result.pts')}</span>
                   </span>
                 </div>
                 {p.items.length > 0 && (
@@ -253,7 +255,7 @@ export default function GameResult({
             letterSpacing: 1,
           }}
         >
-          Uusi peli →
+          {t('ui.result.newGame')}
         </button>
         <button
           onClick={onMenu}
@@ -268,7 +270,7 @@ export default function GameResult({
             fontFamily: 'Georgia,serif',
           }}
         >
-          ← Valikko
+          {t('ui.menu.back')}
         </button>
       </div>
     </div>

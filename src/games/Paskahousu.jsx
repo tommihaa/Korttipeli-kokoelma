@@ -268,7 +268,10 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
+import { useT } from '../shared/i18n.jsx';
+
 export default function Paskahousu({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+  const t = useT();
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [rules,    setRules]   = useState(DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä
@@ -320,7 +323,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     if (G.draw.length === 0 && activeCount === 2) {
       suddenDeathStarted.current = true;
       setTimerLeft(150);
-      addLog('⏱ Pakka tyhjä — <b>Yhtäkkinen kuolema!</b> 2:30 laskuri käy. Vähemmän kortteja voittaa!');
+      addLog(t('games.paskahousu.msg.suddenDeathStart'));
       const id = setInterval(() => {
         if (gRef.current?.phase === 'gameover') { clearInterval(id); setTimerLeft(null); return; }
         setTimerLeft(prev => {
@@ -353,27 +356,27 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   function setGS(g) { setG(g); gRef.current = g; }
 
   const M = {
-    gameStart:    (isH, name, lowest) => `Paskahousu alkaa! ${name} aloittaa (pienin kortti).${isH ? ' Voit lyödä useammankin samanarvoisen kerralla.' : ''}`,
-    played:       (isH, name, cards) => `${name}: ${cards}`,
-    won:          name => `${name} vei voiton! 🏆🎉`,
-    out:          name => `${name} poistui pelistä. 👏`,
-    loser:        name => `${name} jäi Paskahousuksi.`,
-    swept:        (isH, name, count) => `${name} kaataa ${count} kortin kasan! Jatkaa.`,
-    turnOf:       name => `Vuorossa ${name}.`,
-    yourTurnCont: 'Hero jatkaa vuoroaan.',
-    emptyPenalty: (card, nextName) => `${card} tyhjälle — ${nextName} nostaa ja menettää vuoronsa!`,
-    emptyPenalty2:(card, nextName) => `${card} tyhjälle — ${nextName} menettää vuoronsa!`,
-    blindSwept:   (isH, name, card, count) => `${name} veti sokkona ${card} pakasta — kaatoi ${count} kortin kasan! Jatkaa.`,
-    blindGood:    (isH, name, card) => `${name} veti sokkona ${card} pakasta — kortti kävi!`,
-    blindBad:     (isH, name, card) => `${name} veti sokkona ${card} pakasta — ei käynyt, nosta kasa!`,
-    tookPile:     (isH, name, count) => `${name} nostaa ${count} kortin kasan.`,
-    skipCard:     (isH, name, card) => `${name} nostaa (${card}) ja menettää vuoronsa.`,
-    skipNoCard:   (isH, name) => `${name} menettää vuoronsa.`,
-    swapped:      (isH, name, cards) => `${name} vaihtaa! ${cards} kasaan.`,
-    swapSwept:    (isH, name, count, cards) => `${name} kaataa ${count} kortin kasan vaihdossa saamallaan ${cards}! Jatkaa.`,
-    aiSwaps:      name => `${name} vaihtaa!`,
-    aiStuck:      name => `${name}: ei pysty tekemään mitään.`,
-    badCard:      'Kortti ei kelpaa tähän.',
+    gameStart:    (isH, name, lowest) => t('games.paskahousu.msg.gameStart', { name, hint: isH ? t('games.paskahousu.msg.gameStartHint') : '' }),
+    played:       (isH, name, cards) => t('games.paskahousu.msg.played', { name, cards }),
+    won:          name => t('games.paskahousu.msg.won', { name }),
+    out:          name => t('games.paskahousu.msg.out', { name }),
+    loser:        name => t('games.paskahousu.msg.loser', { name }),
+    swept:        (isH, name, count) => t('games.paskahousu.msg.swept', { name, count }),
+    turnOf:       name => t('games.paskahousu.msg.turnOf', { name }),
+    yourTurnCont: t('games.paskahousu.msg.yourTurnCont'),
+    emptyPenalty: (card, nextName) => t('games.paskahousu.msg.emptyPenalty', { card, nextName }),
+    emptyPenalty2:(card, nextName) => t('games.paskahousu.msg.emptyPenalty2', { card, nextName }),
+    blindSwept:   (isH, name, card, count) => t('games.paskahousu.msg.blindSwept', { name, card, count }),
+    blindGood:    (isH, name, card) => t('games.paskahousu.msg.blindGood', { name, card }),
+    blindBad:     (isH, name, card) => t('games.paskahousu.msg.blindBad', { name, card }),
+    tookPile:     (isH, name, count) => t('games.paskahousu.msg.tookPile', { name, count }),
+    skipCard:     (isH, name, card) => t('games.paskahousu.msg.skipCard', { name, card }),
+    skipNoCard:   (isH, name) => t('games.paskahousu.msg.skipNoCard', { name }),
+    swapped:      (isH, name, cards) => t('games.paskahousu.msg.swapped', { name, cards }),
+    swapSwept:    (isH, name, count, cards) => t('games.paskahousu.msg.swapSwept', { name, count, cards }),
+    aiSwaps:      name => t('games.paskahousu.msg.aiSwaps', { name }),
+    aiStuck:      name => t('games.paskahousu.msg.aiStuck', { name }),
+    badCard:      t('games.paskahousu.msg.badCard'),
   };
 
   function triggerKasaAnim(type) {
@@ -390,7 +393,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const sorted  = [...active].sort((a, b) => a.hand.length - b.hand.length);
     const winner  = sorted[0];
     const loser   = sorted[sorted.length - 1];
-    addLog(`⏱ Aika loppui! <b>${winner.name}</b> voittaa (${winner.hand.length}k &lt; ${loser.hand.length}k).`);
+    addLog(t('games.paskahousu.msg.suddenDeathEnd', { name: winner.name, wk: winner.hand.length, lk: loser.hand.length }));
     if (sndRef.current) SFX.capture();
     const newFinished = [...g.finished, winner.id, loser.id];
     const ranking = newFinished.map((idx, pos) => ({
@@ -468,7 +471,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       setPakaAnim(true); // pakka on tyhjä
       const activeNow = g.players.length - g.finished.length;
       if (!(aiLevelRef.current === 'hard' && activeNow === 2))
-        addLog('📦 Pakka on tyhjä — peli jatkuu käsikortein.');
+        addLog(t('games.paskahousu.msg.deckEmpty'));
     }
 
     let finished = [...g.finished];
@@ -576,7 +579,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         setPakaAnim(true); // pakka on tyhjä
         const activeNow = g.players.length - g.finished.length;
         if (!(aiLevelRef.current === 'hard' && activeNow === 2))
-          addLog('📦 Pakka on tyhjä — peli jatkuu käsikortein.');
+          addLog(t('games.paskahousu.msg.deckEmpty'));
       }
 
       let finished = [...g.finished];
@@ -883,7 +886,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         </div>
       </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
         <div style={{ display: 'flex', gap: 10 }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 44, height: 44, borderRadius: 10, cursor: 'pointer', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
@@ -892,9 +895,9 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: isMobile ? 300 : 360 }}>
         {[
-          { key: 'handSize', label: 'KORTTEJA',        opts: [5, 6] },
-          { key: 'hardTwos', label: 'KOVAT KAKKOSET',  opts: [['Kaikki', true], [<span><span style={{ color: SUIT_COLOR['♠'] }}>♠2</span> <span style={{ color: SUIT_COLOR_DARK['♣'] }}>♣2</span></span>, false]] },
-          { key: 'faceMin',  label: 'KUVAKORTTI VÄH.', opts: [0, 6, 7, 8, 9] },
+          { key: 'handSize', label: t('games.paskahousu.opts.handSize'), opts: [5, 6] },
+          { key: 'hardTwos', label: t('games.paskahousu.opts.hardTwos'), opts: [[t('games.paskahousu.opts.all'), true], [<span><span style={{ color: SUIT_COLOR['♠'] }}>♠2</span> <span style={{ color: SUIT_COLOR_DARK['♣'] }}>♣2</span></span>, false]] },
+          { key: 'faceMin',  label: t('games.paskahousu.opts.faceMin'), opts: [0, 6, 7, 8, 9] },
         ].map(row => (
           <div key={row.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
             <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5 }}>{row.label}</span>
@@ -915,10 +918,10 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         ))}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{nP} bottia · {({beginner:'Oppipoika',normal:'Kisälli',hard:'Mestari'})[aiLevel]}</span>
+          {t('ui.start.botBattle')}
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
         </button>
       </div>
     </div>
@@ -929,7 +932,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const { finished, players } = G;
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
         <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 8 }}>
           {finished.map((pid, i) => {
             const p      = players[pid];
@@ -938,14 +941,14 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
               <div key={pid} style={{ borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: isLast ? 'rgba(224,92,59,0.1)' : i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${isLast ? '#e05c3b55' : i === 0 ? C.gold + '55' : C.panelBorder}` }}>
                 <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : isLast ? '💩' : '🎯'}</span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : isLast ? C.red : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: isLast ? C.red : C.dim }}>{isLast ? 'Paskahousu' : `Sija ${i + 1}`}</span>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: isLast ? C.red : C.dim }}>{isLast ? 'Paskahousu' : t('ui.result.place', { n: i + 1 })}</span>
               </div>
             );
           })}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
-          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
         </div>
       </div>
     );
@@ -1096,10 +1099,10 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       {isMyTurn && !mustSkip && (
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, marginBottom: 8, fontStyle: 'italic' }}>
           {selected.length > 0
-            ? `Valittu: ${selected.map(lbl).join(', ')} — paina Pelaa tai valitse lisää samanarvoisia`
+            ? t('games.paskahousu.ui.hintSelected', { cards: selected.map(lbl).join(', ') })
             : G.top
-              ? 'Klikkaa korttia (tai useita samanarvoisia) pelata. Pelaa yhtä suuri tai suurempi.'
-              : 'Kasa tyhjä — kaikki kortit käyvät aloittamaan.'}
+              ? t('games.paskahousu.ui.hintPlay')
+              : t('games.paskahousu.ui.hintEmpty')}
         </div>
       )}
 
@@ -1110,10 +1113,10 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         {G.phase === 'swap_offer' && G.swapData?.pidx === 0 && (
           <div style={{ position: 'absolute', inset: 0, zIndex: 10, borderRadius: 14, background: 'rgba(13,22,18,0.97)', border: `2px solid ${C.gold}66`, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold }}>
-              ⚡ Nostit pelattavia! Vaihda {G.swapData.playedCards.map(lbl).join(', ')} → kasaan:
+              {t('games.paskahousu.ui.swapTitle', { cards: G.swapData.playedCards.map(lbl).join(', ') })}
             </div>
             <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>
-              Klikkaa kortteja valitaksesi — tai paina Vaihda suoraan
+              {t('games.paskahousu.ui.swapHint')}
             </div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {G.swapData.eligible.map(c => {
@@ -1132,12 +1135,12 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
               <button
                 onClick={() => { const toSwap = selected.length ? selected : G.swapData.eligible; setSel([]); applySwap(gRef.current, toSwap); }}
                 style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 20px', color: '#0d2118', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                Vaihda! {(selected.length ? selected : G.swapData.eligible).map(lbl).join(' ')}
+                {t('games.paskahousu.ui.swapNow', { cards: (selected.length ? selected : G.swapData.eligible).map(lbl).join(' ') })}
               </button>
               <button
                 onClick={() => skipSwap(gRef.current)}
                 style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 16px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-                Ohita ({swapCountdown}s)
+                {t('games.paskahousu.ui.skipSwap', { s: swapCountdown })}
               </button>
             </div>
           </div>
@@ -1174,12 +1177,12 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       <div style={{ minHeight: 52, display: 'flex', gap: 8, marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
         {mustSkip && (
           <button onClick={() => applySkip(gRef.current, 0)} style={{ background: 'rgba(224,92,59,0.12)', border: `1px solid ${C.red}55`, borderRadius: 10, padding: '10px 20px', color: C.red, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            Nosta kortti ja menetä vuoro ⚠
+            {t('games.paskahousu.ui.drawLose')}
           </button>
         )}
         {isMyTurn && !mustSkip && selValid && (
           <button onClick={humanPlay} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 22px', color: '#0d2118', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            Pelaa ({selected.map(lbl).join(', ')})
+            {t('games.paskahousu.ui.play', { cards: selected.map(lbl).join(', ') })}
           </button>
         )}
         {isMyTurn && !mustSkip && selected.length > 0 && (
@@ -1187,12 +1190,12 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         )}
         {canKnock && (
           <button onClick={() => { setSel([]); applyKnock(gRef.current, 0); }} style={{ background: 'rgba(201,168,76,0.08)', border: `1px solid ${C.gold}55`, borderRadius: 10, padding: '10px 20px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            Aina voi kokeilla pakasta
+            {t('games.paskahousu.ui.tryDeck')}
           </button>
         )}
         {canTake && (
           <button onClick={() => { setSel([]); applyTakePile(gRef.current, 0); }} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.dim}44`, borderRadius: 10, padding: '10px 18px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            Nosta kasa ({G.pile.length}k)
+            {t('games.paskahousu.ui.takePile', { n: G.pile.length })}
           </button>
         )}
       </div>
@@ -1212,12 +1215,12 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
 
       {/* Tilapalkki */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pääse kortistasi eroon — viimeinen on Paskahousu</span>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.paskahousu.ui.goal')}</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Avoimet kortit
+          {debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}
         </button>
       </div>
 
@@ -1243,7 +1246,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <button onClick={startBotBattle} style={{ padding: '12px 28px', borderRadius: 12, background: 'rgba(123,47,190,0.3)', border: '1px solid rgba(123,47,190,0.5)', color: '#f0e6ff', fontSize: 14, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🔮 Uusi katselutila</button>
-            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
+            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>
           </div>
         </div>
       )}

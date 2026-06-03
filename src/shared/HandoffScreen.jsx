@@ -1,6 +1,8 @@
 import { C } from './colors.js';
+import { useT } from './i18n.jsx';
 
 export default function HandoffScreen({ playerName, onReady }) {
+  const t = useT();
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 900,
@@ -23,7 +25,7 @@ export default function HandoffScreen({ playerName, onReady }) {
           fontSize: 15, color: '#8aaa90',
           fontFamily: 'sans-serif', letterSpacing: 1,
         }}>
-          Sinun vuorosi
+          {t('ui.shared.yourTurn')}
         </div>
       </div>
       <button
@@ -37,7 +39,7 @@ export default function HandoffScreen({ playerName, onReady }) {
           letterSpacing: 2, marginTop: 8,
         }}
       >
-        Aloita vuoro →
+        {t('ui.shared.startTurn')}
       </button>
     </div>
   );

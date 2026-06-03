@@ -23,22 +23,22 @@ function shuffledAINames(pool) {
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const M = {
-  gameStart: 'Kortit on jaettu. Jokaisella on tuntematon kortti ja viisi kenttäkorttia. Aloita klikkaamalla nostopakkaa. Myöhemmillä kierroksilla voit nostaa myös poistopakasta.',
-  deckEmpty: 'Nostopakka ehtyi — paljastetaan tuntemattomat!',
-  yourTurn: 'Vuorossa Hero. Nosta nostopakasta tai poistopakasta.',
-  aiThinking: p => `Vuorossa ${p.name}.`,
-  aiDrawDiscard: p => `${p.name} nostaa poistopakasta.`,
-  aiDrawDeck: p => `${p.name} nostaa nostopakasta.`,
-  aiSwapRow: (p, idx, newCard, oldCard) => `${p.name} vaihtaa: paikka ${idx + 1}: ${lblColored(newCard)} (${newCard.v} p) sisään, ${lblColored(oldCard)} poistopakkaan.`,
-  aiDiscard: (p, c) => `${p.name} heittää ${lblColored(c)} poistopakkaan.`,
-  aiCannotForceSwap: (p, c, reason) => `${p.name} ei voi vaihtaa ${lblColored(c)} pakosta: ${reason}`,
-  humanDrawDiscard: (c, v) => `Nostit ${lblColored(c)} (${v} p) poistopakasta — pakollinen vaihto. Klikkaa kenttäkorttia.`,
-  humanDrawDeck: (c, v) => `Nostit ${lblColored(c)} (${v} p). Jos haluat sen kenttäkorteihisi, niin Vaihda se tai Heitä poistopakkaan.`,
-  humanSwappedEnd: (idx, c, v, oldName) => `Paikka ${idx + 1}: ${lblColored(c)} (${v} p) sisään, ${oldName} poistopakkaan.`,
-  humanSwappedContinue: (idx, c, v, oldName) => `Paikka ${idx + 1}: ${lblColored(c)} (${v} p) sisään, ${oldName} käteen.`,
-  humanDiscard: (c) => `Heitit ${lblColored(c)} poistopakkaan. Vuoro ohi.`,
-  gameOverScores: (scores) => `Tuntemattomat paljastetaan! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-  tieBreaker: 'Tasatilanne — noppafanaali!',
+  get gameStart() { return tr('games.kultakala.msg.gameStart'); },
+  get deckEmpty() { return tr('games.kultakala.msg.deckEmpty'); },
+  get yourTurn() { return tr('games.kultakala.msg.yourTurn'); },
+  aiThinking: p => tr('games.kultakala.msg.aiThinking', { name: p.name }),
+  aiDrawDiscard: p => tr('games.kultakala.msg.aiDrawDiscard', { name: p.name }),
+  aiDrawDeck: p => tr('games.kultakala.msg.aiDrawDeck', { name: p.name }),
+  aiSwapRow: (p, idx, newCard, oldCard) => tr('games.kultakala.msg.aiSwapRow', { name: p.name, idx: idx + 1, newCard: lblColored(newCard), nv: newCard.v, oldCard: lblColored(oldCard) }),
+  aiDiscard: (p, c) => tr('games.kultakala.msg.aiDiscard', { name: p.name, card: lblColored(c) }),
+  aiCannotForceSwap: (p, c, reason) => tr('games.kultakala.msg.aiCannotForceSwap', { name: p.name, card: lblColored(c), reason }),
+  humanDrawDiscard: (c, v) => tr('games.kultakala.msg.humanDrawDiscard', { card: lblColored(c), v }),
+  humanDrawDeck: (c, v) => tr('games.kultakala.msg.humanDrawDeck', { card: lblColored(c), v }),
+  humanSwappedEnd: (idx, c, v, oldName) => tr('games.kultakala.msg.humanSwappedEnd', { idx: idx + 1, card: lblColored(c), v, oldName }),
+  humanSwappedContinue: (idx, c, v, oldName) => tr('games.kultakala.msg.humanSwappedContinue', { idx: idx + 1, card: lblColored(c), v, oldName }),
+  humanDiscard: (c) => tr('games.kultakala.msg.humanDiscard', { card: lblColored(c) }),
+  gameOverScores: (scores) => tr('games.kultakala.msg.gameOverScores', { scores }),
+  get tieBreaker() { return tr('games.kultakala.msg.tieBreaker'); },
 };
 
 function initGame(nPlayers, pool, allBots = false) {
@@ -151,7 +151,10 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
+import { useT, tr } from '../shared/i18n.jsx';
+
 export default function Kultakala({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
+  const t = useT();
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
   const [soundOn, setSnd]     = useState(initSoundOn);
@@ -454,8 +457,8 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
           if (sndRef.current) SFX.swap();
 
           // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
-          const swapChain = swaps.map(s => `paikka ${s.pos}: ${lblColored(s.card)}`).join(' → ');
-          addLog(`${g2.players[idx].name} vaihtaa: ${swapChain}, ${lblColored(held)} poistopakkaan.`);
+          const swapChain = swaps.map(s => t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })).join(' → ');
+          addLog(t('games.kultakala.msg.aiSwapChain', { name: g2.players[idx].name, chain: swapChain, card: lblColored(held) }));
 
           tm(() => advance(newG, idx), 700);
         } else {
@@ -604,7 +607,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
         </div>
       </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
         <div style={{ display: 'flex', gap: 10 }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
@@ -612,10 +615,10 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{nP} bottia · {({beginner:'Oppipoika',normal:'Kisälli',hard:'Mestari'})[aiLevel]}</span>
+          {t('ui.start.botBattle')}
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
         </button>
       </div>
     </div>
@@ -626,7 +629,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
         {showDice && <DiceRoll players={tiedPlayers} onDone={() => setShowDice(false)} soundOn={soundOn} />}
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
         <div style={{ width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {scores.map((p, i) => (
             <div key={p.id} style={{ borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 0 ? C.gold + '55' : C.panelBorder}` }}>
@@ -645,11 +648,11 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
           {allBots ? (<>
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '12px 32px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi katselutila</button>
-            {pendingResult && <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>}
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '12px 32px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newWatch')}</button>
+            {pendingResult && <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>}
           </>) : (<>
-            <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
-            <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+            <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+            <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
           </>)}
         </div>
       </div>
@@ -817,11 +820,11 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
         <div style={{ minHeight: isMobile ? 32 : 44, display: 'flex', gap: isMobile ? 6 : 10, alignItems: 'center', marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
           {canSwapRow && swapIdx !== null && (
             <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
-              dangerouslySetInnerHTML={{ __html: `Vaihda ${lblColored(held)} paikan ${swapIdx + 1} korttiin` }} />
+              dangerouslySetInnerHTML={{ __html: t('games.kultakala.ui.swapTo', { card: lblColored(held), n: swapIdx + 1 }) }} />
           )}
           {canStop && (
             <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
-              dangerouslySetInnerHTML={{ __html: `Heitä ${lblColored(held)} poistopakkaan` }} />
+              dangerouslySetInnerHTML={{ __html: t('games.kultakala.ui.discard', { card: lblColored(held) }) }} />
           )}
         </div>
       )}
@@ -834,9 +837,9 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
 
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun pakka loppuu</span>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.kultakala.ui.goal')}</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
       {/* Katselutila: pending result overlay */}
@@ -844,7 +847,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, zIndex: 300 }}>
           <div style={{ background: '#1a0a2e', border: '2px solid rgba(123,47,190,0.7)', borderRadius: 20, padding: '32px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, maxWidth: 360 }}>
             <span style={{ fontSize: 32 }}>🐟</span>
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, color: C.botMode, letterSpacing: 4 }}>KATSELUTILA PÄÄTTYI</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, color: C.botMode, letterSpacing: 4 }}>{t('ui.result.watchEnded')}</span>
             {pendingResult.ranking.map((p, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', width: '100%' }}>
                 <span style={{ fontSize: 16 }}>{i === 0 ? '🏆' : i === pendingResult.ranking.length - 1 ? '🐟' : '🎯'}</span>
@@ -853,8 +856,8 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
               </div>
             ))}
             <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-              <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '11px 24px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi</button>
-              <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '11px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
+              <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '11px 24px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newShort')}</button>
+              <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '11px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>
             </div>
           </div>
         </div>

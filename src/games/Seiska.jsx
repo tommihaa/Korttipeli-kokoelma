@@ -183,7 +183,10 @@ function initSlots(count) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
+import { useT } from '../shared/i18n.jsx';
+
 export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+  const t = useT();
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
   const [nP, setNP] = useState(playerCount);
@@ -297,31 +300,31 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
   }
 
   const M = {
-    gameStart:    card => `Seiska alkaa! Päällimmäinen: ${card}.`,
-    turnOf:       name => `Vuorossa ${name}.`,
-    yourTurnSuit: cl => `Vuorossa Hero — ${cl}`,
-    aceDrawn:     (isH, name, card) => `${name} nostaa ässärangaistuksena ${card}.`,
-    forgotLappu:  (name, count) => `${name} unohti sanoa Lappu — +${count} korttia sakkona!`,
-    played:       (isH, name, cards) => `${name}: ${cards}`,
-    won:          (isH, name, rank) => rank === 1 ? `${name} vei voiton! 🏆🎉` : `${name} tuli ${rank}. sijalle.`,
-    sevenPlayed:  (isH, name, suit) => `${name} pelaa seiskan ja vaatii pelattavaksi maata: ${coloredSuit(suit)}`,
-    sevenOnSeven: (isH, name, suit) => `${name} pelaa seiskan seiskan päälle — vaadittu maa on päällimmäisen seiskan maa: ${coloredSuit(suit)}`,
-    chooseSuit:   'Valitse vaadittu maa seiskan jälkeen.',
-    lappu:        name => `${name}: Lappu!`,
-    aceBonus:     (isH, name, suit) => `Ässä! ${name} voi jatkaa ${coloredSuit(suit)}-maalla.`,
-    reshuffle:    'Pakka loppui. Lyöntipakka juuri sekoitettiin uudeksi Pakaksi.',
-    deckEmpty:    'Pakka tyhjä — vuoro päättyy.',
-    aiDraws:      (name, card) => card ? `${name} nostaa ${card}.` : `${name} nostaa.`,
-    aiDrawFail:   (name, card) => card ? `${name}: ${card} ei käy.` : `${name}: Nosto ei auta.`,
-    aiDrawsGone:  (name, card) => card ? `${name}: ${card} ei auta — vuoro päättyy.` : `${name}: Nostot eivät auttaneet.`,
-    humanDraws:   card => `Nostat ${card}.`,
-    drawnPlayable:(card, left) => `${card} on pelattavissa! Lyö se tai nosta uudelleen (${left} jäljellä).`,
-    draws3Used:   '3 nostoa käytetty — vuoro päättyy automaattisesti.',
-    drawnNoGood:  (card, left) => `${card} ei käy. Nosta uudelleen (${left} jäljellä).`,
-    wrongSuit:    'Valitse sama maa kuin ässä.',
-    badCards:     'Nämä kortit eivät käy.',
-    suitSelected: suit => `Valitsit maan: ${coloredSuit(suit)}`,
-    lappuSelf:    'Lappu! Sinulla on yksi kortti jäljellä.',
+    gameStart:    card => t('games.seiska.msg.gameStart', { card }),
+    turnOf:       name => t('games.seiska.msg.turnOf', { name }),
+    yourTurnSuit: cl => t('games.seiska.msg.yourTurnSuit', { cl }),
+    aceDrawn:     (isH, name, card) => t('games.seiska.msg.aceDrawn', { name, card }),
+    forgotLappu:  (name, count) => t('games.seiska.msg.forgotLappu', { name, count }),
+    played:       (isH, name, cards) => t('games.seiska.msg.played', { name, cards }),
+    won:          (isH, name, rank) => rank === 1 ? t('games.seiska.msg.winTop', { name }) : t('games.seiska.msg.winPlace', { name, rank }),
+    sevenPlayed:  (isH, name, suit) => t('games.seiska.msg.sevenPlayed', { name, suit: coloredSuit(suit) }),
+    sevenOnSeven: (isH, name, suit) => t('games.seiska.msg.sevenOnSeven', { name, suit: coloredSuit(suit) }),
+    chooseSuit:   t('games.seiska.msg.chooseSuit'),
+    lappu:        name => t('games.seiska.msg.lappu', { name }),
+    aceBonus:     (isH, name, suit) => t('games.seiska.msg.aceBonus', { name, suit: coloredSuit(suit) }),
+    reshuffle:    t('games.seiska.msg.reshuffle'),
+    deckEmpty:    t('games.seiska.msg.deckEmpty'),
+    aiDraws:      (name, card) => card ? t('games.seiska.msg.aiDraws', { name, card }) : t('games.seiska.msg.aiDrawsNoCard', { name }),
+    aiDrawFail:   (name, card) => card ? t('games.seiska.msg.aiDrawFail', { name, card }) : t('games.seiska.msg.aiDrawFailNoCard', { name }),
+    aiDrawsGone:  (name, card) => card ? t('games.seiska.msg.aiDrawsGone', { name, card }) : t('games.seiska.msg.aiDrawsGoneNoCard', { name }),
+    humanDraws:   card => t('games.seiska.msg.humanDraws', { card }),
+    drawnPlayable:(card, left) => t('games.seiska.msg.drawnPlayable', { card, left }),
+    draws3Used:   t('games.seiska.msg.draws3Used'),
+    drawnNoGood:  (card, left) => t('games.seiska.msg.drawnNoGood', { card, left }),
+    wrongSuit:    t('games.seiska.msg.wrongSuit'),
+    badCards:     t('games.seiska.msg.badCards'),
+    suitSelected: suit => t('games.seiska.msg.suitSelected', { suit: coloredSuit(suit) }),
+    lappuSelf:    t('games.seiska.msg.lappuSelf'),
   };
 
   function flashLastPlay(name, cards, isHuman = false) {
@@ -343,7 +346,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     if (g.players.every(p => !p.isHuman)) {
       aiDelayRef.current = 3000;
       setAiDelayMs(3000);
-      addLog('🔮 Katsomotila');
+      addLog(t('games.seiska.msg.spectatorMode'));
     }
     setScreen('game');
     setShuffling(true);
@@ -356,7 +359,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       if (multiHuman) {
         setHandoff({ name: firstPlayer.name });
       } else {
-        addLog(M.yourTurnSuit(`lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}.`));
+        addLog(M.yourTurnSuit(t('games.seiska.msg.clSimple', { suit: coloredSuit(g.discardTop.s), rank: g.discardTop.r })));
       }
     }
   }
@@ -429,8 +432,8 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
         setHandoff({ name: nextPlayer.name });
       } else {
         const cl = g3.reqSuit
-          ? `Vaadittu maa: ${coloredSuit(g3.reqSuit)} — lyö ${coloredSuit(g3.reqSuit)}-maa tai nosta.`
-          : `Lyö ${coloredSuit(g3.discardTop.s)}-maa tai ${g3.discardTop.r}-arvo tai nosta.`;
+          ? t('games.seiska.msg.clReqSuit', { suit: coloredSuit(g3.reqSuit) })
+          : t('games.seiska.msg.clNormal', { suit: coloredSuit(g3.discardTop.s), rank: g3.discardTop.r });
         addLog(M.yourTurnSuit(cl));
       }
     }
@@ -442,8 +445,8 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     const g = gRef.current;
     if (!g) return;
     const cl = g.reqSuit
-      ? `Vaadittu maa: ${coloredSuit(g.reqSuit)} — lyö ${coloredSuit(g.reqSuit)}-maa tai nosta.`
-      : `Lyö ${coloredSuit(g.discardTop.s)}-maa tai ${g.discardTop.r}-arvo tai nosta.`;
+      ? t('games.seiska.msg.clReqSuit', { suit: coloredSuit(g.reqSuit) })
+      : t('games.seiska.msg.clNormal', { suit: coloredSuit(g.discardTop.s), rank: g.discardTop.r });
     addLog(M.yourTurnSuit(cl));
   }
 
@@ -549,7 +552,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
           g2 = { ...g2, pendingLappu: playerIdx };
           advanceTurn(g2, playerIdx);
         } else {
-          addLog(`${p.name}: Lappu!`);
+          addLog(M.lappu(p.name));
           g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
           advanceTurn(g2, playerIdx);
         }
@@ -850,7 +853,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       </div>
 
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
         <div style={{ display: 'flex', gap: 10 }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
@@ -861,10 +864,10 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
         <button onClick={() => {
           const slots = Array(4).fill(null).map((_, i) => ({ name: i === 0 ? 'Hero' : '', isHuman: i === 0, active: i < nP }));
           startGame(slots);
-        }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{nP} bottia · {({beginner:'Oppipoika',normal:'Kisälli',hard:'Mestari'})[aiLevel]}</span>
+          {t('ui.start.botBattle')}
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
         </button>
       </div>
     </div>
@@ -875,7 +878,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     const { finished, players } = G;
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
         <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 8 }}>
           {finished.map((pid, i) => {
             const p = players[pid];
@@ -884,14 +887,14 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
               <div key={pid} style={{ borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: isFirst ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${isFirst ? C.gold + '55' : C.panelBorder}` }}>
                 <span style={{ fontSize: 20 }}>{isFirst ? '🏆' : isLast ? '💀' : '🎯'}</span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: isFirst ? C.gold : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>Sija {i + 1}</span>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>{t('ui.result.place', { n: i + 1 })}</span>
               </div>
             );
           })}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
-          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
         </div>
       </div>
     );
@@ -1031,7 +1034,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
         <div style={{ background: 'rgba(91,168,212,0.1)', border: `1px solid ${C.blue}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 30, color: SUIT_COLOR[G.aceBonus], lineHeight: 1 }}>{G.aceBonus}</span>
           <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.text, flex: 1 }}>Ässä! Voit jatkaa {G.aceBonus}-maalla tai lopettaa vuoron.</span>
-          <button onClick={humanSkipAceBonus} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 8, padding: '7px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Lopeta</button>
+          <button onClick={humanSkipAceBonus} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 8, padding: '7px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.action.end')}</button>
         </div>
       )}
 
@@ -1157,7 +1160,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
               <>
                 <button onClick={humanPlay}
                   style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 20px', color: '#0d2118', fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                  Lyö ({selected.map(lbl).join(', ')})
+                  {t('ui.action.play')} ({selected.map(lbl).join(', ')})
                 </button>
                 <button onClick={() => setSel([])} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
               </>
@@ -1165,7 +1168,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
             {!selected.length && canDraw && (
               <button onClick={humanDraw}
                 style={{ background: 'rgba(91,168,212,0.12)', border: `1px solid ${C.blue}55`, borderRadius: 10, padding: '10px 18px', color: C.blue, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                Nosta ({3 - G.drawsThisTurn} jäljellä)
+                {t('ui.action.draw')} ({3 - G.drawsThisTurn} {t('ui.action.left')})
               </button>
             )}
           </>

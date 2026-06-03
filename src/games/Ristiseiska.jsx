@@ -55,10 +55,10 @@ function hasAnyPlay(hand, rows) {
 
 // Kuvaa pelatun kortin vaikutus (kiusanteko-mekaniikka: 5 vaatii 8:n, 8 vaatii 6:n).
 function playEffect(v) {
-  if (v === 7) return 'avaa maan';
-  if (v === 6) return 'alapino ei avaudu vielä';
-  if (v === 8) return 'avaa maan ala- ja yläpinot';
-  return v <= 5 ? 'pelaa alapinoon' : 'pelaa yläpinoon';
+  if (v === 7) return tr('games.ristiseiska.effect.open');
+  if (v === 6) return tr('games.ristiseiska.effect.lowerNotYet');
+  if (v === 8) return tr('games.ristiseiska.effect.openBoth');
+  return v <= 5 ? tr('games.ristiseiska.effect.toLower') : tr('games.ristiseiska.effect.toUpper');
 }
 
 function mkDeck() {
@@ -195,7 +195,10 @@ function aiWorstCard(hand, rows) {
 }
 
 // ── Komponentti ─────────────────────────────────────────────────
+import { useT, tr } from '../shared/i18n.jsx';
+
 export default function Ristiseiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+  const t = useT();
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
   const [rules,    setRules]   = useState(DEFAULT_RULES);
@@ -258,23 +261,21 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   function setGS(g) { setG(g); gRef.current = g; }
 
   const M = {
-    gameStart:  (starter, card) => `Ristiseiska alkaa! ${starter} aloittaa ${card}:llä.`,
-    yourTurn:   canPlay => canPlay ? 'Vuorossa Hero.' : 'Vuorossa Hero. Mikään korttisi ei käy, joten Passaa.',
-    turnOf:     name => `Vuorossa ${name}.`,
-    played:     (isH, name, card, effect) => `${name}: ${card} (${effect})`,
-    won:        (isH, name, rank) => rank === 1 ? `${name} vei voiton! 🏆🎉` : `${name} tuli ${rank}. sijalle.`,
-    aiBonus:    (name, suit, pile) => `${name}: Kaatoi ${suit} ${pile} — voi jatkaa!`,
-    humanBonus: (suit, pile) => `Hero kaatoi ${suit} ${pile}. Saa jatkaa, jos voi ja haluaa.`,
-    passFirst:  (isH, name) => `${name} passaa (1. kierros — ei rangaistusta).`,
-    passGiveMe: (isH, name) => `${name} passaa — valitse kortti annettavaksi.`,
-    passGive:   (isH, name, giverH, giverName, card) =>
-      `${name} passaa — ${giverName} antaa ${card}.`,
-    passGiveRandom: (isH, name, giverH, giverName, card) =>
-      `${name} passaa ja vetää pelaajan ${giverName} viuhkasta korttipantikseen satunnaisen ${card}.`,
-    passOnly:   (isH, name) => `${name} passaa.`,
-    badCard:    'Tämä kortti ei käy tähän — valitse toinen.',
-    cantPass:   'Sinulla on pelattavissa oleva kortti — passata ei voi.',
-    humanGives: (card, receiver) => `Hero antaa ${card} pelaajalle ${receiver}.`,
+    gameStart:  (starter, card) => t('games.ristiseiska.msg.gameStart', { starter, card }),
+    yourTurn:   canPlay => canPlay ? t('games.ristiseiska.msg.yourTurn') : t('games.ristiseiska.msg.yourTurnNoPlay'),
+    turnOf:     name => t('games.ristiseiska.msg.turnOf', { name }),
+    played:     (isH, name, card, effect) => t('games.ristiseiska.msg.played', { name, card, effect }),
+    won:        (isH, name, rank) => rank === 1 ? t('games.ristiseiska.msg.winTop', { name }) : t('games.ristiseiska.msg.winPlace', { name, rank }),
+    aiBonus:    (name, suit, pile) => t('games.ristiseiska.msg.aiBonus', { name, suit, pile }),
+    humanBonus: (suit, pile) => t('games.ristiseiska.msg.humanBonus', { suit, pile }),
+    passFirst:  (isH, name) => t('games.ristiseiska.msg.passFirst', { name }),
+    passGiveMe: (isH, name) => t('games.ristiseiska.msg.passGiveMe', { name }),
+    passGive:   (isH, name, giverH, giverName, card) => t('games.ristiseiska.msg.passGive', { name, giverName, card }),
+    passGiveRandom: (isH, name, giverH, giverName, card) => t('games.ristiseiska.msg.passGiveRandom', { name, giverName, card }),
+    passOnly:   (isH, name) => t('games.ristiseiska.msg.passOnly', { name }),
+    badCard:    t('games.ristiseiska.msg.badCard'),
+    cantPass:   t('games.ristiseiska.msg.cantPass'),
+    humanGives: (card, receiver) => t('games.ristiseiska.msg.humanGives', { card, receiver }),
   };
 
   function startGame(forcedCount, allBotsMode = false) {
@@ -371,8 +372,8 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
     const g2 = { ...g, players, rows, finished, bonusTurn: gaveBonus ? playerIdx : null };
     if (gaveBonus) {
       setGS(g2);
-      const suitGen = { '♠': 'Padan', '♥': 'Hertan', '♦': 'Ruudun', '♣': 'Ristin' }[card.s];
-      const pileName = v === 1 ? 'ala-pinon' : 'ylä-pinon';
+      const suitGen = t('games.ristiseiska.suitGen.' + card.s);
+      const pileName = t(v === 1 ? 'games.ristiseiska.pile.lower' : 'games.ristiseiska.pile.upper');
       if (!p.isHuman) {
         addLog(M.aiBonus(p.name, suitGen, pileName));
         aiTmr.current = tm(() => runAI(g2), 900);
@@ -563,7 +564,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
         </div>
       </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
         <div style={{ display: 'flex', gap: 10 }}>
           {[3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
@@ -572,9 +573,9 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: isMobile ? 300 : 360 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5 }}>PANTTIKORTTI</span>
+          <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5 }}>{t('games.ristiseiska.opts.pantti')}</span>
           <div style={{ display: 'flex', gap: 8 }}>
-            {[['Valittu', false], ['Satunnainen', true]].map(([lab, val]) => {
+            {[[t('games.ristiseiska.opts.chosen'), false], [t('games.ristiseiska.opts.random'), true]].map(([lab, val]) => {
               const active = rules.randomPantti === val;
               return (
                 <button key={lab} onClick={() => setRules(r => ({ ...r, randomPantti: val }))}
@@ -587,15 +588,15 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
         </div>
         <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, opacity: 0.75, lineHeight: 1.4 }}>
           {rules.randomPantti
-            ? 'Kun passaat, edellinen pelaaja antaa sinulle arvotun kortin kädestään.'
-            : 'Kun passaat, edellinen pelaaja antaa sinulle itse valitsemansa kortin (vakio).'}
+            ? t('games.ristiseiska.opts.hintRandom')
+            : t('games.ristiseiska.opts.hintChosen')}
         </span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{nP} bottia · {({beginner:'Oppipoika',normal:'Kisälli',hard:'Mestari'})[aiLevel]}</span>
+          {t('ui.start.botBattle')}
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
         </button>
       </div>
     </div>
@@ -606,7 +607,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
     const { finished, players } = G;
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
         <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 8 }}>
           {finished.map((pid, i) => {
             const p = players[pid];
@@ -615,14 +616,14 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
               <div key={pid} style={{ borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: isFirst ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${isFirst ? C.gold + '55' : C.panelBorder}` }}>
                 <span style={{ fontSize: 20 }}>{isFirst ? '🏆' : isLast ? '💀' : '🎯'}</span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: isFirst ? C.gold : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>Sija {i + 1}</span>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>{t('ui.result.place', { n: i + 1 })}</span>
               </div>
             );
           })}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
-          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
         </div>
       </div>
     );
@@ -951,16 +952,16 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
           <>
             <button onClick={humanPlay} disabled={!selCard}
               style={{ background: selCard ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selCard ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 20px', color: selCard ? '#0d2118' : C.dim, fontSize: 13, cursor: selCard ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              Lyö {selCard ? lbl(selCard) : ''}
+              {t('ui.action.play')} {selCard ? lbl(selCard) : ''}
             </button>
             {!isBonusTurn && (
               <button onClick={humanPass} disabled={iCanPlay}
                 style={{ background: iCanPass ? 'rgba(224,92,59,0.1)' : 'rgba(255,255,255,0.02)', border: `1px solid ${iCanPass ? C.red + '55' : C.panelBorder}`, borderRadius: 10, padding: '10px 18px', color: iCanPass ? C.red : C.dim, fontSize: 13, cursor: iCanPass ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-                Passaa
+                {t('ui.action.pass')}
               </button>
             )}
             {isBonusTurn && (
-              <button onClick={humanEndBonusTurn} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 10, padding: '10px 16px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Lopeta</button>
+              <button onClick={humanEndBonusTurn} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 10, padding: '10px 16px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('games.ristiseiska.ui.dontContinue')}</button>
             )}
             {selCard && (
               <button onClick={() => setSel(null)} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
@@ -971,7 +972,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
           <>
             <button onClick={humanGiveCard} disabled={!selCard}
               style={{ background: selCard ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selCard ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 20px', color: selCard ? '#0d2118' : C.dim, fontSize: 13, cursor: selCard ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              Anna {selCard ? lbl(selCard) : 'kortti'}
+              {t('ui.action.give')} {selCard ? lbl(selCard) : t('ui.action.card')}
             </button>
             {selCard && (
               <button onClick={() => setSel(null)} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>

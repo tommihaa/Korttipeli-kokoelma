@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, shuffle, aiNoise, newDeck } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, aiNoise, newDeck, korttia } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -30,7 +30,10 @@ function deal(nPlayers) {
   return piles;
 }
 
+import { useT } from '../shared/i18n.jsx';
+
 export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+  const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
   const [soundOn, setSnd]   = useState(initSoundOn);
@@ -112,26 +115,23 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   const pName = i => allBotsRef.current ? (allBotNamesRef.current[i] ?? `Bot${i + 1}`) : (i === 0 ? 'Hero' : aiNames[i - 1]);
 
   const M = {
-    gameStart: 'Peli alkaa! Jokainen kääntää vuorollaan pinonsa päällimmäisen kortin.',
-    winChallengeNoRival: (winner, target) => `${winner} voitti kasan — ${target}:lla ei kortteja!`,
-    respondedSpecialNoRival: (player, card) => `${player} vastasi ${card}! Ei enää vastustajia — voittaa kasan!`,
-    respondedSpecial: (player, card, target, count, cardStr) => `${player} siirsi haasteen kortilla ${card}! Pelaajalla ${target} on ${count} ${cardStr} aikaa vastata haasteeseen.`,
-    failedResponse: (player, winner, count, cardStr) => `${player} epäonnistui. ${winner} voitti ${count} ${cardStr}.`,
-    noResponse: (player, left, cardStr) => `${player} — ${left} ${cardStr} jäljellä vastata haasteeseen.`,
-    challengedNoRival: (player, card) => `${player} haastaa ${card}! Ei enää vastustajia — voittaa kasan!`,
-    challenged: (player, card, target, count, cardStr) => `${player} haastaa kortilla ${card} pelaajan ${target}, jolla ${count} ${cardStr} aikaa vastata haasteeseen.`,
-    flipped: (player, card) => `${player} kääntää ${card}.`,
-    match: (rank) => `TÄSMÄYS! ${rank} — kuka läpsää ensin?`,
-    wrongSlap: (player) => `${player} läpsäsi väärin — päällimmäinen kortti lisätään kasaan.`,
-    correctSlap: (player, ms, count) => {
-      const msStr = ms ? ` (${ms} ms)` : '';
-      return `${player} läpsäsi nopeiten${msStr} — voitti ${count} korttia!`;
-    },
-    heroTooSlow: 'Hero oli hieman hitaampi — ei rangaistusta.',
-    heroSlapNoMatch: 'Hero läpsäsi — mutta ei täsmäystä! Menettää päällimmäisen kortin.',
-    gameOver: (playerName) => playerName ? `${playerName} vei voiton! 🏆🎉` : 'Peli päättyi!',
-    duelStart: (a, b) => `⚔️ Kaksintaistelu! ${a} vs ${b} — pinot puolitetaan 30 s välein.`,
-    duelHalved: (counts) => `✂️ Pinot puolitettu! ${counts}`,
+    gameStart: t('games.lapsy.msg.gameStart'),
+    winChallengeNoRival: (winner, target) => t('games.lapsy.msg.winChallengeNoRival', { winner, target }),
+    respondedSpecialNoRival: (player, card) => t('games.lapsy.msg.respondedSpecialNoRival', { player, card }),
+    respondedSpecial: (player, card, target, count) => t('games.lapsy.msg.respondedSpecial', { player, card, target, cards: korttia(count) }),
+    failedResponse: (player, winner, count) => t('games.lapsy.msg.failedResponse', { player, winner, cards: korttia(count) }),
+    noResponse: (player, left) => t('games.lapsy.msg.noResponse', { player, cards: korttia(left) }),
+    challengedNoRival: (player, card) => t('games.lapsy.msg.challengedNoRival', { player, card }),
+    challenged: (player, card, target, count) => t('games.lapsy.msg.challenged', { player, card, target, cards: korttia(count) }),
+    flipped: (player, card) => t('games.lapsy.msg.flipped', { player, card }),
+    match: (rank) => t('games.lapsy.msg.match', { rank }),
+    wrongSlap: (player) => t('games.lapsy.msg.wrongSlap', { player }),
+    correctSlap: (player, ms, count) => t('games.lapsy.msg.correctSlap', { player, ms: ms ? ` (${ms} ms)` : '', count }),
+    heroTooSlow: t('games.lapsy.msg.heroTooSlow'),
+    heroSlapNoMatch: t('games.lapsy.msg.heroSlapNoMatch'),
+    gameOver: (playerName) => playerName ? t('games.lapsy.msg.gameOverWin', { name: playerName }) : t('games.lapsy.msg.gameOverEnd'),
+    duelStart: (a, b) => t('games.lapsy.msg.duelStart', { a, b }),
+    duelHalved: (counts) => t('games.lapsy.msg.duelHalved', { counts }),
   };
 
   function updateDuelTimer(currentPiles) {
@@ -287,14 +287,12 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
         const newCh = { byIdx: playerIdx, targetIdx: target2, cardsLeft: SPEC[card.r], specRank: card.r };
         setCh(newCh); chRef.current = newCh;
         const count = SPEC[card.r];
-        const cardStr = count === 1 ? 'kortti' : 'korttia';
-        addLog(M.respondedSpecial(pName(playerIdx), lblColored(card), pName(target2), count, cardStr));
+        addLog(M.respondedSpecial(pName(playerIdx), lblColored(card), pName(target2), count));
         nextTurn(playerIdx, newPiles, newCenter, newCh);
       } else {
         const left = ch.cardsLeft - 1;
         if (left <= 0) {
-          const cardStr = newCenter.length === 1 ? 'kortti' : 'korttia';
-          addLog(M.failedResponse(pName(playerIdx), pName(ch.byIdx), newCenter.length, cardStr));
+          addLog(M.failedResponse(pName(playerIdx), pName(ch.byIdx), newCenter.length));
           setCh(null); chRef.current = null;
           setFR({ card, winner: ch.byIdx, n: newCenter.length });
           clearTimeout(failTmr.current);
@@ -302,8 +300,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
         } else {
           const newCh = { ...ch, cardsLeft: left };
           setCh(newCh); chRef.current = newCh;
-          const cardStr = left === 1 ? 'kortti' : 'korttia';
-          addLog(M.noResponse(pName(playerIdx), left, cardStr));
+          addLog(M.noResponse(pName(playerIdx), left));
           nextTurn(playerIdx, newPiles, newCenter, newCh);
         }
       }
@@ -321,8 +318,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
       const newCh = { byIdx: playerIdx, targetIdx: target, cardsLeft: SPEC[card.r], specRank: card.r };
       setCh(newCh); chRef.current = newCh;
       const count2 = SPEC[card.r];
-      const cardStr2 = count2 === 1 ? 'kortti' : 'korttia';
-      addLog(M.challenged(pName(playerIdx), lblColored(card), pName(target), count2, cardStr2));
+      addLog(M.challenged(pName(playerIdx), lblColored(card), pName(target), count2));
       nextTurn(playerIdx, newPiles, newCenter, newCh);
       return;
     }
@@ -513,7 +509,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
         </div>
       </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
         <div style={{ display: 'flex', gap: 10 }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.red : C.panelBorder}`, background: nP === n ? C.red + '18' : 'transparent', color: nP === n ? C.red : C.dim, transition: 'all 0.2s' }}>{n}</button>
@@ -521,10 +517,10 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{nP} bottia · {({beginner:'Oppipoika',normal:'Kisälli',hard:'Mestari'})[aiLevel]}</span>
+          {t('ui.start.botBattle')}
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
         </button>
       </div>
     </div>
@@ -541,7 +537,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
 
     return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+      <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
         {ranked.map((playerIdx, rank) => {
           const isWinner = rank === 0;
@@ -551,16 +547,16 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
               <span style={{ fontSize: 20, minWidth: 28 }}>{medals[rank] || '💀'}</span>
               <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: isWinner ? C.gold : C.dim }}>{pName(playerIdx)}</span>
               {isWinner
-                ? <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, fontWeight: 700 }}>VOITTO — {p.length} korttia</span>
-                : <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>sija {rank + 1}</span>
+                ? <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, fontWeight: 700 }}>{t('ui.result.winCards', { n: p.length })}</span>
+                : <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>{t('ui.result.place', { n: rank + 1 })}</span>
               }
             </div>
           );
         })}
       </div>
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.red},#8a1500)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: C.text, fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
-        <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.red}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.red},#8a1500)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: C.text, fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+        <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.red}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
       </div>
     </div>
   );
@@ -737,14 +733,14 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
             </div>
             <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, marginTop: 5 }}>{humanPile.length} {humanPile.length === 1 ? 'kortti' : 'korttia'}</div>
           </div>
-          <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>Käännä →</button>
+          <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>{t('games.lapsy.ui.flip')}</button>
         </div>
       )}
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> voita kaikki kortit — viimeinen pelissä voittaa</span>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.lapsy.ui.goal')}</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
       {allBots && phase !== 'gameover' && (
@@ -769,7 +765,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <button onClick={startBotBattle} style={{ padding: '12px 28px', borderRadius: 12, background: 'rgba(123,47,190,0.3)', border: '1px solid rgba(123,47,190,0.5)', color: '#f0e6ff', fontSize: 14, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🔮 Uusi katselutila</button>
-            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
+            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>
           </div>
         </div>
       )}

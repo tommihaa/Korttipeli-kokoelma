@@ -35,30 +35,30 @@ function initGame(n, pool, allBots = false) {
 }
 
 const M = {
-  peekStart: 'Kortit on jaettu! Kurkkaa kaksi omaa kenttäkorttia — muista ne, sillä ne pysyvät piilossa koko pelin.',
-  peekOne:   'Hyvä! Kurkkaa vielä toinen kortti.',
-  peekDone:  'Pelaajat katsoivat kaksi korttiaan. Peli voi alkaa.',
-  yourTurn:  'Vuorossa Hero. Nosta kortti pakasta tai poistopakasta. Voit koputtaa ennen nostoa, jos uskot pisteidesi olevan pienimmät.',
-  drawn:     c => `Nostit ${lblColored(c)} (${c.v} p). Vaihda se johonkin pöytäkorteistasi tai heitä poistopakkaan.`,
-  drawnD:    c => `Nostit ${lblColored(c)} (${c.v} p) poistopakasta. Vaihda pöytäkorttiin vai heitä takaisin?`,
-  swapped:   c => `Vaihdoit — ${lblColored(c)} siirtyi poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
-  discarded: c => `Heitit ${lblColored(c)} poistopakkaan. Löytyykö keneltäkään samanvahvuista?`,
-  reactQ:    c => `${lblColored(c)} on poistopakassa — onko sinulla samanvahvuinen pöytäkortti? Klikkaa sitä nopeasti!`,
-  reactWin:  () => 'Muistit oikein, pöytäkorttimääräsi vähenee.',
-  reactWrong: 'Väärä kortti! Menetät sen poistopakkaan ja nostat kaksi rangaistuskorttia (max 4 pöytäkorttia).',
-  reactEnd:  'Reaktioaika umpeutui — kukaan ei reagoinut.',
-  jackMsg:   'Jätkä! Saat kurkata yhtä omaa pöytäkorttia — valitse kumpi.',
-  queenMsg:  'Kuningatar! Valitse ensin oma korttisi jonka haluat vaihtaa...',
-  queenMsg2: 'Hyvä. Valitse nyt kenen tahansa pöytäkortti — ne vaihtavat paikkaa.',
-  kingMsg:   'Kuningas! Kurkkaa ensin yksi omistasi — valitse se.',
-  knocked:   n => `${n} koputtaa! Peli päättyy kunkin pelattua vuoronsa.`,
-  gameOver:  'Peli päättyi! Pienin pistesumma voittaa.',
-  aiTurn:    n => `Vuorossa ${n}.`,
-  aiSwapped: (n, c) => `${n} vaihtoi pöytäkortin — ${lblColored(c)} poistopakkaan.`,
-  aiDiscard: (n, c) => `${n} heitti ${lblColored(c)} poistopakkaan.`,
-  aiKnock:   n => `${n} koputtaa — luottaa käteensä!`,
-  aiReact:   (n, c) => `${n} reagoi lyömällä ${lblColored(c)} — kortti poistuu!`,
-  aiWrongReact: n => `${n} reagoi — väärä kortti! Rangaistus.`,
+  get peekStart() { return tr('games.koputus.msg.peekStart'); },
+  get peekOne()   { return tr('games.koputus.msg.peekOne'); },
+  get peekDone()  { return tr('games.koputus.msg.peekDone'); },
+  get yourTurn()  { return tr('games.koputus.msg.yourTurn'); },
+  drawn:     c => tr('games.koputus.msg.drawn', { card: lblColored(c), v: c.v }),
+  drawnD:    c => tr('games.koputus.msg.drawnD', { card: lblColored(c), v: c.v }),
+  swapped:   c => tr('games.koputus.msg.swapped', { card: lblColored(c) }),
+  discarded: c => tr('games.koputus.msg.discarded', { card: lblColored(c) }),
+  reactQ:    c => tr('games.koputus.msg.reactQ', { card: lblColored(c) }),
+  reactWin:  () => tr('games.koputus.msg.reactWin'),
+  get reactWrong() { return tr('games.koputus.msg.reactWrong'); },
+  get reactEnd()   { return tr('games.koputus.msg.reactEnd'); },
+  get jackMsg()    { return tr('games.koputus.msg.jackMsg'); },
+  get queenMsg()   { return tr('games.koputus.msg.queenMsg'); },
+  get queenMsg2()  { return tr('games.koputus.msg.queenMsg2'); },
+  get kingMsg()    { return tr('games.koputus.msg.kingMsg'); },
+  knocked:   n => tr('games.koputus.msg.knocked', { name: n }),
+  get gameOver()   { return tr('games.koputus.msg.gameOver'); },
+  aiTurn:    n => tr('games.koputus.msg.aiTurn', { name: n }),
+  aiSwapped: (n, c) => tr('games.koputus.msg.aiSwapped', { name: n, card: lblColored(c) }),
+  aiDiscard: (n, c) => tr('games.koputus.msg.aiDiscard', { name: n, card: lblColored(c) }),
+  aiKnock:   n => tr('games.koputus.msg.aiKnock', { name: n }),
+  aiReact:   (n, c) => tr('games.koputus.msg.aiReact', { name: n, card: lblColored(c) }),
+  aiWrongReact: n => tr('games.koputus.msg.aiWrongReact', { name: n }),
 };
 
 function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true, intentSlot }) {
@@ -98,7 +98,10 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   );
 }
 
+import { useT, tr } from '../shared/i18n.jsx';
+
 export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot }) {
+  const t = useT();
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
   const [G, setG]               = useState(null);
@@ -195,7 +198,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       const si = 1 % cnt;
       setPhase('draw'); setCurIdx(si); curRef.current = si;
       setPD(2); setTP(new Set());
-      setMsg('🤖 Bottien taistelu alkaa!');
+      setMsg(t('games.koputus.msg.botBattleStart'));
       setScreen('game');
       setShuffling(true);
       schedAI(() => runAI(si, gRef.current), 2000);
@@ -332,13 +335,13 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     setTP(new Set([idx])); tm(() => setTP(new Set()), 2500);
     const players = g.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p);
     const newG = { ...g, players }; setG(newG); gRef.current = newG;
-    setMsg(`Kurkkasit ${lbl(card)} (${card.v} p) — muista se!`);
+    setMsg(t('games.koputus.msg.peekedCard', { card: lbl(card), v: card.v }));
     tm(() => openReaction(newG, drawn, 0), 2800);
   }
   function handleQOwn(idx) {
     stopReact.current = true; clearInterval(reactInt.current);
     setSS({ type: 'Q', ownIdx: idx }); setPhase('spec_q_tgt');
-    setMsg(`Valitsit oman korttisi (paikka ${idx + 1}). Valitse nyt kenen tahansa pöytäkortti jonka kanssa vaihdat — tai paina Ohita.`);
+    setMsg(t('games.koputus.msg.queenPickOther', { idx: idx + 1 }));
   }
   function handleQTarget(pIdx, cIdx) {
     const g = gRef.current, own = specState.ownIdx;
@@ -349,7 +352,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       return p;
     });
     const newG = { ...g, players }; setG(newG); gRef.current = newG; setSS(null);
-    setMsg('Vaihto tehty — kukaan ei nähnyt kortteja!');
+    setMsg(t('games.koputus.msg.swapDoneHidden'));
     stopReact.current = false;
     tm(() => openReaction(newG, drawn, 0), 800);
   }
@@ -359,7 +362,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     setTP(new Set([idx]));
     const players = g.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p);
     const newG = { ...g, players }; setG(newG); gRef.current = newG;
-    setMsg(`Kurkkasit ${lbl(card)} (${card.v} p). Klikkaa vastustajan korttia kurkataksesi sen — tai paina Ohita.`);
+    setMsg(t('games.koputus.msg.kingPeeked', { card: lbl(card), v: card.v }));
     setSS({ type: 'K', ownIdx: idx }); setPhase('spec_k_decide');
   }
   function handleKPeekTarget(pIdx, cIdx) {
@@ -367,7 +370,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     if (!tgtCard) return;
     setSS(prev => ({ ...prev, tgtPIdx: pIdx, tgtCIdx: cIdx, tgtCard }));
     setPhase('spec_k_confirm');
-    setMsg(`Vastustajan kortti on ${lbl(tgtCard)} (${tgtCard.v} p). Vaihdetaanko?`);
+    setMsg(t('games.koputus.msg.kingRivalCard', { card: lbl(tgtCard), v: tgtCard.v }));
   }
   function handleKSwap() {
     const g = gRef.current, own = specState.ownIdx;
@@ -380,12 +383,12 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     });
     const newG = { ...g, players }; setG(newG); gRef.current = newG;
     setTP(new Set()); setSS(null); stopReact.current = false;
-    setMsg('Vaihto tehty!');
+    setMsg(t('games.koputus.msg.swapDone'));
     tm(() => openReaction(newG, drawn, 0), 1200);
   }
   function handleKSkip() {
     setTP(new Set()); setSS(null); stopReact.current = false;
-    setMsg('Ohitettu — vuoro jatkuu.');
+    setMsg(t('games.koputus.msg.skipped'));
     tm(() => openReaction(gRef.current, drawn, 0), 800);
   }
 
@@ -492,7 +495,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       const newG = { ...g, players }; setG(newG); gRef.current = newG;
       if (isLastCard) {
         if (soundOn) SFX.lastCardWin();
-        setMsg('Löit viimeisen korttisi — peli päättyy sinulle! Erinomainen!');
+        setMsg(t('games.koputus.msg.lastCardPlayed'));
         tm(() => endGame(newG), 2200);
       } else {
         if (soundOn) SFX.reactWin();
@@ -538,7 +541,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
     const thinkMs = allBotsRef.current ? Math.min(aiDelayRef.current * 0.25, 500) : 1600;
     const reactMs = allBotsRef.current ? 400 : 1200;
-    tm(() => { setMsg(`${p.name} nostaa kortin ${drawFromDiscard ? 'poistopakasta' : 'nostopakasta'}...`); if (sndRef.current) SFX.flip(); }, thinkMs);
+    tm(() => { setMsg(t(drawFromDiscard ? 'games.koputus.msg.aiDrawingDiscard' : 'games.koputus.msg.aiDrawingDeck', { name: p.name })); if (sndRef.current) SFX.flip(); }, thinkMs);
     schedAI(() => {
       const gNow = gRef.current; if (!gNow) return;
       const pNow = gNow.players[playerIdx];
@@ -610,7 +613,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         </div>
       </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
         <div style={{ display: 'flex', gap: 10 }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 52, height: 52, borderRadius: 10, cursor: 'pointer', fontSize: 19, fontWeight: 700, fontFamily: 'Georgia,serif', transition: 'all 0.2s', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim }}>{n}</button>
@@ -618,10 +621,10 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita peli →</button>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.beginGame')}</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{nP} bottia · {({beginner:'Oppipoika',normal:'Kisälli',hard:'Mestari'})[aiLevel]}</span>
+          {t('ui.start.botBattle')}
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
         </button>
       </div>
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
@@ -632,7 +635,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     const sorted = [...G.players].sort((a, b) => pScore(a) - pScore(b));
     return (
       <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
         <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {sorted.map((p, i) => (
             <div key={p.id} style={{ borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 0 ? C.gold + '55' : '#1a3a22'}` }}>
@@ -649,11 +652,11 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
           {allBots ? (
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi katselutila</button>
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newWatch')}</button>
           ) : (
             <>
-              <Btn label="Uusi peli →" onClick={() => startGame()} color={C.gold} />
-              <Btn label="← Vaihda pelaajia" onClick={() => setScreen('select')} color={C.gold} outline />
+              <Btn label={t('ui.result.newGame')} onClick={() => startGame()} color={C.gold} />
+              <Btn label={t('ui.start.changePlayers')} onClick={() => setScreen('select')} color={C.gold} outline />
             </>
           )}
         </div>
@@ -755,7 +758,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
           <div onClick={isHuman && phase === 'draw' && G.deck.length ? humanDrawDeck : undefined}
-            {...(isHuman && phase === 'draw' && G.deck.length ? { role: 'button', tabIndex: 0, 'aria-label': 'Nosta pakasta', onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDrawDeck(); } } } : {})}
+            {...(isHuman && phase === 'draw' && G.deck.length ? { role: 'button', tabIndex: 0, 'aria-label': t('ui.shared.drawDeckAria'), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDrawDeck(); } } } : {})}
             style={{ cursor: isHuman && phase === 'draw' && G.deck.length ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {G.deck.length === 0
               ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.3 }} />
@@ -782,7 +785,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
           <div onClick={isHuman && phase === 'draw' && discardTop ? humanDrawDiscard : undefined}
-            {...(isHuman && phase === 'draw' && discardTop ? { role: 'button', tabIndex: 0, 'aria-label': 'Nosta poistopakasta', onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDrawDiscard(); } } } : {})}
+            {...(isHuman && phase === 'draw' && discardTop ? { role: 'button', tabIndex: 0, 'aria-label': t('ui.shared.drawDiscardAria'), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDrawDiscard(); } } } : {})}
             style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {!discardTop
               ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
@@ -826,18 +829,18 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       )}
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 36 : 44, alignItems: 'center' }}>
-        {isHuman && phase === 'drawn' && <Btn label="Heitä poistopakkaan ›" onClick={humanDiscard} color={C.gold} />}
-        {isHuman && phase === 'draw' && knockedBy === null && <Btn label="🤜 Koputan!" onClick={humanKnock} color={C.red} outline />}
-        {!allBots && phase === 'spec_q_tgt' && specState && <Btn label="Ohita — en vaihda" onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
-        {!allBots && phase === 'spec_k_decide' && specState && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
-        {!allBots && phase === 'spec_k_confirm' && <Btn label="✓ Vaihda tähän" onClick={handleKSwap} color={C.gold} />}
-        {!allBots && phase === 'spec_k_confirm' && <Btn label="Ohita — en vaihda" onClick={handleKSkip} color={C.dim} outline />}
+        {isHuman && phase === 'drawn' && <Btn label={t('games.koputus.ui.discard')} onClick={humanDiscard} color={C.gold} />}
+        {isHuman && phase === 'draw' && knockedBy === null && <Btn label={t('games.koputus.ui.knock')} onClick={humanKnock} color={C.red} outline />}
+        {!allBots && phase === 'spec_q_tgt' && specState && <Btn label={t('games.koputus.ui.skipSwap')} onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
+        {!allBots && phase === 'spec_k_decide' && specState && <Btn label={t('games.koputus.ui.skipSwap')} onClick={handleKSkip} color={C.dim} outline />}
+        {!allBots && phase === 'spec_k_confirm' && <Btn label={t('games.koputus.ui.swapHere')} onClick={handleKSwap} color={C.gold} />}
+        {!allBots && phase === 'spec_k_confirm' && <Btn label={t('games.koputus.ui.skipSwap')} onClick={handleKSkip} color={C.dim} outline />}
       </div>
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pienimmät pisteet kun koputus tai pakka loppuu</span>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.koputus.ui.goal')}</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
+        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
       <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>
@@ -860,7 +863,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       {/* PendingResult overlay — allBots-tilan loppunäyttö */}
       {pendingResult && screen === 'game' && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(0,0,0,0.88)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
-          <div style={{ fontSize: 26, color: C.botMode, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>🤖 TAISTELU PÄÄTTYI</div>
+          <div style={{ fontSize: 26, color: C.botMode, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>{t('ui.result.battleEnded')}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
             {pendingResult.ranking.map((p, i) => (
               <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? 'rgba(123,47,190,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? 'rgba(192,132,252,0.5)' : 'rgba(255,255,255,0.08)'}` }}>
@@ -871,8 +874,8 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
             ))}
           </div>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginTop: 8 }}>
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi taistelu</button>
-            <button onClick={() => { setPendingResult(null); setScreen('select'); }} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12, padding: '12px 20px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Valikko</button>
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newBattle')}</button>
+            <button onClick={() => { setPendingResult(null); setScreen('select'); }} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12, padding: '12px 20px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.menu.back')}</button>
           </div>
         </div>
       )}

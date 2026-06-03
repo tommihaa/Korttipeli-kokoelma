@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { BACKS } from './BACKS.jsx';
+import { useT } from './i18n.jsx';
 
 const SPREAD = [
   { x: -150, y:  -35, r: -45 },
@@ -23,6 +24,7 @@ const DEAL_CORNERS = [
 ];
 
 export default function ShuffleOverlay({ visible, onDone, nPlayers = 4 }) {
+  const t = useT();
   const [phase, setPhase] = useState(0);
   const timers = useRef([]);
 
@@ -98,7 +100,7 @@ export default function ShuffleOverlay({ visible, onDone, nPlayers = 4 }) {
         opacity: phase === 1 ? 0.85 : 0,
         transition: 'opacity 0.35s ease',
       }}>
-        SEKOITETAAN…
+        {t('ui.shared.shuffling')}
       </p>
     </div>
   );

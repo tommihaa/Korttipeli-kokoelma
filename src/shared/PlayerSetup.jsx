@@ -1,6 +1,8 @@
 import { C } from './colors.js';
+import { useT } from './i18n.jsx';
 
 export default function PlayerSetup({ slots, onChange, playerNames = [], maxHumans = 1 }) {
+  const t = useT();
   function toggle(i, field) {
     const next = slots.map((s, idx) => idx === i ? { ...s, [field]: !s[field] } : s);
     onChange(next);
@@ -44,7 +46,7 @@ export default function PlayerSetup({ slots, onChange, playerNames = [], maxHuma
               if (slot.active && activeCount <= 2) return;
               toggle(i, 'active');
             }}
-            title={slot.active ? 'Poista pelistä' : 'Lisää peliin'}
+            title={slot.active ? t('ui.setup.remove') : t('ui.setup.add')}
             style={{
               width: 32, height: 32, borderRadius: 8, flexShrink: 0,
               background: slot.active ? C.gold : 'rgba(255,255,255,0.06)',
@@ -65,7 +67,7 @@ export default function PlayerSetup({ slots, onChange, playerNames = [], maxHuma
               flexShrink: 0,
               pointerEvents: slot.active ? 'auto' : 'none',
             }}>
-              {['Ihminen', 'Botti'].map((label, j) => {
+              {[t('ui.setup.human'), t('ui.setup.bot')].map((label, j) => {
                 const isSelected = j === 0 ? slot.isHuman : !slot.isHuman;
                 return (
                   <button
@@ -93,7 +95,7 @@ export default function PlayerSetup({ slots, onChange, playerNames = [], maxHuma
               background: 'rgba(201,168,76,0.08)',
               color: 'rgba(201,168,76,0.5)', fontSize: 13, fontFamily: 'sans-serif',
             }}>
-              Botti
+              {t('ui.setup.bot')}
             </div>
           )}
 
@@ -103,7 +105,7 @@ export default function PlayerSetup({ slots, onChange, playerNames = [], maxHuma
               type="text"
               value={slot.name}
               maxLength={16}
-              placeholder={`Pelaaja ${i + 1}`}
+              placeholder={t('ui.setup.playerN', { n: i + 1 })}
               onChange={e => setName(i, e.target.value)}
               disabled={!slot.active}
               style={{
@@ -122,7 +124,7 @@ export default function PlayerSetup({ slots, onChange, playerNames = [], maxHuma
               fontSize: 13, fontFamily: 'sans-serif',
               fontStyle: 'italic',
             }}>
-              {slot.active ? (slot.previewName || `Botti ${i + 1}`) : '—'}
+              {slot.active ? (slot.previewName || t('ui.setup.botN', { n: i + 1 })) : '—'}
             </div>
           )}
         </div>

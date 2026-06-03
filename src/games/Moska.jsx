@@ -77,7 +77,7 @@ function initGame(nP, pool, allBots = false) {
       const t2 = own.hand.find(c => c.r === '2' && c.s === ts);
       own.hand = [...own.hand.filter(c => c.id !== t2.id), { ...trumpCard }];
       tc = { ...t2 };
-      exchangeMsg = `💫 ${own.name}: 2${ts} ↔ ${lblColored(trumpCard)} (valttivaihto)`;
+      exchangeMsg = tr('games.moska.msg.trumpExchange', { name: own.name, ts, card: lblColored(trumpCard) });
     }
   }
 
@@ -182,7 +182,10 @@ function aiPickAddCard(addable, hand, ts) {
 }
 
 // ── Komponentti ───────────────────────────────────────────────
+import { useT, tr } from '../shared/i18n.jsx';
+
 export default function Moska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+  const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
@@ -256,7 +259,6 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
   }, [G?.deck?.length, G?.trumpCard]);
 
   // Kielioppiapuri: Hero = 2. persoona, AI = nimi + 3. persoona
-  const act = (p, v2, v3) => `${p.name} ${v3}`;
 
   function addLog(m) {
     setMsg_(m);
@@ -275,35 +277,35 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
   function setGS(g) { setG(g); gRef.current = g; }
 
   const M = {
-    gameStart:      (trump, att, def) => `Moska alkaa! Valttimaa: ${trump}. ${att}, ${def}.`,
-    defenderWon:    (player, table) => `${player} onnistuneesti! Pöydällä: ${table}`,
-    defenderTook:   (player, count, table) => `${player} ${count}. Pöydällä oli: ${table}`,
-    playerDrew:     (player, count) => `${player} ${count}.`,
-    won:            player => `${player} voiton! 🏆🎉`,
-    out:            player => `${player} poistui pelistä. 👏`,
-    lost:           player => `${player} hävisi.`,
-    nextRound:      (att, def) => `${att} → ${def}.`,
-    attack:         (player, cards) => `${player}: ${cards}.`,
-    beat:           (defName, defCard, atkCard, status) => `${defName}: ${defCard} kaataa ${atkCard}. ${status}`,
-    cannotPass:     'Ei voi siirtää enempää.',
-    pass:           (def, cards, nextDef) => `${def} (${cards}) → ${nextDef}.`,
-    add:            (player, cards) => `${player}: ${cards}.`,
+    gameStart:      (trump, att, def) => t('games.moska.msg.gameStart', { trump, att, def }),
+    defenderWon:    (name, table) => t('games.moska.msg.defenderWon', { name, table }),
+    defenderTook:   (name, count, table) => t('games.moska.msg.defenderTook', { name, count, table }),
+    playerDrew:     (name, count) => t('games.moska.msg.playerDrew', { name, count }),
+    won:            name => t('games.moska.msg.won', { name }),
+    out:            name => t('games.moska.msg.out', { name }),
+    lost:           name => t('games.moska.msg.lost', { name }),
+    nextRound:      (att, def) => t('games.moska.msg.nextRound', { att, def }),
+    attack:         (name, cards) => t('games.moska.msg.attack', { name, cards }),
+    beat:           (defName, defCard, atkCard, status) => t('games.moska.msg.beat', { defName, defCard, atkCard, status }),
+    cannotPass:     t('games.moska.msg.cannotPass'),
+    pass:           (name, cards, nextName) => t('games.moska.msg.pass', { name, cards, nextName }),
+    add:            (name, cards) => t('games.moska.msg.add', { name, cards }),
     defendHuman:    (unbeaten, cards, beaten) => unbeaten > 0
-      ? `On vuorosi puolustautua. Pöydällä: ${cards} (${beaten}🛡️/${unbeaten}⚔️).`
-      : 'On vuorosi puolustautua.',
+      ? t('games.moska.msg.defendHumanCards', { cards, beaten, unbeaten })
+      : t('games.moska.msg.defendHuman'),
     defendAI:       (name, unbeaten, cards) => unbeaten > 0
-      ? `${name} puolustaa... (pöydällä: ${cards})`
-      : `${name} puolustaa...`,
-    addPhase:       cards => `═══ SIVUSTALYÖNTIVAIHE ═══ Pöydällä: ${cards}`,
-    canAdd:         (name, cards) => `${name}: Voit lyödä sivusta: ${cards} — tai Ohita.`,
-    aiCanAdd:       (name, cards) => `${name} voi lyödä sivusta: ${cards}`,
-    aiSkips:        name => `${name} ohittaa.`,
-    badSameRank:    'Hyökkäykseen vain saman vahvuisia kortteja.',
-    tooManyCards:   'Kerralla enintään 6 korttia.',
-    tooManyVsDef:   count => `Liikaa — puolustajalla vain ${count}.`,
-    cantBeat:       (card, target) => `${card} ei kaada ${target}.`,
-    noPassAfterBeat:'Ei voi siirtää — olet jo kaanut kortteja.',
-    badPassCard:    card => `${card} ei sovi siirtoon.`,
+      ? t('games.moska.msg.defendAICards', { name, cards })
+      : t('games.moska.msg.defendAI', { name }),
+    addPhase:       cards => t('games.moska.msg.addPhase', { cards }),
+    canAdd:         (name, cards) => t('games.moska.msg.canAdd', { name, cards }),
+    aiCanAdd:       (name, cards) => t('games.moska.msg.aiCanAdd', { name, cards }),
+    aiSkips:        name => t('games.moska.msg.aiSkips', { name }),
+    badSameRank:    t('games.moska.msg.badSameRank'),
+    tooManyCards:   t('games.moska.msg.tooManyCards'),
+    tooManyVsDef:   count => t('games.moska.msg.tooManyVsDef', { count }),
+    cantBeat:       (card, target) => t('games.moska.msg.cantBeat', { card, target }),
+    noPassAfterBeat:t('games.moska.msg.noPassAfterBeat'),
+    badPassCard:    card => t('games.moska.msg.badPassCard', { card }),
   };
 
 
@@ -328,10 +330,8 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     setAwaitingPlayerContinue(false); setPendingDraw(null);
     setGS(g);
     if (g.exchangeMsg) addLog(g.exchangeMsg);
-    const attMsg = act(g.players[g.primaryAtk], 'hyökkäät', 'hyökkää');
-    const defMsg = act(g.players[g.defender], 'puolustat', 'puolustaa');
     const trumpSpan = `<span style="color:${SUIT_COLOR[g.ts]}">${g.ts}</span>`;
-    addLog(M.gameStart(trumpSpan, attMsg, defMsg));
+    addLog(M.gameStart(trumpSpan, g.players[g.primaryAtk].name, g.players[g.defender].name));
     setScreen('game');
     setShuffling(true);
     if (!g.players[g.primaryAtk].isHuman) {
@@ -369,12 +369,12 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
         removedRef.current.add(`${t.atk.r}${t.atk.s}`);
         if (t.def) removedRef.current.add(`${t.def.r}${t.def.s}`);
       });
-      addLog(M.defenderWon(act(defPlayer, 'puolustit', 'puolusti'), tableDesc));
+      addLog(M.defenderWon(defPlayer.name, tableDesc));
       if (sndRef.current) SFX.capture();
     } else {
       const taken = g.table.flatMap(t => [t.atk, t.def].filter(Boolean));
       players[g.defender] = { ...players[g.defender], hand: [...players[g.defender].hand, ...taken] };
-      addLog(M.defenderTook(act(defPlayer, 'otit', 'otti'), kortin(taken.length), tableDesc));
+      addLog(M.defenderTook(defPlayer.name, kortin(taken.length), tableDesc));
       if (sndRef.current) SFX.leave();
     }
 
@@ -396,7 +396,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
           const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
           if (drawn.length) {
             players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-            addLog(M.playerDrew(act(players[idx], 'nostit', 'nosti'), kortin(drawn.length)));
+            addLog(M.playerDrew(players[idx].name, kortin(drawn.length)));
           }
           deck = d2; tc = t2;
         }
@@ -413,7 +413,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
         rankings = [...rankings, i];
         // Eri viesti riippuen sijoituksesta
         if (rank === 1) {
-          addLog(M.won(act(p, 'Veit', 'Vei')));
+          addLog(M.won(p.name));
         } else {
           addLog(M.out(p.name));
         }
@@ -485,7 +485,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       setAwaitingPlayerContinue(true);
     } else {
       // Ihminen ei ollut osallisena - päivitä pelitilanteen ja jatka
-      addLog(M.nextRound(act(players[nextAtk], 'hyökkäät', 'hyökkää'), act(players[nextDef], 'puolustat', 'puolustaa')));
+      addLog(M.nextRound(players[nextAtk].name, players[nextDef].name));
       setGS(g2);
       if (!players[nextAtk].isHuman) {
         // AI hyökkää seuraavaksi
@@ -500,7 +500,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = cards.map(c => ({ atk: c, def: null, atkBy: atkIdx }));
     const players = g.players.map((pl, i) => i === atkIdx ? { ...pl, hand: newHand } : pl);
-    addLog(M.attack(act(p, 'hyökkäsit', 'hyökkäsi'), cards.map(lblColored).join(', ')));
+    addLog(M.attack(p.name, cards.map(lblColored).join(', ')));
     flashLastPlay(p.name, cards, p.isHuman);
     if (sndRef.current) SFX.leave();
     const ids = new Set(cards.map(c => c.id));
@@ -521,7 +521,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     // Laske pöydän tila: kaadetut/kaatamatta jääneet
     const unbeaten = newTable.filter(t => !t.def).length;
     const beaten = newTable.filter(t => t.def).length;
-    const statusMsg = unbeaten > 0 ? `(${beaten}🛡️/${unbeaten}⚔️ pöydällä)` : '(kaikki kaadettu)';
+    const statusMsg = unbeaten > 0 ? t('games.moska.msg.statusOnTable', { beaten, unbeaten }) : t('games.moska.msg.statusAllBeaten');
 
     addLog(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
     flashLastPlay(def.name, defCard, def.isHuman);
@@ -543,7 +543,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     const newHand = def.hand.filter(c => !passCards.find(pc => pc.id === c.id));
     const newTable = [...g.table, ...passCards.map(c => ({ atk: c, def: null, atkBy: g.defender }))];
     const players = g.players.map((p, i) => i === g.defender ? { ...p, hand: newHand } : p);
-    addLog(M.pass(act(def, 'siirrit', 'siirsi'), passCards.map(lblColored).join(','), act(g.players[nextDef], 'puolustat', 'puolustaa')));
+    addLog(M.pass(def.name, passCards.map(lblColored).join(','), g.players[nextDef].name));
     const g2 = {
       ...g, players, table: newTable, defender: nextDef,
       passChain: [...g.passChain, g.defender],
@@ -559,7 +559,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = [...g.table, ...cards.map(c => ({ atk: c, def: null, atkBy: playerIdx }))];
     const players = g.players.map((pl, i) => i === playerIdx ? { ...pl, hand: newHand } : pl);
-    addLog(M.add(act(p, 'löit sivusta', 'löi sivusta'), cards.map(lblColored).join(', ')));
+    addLog(M.add(p.name, cards.map(lblColored).join(', ')));
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
     tm(() => setJustPlaced(new Set()), 1800);
@@ -893,7 +893,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
           const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
           if (drawn.length) {
             players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-            addLog(M.playerDrew(act(players[idx], 'nostit', 'nosti'), kortin(drawn.length)));
+            addLog(M.playerDrew(players[idx].name, kortin(drawn.length)));
           }
           deck = d2; tc = t2;
         }
@@ -906,7 +906,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
 
       // Näytä seuraavan kierroksen viesti
       const { nextDef } = pendingDraw;
-      addLog(M.nextRound(act(players[nextAtk], 'hyökkäät', 'hyökkää'), act(players[nextDef], 'puolustat', 'puolustaa')));
+      addLog(M.nextRound(players[nextAtk].name, players[nextDef].name));
 
       // Aloita seuraava kierros
       if (!g2Updated.players[g2Updated.primaryAtk].isHuman) {
@@ -939,7 +939,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
         </div>
       </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>PELAAJIA</p>
+        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
         <div style={{ display: 'flex', gap: 10 }}>
           {[2, 3, 4].map(n => (
             <button key={n} onClick={() => setNP(n)} style={{ width: 44, height: 44, borderRadius: 10, cursor: 'pointer', fontSize: 18, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
@@ -947,10 +947,10 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>Aloita →</button>
+        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
         <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          🔮 Bottien Taistelu
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{nP} bottia · {({beginner:'Oppipoika',normal:'Kisälli',hard:'Mestari'})[aiLevel]}</span>
+          {t('ui.start.botBattle')}
+          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
         </button>
       </div>
     </div>
@@ -960,23 +960,23 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     const sorted = [...G.players].sort((a, b) => (a.rank || 99) - (b.rank || 99));
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>PELI PÄÄTTYI</h1>
+        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
         <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 8 }}>
           {sorted.map((p, i) => (
             <div key={p.id} style={{ borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: i === sorted.length - 1 ? 'rgba(224,92,59,0.1)' : i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === sorted.length - 1 ? '#e05c3b55' : i === 0 ? C.gold + '55' : C.panelBorder}` }}>
               <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : i === sorted.length - 1 ? '🐟' : '🎯'}</span>
               <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : i === sorted.length - 1 ? C.red : C.text }}>{p.name}</span>
-              <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: i === sorted.length - 1 ? C.red : C.dim }}>{i === sorted.length - 1 ? 'Moska' : `Sija ${p.rank}`}</span>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: i === sorted.length - 1 ? C.red : C.dim }}>{i === sorted.length - 1 ? 'Moska' : t('ui.result.place', { n: p.rank })}</span>
             </div>
           ))}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
           {allBots ? (<>
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '12px 32px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi katselutila</button>
-            {pendingResult && <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>}
+            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '12px 32px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newWatch')}</button>
+            {pendingResult && <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>}
           </>) : (<>
-            <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Uusi peli →</button>
-            <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>← Vaihda pelaajia</button>
+            <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+            <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
           </>)}
         </div>
       </div>
@@ -1020,7 +1020,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       {/* Yläpalkki: valtti */}
       <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 10px', borderRadius: 20, border: `1px solid ${C.trump}55`, background: `${C.trump}0d` }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>VALTTI</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>{t('ui.shared.trump')}</span>
           <span style={{ fontSize: 18, color: SUIT_COLOR[G.ts], fontWeight: 700 }}>{G.ts}</span>
           {G.trumpCard && <Card card={G.trumpCard} small backStyle={BACKS[cardBack]} />}
         </div>
@@ -1132,12 +1132,12 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       {/* Ohje */}
       {myTurn && (
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, marginBottom: 8, fontStyle: 'italic' }}>
-          {isMyAtk && 'Valitse saman-arvoiset hyökkäyskortit ja klikkaa Hyökkää.'}
+          {isMyAtk && t('games.moska.ui.hintAttack')}
           {isMyDef && !selDefTarget && !selPass.length && (canPassNow
-            ? 'Valitse ensin pöytäkortti jonka haluat kaataa — tai klikkaa saman-arvoista korttiasi siirtääksesi hyökkäyksen eteenpäin.'
-            : 'Valitse ensin pöytäkortti, jonka haluat kaataa, ja seuraavaksi käsikorttisi.')}
-          {isMyDef && selDefTarget && <span dangerouslySetInnerHTML={{ __html: `${lblColored(selDefTarget.atk)} kohteena — valitse nyt käsikortti, jolla haluat kaataa.` }} />}
-          {isMyDef && selPass.length > 0 && `Siirto: ${selPass.map(lbl).join(',')} — klikkaa Siirrä tai peruuta.`}
+            ? t('games.moska.ui.hintDefendCanPass')
+            : t('games.moska.ui.hintDefend'))}
+          {isMyDef && selDefTarget && <span dangerouslySetInnerHTML={{ __html: t('games.moska.ui.hintDefendTarget', { card: lblColored(selDefTarget.atk) }) }} />}
+          {isMyDef && selPass.length > 0 && t('games.moska.ui.hintPass', { cards: selPass.map(lbl).join(',') })}
         </div>
       )}
 
@@ -1158,7 +1158,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${myTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: myTurn ? C.gold : C.dim, marginBottom: 8 }}>
           {allBots ? '🤖' : '👤'} {human.name} {G.primaryAtk === 0 ? '⚔' : G.defender === 0 ? '🛡' : ''}
-          {human.rank !== null ? <span style={{ color: C.gold, marginLeft: 6 }}>Sija {human.rank}</span> : ` — ${korttia(human.hand.length)} kädessä`}
+          {human.rank !== null ? <span style={{ color: C.gold, marginLeft: 6 }}>{t('ui.result.place', { n: human.rank })}</span> : ` — ${t('ui.action.cards', { n: human.hand.length })} ${t('ui.shared.inHand')}`}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {
@@ -1204,17 +1204,17 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, zIndex: 300 }}>
           <div style={{ background: '#1a0a2e', border: '2px solid rgba(123,47,190,0.7)', borderRadius: 20, padding: '32px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, maxWidth: 360 }}>
             <span style={{ fontSize: 32 }}>⚔️</span>
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, color: C.botMode, letterSpacing: 4 }}>KATSELUTILA PÄÄTTYI</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, color: C.botMode, letterSpacing: 4 }}>{t('ui.result.watchEnded')}</span>
             {pendingResult.ranking.map((p, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', width: '100%' }}>
                 <span style={{ fontSize: 16 }}>{i === 0 ? '🏆' : i === pendingResult.ranking.length - 1 ? '🐟' : '🎯'}</span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: i === 0 ? C.botMode : C.botModeDim, flex: 1 }}>{p.name}</span>
-                <span style={{ fontFamily: 'monospace', fontSize: 12, color: i === 0 ? C.botMode : C.botModeDimmer }}>{p.place}. sija</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 12, color: i === 0 ? C.botMode : C.botModeDimmer }}>{t('ui.result.place', { n: p.place })}</span>
               </div>
             ))}
             <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-              <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '11px 24px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🤖 Uusi</button>
-              <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '11px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
+              <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '11px 24px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newShort')}</button>
+              <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '11px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>
             </div>
           </div>
         </div>
@@ -1226,7 +1226,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
           <>
             <button onClick={humanConfirmAttack} disabled={!selAtk.length}
               style={{ background: selAtk.length ? `linear-gradient(135deg,${C.red},#b83020)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selAtk.length ? C.red : C.panelBorder}`, borderRadius: 10, padding: '10px 20px', color: selAtk.length ? '#fff' : C.dim, fontSize: 13, cursor: selAtk.length ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              Hyökkää {selAtk.length > 0 ? `(${selAtk.map(lbl).join(',')})` : ''}
+              {t('games.moska.ui.attack')} {selAtk.length > 0 ? `(${selAtk.map(lbl).join(',')})` : ''}
             </button>
             {selAtk.length > 0 && (
               <button onClick={() => setSelAtk([])} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
@@ -1238,13 +1238,13 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
             {selPass.length > 0 && (
               <button onClick={humanConfirmPass}
                 style={{ background: `rgba(201,168,76,0.12)`, border: `1px solid ${C.gold}55`, borderRadius: 10, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                Siirrä ({selPass.map(lbl).join(',')}) →
+                {t('games.moska.ui.passOn')} ({selPass.map(lbl).join(',')}) →
               </button>
             )}
             {!awaitingPlayerContinue && (
               <button onClick={humanTake}
                 style={{ background: 'rgba(224,92,59,0.1)', border: `1px solid #e05c3b55`, borderRadius: 10, padding: '10px 18px', color: C.red, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                Ota kortit ({G.table.length})
+                {t('games.moska.ui.takeCards', { n: G.table.length })}
               </button>
             )}
             {(selDefTarget || selPass.length > 0) && (
@@ -1257,11 +1257,11 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
           <>
             <button onClick={humanConfirmAdd} disabled={!selAdd.length}
               style={{ background: selAdd.length ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selAdd.length ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 18px', color: selAdd.length ? '#0d2118' : C.dim, fontSize: 13, cursor: selAdd.length ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              Lyö sivusta {selAdd.length > 0 ? `(${selAdd.map(lbl).join(',')})` : ''}
+              {t('games.moska.ui.addSide')} {selAdd.length > 0 ? `(${selAdd.map(lbl).join(',')})` : ''}
             </button>
             <button onClick={humanSkipAdd}
               style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-              Ohita
+              {t('ui.action.skip')}
             </button>
           </>
         )}
@@ -1277,12 +1277,12 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
 
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> pääse korteistasi eroon — jälkimmäinen on Moska</span>
+        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.moska.ui.goal')}</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} Ääni
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} Avoimet kortit
+          {debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}
         </button>
       </div>
 
