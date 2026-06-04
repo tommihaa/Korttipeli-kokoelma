@@ -63,7 +63,7 @@ export const fi = {
       todo: 'Tulossa 🗺',
       todoItems: [
         'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)',
-        'Kieliversiointi (FI/EN)',
+        'Kieliversiointi (12 kieltä)',
         'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)',
       ],
     },

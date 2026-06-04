@@ -160,6 +160,12 @@ const CHANGELOG = [
   {
     date: '4.6.2026',
     items: [
+      'Valikon pelinimet kielikohtaisesti! Jokaisella kielellä pelin nimen alla näkyy nyt sen oman korttipelikulttuurin vakiintunut vastine — esim. Moska on saksaksi "Durak", ruotsiksi näkyy Paskahousu → "Skitgubbe", Seiska → "Mau-Mau", Kasino → "Cassino". Kun vakiintunutta nimeä ei ole, tilalla on lyhyt kuvaus kyseisellä kielellä. Suomeksi pelit pysyvät ilman alaotsikkoa.',
+    ],
+  },
+  {
+    date: '4.6.2026',
+    items: [
       'Kymmenen uutta kieltä! Sovellus toimii nyt suomen ja englannin lisäksi myös ruotsiksi, norjaksi, tanskaksi, islanniksi, saksaksi, ranskaksi, espanjaksi, italiaksi, ukrainaksi ja venäjäksi — kaikkiaan 12 kielellä. Kieli tunnistetaan selaimesta, ja sen voi vaihtaa Info-paneelin lippuvalikosta. Valikot, pelien kuvaukset ja säännöt, sanasto sekä kaikki pelinaikaiset viestit ja vihjeet on käännetty.',
       'Pelien omat nimet (Moska, Seiska, Kasino…) pysyvät tuttuina kaikilla kielillä — kunkin kielen vakiintuneet vastineet hiotaan myöhemmin.',
     ],
@@ -347,7 +353,7 @@ const CHANGELOG = [
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
   { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'deferred' },
-  { label: 'Kieliversiointi (FI/EN)', status: 'done' },
+  { label: 'Kieliversiointi (12 kieltä)', status: 'done' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
 ];
 
@@ -571,7 +577,7 @@ function GameBtn({ g, stats, onSelect }) {
           <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 }}>{g.name}</div>
-            {lang === 'en' && (
+            {lang !== 'fi' && (
               <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', fontStyle: 'italic', marginBottom: 3 }}>
                 {renderSelitys(t(`games.${g.id}.altName`))}
               </div>

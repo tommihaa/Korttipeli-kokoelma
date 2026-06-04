@@ -60,7 +60,7 @@ export const en = {
       todo: 'Coming soon 🗺',
       todoItems: [
         'Two-colour card deck alongside the four-colour one (selectable in Settings)',
-        'Localization (FI/EN)',
+        'Localization (12 languages)',
         'Replay: chess symbols on move annotations (! !! ? ?? !? ?!)',
       ],
     },
@@ -161,7 +161,7 @@ export const en = {
   games: {
     kultakala: {
       desc: 'A memory game — if you look, you swap',
-      altName: 'a Finnish Go Fish variant',
+      altName: "Six-Card Golf",
       msg: {
         gameStart: 'Cards dealt. Everyone has one unknown card and five field cards. Start by clicking the draw pile. On later turns you can also draw from the discard pile.',
         deckEmpty: 'Draw pile empty — revealing the unknowns!',
@@ -197,7 +197,7 @@ export const en = {
     },
     lapsy: {
       desc: 'A reaction game',
-      altName: 'Slapjack variant',
+      altName: "Slapjack",
       msg: {
         gameStart: 'Game on! Each player in turn flips the top card of their pile.',
         winChallengeNoRival: '{winner} won the pile — {target} has no cards!',
@@ -236,7 +236,7 @@ export const en = {
     },
     ristiseiska: {
       desc: 'Mischief, penalty cards and patience',
-      altName: 'a Finnish Sevens variant',
+      altName: "Sevens",
       msg: {
         gameStart: 'Ristiseiska begins! {starter} starts with {card}.',
         yourTurn: "Hero's turn.",
@@ -292,7 +292,7 @@ export const en = {
     },
     seiska: {
       desc: 'A UNO-style race to empty your hand',
-      altName: 'a Finnish Crazy Eights variant',
+      altName: "Crazy Eights",
       msg: {
         gameStart: 'Seiska begins! Top card: {card}.',
         turnOf: "{name}'s turn.",
@@ -351,7 +351,7 @@ export const en = {
     },
     kasino: {
       desc: 'Capture the whole table',
-      altName: 'Classic Cassino',
+      altName: "Cassino",
       msg: {
         gameStart: "Kasino begins! Cards on the table. Hero's turn. {hint}",
         newDeal: 'New deal — {left} left in the deck.',
@@ -449,7 +449,7 @@ export const en = {
     },
     koputus: {
       desc: 'A memory game with surprise twists',
-      altName: 'Golf-style memory game',
+      altName: "Golf (Polish Poker)",
       msg: {
         peekStart: 'Cards dealt! Peek at two of your own field cards — remember them, as they stay hidden the whole game.',
         peekOne: 'Good! Peek at one more card.',
@@ -504,7 +504,7 @@ export const en = {
     },
     maija: {
       desc: 'Partial beat — defensive win. Full beat — you attack.',
-      altName: 'Finnish beating game with Q♠',
+      altName: "a Finnish Old Maid variant",
       msg: {
         gameStart: 'Game on! Trump suit: {trump}. {attacker} attacks, {defender} defends.',
         finishedWin: '{name} took the win! 🏆🎉',
@@ -548,7 +548,7 @@ export const en = {
     },
     paskahousu: {
       desc: 'Almost the classic Shithead with six cards. 2♦ 2♥ value 2 · 2♠ 2♣ are hard',
-      altName: 'Finnish Palace variant',
+      altName: "Shithead",
       msg: {
         gameStart: 'Paskahousu begins! {name} starts (lowest card).{hint}',
         gameStartHint: ' You can play several of the same rank at once.',
@@ -609,7 +609,7 @@ export const en = {
     },
     moska: {
       desc: 'All-out card war: attack, pass, defend — and remember to strike from the side.',
-      altName: 'a Finnish Durak variant',
+      altName: "a Finnish Durak variant",
       msg: {
         gameStart: 'Moska begins! Trump suit: {trump}. {att} attacks, {def} defends.',
         trumpExchange: '💫 {name}: 2{ts} ↔ {card} (trump swap)',

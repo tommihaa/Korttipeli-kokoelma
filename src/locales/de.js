@@ -60,7 +60,7 @@ export const de = {
       todo: 'Demnächst 🗺',
       todoItems: [
         'Zweifarbiges Kartenspiel neben dem vierfarbigen (in den Einstellungen wählbar)',
-        'Sprachversionen (FI/EN)',
+        'Sprachversionen (12 Sprachen)',
         'Replay: Schachsymbole bei Zugnotationen (! !! ? ?? !? ?!)',
       ],
     },
@@ -160,6 +160,7 @@ export const de = {
 
   games: {
     kultakala: {
+      altName: "Sechs-Karten-Golf",
       desc: 'Ein Memory-Spiel — schaust du, tauschst du',
       msg: {
         gameStart: 'Die Karten sind verteilt. Jeder hat eine unbekannte Karte und fünf Feldkarten. Beginne, indem du auf den Nachziehstapel klickst. In späteren Zügen kannst du auch vom Ablagestapel ziehen.',
@@ -195,6 +196,7 @@ export const de = {
       ],
     },
     lapsy: {
+      altName: "Slapjack",
       desc: 'Ein Reaktionsspiel',
       msg: {
         gameStart: 'Das Spiel beginnt! Jeder dreht der Reihe nach die oberste Karte seines Stapels um.',
@@ -233,6 +235,7 @@ export const de = {
       ],
     },
     ristiseiska: {
+      altName: "Domino (Siebener)",
       desc: 'Schabernack, Strafkarten und Geduld',
       msg: {
         gameStart: 'Ristiseiska beginnt! {starter} beginnt mit {card}.',
@@ -288,6 +291,7 @@ export const de = {
       ],
     },
     seiska: {
+      altName: "Mau-Mau",
       desc: 'Ein UNO-artiges Wettrennen, die Hand zu leeren',
       msg: {
         gameStart: 'Seiska beginnt! Oberste Karte: {card}.',
@@ -346,6 +350,7 @@ export const de = {
       ],
     },
     kasino: {
+      altName: "Cassino",
       desc: 'Erobere den ganzen Tisch',
       msg: {
         gameStart: 'Kasino beginnt! Karten auf dem Tisch. Hero ist am Zug. {hint}',
@@ -443,6 +448,7 @@ export const de = {
       },
     },
     koputus: {
+      altName: "Polnischer Poker",
       desc: 'Ein Memory-Spiel mit überraschenden Wendungen',
       msg: {
         peekStart: 'Die Karten sind verteilt! Schau dir zwei deiner eigenen Feldkarten an — merke sie dir, denn sie bleiben das ganze Spiel verdeckt.',
@@ -497,6 +503,7 @@ export const de = {
       ],
     },
     maija: {
+      altName: "Schwarzer Peter (finnische Variante)",
       desc: 'Teilschlag — Abwehrsieg. Vollschlag — du greifst an.',
       msg: {
         gameStart: 'Das Spiel beginnt! Trumpffarbe: {trump}. {attacker} greift an, {defender} verteidigt.',
@@ -540,6 +547,7 @@ export const de = {
       ],
     },
     paskahousu: {
+      altName: "Arschloch",
       desc: 'Fast das klassische Arschloch mit sechs Karten. 2♦ 2♥ Wert 2 · 2♠ 2♣ hart',
       msg: {
         gameStart: 'Paskahousu beginnt! {name} beginnt (niedrigste Karte).{hint}',
@@ -600,6 +608,7 @@ export const de = {
       ],
     },
     moska: {
+      altName: "Durak",
       desc: 'Totaler Kartenkrieg: angreifen, weitergeben, verteidigen — und vergiss nicht, von der Seite zu schlagen.',
       msg: {
         gameStart: 'Moska beginnt! Trumpffarbe: {trump}. {att} greift an, {def} verteidigt.',

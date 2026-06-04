@@ -60,7 +60,7 @@ export const es = {
       todo: 'Próximamente 🗺',
       todoItems: [
         'Baraja de dos colores junto a la de cuatro colores (seleccionable en Ajustes)',
-        'Versiones de idioma (FI/EN)',
+        'Versiones de idioma (12 idiomas)',
         'Repetición: símbolos de ajedrez en las anotaciones de jugada (! !! ? ?? !? ?!)',
       ],
     },
@@ -160,6 +160,7 @@ export const es = {
 
   games: {
     kultakala: {
+      altName: "Golf de seis cartas",
       desc: 'Un juego de memoria: si miras, cambias',
       msg: {
         gameStart: 'Cartas repartidas. Cada uno tiene una carta desconocida y cinco cartas de campo. Empieza haciendo clic en el mazo. En turnos posteriores también puedes robar del descarte.',
@@ -195,6 +196,7 @@ export const es = {
       ],
     },
     lapsy: {
+      altName: "Slapjack",
       desc: 'Un juego de reacción',
       msg: {
         gameStart: '¡Empieza la partida! Cada jugador, por turnos, voltea la carta superior de su montón.',
@@ -233,6 +235,7 @@ export const es = {
       ],
     },
     ristiseiska: {
+      altName: "Dominó (cartas)",
       desc: 'Fastidiar, cartas de prenda y paciencia',
       msg: {
         gameStart: '¡Empieza Ristiseiska! {starter} comienza con {card}.',
@@ -288,6 +291,7 @@ export const es = {
       ],
     },
     seiska: {
+      altName: "Ocho loco",
       desc: 'Una carrera estilo UNO para quedarte sin cartas',
       msg: {
         gameStart: '¡Empieza Seiska! Carta superior: {card}.',
@@ -346,6 +350,7 @@ export const es = {
       ],
     },
     kasino: {
+      altName: "Casino",
       desc: 'Captura toda la mesa',
       msg: {
         gameStart: '¡Empieza Kasino! Cartas en la mesa. Turno de Hero. {hint}',
@@ -443,6 +448,7 @@ export const es = {
       },
     },
     koputus: {
+      altName: "Golf (pócker polaco)",
       desc: 'Un juego de memoria con giros inesperados',
       msg: {
         peekStart: '¡Cartas repartidas! Echa un vistazo a dos de tus cartas de campo — recuérdalas, porque seguirán ocultas toda la partida.',
@@ -497,6 +503,7 @@ export const es = {
       ],
     },
     maija: {
+      altName: "La vieja (variante finlandesa)",
       desc: 'Vencimiento parcial: victoria defensiva. Vencimiento total: atacas.',
       msg: {
         gameStart: '¡Empieza la partida! Palo de triunfo: {trump}. {attacker} ataca, {defender} defiende.',
@@ -540,6 +547,7 @@ export const es = {
       ],
     },
     paskahousu: {
+      altName: "El culo (El presidente)",
       desc: 'Casi el clásico paskahousu con seis cartas. 2♦ 2♥ valor 2 · 2♠ 2♣ son duras',
       msg: {
         gameStart: '¡Empieza Paskahousu! {name} comienza (la carta más baja).{hint}',
@@ -600,6 +608,7 @@ export const es = {
       ],
     },
     moska: {
+      altName: "Durak (el tonto)",
       desc: 'Guerra total de cartas: ataca, pasa, defiende y no olvides golpear por el flanco.',
       msg: {
         gameStart: '¡Empieza Moska! Palo de triunfo: {trump}. {att} ataca, {def} defiende.',

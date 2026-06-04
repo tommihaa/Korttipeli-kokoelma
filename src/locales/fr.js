@@ -60,7 +60,7 @@ export const fr = {
       todo: 'À venir 🗺',
       todoItems: [
         'Jeu de cartes bicolore en plus du quadricolore (à choisir dans les Paramètres)',
-        'Localisation (FI/EN)',
+        'Localisation (12 langues)',
         'Replay : symboles d\'échecs sur les annotations de coups (! !! ? ?? !? ?!)',
       ],
     },
@@ -160,6 +160,7 @@ export const fr = {
 
   games: {
     kultakala: {
+      altName: "Golf à six cartes",
       desc: 'Un jeu de mémoire — si tu regardes, tu échanges',
       msg: {
         gameStart: 'Cartes distribuées. Chacun a une carte inconnue et cinq cartes de terrain. Commence en cliquant sur la pioche. Aux tours suivants, tu peux aussi piocher dans la défausse.',
@@ -195,6 +196,7 @@ export const fr = {
       ],
     },
     lapsy: {
+      altName: "Slapjack (la Tape)",
       desc: 'Un jeu de réflexes',
       msg: {
         gameStart: 'C\'est parti ! Chaque joueur retourne à tour de rôle la carte du dessus de sa pile.',
@@ -233,6 +235,7 @@ export const fr = {
       ],
     },
     ristiseiska: {
+      altName: "Domino (cartes)",
       desc: 'Espièglerie, cartes-gages et patience',
       msg: {
         gameStart: 'Ristiseiska commence ! {starter} ouvre avec {card}.',
@@ -288,6 +291,7 @@ export const fr = {
       ],
     },
     seiska: {
+      altName: "Huit américain",
       desc: 'Une course de type UNO pour vider sa main',
       msg: {
         gameStart: 'Seiska commence ! Carte du dessus : {card}.',
@@ -346,6 +350,7 @@ export const fr = {
       ],
     },
     kasino: {
+      altName: "Casino",
       desc: 'Capture toute la table',
       msg: {
         gameStart: 'Kasino commence ! Des cartes sur la table. Au tour de Hero. {hint}',
@@ -443,6 +448,7 @@ export const fr = {
       },
     },
     koputus: {
+      altName: "Golf (Polish Poker)",
       desc: 'Un jeu de mémoire avec des rebondissements',
       msg: {
         peekStart: 'Cartes distribuées ! Regarde deux de tes cartes de terrain — retiens-les, car elles restent cachées toute la partie.',
@@ -497,6 +503,7 @@ export const fr = {
       ],
     },
     maija: {
+      altName: "le Pouilleux (variante finlandaise)",
       desc: 'Coupe partielle — victoire défensive. Coupe complète — tu attaques.',
       msg: {
         gameStart: 'C\'est parti ! Couleur d\'atout : {trump}. {attacker} attaque, {defender} défend.',
@@ -540,6 +547,7 @@ export const fr = {
       ],
     },
     paskahousu: {
+      altName: "le Trou du cul",
       desc: 'Presque le Paskahousu classique avec six cartes. 2♦ 2♥ valeur 2 · 2♠ 2♣ sont fortes',
       msg: {
         gameStart: 'Paskahousu commence ! {name} ouvre (carte la plus basse).{hint}',
@@ -600,6 +608,7 @@ export const fr = {
       ],
     },
     moska: {
+      altName: "le Durak",
       desc: 'Guerre de cartes totale : attaque, transmets, défends — et n\'oublie pas de frapper sur le flanc.',
       msg: {
         gameStart: 'Moska commence ! Couleur d\'atout : {trump}. {att} attaque, {def} défend.',

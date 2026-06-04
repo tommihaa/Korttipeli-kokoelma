@@ -60,7 +60,7 @@ export const sv = {
       todo: 'På gång 🗺',
       todoItems: [
         'Tvåfärgad kortlek vid sidan av den fyrfärgade (valbar i Inställningar)',
-        'Språkversioner (FI/EN)',
+        'Språkversioner (12 språk)',
         'Replay: schacksymboler på dragnoteringar (! !! ? ?? !? ?!)',
       ],
     },
@@ -160,6 +160,7 @@ export const sv = {
 
   games: {
     kultakala: {
+      altName: "Sexkortsgolf",
       desc: 'Ett minnesspel — tittar du, byter du',
       msg: {
         gameStart: 'Korten är utdelade. Var och en har ett okänt kort och fem fältkort. Börja genom att klicka på draghögen. Senare turer kan du även dra från kasthögen.',
@@ -195,6 +196,7 @@ export const sv = {
       ],
     },
     lapsy: {
+      altName: "Slapjack",
       desc: 'Ett reaktionsspel',
       msg: {
         gameStart: 'Spelet börjar! Var och en vänder i tur och ordning det översta kortet i sin hög.',
@@ -233,6 +235,7 @@ export const sv = {
       ],
     },
     ristiseiska: {
+      altName: "Sjuan",
       desc: 'Spratt, pantkort och tålamod',
       msg: {
         gameStart: 'Ristiseiska börjar! {starter} börjar med {card}.',
@@ -288,6 +291,7 @@ export const sv = {
       ],
     },
     seiska: {
+      altName: "Vändåtta",
       desc: 'En UNO-liknande kapplöpning att tömma handen',
       msg: {
         gameStart: 'Seiska börjar! Översta kortet: {card}.',
@@ -346,6 +350,7 @@ export const sv = {
       ],
     },
     kasino: {
+      altName: "Kasino",
       desc: 'Fånga hela bordet',
       msg: {
         gameStart: 'Kasino börjar! Kort på bordet. Heros tur. {hint}',
@@ -443,6 +448,7 @@ export const sv = {
       },
     },
     koputus: {
+      altName: "Golf (kortspel)",
       desc: 'Ett minnesspel med överraskande vändningar',
       msg: {
         peekStart: 'Korten är utdelade! Kika på två av dina egna fältkort — kom ihåg dem, för de förblir dolda hela spelet.',
@@ -497,6 +503,7 @@ export const sv = {
       ],
     },
     maija: {
+      altName: "Svarte Petter (finsk variant)",
       desc: 'Delvis slag — försvarsseger. Helt slag — du anfaller.',
       msg: {
         gameStart: 'Spelet börjar! Trumffärg: {trump}. {attacker} anfaller, {defender} försvarar.',
@@ -540,6 +547,7 @@ export const sv = {
       ],
     },
     paskahousu: {
+      altName: "Skitgubbe",
       desc: 'Nästan den klassiska Skitgubben med sex kort. 2♦ 2♥ värde 2 · 2♠ 2♣ hårda',
       msg: {
         gameStart: 'Paskahousu börjar! {name} börjar (lägsta kortet).{hint}',
@@ -600,6 +608,7 @@ export const sv = {
       ],
     },
     moska: {
+      altName: "Durak (ryskt kortspel)",
       desc: 'Totalt kortkrig: anfall, skicka vidare, försvara — och kom ihåg att slå från sidan.',
       msg: {
         gameStart: 'Moska börjar! Trumffärg: {trump}. {att} anfaller, {def} försvarar.',

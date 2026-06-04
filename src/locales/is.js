@@ -60,7 +60,7 @@ export const is = {
       todo: 'Væntanlegt 🗺',
       todoItems: [
         'Tvílita spilastokkur við hlið fjórlita (valanlegt í Stillingum)',
-        'Tungumálavæðing (FI/EN)',
+        'Tungumálavæðing (12 tungumál)',
         'Endursýning: skáktákn á leikjamerkingum (! !! ? ?? !? ?!)',
       ],
     },
@@ -160,6 +160,7 @@ export const is = {
 
   games: {
     kultakala: {
+      altName: "finnskur minnisleikur",
       desc: 'Minnisleikur — ef þú kíkir, þá skiptir þú',
       msg: {
         gameStart: 'Spilum úthlutað. Allir hafa eitt óþekkt spil og fimm reitaspil. Byrjaðu með því að smella á dráttarbunkann. Í síðari umferðum geturðu líka dregið úr kasthaugnum.',
@@ -195,6 +196,7 @@ export const is = {
       ],
     },
     lapsy: {
+      altName: "Slapjack",
       desc: 'Viðbragðsleikur',
       msg: {
         gameStart: 'Leikur hafinn! Hver leikmaður á sínni umferð flettir efsta spilinu af bunkanum sínum.',
@@ -233,6 +235,7 @@ export const is = {
       ],
     },
     ristiseiska: {
+      altName: "Domino (spil)",
       desc: 'Stríðni, veðspil og þolinmæði',
       msg: {
         gameStart: 'Ristiseiska hefst! {starter} byrjar með {card}.',
@@ -288,6 +291,7 @@ export const is = {
       ],
     },
     seiska: {
+      altName: "Mau-Mau",
       desc: 'UNO-líkt kapphlaup að tómri hendi',
       msg: {
         gameStart: 'Seiska hefst! Efsta spil: {card}.',
@@ -346,6 +350,7 @@ export const is = {
       ],
     },
     kasino: {
+      altName: "Kasína",
       desc: 'Hremmdu allt borðið',
       msg: {
         gameStart: 'Kasino hefst! Spil á borðinu. Umferð Hero. {hint}',
@@ -443,6 +448,7 @@ export const is = {
       },
     },
     koputus: {
+      altName: "Golf (spil)",
       desc: 'Minnisleikur með óvæntum uppákomum',
       msg: {
         peekStart: 'Spilum úthlutað! Kíktu á tvö af þínum eigin reitaspilum — mundu þau, því þau haldast falin allan leikinn.',
@@ -497,6 +503,7 @@ export const is = {
       ],
     },
     maija: {
+      altName: "Svarti Pétur (finnsk útgáfa)",
       desc: 'Hluta-felling — varnarsigur. Full felling — þú sækir.',
       msg: {
         gameStart: 'Leikur hafinn! Trompslitur: {trump}. {attacker} sækir, {defender} ver.',
@@ -540,6 +547,7 @@ export const is = {
       ],
     },
     paskahousu: {
+      altName: "finnskt útsláttarspil",
       desc: 'Nánast hinn klassíski paskahousu með sex spilum. 2♦ 2♥ gildi 2 · 2♠ 2♣ eru hörð',
       msg: {
         gameStart: 'Paskahousu hefst! {name} byrjar (lægsta spil).{hint}',
@@ -600,6 +608,7 @@ export const is = {
       ],
     },
     moska: {
+      altName: "Durak",
       desc: 'Allsherjar spilastríð: sæktu, færðu, verðu — og mundu að slá frá hlið.',
       msg: {
         gameStart: 'Moska hefst! Trompslitur: {trump}. {att} sækir, {def} ver.',

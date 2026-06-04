@@ -60,7 +60,7 @@ export const da = {
       todo: 'På vej 🗺',
       todoItems: [
         'Tofarvet kortspil ved siden af det firefarvede (kan vælges i Indstillinger)',
-        'Sprogversionering (FI/EN)',
+        'Sprogversionering (12 sprog)',
         'Replay: skaksymboler på trækannotationer (! !! ? ?? !? ?!)',
       ],
     },
@@ -160,6 +160,7 @@ export const da = {
 
   games: {
     kultakala: {
+      altName: "Sekskortsgolf",
       desc: 'Et huskespil — kigger du, så bytter du',
       msg: {
         gameStart: 'Kortene er delt ud. Alle har ét ukendt kort og fem feltkort. Begynd ved at klikke på trækbunken. Senere ture kan du også trække fra kastebunken.',
@@ -195,6 +196,7 @@ export const da = {
       ],
     },
     lapsy: {
+      altName: "Slapjack",
       desc: 'Et reaktionsspil',
       msg: {
         gameStart: 'Spillet er i gang! Hver spiller vender på skift det øverste kort i sin bunke.',
@@ -233,6 +235,7 @@ export const da = {
       ],
     },
     ristiseiska: {
+      altName: "Syveren",
       desc: 'Drillerier, pantkort og tålmodighed',
       msg: {
         gameStart: 'Ristiseiska begynder! {starter} starter med {card}.',
@@ -288,6 +291,7 @@ export const da = {
       ],
     },
     seiska: {
+      altName: "Ottefarve",
       desc: 'Et UNO-agtigt kapløb mod tom hånd',
       msg: {
         gameStart: 'Seiska begynder! Øverst: {card}.',
@@ -346,6 +350,7 @@ export const da = {
       ],
     },
     kasino: {
+      altName: "Casino",
       desc: 'Fang hele bordet',
       msg: {
         gameStart: 'Kasino begynder! Kort på bordet. Heros tur. {hint}',
@@ -443,6 +448,7 @@ export const da = {
       },
     },
     koputus: {
+      altName: "Golf (kortspil)",
       desc: 'Et huskespil med overraskende vendinger',
       msg: {
         peekStart: 'Kortene er delt ud! Kig på to af dine egne feltkort — husk dem, for de forbliver skjult hele spillet.',
@@ -497,6 +503,7 @@ export const da = {
       ],
     },
     maija: {
+      altName: "Sorteper (finsk variant)",
       desc: 'Delvis kaato — forsvarssejr. Fuld kaato — du angriber.',
       msg: {
         gameStart: 'Spillet er i gang! Trumffarve: {trump}. {attacker} angriber, {defender} forsvarer.',
@@ -540,6 +547,7 @@ export const da = {
       ],
     },
     paskahousu: {
+      altName: "Røvhul",
       desc: 'Næsten den klassiske paskahousu med seks kort. 2♦ 2♥ værdi 2 · 2♠ 2♣ er hårde',
       msg: {
         gameStart: 'Paskahousu begynder! {name} starter (laveste kort).{hint}',
@@ -600,6 +608,7 @@ export const da = {
       ],
     },
     moska: {
+      altName: "Durak",
       desc: 'Total kortkrig: angrib, send videre, forsvar — og husk at slå fra siden.',
       msg: {
         gameStart: 'Moska begynder! Trumffarve: {trump}. {att} angriber, {def} forsvarer.',

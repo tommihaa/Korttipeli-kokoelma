@@ -60,7 +60,7 @@ export const it = {
       todo: 'In arrivo 🗺',
       todoItems: [
         'Mazzo di carte a due colori accanto a quello a quattro colori (selezionabile nelle Impostazioni)',
-        'Localizzazione (FI/EN)',
+        'Localizzazione (12 lingue)',
         'Replay: simboli scacchistici nelle annotazioni delle mosse (! !! ? ?? !? ?!)',
       ],
     },
@@ -160,6 +160,7 @@ export const it = {
 
   games: {
     kultakala: {
+      altName: "Golf a sei carte",
       desc: 'Un gioco di memoria — se la guardi, la scambi',
       msg: {
         gameStart: 'Carte distribuite. Ognuno ha una carta sconosciuta e cinque carte sul campo. Inizia cliccando il mazzo di pesca. Nei turni successivi puoi pescare anche dagli scarti.',
@@ -195,6 +196,7 @@ export const it = {
       ],
     },
     lapsy: {
+      altName: "Slapjack",
       desc: 'Un gioco di reazione',
       msg: {
         gameStart: 'Si comincia! Ogni giocatore a turno gira la carta in cima al proprio mazzetto.',
@@ -233,6 +235,7 @@ export const it = {
       ],
     },
     ristiseiska: {
+      altName: "Domino (carte)",
       desc: 'Dispetti, pegni di carte e pazienza',
       msg: {
         gameStart: 'Ristiseiska comincia! {starter} inizia con {card}.',
@@ -288,6 +291,7 @@ export const it = {
       ],
     },
     seiska: {
+      altName: "Otto matto",
       desc: 'Una corsa in stile UNO a svuotare la mano',
       msg: {
         gameStart: 'Seiska comincia! Carta in cima: {card}.',
@@ -346,6 +350,7 @@ export const it = {
       ],
     },
     kasino: {
+      altName: "Cassino",
       desc: 'Cattura tutto il tavolo',
       msg: {
         gameStart: 'Kasino comincia! Carte sul tavolo. Tocca a Hero. {hint}',
@@ -443,6 +448,7 @@ export const it = {
       },
     },
     koputus: {
+      altName: "Golf (Polish Poker)",
       desc: 'Un gioco di memoria con colpi di scena a sorpresa',
       msg: {
         peekStart: 'Carte distribuite! Sbircia due delle tue carte del campo — ricordatele, perché restano nascoste per tutta la partita.',
@@ -497,6 +503,7 @@ export const it = {
       ],
     },
     maija: {
+      altName: "Vecchia zitella (variante finlandese)",
       desc: 'Difesa parziale — vittoria difensiva. Difesa totale — attacchi tu.',
       msg: {
         gameStart: 'Si comincia! Seme di briscola: {trump}. {attacker} attacca, {defender} difende.',
@@ -540,6 +547,7 @@ export const it = {
       ],
     },
     paskahousu: {
+      altName: "lo Stronzo (Presidente)",
       desc: 'Quasi il classico Paskahousu con sei carte. 2♦ 2♥ valore 2 · 2♠ 2♣ dure',
       msg: {
         gameStart: 'Paskahousu comincia! {name} inizia (carta più bassa).{hint}',
@@ -600,6 +608,7 @@ export const it = {
       ],
     },
     moska: {
+      altName: "Durak",
       desc: 'Guerra di carte totale: attacca, sposta, difendi — e ricordati di colpire di fianco.',
       msg: {
         gameStart: 'Moska comincia! Seme di briscola: {trump}. {att} attacca, {def} difende.',

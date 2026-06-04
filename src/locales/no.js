@@ -60,7 +60,7 @@ export const no = {
       todo: 'Kommer snart 🗺',
       todoItems: [
         'Tofarget kortstokk ved siden av den firefargete (kan velges i Innstillinger)',
-        'Språkversjonering (FI/EN)',
+        'Språkversjonering (12 språk)',
         'Replay: sjakksymboler i trekkmarkeringer (! !! ? ?? !? ?!)',
       ],
     },
@@ -160,6 +160,7 @@ export const no = {
 
   games: {
     kultakala: {
+      altName: "Sekskortsgolf",
       desc: 'Et huskespill — ser du, så bytter du',
       msg: {
         gameStart: 'Kortene er delt ut. Alle har ett ukjent kort og fem feltkort. Begynn ved å klikke på trekkbunken. På senere turer kan du også trekke fra kastbunken.',
@@ -195,6 +196,7 @@ export const no = {
       ],
     },
     lapsy: {
+      altName: "Slapjack",
       desc: 'Et reaksjonsspill',
       msg: {
         gameStart: 'Spillet er i gang! Hver spiller snur i tur det øverste kortet i bunken sin.',
@@ -233,6 +235,7 @@ export const no = {
       ],
     },
     ristiseiska: {
+      altName: "Sjuer",
       desc: 'Plageri, pantkort og tålmodighet',
       msg: {
         gameStart: 'Ristiseiska begynner! {starter} begynner med {card}.',
@@ -288,6 +291,7 @@ export const no = {
       ],
     },
     seiska: {
+      altName: "Vri-åtter",
       desc: 'Et UNO-aktig kappløp mot tom hånd',
       msg: {
         gameStart: 'Seiska begynner! Øverste kort: {card}.',
@@ -346,6 +350,7 @@ export const no = {
       ],
     },
     kasino: {
+      altName: "Kasino",
       desc: 'Fang hele bordet',
       msg: {
         gameStart: 'Kasino begynner! Kort på bordet. Heros tur. {hint}',
@@ -443,6 +448,7 @@ export const no = {
       },
     },
     koputus: {
+      altName: "Golf (kortspill)",
       desc: 'Et huskespill med overraskelser',
       msg: {
         peekStart: 'Kortene er delt ut! Kikk på to av dine egne feltkort — husk dem, for de forblir skjult hele spillet.',
@@ -497,6 +503,7 @@ export const no = {
       ],
     },
     maija: {
+      altName: "Svarteper (finsk variant)",
       desc: 'Delvis slag — forsvarsseier. Fullt slag — du angriper.',
       msg: {
         gameStart: 'Spillet er i gang! Trumffarge: {trump}. {attacker} angriper, {defender} forsvarer.',
@@ -540,6 +547,7 @@ export const no = {
       ],
     },
     paskahousu: {
+      altName: "Drittsekk",
       desc: 'Nesten den klassiske paskahousu med seks kort. 2♦ 2♥ verdi 2 · 2♠ 2♣ er harde',
       msg: {
         gameStart: 'Paskahousu begynner! {name} begynner (laveste kort).{hint}',
@@ -600,6 +608,7 @@ export const no = {
       ],
     },
     moska: {
+      altName: "Durak",
       desc: 'Total kortkrig: angrip, send videre, forsvar — og husk å slå fra siden.',
       msg: {
         gameStart: 'Moska begynner! Trumffarge: {trump}. {att} angriper, {def} forsvarer.',
