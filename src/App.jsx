@@ -160,6 +160,12 @@ const CHANGELOG = [
   {
     date: '5.6.2026',
     items: [
+      'Kaksi uutta kieltä lisää: portugali ja karjala — sovellus on nyt 17 kielellä. Karjala (varsinaiskarjala) on kokeellinen käännös, joten se löytyy kielivalikon "testaamattomat"-ryhmästä. Lisäksi kielivalitsin on siirretty ylös info- ja asetukset-nappien viereen, tiiviiksi lippuvalikoksi.',
+    ],
+  },
+  {
+    date: '5.6.2026',
+    items: [
       'Kolme uutta kieltä: kreikka, puola ja viro — sovellus on nyt 15 kielellä. Kielivalinta on muuttunut siistiksi alasvetovalikoksi (pelilistan alla), jossa kielet on ryhmitelty: testatut (suomi natiivina ✓, muut "web"-varmistettuina) ja testaamattomat omassa ryhmässään. Puola sai vakiintuneet pelinimet (Seiska → Makao, Maija → Piotruś, Moska → Dureń), viro samoin (Maija → Must Peeter).',
     ],
   },
@@ -577,6 +583,14 @@ function Flag({ code }) {
   if (code === 'et') return (
     <svg {...c}><rect width="18" height="4" fill="#0072ce"/><rect y="4" width="18" height="4" fill="#000"/><rect y="8" width="18" height="4" fill="#fff"/></svg>
   );
+  // Portugali: vihreä/punainen pysty + keltainen pallo rajalla
+  if (code === 'pt') return (
+    <svg {...c}><rect width="18" height="12" fill="#da291c"/><rect width="7.2" height="12" fill="#046a38"/><circle cx="7.2" cy="6" r="2.1" fill="#ffe000" stroke="#fff" strokeWidth="0.4"/></svg>
+  );
+  // Karjala: vihreä pohja, musta pohjoismaaristi punaisin reunoin (Gallen-Kallela 1920)
+  if (code === 'krl') return (
+    <svg {...c}><rect width="18" height="12" fill="#159b3b"/><rect x="4" width="5" height="12" fill="#d2222d"/><rect y="3.5" width="18" height="5" fill="#d2222d"/><rect x="5" width="3" height="12" fill="#000"/><rect y="4.5" width="18" height="3" fill="#000"/></svg>
+  );
   return null;
 }
 
@@ -659,30 +673,29 @@ function LangSelector({ lang, setLang, t }) {
   ];
   const current = LANGS.find(l => l.code === lang) || LANGS[0];
   return (
-    <div style={{ position: 'relative', marginTop: 8, marginBottom: 2 }}>
+    <div style={{ position: 'relative', flexShrink: 0 }}>
       <button
         onClick={() => setOpen(o => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t('ui.lang.label')}
+        title={current.name}
         style={{
-          display: 'flex', alignItems: 'center', gap: 7,
-          background: 'transparent', border: `1px solid ${C.panelBorder}`,
-          color: C.dim, borderRadius: 9, padding: '6px 12px', cursor: 'pointer',
-          fontFamily: 'Georgia,serif', fontSize: 13, letterSpacing: 1,
+          display: 'flex', alignItems: 'center', gap: 5,
+          background: 'transparent', border: `1px solid ${open ? C.gold : C.panelBorder}`,
+          color: open ? C.gold : C.dim, borderRadius: 9, padding: '9px 9px', cursor: 'pointer',
+          fontFamily: 'sans-serif', lineHeight: 1, flexShrink: 0,
         }}
       >
         <Flag code={current.code} />
-        <span>{current.name}</span>
-        {langMarker(current.status)}
-        <span style={{ fontSize: 9, opacity: 0.7, marginLeft: 2 }}>{open ? '▲' : '▼'}</span>
+        <span style={{ fontSize: 9, opacity: 0.7 }}>{open ? '▲' : '▼'}</span>
       </button>
       {open && (
         <>
-          <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 50 }} />
+          <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 590 }} />
           <div role="listbox" aria-label={t('ui.lang.label')} style={{
-            position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)',
-            marginBottom: 6, zIndex: 51,
+            position: 'absolute', top: '100%', right: 0,
+            marginTop: 6, zIndex: 591,
             background: '#0f2419', border: `1px solid ${C.panelBorder}`, borderRadius: 10,
             padding: 8, minWidth: 210, maxHeight: 340, overflowY: 'auto',
             boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
@@ -1421,7 +1434,7 @@ export default function App() {
             JAKO<span style={{ fontSize: isMobile ? 15 : 22, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
           </h1>
         </div>
-        <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8 }}>{infoBtn}{gearBtn}</div>
+        <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8, alignItems: 'center' }}><LangSelector lang={lang} setLang={setLang} t={t} />{infoBtn}{gearBtn}</div>
       </div>
 
       <div style={{
@@ -1436,7 +1449,6 @@ export default function App() {
           {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={selectGame} />)}
         </div>
       </div>
-      <LangSelector lang={lang} setLang={setLang} t={t} />
       <div style={{ fontSize: 10, color: '#b9c7b2', fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
         v{APP_VERSION} · {BUILD_DATE} {BUILD_TIME}
       </div>

@@ -24,6 +24,8 @@ const SUIT_NAME = {
   el: { '♠': 'μπαστούνι', '♥': 'κούπα', '♦': 'καρό',      '♣': 'σπαθί' },
   pl: { '♠': 'pik',     '♥': 'kier',    '♦': 'karo',      '♣': 'trefl' },
   et: { '♠': 'poti',    '♥': 'ärtu',    '♦': 'ruutu',     '♣': 'risti' },
+  pt: { '♠': 'espadas', '♥': 'copas',   '♦': 'ouros',     '♣': 'paus' },
+  krl: { '♠': 'pata',   '♥': 'hertta',  '♦': 'ruutu',     '♣': 'risti' },
 };
 const RANK_NAME = {
   fi: { A: 'ässä', J: 'jätkä', Q: 'rouva', K: 'kuningas' },
@@ -41,8 +43,10 @@ const RANK_NAME = {
   el: { A: 'άσος', J: 'βαλές', Q: 'ντάμα', K: 'ρήγας' },
   pl: { A: 'as',   J: 'walet', Q: 'dama',  K: 'król' },
   et: { A: 'äss',  J: 'soldat', Q: 'emand', K: 'kuningas' },
+  pt: { A: 'ás',   J: 'valete', Q: 'dama',  K: 'rei' },
+  krl: { A: 'ässä', J: 'jätkä', Q: 'rouva', K: 'kuningas' },
 };
-const EMPTY = { fi: 'tyhjä', en: 'empty', sv: 'tomt', de: 'leer', no: 'tom', da: 'tom', is: 'tómt', fr: 'vide', es: 'vacío', it: 'vuoto', uk: 'пусто', ru: 'пусто', el: 'άδειο', pl: 'puste', et: 'tühi' };
+const EMPTY = { fi: 'tyhjä', en: 'empty', sv: 'tomt', de: 'leer', no: 'tom', da: 'tom', is: 'tómt', fr: 'vide', es: 'vacío', it: 'vuoto', uk: 'пусто', ru: 'пусто', el: 'άδειο', pl: 'puste', et: 'tühi', pt: 'vazio', krl: 'tyhjä' };
 // Slaavilaisten kielten 3-muotoinen monikko (1 / 2-4 / 5+).
 const slavicPlural = (n, one, few, many) => {
   const m10 = n % 10, m100 = n % 100;
@@ -75,6 +79,8 @@ function cardCount(n) {
     case 'el': return n === 1 ? '1 χαρτί' : `${n} χαρτιά`;
     case 'pl': return `${n} ${slavicPlural(n, 'karta', 'karty', 'kart')}`;
     case 'et': return n === 1 ? '1 kaart' : `${n} kaarti`;
+    case 'pt': return n === 1 ? '1 carta' : `${n} cartas`;
+    case 'krl': return n === 1 ? '1 kortti' : `${n} korttie`;
     default:   return null; // fi hoidetaan kutsujassa (partitiivi/genetiivi eroaa)
   }
 }

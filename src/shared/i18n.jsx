@@ -27,8 +27,10 @@ import { ru } from '../locales/ru.js';
 import { el } from '../locales/el.js';
 import { pl } from '../locales/pl.js';
 import { et } from '../locales/et.js';
+import { pt } from '../locales/pt.js';
+import { krl } from '../locales/krl.js';
 
-const LOCALES = { fi, en, sv, de, no, da, is, fr, es, it, uk, ru, el, pl, et };
+const LOCALES = { fi, en, sv, de, no, da, is, fr, es, it, uk, ru, el, pl, et, pt, krl };
 const FALLBACK = 'fi'; // suomi on totuuden lähde — puuttuva avain putoaa tähän
 
 // Valikossa näytettävät kielet. Liput piirretään SVG:nä App.jsx:n <Flag code>
@@ -54,6 +56,8 @@ export const LANGS = [
   { code: 'el', label: 'EL', name: 'Ελληνικά',    status: 'untested' },
   { code: 'pl', label: 'PL', name: 'Polski',      status: 'auto' },
   { code: 'et', label: 'ET', name: 'Eesti',       status: 'auto' },
+  { code: 'pt', label: 'PT', name: 'Português',   status: 'auto' },
+  { code: 'krl', label: 'KRL', name: 'Karjala',   status: 'untested' },
 ];
 
 function detectLang() {
@@ -72,6 +76,8 @@ function detectLang() {
     if (/^el/i.test(l)) return 'el';
     if (/^pl/i.test(l)) return 'pl';
     if (/^et/i.test(l)) return 'et';
+    if (/^pt/i.test(l)) return 'pt';
+    if (/^krl/i.test(l)) return 'krl';
     if (/^en/i.test(l)) return 'en';
   }
   return FALLBACK;
