@@ -467,17 +467,17 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       // Jos ihminen puolusti, näytä puolustuksen tulos Viesti-kentässä (älä näytä vielä seuraavan kierroksen tietoja)
       if (g.defender === 0) {
         if (defWon) {
-          setMsg_('✅ Puolustus onnistui!');
+          setMsg_(t('games.moska.ui.defOk'));
         } else {
-          setMsg_('❌ Puolustus epäonnistui!');
+          setMsg_(t('games.moska.ui.defFail'));
         }
       } else {
         // Ihminen hyökkäsi — näytä kierroksen tulos ennen seuraavaa kierrosta
         const defName = players[g.defender].name;
         if (defWon) {
-          setMsg_(`🛡️ ${defName} kaatoi kaikki!`);
+          setMsg_(t('games.moska.ui.defBeatAll', { name: defName }));
         } else {
-          setMsg_(`⚔️ Hyökkäys onnistui! ${defName} otti kortit.`);
+          setMsg_(t('games.moska.ui.atkOk', { name: defName }));
         }
       }
 
@@ -1098,9 +1098,9 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       <PoytaPanel isMobile={isMobile}
         minHeight={{ m: 130, t: 200 }}
         border={G.table.length > 0 ? '#e05c3b33' : C.panelBorder}
-        title={<span>PÖYTÄ — {G.table.length === 0 ? 'tyhjä' : `${G.table.length} paria`}
-          {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>✓ {defBeaten} kaadettu</span>}
-          {unbeatenSlots.length > 0 && <span style={{ color: C.red, marginLeft: 8 }}>! {unbeatenSlots.length} lyömättä</span>}
+        title={<span>{t('ui.shared.tableLabel')} — {G.table.length === 0 ? t('ui.shared.emptyLower') : t('games.moska.ui.pairs', { n: G.table.length })}
+          {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>{t('games.moska.ui.beaten', { n: defBeaten })}</span>}
+          {unbeatenSlots.length > 0 && <span style={{ color: C.red, marginLeft: 8 }}>{t('games.moska.ui.unbeaten', { n: unbeatenSlots.length })}</span>}
         </span>}
         right={<PakkaCount count={G.deck.length} flash={pakaAnim} />}>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -1124,7 +1124,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
             );
           })}
           {G.table.length === 0 && (
-            <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, opacity: 0.5, padding: '24px 0' }}>Pöytä tyhjä</div>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, opacity: 0.5, padding: '24px 0' }}>{t('ui.shared.tableEmpty')}</div>
           )}
         </div>
       </PoytaPanel>
@@ -1279,7 +1279,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.moska.ui.goal')}</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {soundOn ? '🔊' : '🔇'} Ääni
+          {soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}
@@ -1289,7 +1289,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (

@@ -190,8 +190,8 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       trump: `<span style="color:${SUIT_COLOR[trumpCard.s]}">${trumpCard.s}</span>`, attacker, defender,
     }),
     finishedGame: (name, rank) => rank === 1
-      ? t('games.maija.msg.finishedWin', { name: name.split(' ')[0] })
-      : t('games.maija.msg.finishedOut', { name: name.split(' ')[0] }),
+      ? t('games.maija.msg.finishedWin', { name })
+      : t('games.maija.msg.finishedOut', { name }),
     maija: (name, hadMaija) => t(hadMaija ? 'games.maija.msg.maijaQ' : 'games.maija.msg.maija', { name }),
     newAttack: (attacker, defender) => t('games.maija.msg.newAttack', { attacker, defender }),
     defendTake: (name, unbeatenCount, detail) => t('games.maija.msg.defendTake', { name, cards: kortin(unbeatenCount), detail }),
@@ -259,8 +259,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
     g.players.forEach((p, i) => {
       if (!newFin.includes(i) && p.hand.length===0 && g.deck.length===0) {
         newFin.push(i);
-        const name = `${p.name} pääsi eroon kaikista korteistaan`;
-        addLog(M.finishedGame(name, newFin.length));
+        addLog(M.finishedGame(p.name, newFin.length));
       }
     });
     const active = g.players.filter((_, i) => !newFin.includes(i));
@@ -676,7 +675,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       {/* Valtti */}
       <div style={{ display:'flex', gap:6, marginBottom: isMobile ? 4 : 10, alignItems:'center', flexWrap:'wrap' }}>
         <div style={{ display:'flex', alignItems:'center', gap:6, padding:'3px 10px', borderRadius:20, border:`1px solid ${C.trump}55`, background:`${C.trump}0d` }}>
-          <span style={{ fontFamily:'sans-serif', fontSize:11, color:C.dim }}>VALTTI</span>
+          <span style={{ fontFamily:'sans-serif', fontSize:11, color:C.dim }}>{t('ui.shared.trump')}</span>
           <span style={{ fontSize:18, color:SUIT_COLOR[G.trump], fontWeight:700 }}>{G.trump}</span>
           {G.trumpCard && <Card card={G.trumpCard} small backStyle={BACKS[cardBack]} />}
         </div>
@@ -735,12 +734,12 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       {/* Pöytä */}
       <PoytaPanel isMobile={isMobile}
         minHeight={{ m: 170, t: 220 }}
-        title={<span>PÖYTÄ — {phase==='attacking' ? 'hyökkäys' : 'puolustus'}</span>}
+        title={<span>{t('ui.shared.tableLabel')} — {phase==='attacking' ? t('games.maija.ui.phaseAtk') : t('games.maija.ui.phaseDef')}</span>}
         right={<PakkaCount count={G.deck.length} flash={pakaAnim} />}>
         {table.length === 0
           ? <div style={{ textAlign:'center', color:C.dim, fontFamily:'sans-serif', fontSize:12,
               opacity:0.5, paddingTop:40 }}>
-              {isHumanAttacker ? 'Valitse kortit kädestä ja lyö' : 'Odota...'}
+              {isHumanAttacker ? t('games.maija.ui.attackHint') : t('ui.shared.wait')}
             </div>
           : <div style={{ display:'flex', gap:10, flexWrap:'wrap', alignItems:'flex-start' }}>
               {table.map((row, i) => {
@@ -786,9 +785,9 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
         <div style={{ fontFamily:'sans-serif', fontSize:12,
           color:(isHumanAttacker || isHumanDefender) ? C.gold : C.dim, marginBottom:8 }}>
           {allBots ? '🤖' : '👤'} {G.players[0].name} {G.attackerIdx===0 ? '⚔️' : G.defenderIdx===0 ? '🛡️' : ''}
-          {!allBots && isHumanAttacker && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>— valitse saman maan kortit ja lyö</span>}
-          {!allBots && isHumanDefender && !selDefTargetRow && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>— valitse ensin pöytäkortti, jonka haluat kaataa</span>}
-          {!allBots && isHumanDefender && selDefTargetRow && <span style={{ color:C.gold, fontSize:11, marginLeft:8 }}>— valitse käsikorttisi, jolla kaadoat {lbl(selDefTargetRow.att)}</span>}
+          {!allBots && isHumanAttacker && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.attackHint2')}</span>}
+          {!allBots && isHumanDefender && !selDefTargetRow && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.defendHint1')}</span>}
+          {!allBots && isHumanDefender && selDefTargetRow && <span style={{ color:C.gold, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.defendHint2', { card: lbl(selDefTargetRow.att) })}</span>}
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {sortHand(G.players[0].hand).map(c => {
@@ -904,7 +903,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
           border:'none', padding:'6px 14px', display:'flex', alignItems:'center',
           gap:8, cursor:'pointer', color:C.dim }}>
           <span style={{ fontFamily:'sans-serif', fontSize:10, letterSpacing:1.5, flex:1, textAlign:'left' }}>
-            TAPAHTUMALOKI
+            {t('ui.shared.logTitle')}
           </span>
           <span style={{ fontSize:12, transition:'transform 0.2s', transform:logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>

@@ -9,21 +9,68 @@ export const lbl    = c => c ? `${c.r}${c.s}` : '—';
 // Ruudunlukijalle: maa + arvo (esim. "pata 7" / "spades 7"). Lokalisoitu currentLangin mukaan.
 import { getLang } from './i18n.jsx';
 const SUIT_NAME = {
-  fi: { '♠': 'pata',    '♥': 'hertta', '♦': 'ruutu',    '♣': 'risti' },
-  en: { '♠': 'spades',  '♥': 'hearts', '♦': 'diamonds', '♣': 'clubs' },
+  fi: { '♠': 'pata',    '♥': 'hertta',  '♦': 'ruutu',     '♣': 'risti' },
+  en: { '♠': 'spades',  '♥': 'hearts',  '♦': 'diamonds',  '♣': 'clubs' },
+  sv: { '♠': 'spader',  '♥': 'hjärter', '♦': 'ruter',     '♣': 'klöver' },
+  de: { '♠': 'Pik',     '♥': 'Herz',    '♦': 'Karo',      '♣': 'Kreuz' },
+  no: { '♠': 'spar',    '♥': 'hjerter', '♦': 'ruter',     '♣': 'kløver' },
+  da: { '♠': 'spar',    '♥': 'hjerter', '♦': 'ruder',     '♣': 'klør' },
+  is: { '♠': 'spaði',   '♥': 'hjarta',  '♦': 'tígull',    '♣': 'lauf' },
+  fr: { '♠': 'pique',   '♥': 'cœur',    '♦': 'carreau',   '♣': 'trèfle' },
+  es: { '♠': 'picas',   '♥': 'corazones', '♦': 'diamantes', '♣': 'tréboles' },
+  it: { '♠': 'picche',  '♥': 'cuori',   '♦': 'quadri',    '♣': 'fiori' },
+  uk: { '♠': 'піки',    '♥': 'черви',   '♦': 'бубни',     '♣': 'трефи' },
+  ru: { '♠': 'пики',    '♥': 'черви',   '♦': 'бубны',     '♣': 'трефы' },
 };
 const RANK_NAME = {
   fi: { A: 'ässä', J: 'jätkä', Q: 'rouva', K: 'kuningas' },
   en: { A: 'ace',  J: 'jack',  Q: 'queen', K: 'king' },
+  sv: { A: 'ess',  J: 'knekt', Q: 'dam',   K: 'kung' },
+  de: { A: 'Ass',  J: 'Bube',  Q: 'Dame',  K: 'König' },
+  no: { A: 'ess',  J: 'knekt', Q: 'dame',  K: 'konge' },
+  da: { A: 'es',   J: 'knægt', Q: 'dame',  K: 'konge' },
+  is: { A: 'ás',   J: 'gosi',  Q: 'drottning', K: 'kóngur' },
+  fr: { A: 'as',   J: 'valet', Q: 'dame',  K: 'roi' },
+  es: { A: 'as',   J: 'jota',  Q: 'reina', K: 'rey' },
+  it: { A: 'asso', J: 'fante', Q: 'regina', K: 're' },
+  uk: { A: 'туз',  J: 'валет', Q: 'дама',  K: 'король' },
+  ru: { A: 'туз',  J: 'валет', Q: 'дама',  K: 'король' },
+};
+const EMPTY = { fi: 'tyhjä', en: 'empty', sv: 'tomt', de: 'leer', no: 'tom', da: 'tom', is: 'tómt', fr: 'vide', es: 'vacío', it: 'vuoto', uk: 'пусто', ru: 'пусто' };
+// Slaavilaisten kielten 3-muotoinen monikko (1 / 2-4 / 5+).
+const slavicPlural = (n, one, few, many) => {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return few;
+  return many;
 };
 export const cardName = c => {
   const L = getLang();
-  if (!c) return L === 'en' ? 'empty' : 'tyhjä';
+  if (!c) return EMPTY[L] || EMPTY.fi;
   return `${SUIT_NAME[L][c.s] || ''} ${RANK_NAME[L][c.r] || c.r}`.trim();
 };
-// Taivutusapurit: suomessa partitiivi/genetiivi, englannissa pelkkä monikko.
-export const korttia = n => getLang() === 'en' ? (n === 1 ? '1 card' : `${n} cards`) : (n === 1 ? '1 kortti' : `${n} korttia`);
-export const kortin  = n => getLang() === 'en' ? (n === 1 ? '1 card' : `${n} cards`) : (n === 1 ? '1 kortin' : `${n} korttia`);
+// Taivutusapurit: suomessa partitiivi/genetiivi, muissa kielissä kieliopillinen monikko
+// (ruotsin "kort" muuttumaton: ett kort / två kort; saksa: 1 Karte / n Karten).
+// Korttimäärä lokalisoituna. korttia = partitiivi (suomi), kortin = genetiivi (suomi);
+// muissa kielissä molemmat = kieliopillinen monikko.
+function cardCount(n) {
+  switch (getLang()) {
+    case 'en': return n === 1 ? '1 card' : `${n} cards`;
+    case 'sv': return `${n} kort`;
+    case 'no': return `${n} kort`;
+    case 'da': return `${n} kort`;
+    case 'is': return `${n} spil`;
+    case 'de': return n === 1 ? '1 Karte' : `${n} Karten`;
+    case 'fr': return n === 1 ? '1 carte' : `${n} cartes`;
+    case 'es': return n === 1 ? '1 carta' : `${n} cartas`;
+    case 'it': return n === 1 ? '1 carta' : `${n} carte`;
+    case 'uk': return `${n} ${slavicPlural(n, 'карта', 'карти', 'карт')}`;
+    case 'ru': return `${n} ${slavicPlural(n, 'карта', 'карты', 'карт')}`;
+    default:   return null; // fi hoidetaan kutsujassa (partitiivi/genetiivi eroaa)
+  }
+}
+export const korttia = n => cardCount(n) ?? (n === 1 ? '1 kortti' : `${n} korttia`);
+export const kortin  = n => cardCount(n) ?? (n === 1 ? '1 kortin' : `${n} korttia`);
 
 export function shuffle(a) {
   a = [...a];

@@ -990,7 +990,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       {/* Pakka + lyöntipakka */}
       <div style={{ display: 'flex', gap: 16, marginBottom: isMobile ? 6 : 12, alignItems: 'center', padding: isMobile ? '8px 10px' : '12px 16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, flexWrap: 'wrap' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
+          <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.deck')}</div>
           <div style={{ width: 60, height: 82, borderRadius: 7, background: BACKS[cardBack].bg, border: `2px solid ${BACKS[cardBack].border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <PakkaCount variant="number" count={G.deck.length}
               empty={G.deck.length === 0 && G.discardPile.length <= 1} flash={pakaAnim}
@@ -998,12 +998,12 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>LYÖNTIPAKKA</div>
+          <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, marginBottom: 5, letterSpacing: 1.5 }}>{t('games.seiska.ui.playPile')}</div>
           <Card card={G.discardTop} large={!isMobile} justPlaced={G.discardTop?.id === jpId} backStyle={BACKS[cardBack]} />
         </div>
         {G.reqSuit && (
           <div style={{ padding: '10px 18px', borderRadius: 12, background: 'rgba(201,168,76,0.1)', border: `2px solid ${C.gold}66`, textAlign: 'center' }}>
-            <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, marginBottom: 4, letterSpacing: 1.5 }}>VAADITTU MAA</div>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, marginBottom: 4, letterSpacing: 1.5 }}>{t('games.seiska.ui.requiredSuit')}</div>
             <div style={{ fontSize: isMobile ? 32 : 48, color: SUIT_COLOR[G.reqSuit], lineHeight: 1 }}>{G.reqSuit}</div>
           </div>
         )}
@@ -1017,7 +1017,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       {/* Suit-valitsin (seiskan jälkeen) */}
       {G.phase === 'awaiting_suit' && activeP?.isHuman && !handoff && (
         <div style={{ background: 'rgba(201,168,76,0.08)', border: `1px solid ${C.gold}44`, borderRadius: 14, padding: '14px 16px', marginBottom: 10 }}>
-          <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, marginBottom: 10 }}>Valitse vaadittu maa:</div>
+          <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, marginBottom: 10 }}>{t('games.seiska.ui.chooseSuitLabel')}</div>
           <div style={{ display: 'flex', gap: 10 }}>
             {SUIT_SYMS.map(s => (
               <button key={s} onClick={() => humanChooseSuit(s)}
@@ -1033,7 +1033,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       {G.aceBonus !== null && activeP?.isHuman && !handoff && (
         <div style={{ background: 'rgba(91,168,212,0.1)', border: `1px solid ${C.blue}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 30, color: SUIT_COLOR[G.aceBonus], lineHeight: 1 }}>{G.aceBonus}</span>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.text, flex: 1 }}>Ässä! Voit jatkaa {G.aceBonus}-maalla tai lopettaa vuoron.</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.text, flex: 1 }}>{t('games.seiska.ui.aceBonusHint', { suit: G.aceBonus })}</span>
           <button onClick={humanSkipAceBonus} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 8, padding: '7px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.action.end')}</button>
         </div>
       )}
@@ -1041,7 +1041,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       {/* Lappu-banneri */}
       {showLappu && (
         <div style={{ background: 'rgba(224,92,59,0.12)', border: `1px solid ${C.red}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.red, flex: 1 }}>1 kortti jäljellä — sano Lappu!</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.red, flex: 1 }}>{t('games.seiska.ui.lappuPrompt')}</span>
           <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, fontWeight: 700, color: lappuSecsLeft <= 1 ? '#ff4444' : C.red, minWidth: 24, textAlign: 'center', transition: 'color 0.3s' }}>{lappuSecsLeft ?? 4}</span>
           <button onClick={humanLappu} style={{ background: C.red, border: 'none', borderRadius: 8, padding: '8px 16px', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>LAPPU!</button>
         </div>
@@ -1065,8 +1065,8 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
           {displayP?.isHuman ? '👤' : '🤖'} {displayP?.name}
           {displayP?.hand.length > 0
-            ? ` — ${korttia(displayP.hand.length)} kädessä`
-            : ' — tyhjä! 🏆'}
+            ? ` — ${korttia(displayP.hand.length)} ${t('ui.shared.inHand')}`
+            : ` — ${t('ui.shared.emptyHandWin')}`}
           {G.lappuSaid.has(displayP?.id) && displayP?.hand.length === 1 && <span style={{ color: C.gold, marginLeft: 8 }}>LAPPU</span>}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', minHeight: isMobile ? 90 : 216 }}>
@@ -1178,26 +1178,26 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       {/* Tilapalkki */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> ensimmäinen kortiton voittaa
+          <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')}
           {' · '}
           <span style={{
             color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : 'inherit',
             fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 'inherit',
             animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
-            {G.deck.length === 0 && G.discardPile.length <= 1 ? 'Pakka: TYHJÄ' : `Pakka: ${G.deck.length}k`}
+            {G.deck.length === 0 && G.discardPile.length <= 1 ? t('games.seiska.ui.deckEmpty') : t('games.seiska.ui.deckCount', { n: G.deck.length })}
           </span>
-          {' · '}{G.reqSuit ? `Vaadittu: ${G.reqSuit}` : `Päällimmäinen: ${lbl(G.discardTop)}`}
+          {' · '}{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
+          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
         </div>
       </div>
 
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (

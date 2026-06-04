@@ -7,6 +7,9 @@ Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS
 Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 
+## Sääntölogiikan muokkaus
+**Ennen minkään pelin näkyvyys-, vaihto- tai muun sääntölogiikan muokkaamista lue ensin kyseisen pelin `PELI.md` ja toista sääntö minulle vahvistettavaksi** (suunnat, mitkä kortit pysyvät piilossa, kynnykset). Säännöt ovat hienovaraisia ja niitä on luettu väärin — esim. Kultakalassa pelaaja näkee omat 5 pöytäkorttiaan, vain 1 tuntematon (paikka 0) pysyy piilossa loppuun; vaihtoketju etenee oikealta vasemmalle (5→4→3→2→1). Älä päättele sääntöä koodista tai muistista, kun dokumentti on olemassa.
+
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 - `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.
@@ -40,6 +43,10 @@ Pelikohtaiset (vain osa ottaa):
 ## Session start
 At the start of every session run `npm run dev` in the background so the dev server is available at http://localhost:5173/ for preview verification during development.
 
+## Verifiointi
+- **Jos muutos ei näy previewissä, epäile ensin vanhentunutta dev-palvelinta tai välimuistia — älä muokkaa jo oikeaa koodia.** Käynnistä dev-palvelin uudelleen + kova reload (ja tarkista `vite-error-overlay`) ennen kuin oletat koodin olevan vialla. Kerro mitä kokeilit.
+- HMR-virheet konsolipuskurissa ovat usein vanhentuneita välitiloja kaksivaiheisten editien ajalta — täysi reload on luotettava totuus.
+
 ## Deploy
 **Ennen deployta (käsin — ei automatisoitua):**
 - Lisää `CHANGELOG`-merkintä `src/App.jsx`:ään (näkyy Asetukset → Muutosloki). `npm run deploy` EI päivitä tätä automaattisesti.
@@ -50,6 +57,10 @@ Production deploy: `npm run deploy`  (= `vercel build --prod && vercel deploy --
 One-time setup per machine: `npx vercel pull --yes --environment production`
 Live URL: https://tommi-jako.vercel.app  (ensisijainen)
 Vanha URL: https://tommi-jako52.vercel.app  (yhä voimassa — jaettu linkki kesälomalaisille; molemmat ovat tuotantodomaineja ja päivittyvät joka deployssa)
+
+**Varoitukset:**
+- Deploy vain `npm run deploy`- / git push -reittiä. **ÄLÄ käytä `vercel alias set`** julkista domainia varten — se luo suojatun 401-aliaksen; domain-aliasointi hoidetaan Vercel-dashboardista.
+- Deployn jälkeen huomioi välimuisti-/aikavyöhykeviive ennen kuin tulkitset, ettei muutos mennyt perille. Todenna tuotanto hakemalla bundle (`assets/index-*.js`) ja vertaamalla hash lokaaliin buildiin, älä pelkästä selaimen näkymästä.
 
 ## Games & Terminology
 Nine games with unified Finnish UI terms:

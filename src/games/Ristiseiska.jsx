@@ -737,7 +737,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       if (suit === '♣' || G.rows['♣'].active) {
         helpElements = (
           <>
-            pelaa:{' '}
+            {t('games.ristiseiska.ui.playPrompt')}{' '}
             <span style={{ color: tc }}>7{suit}</span>
           </>
         );
@@ -765,7 +765,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       if (playable.length > 0) {
         helpElements = (
           <>
-            pelaa:{' '}
+            {t('games.ristiseiska.ui.playPrompt')}{' '}
             {playable.map((r, i) => (
               <span key={i} style={{ color: tc }}>
                 {r}{suit}
@@ -775,9 +775,9 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
           </>
         );
       } else if (lowerComplete && upperComplete) {
-        helpText = 'Tämän maan pinot on kaadettu';
+        helpText = t('games.ristiseiska.ui.pilesBeaten');
       } else if (lowerCast && upperCast) {
-        helpText = 'Tämän maan pinot on avattu';
+        helpText = t('games.ristiseiska.ui.pilesOpen');
       }
     }
 
@@ -883,7 +883,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
 
       {/* Pöytä: pinot */}
       <PoytaPanel isMobile={isMobile} minHeight={null}
-        title={<span>TORNIT · ala-pino [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; ylä-pino [8→K]</span>}>
+        title={<span>{t('games.ristiseiska.ui.towers')} · {t('games.ristiseiska.ui.lowerShort')} [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; {t('games.ristiseiska.ui.upperShort')} [8→K]</span>}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? 6 : 16 }}>
           {SUITS.map(s => <StackRow key={s} suit={s} />)}
         </div>
@@ -921,7 +921,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       {/* Oma käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn || isGiving ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 14px', marginBottom: isMobile ? 6 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn || isGiving ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero{human.hand.length === 0 ? ' — tyhjä! 🏆' : ''}
+          👤 Hero{human.hand.length === 0 ? ` — ${t('ui.shared.emptyHandWin')}` : ''}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {
@@ -984,11 +984,11 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       {/* Tilapalkki */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 6 : 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>Tavoite:</span> ensimmäinen kortiton voittaa · Avaukset: {SUITS.filter(s => G.rows[s].active).length}/4
+          <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')} · {t('games.ristiseiska.ui.openings')} {SUITS.filter(s => G.rows[s].active).length}/4
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} Avoimet kortit</button>
+          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
+          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
         </div>
       </div>
 
@@ -1000,7 +1000,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       {pendingResult && allBots && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,22,18,0.93)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, zIndex: 100, padding: 24 }}>
           <div style={{ fontSize: 32 }}>🔮</div>
-          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>KATSOMOTILA PÄÄTTYI</h2>
+          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>{t('ui.shared.spectatorEnded')}</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 340 }}>
             {pendingResult.ranking.map((r, i) => {
               const medals = ['🥇','🥈','🥉','4️⃣'];
@@ -1022,7 +1022,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (

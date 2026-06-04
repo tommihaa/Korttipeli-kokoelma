@@ -719,7 +719,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     setJP(handCard.id);
     tm(() => setJP(null), 2200);
     if (sndRef.current) SFX.leave();
-    const who = `${g.players[playerIdx].name} jätti`;
+    const who = g.players[playerIdx].name;
     addLog(M.humanLeave(who, lblColored(handCard)));
     flashLastPlay(g.players[playerIdx].name, handCard, g.players[playerIdx].isHuman);
     return newG;
@@ -1237,9 +1237,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
             <span style={{ color: C.gold, fontWeight: 700, fontSize: 12, flex: 1 }}>{t('games.kasino.ui.scoringTitle')}</span>
             <button onClick={() => setShowInfo(false)} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>✕</button>
           </div>
-          <span style={{ color: SUIT_COLOR_DARK['♦'], fontWeight: 700 }}>10♦</span> = 2p &nbsp;·&nbsp;
-          <span style={{ color: SUIT_COLOR_DARK['♠'], fontWeight: 700 }}>2♠</span> = 1p &nbsp;·&nbsp;
-          kukin ässä = 1p &nbsp;·&nbsp; eniten kortteja = 1p &nbsp;·&nbsp; eniten patoja = 1p &nbsp;·&nbsp; kukin mökki = 1p
+          {t('games.kasino.ui.scoring')}
         </div>
       )}
 
@@ -1261,7 +1259,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       {/* Kierroksen pisteet */}
       {scores && (
         <div style={{ background: 'rgba(201,168,76,0.06)', border: `1px solid ${C.gold}44`, borderRadius: 12, padding: '10px 14px', marginBottom: 10 }}>
-          <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, marginBottom: 6, letterSpacing: 1 }}>KIERROKSEN PISTEET</div>
+          <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, marginBottom: 6, letterSpacing: 1 }}>{t('games.kasino.ui.roundPoints')}</div>
           {scores.map((s, i) => {
             const p = G.players[i];
             const has10d = p.captured.some(isRuutuKymppi);
@@ -1381,7 +1379,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
         {/* Rakennelmat */}
         {G.builds.length > 0 && (
           <div style={{ marginTop: 10, borderTop: `1px solid ${C.panelBorder}`, paddingTop: 10 }}>
-            <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, marginBottom: 6 }}>RAKENNELMAT</div>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, marginBottom: 6 }}>{t('games.kasino.ui.buildsLabel')}</div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {G.builds.map(build => {
                 const isMine = G.players[build.ownerIdx]?.isHuman;
@@ -1581,7 +1579,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (

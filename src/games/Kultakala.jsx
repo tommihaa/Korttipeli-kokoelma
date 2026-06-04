@@ -104,6 +104,7 @@ function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknow
 }
 
 function DiceRoll({ players, onDone, soundOn }) {
+  const t = useT();
   const [phase, setPhase] = useState('rolling');
   const [rolls, setRolls] = useState({});
 
@@ -129,7 +130,7 @@ function DiceRoll({ players, onDone, soundOn }) {
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, zIndex: 100 }}>
-      <div style={{ fontSize: 18, color: C.gold, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>TASATILANNE</div>
+      <div style={{ fontSize: 18, color: C.gold, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>{t('ui.shared.tie')}</div>
       {players.map(p => {
         const dice = rolls[p.id] || [1, 1, 1, 1, 1];
         const sum = dice.reduce((a, b) => a + b, 0);
@@ -140,12 +141,12 @@ function DiceRoll({ players, onDone, soundOn }) {
             <div style={{ display: 'flex', gap: 8 }}>
               {dice.map((d, i) => <div key={i} style={{ width: 38, height: 38, borderRadius: 8, background: isWinner ? C.gold + '22' : 'rgba(255,255,255,0.08)', border: `1px solid ${isWinner ? C.gold : C.panelBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: isWinner ? C.gold : C.text }}>{['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][d - 1]}</div>)}
             </div>
-            <div style={{ fontFamily: 'monospace', fontSize: 16, color: isWinner ? C.gold : C.text, fontWeight: 700 }}>{sum}{phase !== 'rolling' ? ' pistettä' : ''}</div>
+            <div style={{ fontFamily: 'monospace', fontSize: 16, color: isWinner ? C.gold : C.text, fontWeight: 700 }}>{sum}{phase !== 'rolling' ? ` ${t('ui.shared.points')}` : ''}</div>
           </div>
         );
       })}
       {phase === 'result' && (
-        <button onClick={onDone} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', marginTop: 8 }}>Näytä tulokset →</button>
+        <button onClick={onDone} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', marginTop: 8 }}>{t('games.kultakala.ui.showResults')}</button>
       )}
     </div>
   );
@@ -202,8 +203,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
 
-
-  const korttia = n => n === 1 ? '1 kortti' : `${n} korttia`;
 
   function triggerKohahdus(card) {
     setKohahdus(card);
@@ -709,7 +708,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
-            <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65, marginBottom: 2 }}>KENTTÄ</div>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65, marginBottom: 2 }}>{t('ui.shared.fieldLabel')}</div>
             {ais.map((p, i) => {
               const pi = allBots ? i : i + 1, isActive = curIdx === pi;
               return (
@@ -734,7 +733,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: isMobile ? '8px 10px' : '12px 16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
         {(() => { const pw = isMobile ? 58 : 72, ph = isMobile ? 80 : 98; return (<>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.deck')}</div>
           <div onClick={canDraw ? () => humanDraw(false) : undefined}
             {...(canDraw ? { role: 'button', tabIndex: 0, 'aria-label': 'Nosta pakasta', onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDraw(false); } } } : {})}>
             <FanStack
@@ -750,7 +749,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.discardLabel')}</div>
           <div
             onClick={canDraw ? () => humanDraw(true) : canDiscard ? humanStopSwap : undefined}
             style={{ cursor: (canDraw && discardTop) || canDiscard ? 'pointer' : 'default', position: 'relative', width: pw, height: ph }}
@@ -764,11 +763,11 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
                 </div>
               </div>}
           </div>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 5 }}>{G.discard.length} kpl</div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 5 }}>{G.discard.length} {t('ui.shared.pcs')}</div>
         </div>
         {held && (
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 10, color: C.gold, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>KÄDESSÄ</div>
+            <div style={{ fontSize: 10, color: C.gold, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.handLabel')}</div>
             <KaCard card={held} faceUp small backStyle={BACKS[cardBack]} highlight />
             <div style={{ fontSize: 10, color: C.gold, fontFamily: 'sans-serif', marginTop: 5 }}>{held.v} p</div>
           </div>
@@ -792,7 +791,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
       {!allBots && <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'sans-serif', fontSize: 12, color: curIdx === 0 ? C.gold : C.dim, marginBottom: 8 }}>
           <span>{allBots ? '🤖' : '👤'} {human.name} {curIdx === 0 ? '●' : ''}</span>
-          {!isMobile && <span style={{ fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>KENTTÄ</span>}
+          {!isMobile && <span style={{ fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>{t('ui.shared.fieldLabel')}</span>}
         </div>
         <div style={{ display: 'flex', gap: isMobile ? 4 : 8, alignItems: 'flex-end', flexWrap: 'nowrap' }}>
           <div style={{ textAlign: 'center', flexShrink: 0 }}>
@@ -838,7 +837,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.kultakala.ui.goal')}</span>
-        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
+        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
@@ -865,7 +864,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (

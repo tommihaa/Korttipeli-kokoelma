@@ -25,7 +25,8 @@ const Paskahousu = lazy(() => import('./games/Paskahousu.jsx'));
 const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
 const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
 const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
-const KANSA            = ['Astraalitason tirehtööri','Boomer','Jonne','Justiina','Karen','Kukkahattutäti','Lumihiutale','NPC','Rane','Random','Setämies','Veeti'];
+const KANSA            = ['Astraalitason tirehtööri','Jonne','Justiina','Kukkahattutäti','Lumihiutale','Rane','Setämies','Veeti'];
+const MEME_GANG        = ['Karen','Boomer','Zoomer','NPC','Random','Vegan','Nihilist','Chad','Doomer','Edgelord','Hipster','Influencer','Lurker','Tryhard','Noob','Troll','Crypto Bro','Main Character','AFK'];
 
 // Pikkukortti-ikoni valikon ruutuun (esim. Maija = Q♠) — luettavampi kuin tumma Unicode-korttiglyyfi
 const CardIcon = ({ rank, suit, suitColor = '#1a1a1a' }) => (
@@ -156,6 +157,13 @@ const MERKISTO = [
 
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
+  {
+    date: '4.6.2026',
+    items: [
+      'Kymmenen uutta kieltä! Sovellus toimii nyt suomen ja englannin lisäksi myös ruotsiksi, norjaksi, tanskaksi, islanniksi, saksaksi, ranskaksi, espanjaksi, italiaksi, ukrainaksi ja venäjäksi — kaikkiaan 12 kielellä. Kieli tunnistetaan selaimesta, ja sen voi vaihtaa Info-paneelin lippuvalikosta. Valikot, pelien kuvaukset ja säännöt, sanasto sekä kaikki pelinaikaiset viestit ja vihjeet on käännetty.',
+      'Pelien omat nimet (Moska, Seiska, Kasino…) pysyvät tuttuina kaikilla kielillä — kunkin kielen vakiintuneet vastineet hiotaan myöhemmin.',
+    ],
+  },
   {
     date: '3.6.2026',
     items: [
@@ -472,6 +480,67 @@ function StatBadge({ s }) {
   );
 }
 
+// Inline-SVG-liput kielivalintaan. Emojiliput eivät renderöidy Windowsilla (näkyvät
+// maakoodina "GB"/"FI"), joten piirretään liput SVG:nä → näkyvät kaikilla alustoilla.
+function Flag({ code }) {
+  const c = { width: 18, height: 12, viewBox: '0 0 18 12', 'aria-hidden': true,
+    style: { borderRadius: 2, display: 'block', flexShrink: 0, boxShadow: '0 0 0 0.5px rgba(0,0,0,0.25)' } };
+  if (code === 'fi') return (
+    <svg {...c}><rect width="18" height="12" fill="#fff"/><rect x="5" width="3" height="12" fill="#003580"/><rect y="4.5" width="18" height="3" fill="#003580"/></svg>
+  );
+  if (code === 'sv') return (
+    <svg {...c}><rect width="18" height="12" fill="#006aa7"/><rect x="5" width="3" height="12" fill="#fecc00"/><rect y="4.5" width="18" height="3" fill="#fecc00"/></svg>
+  );
+  if (code === 'de') return (
+    <svg {...c}><rect width="18" height="4" fill="#000"/><rect y="4" width="18" height="4" fill="#dd0000"/><rect y="8" width="18" height="4" fill="#ffce00"/></svg>
+  );
+  if (code === 'en') return (
+    <svg {...c}>
+      <clipPath id="ukclip"><rect width="18" height="12"/></clipPath>
+      <g clipPath="url(#ukclip)">
+        <rect width="18" height="12" fill="#012169"/>
+        <path d="M0,0 L18,12 M18,0 L0,12" stroke="#fff" strokeWidth="2.4"/>
+        <path d="M0,0 L18,12 M18,0 L0,12" stroke="#c8102e" strokeWidth="1"/>
+        <rect x="7" width="4" height="12" fill="#fff"/><rect y="4" width="18" height="4" fill="#fff"/>
+        <rect x="7.6" width="2.8" height="12" fill="#c8102e"/><rect y="4.6" width="18" height="2.8" fill="#c8102e"/>
+      </g>
+    </svg>
+  );
+  // Norja: punainen, valkoreunainen sininen pohjoismaaristi
+  if (code === 'no') return (
+    <svg {...c}><rect width="18" height="12" fill="#ba0c2f"/><rect x="4" width="5" height="12" fill="#fff"/><rect y="3.5" width="18" height="5" fill="#fff"/><rect x="5" width="3" height="12" fill="#00205b"/><rect y="4.5" width="18" height="3" fill="#00205b"/></svg>
+  );
+  // Tanska: punainen, valkoinen pohjoismaaristi
+  if (code === 'da') return (
+    <svg {...c}><rect width="18" height="12" fill="#c8102e"/><rect x="5" width="3" height="12" fill="#fff"/><rect y="4.5" width="18" height="3" fill="#fff"/></svg>
+  );
+  // Islanti: sininen, valkoreunainen punainen pohjoismaaristi
+  if (code === 'is') return (
+    <svg {...c}><rect width="18" height="12" fill="#02529c"/><rect x="4" width="5" height="12" fill="#fff"/><rect y="3.5" width="18" height="5" fill="#fff"/><rect x="5" width="3" height="12" fill="#dc1e35"/><rect y="4.5" width="18" height="3" fill="#dc1e35"/></svg>
+  );
+  // Ranska: pysty sininen/valkoinen/punainen
+  if (code === 'fr') return (
+    <svg {...c}><rect width="6" height="12" fill="#0055a4"/><rect x="6" width="6" height="12" fill="#fff"/><rect x="12" width="6" height="12" fill="#ef4135"/></svg>
+  );
+  // Italia: pysty vihreä/valkoinen/punainen
+  if (code === 'it') return (
+    <svg {...c}><rect width="6" height="12" fill="#009246"/><rect x="6" width="6" height="12" fill="#fff"/><rect x="12" width="6" height="12" fill="#ce2b37"/></svg>
+  );
+  // Espanja: vaaka punainen/keltainen(tuplakorkeus)/punainen
+  if (code === 'es') return (
+    <svg {...c}><rect width="18" height="12" fill="#aa151b"/><rect y="3" width="18" height="6" fill="#f1bf00"/></svg>
+  );
+  // Ukraina: sininen yläpuolisko, keltainen alapuolisko
+  if (code === 'uk') return (
+    <svg {...c}><rect width="18" height="6" fill="#0057b7"/><rect y="6" width="18" height="6" fill="#ffd700"/></svg>
+  );
+  // Venäjä: vaaka valkoinen/sininen/punainen
+  if (code === 'ru') return (
+    <svg {...c}><rect width="18" height="4" fill="#fff"/><rect y="4" width="18" height="4" fill="#0039a6"/><rect y="8" width="18" height="4" fill="#d52b1e"/></svg>
+  );
+  return null;
+}
+
 function GameBtn({ g, stats, onSelect }) {
   const t = useT();
   const { lang } = useLang();
@@ -694,7 +763,7 @@ export default function App() {
   const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard'
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
   const [playerGroup, setPlayerGroup] = useState(() => {
-    const groups = ['laituri', 'jumalat', 'puolue', 'kansa'];
+    const groups = ['laituri', 'jumalat', 'puolue', 'kansa', 'meme'];
     return groups[Math.floor(Math.random() * groups.length)];
   });
   const [resultData, setResultData] = useState(null);   // {ranking, revealCards?, scoreBreakdown?}
@@ -739,6 +808,7 @@ export default function App() {
   const playerPool = playerGroup === 'laituri' ? LAITURI_SPECIAL
     : playerGroup === 'jumalat'  ? ONNEN_JUMALAT
     : playerGroup === 'puolue'   ? IHMISTEN_PUOLUE
+    : playerGroup === 'meme'     ? MEME_GANG
     : KANSA;
 
   function selectGame(id) {
@@ -968,6 +1038,7 @@ export default function App() {
               { key: 'jumalat', label: t('ui.settings.groups.jumalat'),  pool: ONNEN_JUMALAT    },
               { key: 'puolue',  label: t('ui.settings.groups.puolue'),   pool: IHMISTEN_PUOLUE  },
               { key: 'kansa',   label: t('ui.settings.groups.kansa'),    pool: KANSA            },
+              { key: 'meme',    label: t('ui.settings.groups.meme'),     pool: MEME_GANG        },
             ].map(({ key, label, pool }) => (
               <button
                 key={key}
@@ -1020,7 +1091,7 @@ export default function App() {
         {/* Kieli / Language */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.lang.label')}</span>
-          <div role="group" aria-label={t('ui.lang.label')} style={{ display: 'flex', gap: 4 }}>
+          <div role="group" aria-label={t('ui.lang.label')} style={{ display: 'flex', gap: 4, flexWrap: 'wrap', rowGap: 6 }}>
             {LANGS.map(({ code, label, name }) => {
               const activeLang = lang === code;
               return (
@@ -1028,15 +1099,17 @@ export default function App() {
                   key={code}
                   onClick={() => setLang(code)}
                   aria-pressed={activeLang}
+                  aria-label={name}
                   title={name}
                   style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
                     background: activeLang ? `${C.gold}22` : 'transparent',
                     border: `1px solid ${activeLang ? C.gold : C.panelBorder}`,
                     color: activeLang ? C.gold : C.dim, borderRadius: 8,
-                    padding: '6px 12px', cursor: 'pointer',
+                    padding: '6px 10px', cursor: 'pointer',
                     fontFamily: 'Georgia,serif', fontSize: 13, letterSpacing: 1,
                   }}
-                >{label}</button>
+                ><Flag code={code} />{label}</button>
               );
             })}
           </div>

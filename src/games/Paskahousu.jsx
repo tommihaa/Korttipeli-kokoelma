@@ -1046,7 +1046,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         border={G.top ? C.gold + '33' : C.panelBorder}
         minHeight={{ m: 90, t: 130 }}
         animation={kasaAnim === 'quad' ? 'kasaQuad 2s ease forwards' : kasaAnim === 'clear' ? 'kasaClear 1.4s ease forwards' : kasaAnim === 'take' ? 'kasaTake 0.85s ease forwards' : undefined}
-        title={<span style={{ color: C.dim }}>KASA — {G.pile.length === 0 ? 'tyhjä' : `${G.pile.length} korttia`}</span>}
+        title={<span style={{ color: C.dim }}>{t('ui.shared.pileLabel')} — {G.pile.length === 0 ? t('ui.shared.emptyLower') : korttia(G.pile.length)}</span>}
         right={<PakkaCount count={G.draw.length} flash={pakaAnim} />}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {G.top
@@ -1064,7 +1064,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
               />
             : (
               <div style={{ width: 80, height: 108, borderRadius: 7, border: '1.5px dashed #1a3a22', opacity: 0.3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim }}>tyhjä</span>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim }}>{t('ui.shared.emptyLower')}</span>
               </div>
             )}
           {G.top && (() => {
@@ -1077,11 +1077,11 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
             return (
               <div>
                 <div style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.gold, marginBottom: 3 }}>
-                  {G.top.r}{G.top.s} — arvo {G.top.v}
+                  {G.top.r}{G.top.s} {t('games.paskahousu.ui.cardValue', { v: G.top.v })}
                 </div>
                 {sameRankCount > 1 && (
                   <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.tikki, marginBottom: 2 }}>
-                    ×{sameRankCount} samanarvoista päällä
+                    {t('games.paskahousu.ui.sameRankTop', { n: sameRankCount })}
                   </div>
                 )}
                 {G.pile.length > sameRankCount && (
@@ -1147,7 +1147,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         )}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : G.phase === 'swap_offer' && G.swapData?.pidx === 0 ? C.gold + '22' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero — {korttia(human.hand.length)} kädessä
+          👤 Hero — {korttia(human.hand.length)} {t('ui.shared.inHand')}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {
@@ -1208,7 +1208,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
             {String(Math.floor(timerLeft / 60)).padStart(2, '0')}:{String(timerLeft % 60).padStart(2, '0')}
           </span>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: timerLeft <= 30 ? '#ff9977' : '#bb88ff' }}>
-            Yhtäkkinen kuolema — vähemmän kortteja voittaa!
+            {t('games.paskahousu.ui.suddenDeath')}
           </span>
         </div>
       )}
@@ -1217,7 +1217,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.paskahousu.ui.goal')}</span>
         <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {soundOn ? '🔊' : '🔇'} Ääni
+          {soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}
         </button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}
@@ -1232,7 +1232,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       {pendingResult && allBots && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,22,18,0.93)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, zIndex: 100, padding: 24 }}>
           <div style={{ fontSize: 32 }}>🔮</div>
-          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>KATSOMOTILA PÄÄTTYI</h2>
+          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>{t('ui.shared.spectatorEnded')}</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 340 }}>
             {pendingResult.ranking.map((r, i) => {
               const medals = ['🥇','🥈','🥉','4️⃣'];
@@ -1254,7 +1254,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (

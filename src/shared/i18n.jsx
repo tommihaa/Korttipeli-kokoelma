@@ -14,18 +14,53 @@
 import { createContext, useContext, useState, useCallback } from 'react';
 import { fi } from '../locales/fi.js';
 import { en } from '../locales/en.js';
+import { sv } from '../locales/sv.js';
+import { de } from '../locales/de.js';
+import { no } from '../locales/no.js';
+import { da } from '../locales/da.js';
+import { is } from '../locales/is.js';
+import { fr } from '../locales/fr.js';
+import { es } from '../locales/es.js';
+import { it } from '../locales/it.js';
+import { uk } from '../locales/uk.js';
+import { ru } from '../locales/ru.js';
 
-const LOCALES = { fi, en };
+const LOCALES = { fi, en, sv, de, no, da, is, fr, es, it, uk, ru };
 const FALLBACK = 'fi'; // suomi on totuuden lähde — puuttuva avain putoaa tähän
 
 // Valikossa/Info-paneelissa näytettävät kielet. Lisää tähän kun sv/ru tulevat.
+// Liput piirretään SVG:nä App.jsx:n <Flag code> -komponentissa (emojiliput eivät
+// renderöidy Windowsilla), joten tässä vain code/label/name.
 export const LANGS = [
   { code: 'fi', label: 'FI', name: 'Suomi' },
   { code: 'en', label: 'EN', name: 'English' },
+  { code: 'sv', label: 'SV', name: 'Svenska' },
+  { code: 'no', label: 'NO', name: 'Norsk' },
+  { code: 'da', label: 'DA', name: 'Dansk' },
+  { code: 'is', label: 'IS', name: 'Íslenska' },
+  { code: 'de', label: 'DE', name: 'Deutsch' },
+  { code: 'fr', label: 'FR', name: 'Français' },
+  { code: 'es', label: 'ES', name: 'Español' },
+  { code: 'it', label: 'IT', name: 'Italiano' },
+  { code: 'uk', label: 'UK', name: 'Українська' },
+  { code: 'ru', label: 'RU', name: 'Русский' },
 ];
 
 function detectLang() {
-  if (typeof navigator !== 'undefined' && /^en/i.test(navigator.language || '')) return 'en';
+  if (typeof navigator !== 'undefined') {
+    const l = navigator.language || '';
+    if (/^sv/i.test(l)) return 'sv';
+    if (/^n[bno]/i.test(l)) return 'no';   // nb / nn / no
+    if (/^da/i.test(l)) return 'da';
+    if (/^is/i.test(l)) return 'is';
+    if (/^de/i.test(l)) return 'de';
+    if (/^fr/i.test(l)) return 'fr';
+    if (/^es/i.test(l)) return 'es';
+    if (/^it/i.test(l)) return 'it';
+    if (/^uk/i.test(l)) return 'uk';
+    if (/^ru/i.test(l)) return 'ru';
+    if (/^en/i.test(l)) return 'en';
+  }
   return FALLBACK;
 }
 

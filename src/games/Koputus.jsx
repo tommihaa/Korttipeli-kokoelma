@@ -62,6 +62,7 @@ const M = {
 };
 
 function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true, intentSlot }) {
+  const t = useT();
   return (
     <div style={{ padding: small ? '4px 8px' : 14, borderRadius: 12, transition: 'border-color 0.2s', border: `1px solid ${isActive ? 'rgba(201,168,76,0.3)' : 'rgba(42,74,50,0.4)'}`, background: isActive ? 'rgba(201,168,76,0.03)' : 'transparent', display: small ? 'flex' : 'block', alignItems: small ? 'center' : undefined, gap: small ? 6 : 0 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: small ? 4 : 8, marginBottom: small ? 0 : 8, fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, flexShrink: 0 }}>
@@ -69,7 +70,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
         <span style={{ fontWeight: isActive ? 700 : 400, letterSpacing: 0.5 }}>{player.name}</span>
         {isActive && !small && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>● vuoro</span>}
         {showScore && player.isHuman && <span style={{ marginLeft: 'auto', color: '#a0baa8', fontSize: 12 }}>{pScore(player)} p</span>}
-        {!small && <span style={{ marginLeft: showScore && player.isHuman ? 6 : 'auto', fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>KENTTÄ</span>}
+        {!small && <span style={{ marginLeft: showScore && player.isHuman ? 6 : 'auto', fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>{t('ui.shared.fieldLabel')}</span>}
       </div>
       <div style={small ? { display: 'flex', flexDirection: 'row', gap: 4 } : { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
         {player.cards.map((card, i) => {
@@ -756,7 +757,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       {(() => { const cw = isMobile ? 62 : 82; const ch = isMobile ? 88 : 112; return (
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', padding: isMobile ? '6px 8px' : '14px 16px', background: 'rgba(255,255,255,0.013)', border: '1px solid #1a3a22', borderRadius: 14, marginBottom: isMobile ? 6 : 12 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>PAKKA</div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.deck')}</div>
           <div onClick={isHuman && phase === 'draw' && G.deck.length ? humanDrawDeck : undefined}
             {...(isHuman && phase === 'draw' && G.deck.length ? { role: 'button', tabIndex: 0, 'aria-label': t('ui.shared.drawDeckAria'), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDrawDeck(); } } } : {})}
             style={{ cursor: isHuman && phase === 'draw' && G.deck.length ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
@@ -778,12 +779,12 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
           {reactionOpen
             ? <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, borderRadius: 32, border: `3px solid ${C.red}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 22px ${C.red}44`, animation: 'rpulse 1s ease infinite' }}>
               <span style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, color: C.red, lineHeight: 1, fontFamily: 'monospace' }}>{reactionSec}</span>
-              <span style={{ fontSize: 9, color: C.dim, fontFamily: 'sans-serif', letterSpacing: 1 }}>SEK</span>
+              <span style={{ fontSize: 9, color: C.dim, fontFamily: 'sans-serif', letterSpacing: 1 }}>{t('games.koputus.ui.sec')}</span>
             </div>
             : <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, opacity: 0.12 }}>⚡</div>}
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>POISTOPAKKA</div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.discardLabel')}</div>
           <div onClick={isHuman && phase === 'draw' && discardTop ? humanDrawDiscard : undefined}
             {...(isHuman && phase === 'draw' && discardTop ? { role: 'button', tabIndex: 0, 'aria-label': t('ui.shared.drawDiscardAria'), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDrawDiscard(); } } } : {})}
             style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
@@ -796,7 +797,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
                 </div>
               </div>}
           </div>
-          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 6 }}>{G.discard.length} kpl</div>
+          <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginTop: 6 }}>{G.discard.length} {t('ui.shared.pcs')}</div>
         </div>
       </div>
       ); })()}
@@ -839,13 +840,13 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.koputus.ui.goal')}</span>
-        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} Ääni</button>
+        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
         <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
       <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>
         <button onClick={() => setLogOpen(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', borderBottom: logOpen ? '1px solid #1a3a22' : 'none', padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontSize: 11, fontFamily: 'sans-serif', letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>TAPAHTUMALOKI</span>
+          <span style={{ fontSize: 11, fontFamily: 'sans-serif', letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 14, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
         {logOpen && (
