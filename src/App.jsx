@@ -160,6 +160,12 @@ const CHANGELOG = [
   {
     date: '4.6.2026',
     items: [
+      'Kielivalinta siirretty Info-paneelista suoraan päävalikkoon (pelilistan alle). Kielet on ryhmitelty varmennustason mukaan: suomi on natiivi (✓), muut on merkitty "web" eli pelinimet on varmistettu verkkohaulla mutta ei vielä äidinkielisen tarkistamana. Korjattu myös pari pelinimeä (espanjaksi Ristiseiska → Cinquillo, islanniksi Seiska → Olsen Olsen, Paskahousu → Skítakall).',
+    ],
+  },
+  {
+    date: '4.6.2026',
+    items: [
       'Valikon pelinimet kielikohtaisesti! Jokaisella kielellä pelin nimen alla näkyy nyt sen oman korttipelikulttuurin vakiintunut vastine — esim. Moska on saksaksi "Durak", ruotsiksi näkyy Paskahousu → "Skitgubbe", Seiska → "Mau-Mau", Kasino → "Cassino". Kun vakiintunutta nimeä ei ole, tilalla on lyhyt kuvaus kyseisellä kielellä. Suomeksi pelit pysyvät ilman alaotsikkoa.',
     ],
   },
@@ -606,6 +612,64 @@ function GameBtn({ g, stats, onSelect }) {
           {Array.isArray(rules) && rules.map((rule, i) => <RuleRow key={i} text={rule} />)}
         </div>
       )}
+    </div>
+  );
+}
+
+// Päävalikon kielivalitsin — ryhmittelee kielet varmennustason mukaan:
+// Testatut (status native/auto) ja Testaamattomat (status untested).
+// Pieni piste lipun jäljessä erottaa tason: kulta = natiivi, himmeä = web (auto).
+function LangSelector({ lang, setLang, t, isMobile }) {
+  const groups = [
+    { key: 'tested', langs: LANGS.filter(l => l.status === 'native' || l.status === 'auto') },
+    { key: 'untested', langs: LANGS.filter(l => l.status === 'untested') },
+  ];
+  return (
+    <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 900, marginTop: 8, marginBottom: 2 }}>
+      {groups.map(({ key, langs }) => langs.length > 0 && (
+        <div key={key} style={{ marginBottom: 6 }}>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 10, color: C.dim, opacity: 0.6, letterSpacing: 1.5, marginBottom: 4, textTransform: 'uppercase' }}>
+            {t(`ui.lang.${key}`)}
+          </div>
+          <div role="group" aria-label={t(`ui.lang.${key}`)} style={{ display: 'flex', gap: 4, flexWrap: 'wrap', rowGap: 6 }}>
+            {langs.map(({ code, label, name, status }) => {
+              const active = lang === code;
+              return (
+                <button
+                  key={code}
+                  onClick={() => setLang(code)}
+                  aria-pressed={active}
+                  aria-label={name}
+                  title={name}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    background: active ? `${C.gold}22` : 'transparent',
+                    border: `1px solid ${active ? C.gold : C.panelBorder}`,
+                    color: active ? C.gold : C.dim, borderRadius: 8,
+                    padding: '5px 9px', cursor: 'pointer',
+                    fontFamily: 'Georgia,serif', fontSize: 12, letterSpacing: 1,
+                    opacity: status === 'untested' ? 0.72 : 1,
+                  }}
+                ><Flag code={code} />{label}
+                  {status === 'native' && (
+                    <span title="natiivi" style={{ fontSize: 11, color: C.gold, marginLeft: 1, lineHeight: 1 }}>✓</span>
+                  )}
+                  {status === 'auto' && (
+                    <span title="konevarmistettu (web), ei natiivitarkistusta" style={{
+                      fontSize: 8, color: C.dim, opacity: 0.7, letterSpacing: 0,
+                      border: `1px solid ${C.panelBorder}`, borderRadius: 3,
+                      padding: '0 3px', lineHeight: 1.5, fontFamily: 'sans-serif',
+                    }}>web</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+      <div style={{ fontFamily: 'Georgia,serif', fontSize: 9, color: C.dim, opacity: 0.5, marginTop: 1 }}>
+        {t('ui.lang.note')}
+      </div>
     </div>
   );
 }
@@ -1094,32 +1158,7 @@ export default function App() {
           >{t('ui.info.close')}</button>
         </div>
 
-        {/* Kieli / Language */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.lang.label')}</span>
-          <div role="group" aria-label={t('ui.lang.label')} style={{ display: 'flex', gap: 4, flexWrap: 'wrap', rowGap: 6 }}>
-            {LANGS.map(({ code, label, name }) => {
-              const activeLang = lang === code;
-              return (
-                <button
-                  key={code}
-                  onClick={() => setLang(code)}
-                  aria-pressed={activeLang}
-                  aria-label={name}
-                  title={name}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    background: activeLang ? `${C.gold}22` : 'transparent',
-                    border: `1px solid ${activeLang ? C.gold : C.panelBorder}`,
-                    color: activeLang ? C.gold : C.dim, borderRadius: 8,
-                    padding: '6px 10px', cursor: 'pointer',
-                    fontFamily: 'Georgia,serif', fontSize: 13, letterSpacing: 1,
-                  }}
-                ><Flag code={code} />{label}</button>
-              );
-            })}
-          </div>
-        </div>
+        {/* Kielivalinta siirretty päävalikkoon (LangSelector) — ei enää Info-paneelissa. */}
 
         {/* Esittely */}
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
@@ -1345,6 +1384,7 @@ export default function App() {
           {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={selectGame} />)}
         </div>
       </div>
+      <LangSelector lang={lang} setLang={setLang} t={t} isMobile={isMobile} />
       <div style={{ fontSize: 10, color: '#b9c7b2', fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
         v{APP_VERSION} · {BUILD_DATE} {BUILD_TIME}
       </div>

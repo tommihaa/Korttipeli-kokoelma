@@ -28,22 +28,26 @@ import { ru } from '../locales/ru.js';
 const LOCALES = { fi, en, sv, de, no, da, is, fr, es, it, uk, ru };
 const FALLBACK = 'fi'; // suomi on totuuden lähde — puuttuva avain putoaa tähän
 
-// Valikossa/Info-paneelissa näytettävät kielet. Lisää tähän kun sv/ru tulevat.
-// Liput piirretään SVG:nä App.jsx:n <Flag code> -komponentissa (emojiliput eivät
-// renderöidy Windowsilla), joten tässä vain code/label/name.
+// Valikossa näytettävät kielet. Liput piirretään SVG:nä App.jsx:n <Flag code>
+// -komponentissa (emojiliput eivät renderöidy Windowsilla), joten tässä code/label/name.
+// status = käännösten/pelinimien varmennustaso:
+//   'native'   = suomi (lähdekieli) tai natiivipuhujan vahvistama
+//   'auto'     = web-haulla varmistetut pelinimet (Claude), ei vielä natiivitarkistusta
+//   'untested' = ei vielä varmistettu (kuvailevia altName-nimiä, odottaa tarkistusta)
+// Valikon kielivalitsin ryhmittelee: 'native'+'auto' → Testatut, 'untested' → Testaamattomat.
 export const LANGS = [
-  { code: 'fi', label: 'FI', name: 'Suomi' },
-  { code: 'en', label: 'EN', name: 'English' },
-  { code: 'sv', label: 'SV', name: 'Svenska' },
-  { code: 'no', label: 'NO', name: 'Norsk' },
-  { code: 'da', label: 'DA', name: 'Dansk' },
-  { code: 'is', label: 'IS', name: 'Íslenska' },
-  { code: 'de', label: 'DE', name: 'Deutsch' },
-  { code: 'fr', label: 'FR', name: 'Français' },
-  { code: 'es', label: 'ES', name: 'Español' },
-  { code: 'it', label: 'IT', name: 'Italiano' },
-  { code: 'uk', label: 'UK', name: 'Українська' },
-  { code: 'ru', label: 'RU', name: 'Русский' },
+  { code: 'fi', label: 'FI', name: 'Suomi',       status: 'native' },
+  { code: 'en', label: 'EN', name: 'English',     status: 'auto' },
+  { code: 'sv', label: 'SV', name: 'Svenska',     status: 'auto' },
+  { code: 'no', label: 'NO', name: 'Norsk',       status: 'auto' },
+  { code: 'da', label: 'DA', name: 'Dansk',       status: 'auto' },
+  { code: 'is', label: 'IS', name: 'Íslenska',    status: 'auto' },
+  { code: 'de', label: 'DE', name: 'Deutsch',     status: 'auto' },
+  { code: 'fr', label: 'FR', name: 'Français',    status: 'auto' },
+  { code: 'es', label: 'ES', name: 'Español',     status: 'auto' },
+  { code: 'it', label: 'IT', name: 'Italiano',    status: 'auto' },
+  { code: 'uk', label: 'UK', name: 'Українська',  status: 'auto' },
+  { code: 'ru', label: 'RU', name: 'Русский',     status: 'auto' },
 ];
 
 function detectLang() {

@@ -15,7 +15,7 @@ export const ru = {
   ui: {
     loading: 'Загрузка…',
     info: { title: 'ℹ Инфо', close: '✕ Закрыть' },
-    lang: { label: 'Язык' },
+    lang: { label: 'Язык', tested: 'Проверенные', untested: 'Непроверенные', note: '✓ носитель · web = автоматическая проверка (не носителем)' },
     menu: { back: '← Меню', settings: 'Настройки', info: 'Инфо' },
     difficulty: { easy: 'Лёгкая', medium: 'Средняя', hard: 'Сложная' },
     rulesAria: '{name}: показать правила',

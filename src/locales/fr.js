@@ -6,7 +6,7 @@ export const fr = {
   ui: {
     loading: 'Chargement…',
     info: { title: 'ℹ Info', close: '✕ Fermer' },
-    lang: { label: 'Langue' },
+    lang: { label: 'Langue', tested: 'Vérifiées', untested: 'Non vérifiées', note: '✓ natif · web = vérifié automatiquement (pas par un natif)' },
     menu: { back: '← Menu', settings: 'Paramètres', info: 'Info' },
     difficulty: { easy: 'Facile', medium: 'Intermédiaire', hard: 'Difficile' },
     rulesAria: '{name} : afficher les règles',

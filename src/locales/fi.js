@@ -9,7 +9,7 @@ export const fi = {
   ui: {
     loading: 'Ladataan…',
     info: { title: 'ℹ Info', close: '✕ Sulje' },
-    lang: { label: 'Kieli' },
+    lang: { label: 'Kieli', tested: 'Testatut', untested: 'Testaamattomat', note: '✓ natiivi · web = konevarmistettu (ei natiivitarkistusta)' },
     menu: { back: '← Valikko', settings: 'Asetukset', info: 'Info' },
     difficulty: { easy: 'Helppo', medium: 'Keskitaso', hard: 'Vaativa' },
     rulesAria: '{name}: näytä säännöt',

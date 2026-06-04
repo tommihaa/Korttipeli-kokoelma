@@ -6,7 +6,7 @@ export const is = {
   ui: {
     loading: 'Hleð…',
     info: { title: 'ℹ Upplýsingar', close: '✕ Loka' },
-    lang: { label: 'Tungumál' },
+    lang: { label: 'Tungumál', tested: 'Staðfest', untested: 'Óstaðfest', note: '✓ málhafi · web = vélstaðfest (ekki yfirfarið af málhafa)' },
     menu: { back: '← Valmynd', settings: 'Stillingar', info: 'Upplýsingar' },
     difficulty: { easy: 'Auðvelt', medium: 'Miðlungs', hard: 'Erfitt' },
     rulesAria: '{name}: sýna reglur',
@@ -291,7 +291,7 @@ export const is = {
       ],
     },
     seiska: {
-      altName: "Mau-Mau",
+      altName: "Olsen Olsen",
       desc: 'UNO-líkt kapphlaup að tómri hendi',
       msg: {
         gameStart: 'Seiska hefst! Efsta spil: {card}.',
@@ -547,7 +547,7 @@ export const is = {
       ],
     },
     paskahousu: {
-      altName: "finnskt útsláttarspil",
+      altName: "Skítakall",
       desc: 'Nánast hinn klassíski paskahousu með sex spilum. 2♦ 2♥ gildi 2 · 2♠ 2♣ eru hörð',
       msg: {
         gameStart: 'Paskahousu hefst! {name} byrjar (lægsta spil).{hint}',

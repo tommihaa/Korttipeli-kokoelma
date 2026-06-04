@@ -15,7 +15,7 @@ export const uk = {
   ui: {
     loading: 'Завантаження…',
     info: { title: 'ℹ Інфо', close: '✕ Закрити' },
-    lang: { label: 'Мова' },
+    lang: { label: 'Мова', tested: 'Перевірені', untested: 'Неперевірені', note: '✓ носій · web = автоматична перевірка (не носієм)' },
     menu: { back: '← Меню', settings: 'Налаштування', info: 'Інфо' },
     difficulty: { easy: 'Легко', medium: 'Середній', hard: 'Складний' },
     rulesAria: '{name}: показати правила',
@@ -512,7 +512,7 @@ export const uk = {
       ],
     },
     maija: {
-      altName: "«Стара діва» (Акуліна)",
+      altName: "Акуліна",
       desc: 'Часткове відбиття — захисна перемога. Повне відбиття — атакуєш.',
       msg: {
         gameStart: 'Гра починається! Козирна масть: {trump}. {attacker} атакує, {defender} захищається.',

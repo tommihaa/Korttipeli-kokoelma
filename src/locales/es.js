@@ -6,7 +6,7 @@ export const es = {
   ui: {
     loading: 'Cargando…',
     info: { title: 'ℹ Info', close: '✕ Cerrar' },
-    lang: { label: 'Idioma' },
+    lang: { label: 'Idioma', tested: 'Verificados', untested: 'No verificados', note: '✓ nativo · web = verificado automáticamente (no por nativo)' },
     menu: { back: '← Menú', settings: 'Ajustes', info: 'Info' },
     difficulty: { easy: 'Fácil', medium: 'Medio', hard: 'Difícil' },
     rulesAria: '{name}: mostrar reglas',
@@ -235,7 +235,7 @@ export const es = {
       ],
     },
     ristiseiska: {
-      altName: "Dominó (cartas)",
+      altName: "Cinquillo",
       desc: 'Fastidiar, cartas de prenda y paciencia',
       msg: {
         gameStart: '¡Empieza Ristiseiska! {starter} comienza con {card}.',

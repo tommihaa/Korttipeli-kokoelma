@@ -6,7 +6,7 @@ export const sv = {
   ui: {
     loading: 'Laddar…',
     info: { title: 'ℹ Info', close: '✕ Stäng' },
-    lang: { label: 'Språk' },
+    lang: { label: 'Språk', tested: 'Verifierade', untested: 'Overifierade', note: '✓ modersmål · web = maskinverifierad (ej modersmålskontroll)' },
     menu: { back: '← Meny', settings: 'Inställningar', info: 'Info' },
     difficulty: { easy: 'Lätt', medium: 'Medel', hard: 'Svår' },
     rulesAria: '{name}: visa regler',

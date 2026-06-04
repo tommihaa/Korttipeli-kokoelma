@@ -6,7 +6,7 @@ export const da = {
   ui: {
     loading: 'Indlæser…',
     info: { title: 'ℹ Info', close: '✕ Luk' },
-    lang: { label: 'Sprog' },
+    lang: { label: 'Sprog', tested: 'Verificerede', untested: 'Uverificerede', note: '✓ modersmål · web = maskinverificeret (ikke modersmål)' },
     menu: { back: '← Menu', settings: 'Indstillinger', info: 'Info' },
     difficulty: { easy: 'Let', medium: 'Mellem', hard: 'Svær' },
     rulesAria: '{name}: vis regler',

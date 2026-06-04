@@ -6,7 +6,7 @@ export const it = {
   ui: {
     loading: 'Caricamento…',
     info: { title: 'ℹ Info', close: '✕ Chiudi' },
-    lang: { label: 'Lingua' },
+    lang: { label: 'Lingua', tested: 'Verificate', untested: 'Non verificate', note: '✓ madrelingua · web = verificato automaticamente (non madrelingua)' },
     menu: { back: '← Menu', settings: 'Impostazioni', info: 'Info' },
     difficulty: { easy: 'Facile', medium: 'Intermedio', hard: 'Difficile' },
     rulesAria: '{name}: mostra le regole',
