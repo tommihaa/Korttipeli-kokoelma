@@ -158,6 +158,12 @@ const MERKISTO = [
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
   {
+    date: '5.6.2026',
+    items: [
+      'Kolme uutta kieltä: kreikka, puola ja viro — sovellus on nyt 15 kielellä. Kielivalinta on muuttunut siistiksi alasvetovalikoksi (pelilistan alla), jossa kielet on ryhmitelty: testatut (suomi natiivina ✓, muut "web"-varmistettuina) ja testaamattomat omassa ryhmässään. Puola sai vakiintuneet pelinimet (Seiska → Makao, Maija → Piotruś, Moska → Dureń), viro samoin (Maija → Must Peeter).',
+    ],
+  },
+  {
     date: '4.6.2026',
     items: [
       'Kielivalinta siirretty Info-paneelista suoraan päävalikkoon (pelilistan alle). Kielet on ryhmitelty varmennustason mukaan: suomi on natiivi (✓), muut on merkitty "web" eli pelinimet on varmistettu verkkohaulla mutta ei vielä äidinkielisen tarkistamana. Korjattu myös pari pelinimeä (espanjaksi Ristiseiska → Cinquillo, islanniksi Seiska → Olsen Olsen, Paskahousu → Skítakall).',
@@ -550,6 +556,27 @@ function Flag({ code }) {
   if (code === 'ru') return (
     <svg {...c}><rect width="18" height="4" fill="#fff"/><rect y="4" width="18" height="4" fill="#0039a6"/><rect y="8" width="18" height="4" fill="#d52b1e"/></svg>
   );
+  // Kreikka: sini-valkoraidat + kantonissa valkoinen risti
+  if (code === 'el') return (
+    <svg {...c}>
+      <rect width="18" height="12" fill="#0d5eaf"/>
+      <rect y="1.333" width="18" height="1.333" fill="#fff"/>
+      <rect y="4" width="18" height="1.333" fill="#fff"/>
+      <rect y="6.667" width="18" height="1.333" fill="#fff"/>
+      <rect y="9.333" width="18" height="1.333" fill="#fff"/>
+      <rect width="6.667" height="6.667" fill="#0d5eaf"/>
+      <rect x="2.667" width="1.333" height="6.667" fill="#fff"/>
+      <rect y="2.667" width="6.667" height="1.333" fill="#fff"/>
+    </svg>
+  );
+  // Puola: valkoinen ylä, punainen ala
+  if (code === 'pl') return (
+    <svg {...c}><rect width="18" height="6" fill="#fff"/><rect y="6" width="18" height="6" fill="#dc143c"/></svg>
+  );
+  // Viro: vaaka sininen/musta/valkoinen
+  if (code === 'et') return (
+    <svg {...c}><rect width="18" height="4" fill="#0072ce"/><rect y="4" width="18" height="4" fill="#000"/><rect y="8" width="18" height="4" fill="#fff"/></svg>
+  );
   return null;
 }
 
@@ -616,60 +643,85 @@ function GameBtn({ g, stats, onSelect }) {
   );
 }
 
-// Päävalikon kielivalitsin — ryhmittelee kielet varmennustason mukaan:
+// Päävalikon kielivalitsin — custom-dropdown, ryhmittelee kielet varmennustason mukaan:
 // Testatut (status native/auto) ja Testaamattomat (status untested).
-// Pieni piste lipun jäljessä erottaa tason: kulta = natiivi, himmeä = web (auto).
-function LangSelector({ lang, setLang, t, isMobile }) {
+// Merkki nimen jäljessä: kulta ✓ = natiivi, "web" = konevarmistettu (auto).
+function langMarker(status) {
+  if (status === 'native') return <span title="natiivi" style={{ fontSize: 11, color: C.gold, lineHeight: 1 }}>✓</span>;
+  if (status === 'auto') return <span title="konevarmistettu (web), ei natiivitarkistusta" style={{ fontSize: 8, color: C.dim, opacity: 0.7, border: `1px solid ${C.panelBorder}`, borderRadius: 3, padding: '0 3px', lineHeight: 1.5, fontFamily: 'sans-serif' }}>web</span>;
+  return null;
+}
+function LangSelector({ lang, setLang, t }) {
+  const [open, setOpen] = useState(false);
   const groups = [
     { key: 'tested', langs: LANGS.filter(l => l.status === 'native' || l.status === 'auto') },
     { key: 'untested', langs: LANGS.filter(l => l.status === 'untested') },
   ];
+  const current = LANGS.find(l => l.code === lang) || LANGS[0];
   return (
-    <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 900, marginTop: 8, marginBottom: 2 }}>
-      {groups.map(({ key, langs }) => langs.length > 0 && (
-        <div key={key} style={{ marginBottom: 6 }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 10, color: C.dim, opacity: 0.6, letterSpacing: 1.5, marginBottom: 4, textTransform: 'uppercase' }}>
-            {t(`ui.lang.${key}`)}
+    <div style={{ position: 'relative', marginTop: 8, marginBottom: 2 }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={t('ui.lang.label')}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 7,
+          background: 'transparent', border: `1px solid ${C.panelBorder}`,
+          color: C.dim, borderRadius: 9, padding: '6px 12px', cursor: 'pointer',
+          fontFamily: 'Georgia,serif', fontSize: 13, letterSpacing: 1,
+        }}
+      >
+        <Flag code={current.code} />
+        <span>{current.name}</span>
+        {langMarker(current.status)}
+        <span style={{ fontSize: 9, opacity: 0.7, marginLeft: 2 }}>{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <>
+          <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 50 }} />
+          <div role="listbox" aria-label={t('ui.lang.label')} style={{
+            position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)',
+            marginBottom: 6, zIndex: 51,
+            background: '#0f2419', border: `1px solid ${C.panelBorder}`, borderRadius: 10,
+            padding: 8, minWidth: 210, maxHeight: 340, overflowY: 'auto',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
+          }}>
+            {groups.map(({ key, langs }) => langs.length > 0 && (
+              <div key={key} style={{ marginBottom: 6 }}>
+                <div style={{ fontFamily: 'Georgia,serif', fontSize: 10, color: C.dim, opacity: 0.6, letterSpacing: 1.5, margin: '2px 4px 4px', textTransform: 'uppercase' }}>
+                  {t(`ui.lang.${key}`)}
+                </div>
+                {langs.map(({ code, name, status }) => {
+                  const active = lang === code;
+                  return (
+                    <button
+                      key={code} role="option" aria-selected={active} title={name}
+                      onClick={() => { setLang(code); setOpen(false); }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 8, width: '100%',
+                        background: active ? `${C.gold}22` : 'transparent',
+                        border: `1px solid ${active ? C.gold : 'transparent'}`,
+                        color: active ? C.gold : C.dim, borderRadius: 7,
+                        padding: '6px 8px', cursor: 'pointer', textAlign: 'left',
+                        fontFamily: 'Georgia,serif', fontSize: 13,
+                        opacity: status === 'untested' ? 0.8 : 1,
+                      }}
+                    >
+                      <Flag code={code} />
+                      <span style={{ flex: 1 }}>{name}</span>
+                      {langMarker(status)}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+            <div style={{ fontFamily: 'Georgia,serif', fontSize: 9, color: C.dim, opacity: 0.5, margin: '2px 4px 0' }}>
+              {t('ui.lang.note')}
+            </div>
           </div>
-          <div role="group" aria-label={t(`ui.lang.${key}`)} style={{ display: 'flex', gap: 4, flexWrap: 'wrap', rowGap: 6 }}>
-            {langs.map(({ code, label, name, status }) => {
-              const active = lang === code;
-              return (
-                <button
-                  key={code}
-                  onClick={() => setLang(code)}
-                  aria-pressed={active}
-                  aria-label={name}
-                  title={name}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    background: active ? `${C.gold}22` : 'transparent',
-                    border: `1px solid ${active ? C.gold : C.panelBorder}`,
-                    color: active ? C.gold : C.dim, borderRadius: 8,
-                    padding: '5px 9px', cursor: 'pointer',
-                    fontFamily: 'Georgia,serif', fontSize: 12, letterSpacing: 1,
-                    opacity: status === 'untested' ? 0.72 : 1,
-                  }}
-                ><Flag code={code} />{label}
-                  {status === 'native' && (
-                    <span title="natiivi" style={{ fontSize: 11, color: C.gold, marginLeft: 1, lineHeight: 1 }}>✓</span>
-                  )}
-                  {status === 'auto' && (
-                    <span title="konevarmistettu (web), ei natiivitarkistusta" style={{
-                      fontSize: 8, color: C.dim, opacity: 0.7, letterSpacing: 0,
-                      border: `1px solid ${C.panelBorder}`, borderRadius: 3,
-                      padding: '0 3px', lineHeight: 1.5, fontFamily: 'sans-serif',
-                    }}>web</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-      <div style={{ fontFamily: 'Georgia,serif', fontSize: 9, color: C.dim, opacity: 0.5, marginTop: 1 }}>
-        {t('ui.lang.note')}
-      </div>
+        </>
+      )}
     </div>
   );
 }
@@ -1384,7 +1436,7 @@ export default function App() {
           {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={selectGame} />)}
         </div>
       </div>
-      <LangSelector lang={lang} setLang={setLang} t={t} isMobile={isMobile} />
+      <LangSelector lang={lang} setLang={setLang} t={t} />
       <div style={{ fontSize: 10, color: '#b9c7b2', fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
         v{APP_VERSION} · {BUILD_DATE} {BUILD_TIME}
       </div>
