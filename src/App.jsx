@@ -199,6 +199,7 @@ const CHANGELOG = [
       'Kieli- ja ääniasetukset muistetaan nyt käyntien välillä. Muut asetukset palautuvat oletuksiin kuten ennenkin.',
       'Uusi vastustajaryhmä Goa\'uld (Stargaten System Lordit). Onnen jumalat -ryhmä sai uusia jäseniä: Onnetar, Macuilxochitl ja Felicitas.',
       'Jokaisella vastustajaryhmällä on nyt pieni kuvaus, ja ensimmäisellä käynnillä vastustajiksi valitaan Meme-jengi.',
+      'Esittelyteksti uudistui selkeämmäksi: kerromme nyt suoraan, ettei peli käytä evästeitä, tilejä, sähköpostia tai mainoksia — ja että vain kieli- ja ääniasetukset tallentuvat omaan selaimeesi.',
     ],
   },
   {
@@ -417,6 +418,10 @@ const TODO = [
   { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'deferred' },
   { label: 'Kieliversiointi (12 kieltä)', status: 'done' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
+  // UKK herää palautteen mukana — lokalisoitu fi+en, muut kielet putoavat tähän labeliin
+  { label: 'Usein kysytyt kysymykset (UKK)', status: 'deferred' },
+  { label: 'Jaa peli kaverille (linkki tai QR-koodi)', status: 'deferred' },
+  { label: 'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle', status: 'deferred' },
 ];
 
 const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));

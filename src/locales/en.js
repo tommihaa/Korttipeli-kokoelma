@@ -63,6 +63,9 @@ export const en = {
         'Two-colour card deck alongside the four-colour one (selectable in Settings)',
         'Localization (12 languages)',
         'Replay: chess symbols on move annotations (! !! ? ?? !? ?!)',
+        'Frequently asked questions (FAQ)',
+        'Share the game with a friend (link or QR code)',
+        'Add the app to your phone home screen',
       ],
     },
 
