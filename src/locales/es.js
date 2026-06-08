@@ -39,6 +39,7 @@ export const es = {
         puolue:  '🗳 El partido del pueblo',
         kansa:   '🧑‍🤝‍🧑 El pueblo',
         meme:    '🗿 Pandilla meme',
+        goauld: "🐍 Goa'uld",
       },
       namesCount: ({ n }) => `${n} ${n === 1 ? 'nombre' : 'nombres'}`,
     },

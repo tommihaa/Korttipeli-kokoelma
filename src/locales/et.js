@@ -39,6 +39,7 @@ export const et = {
         puolue:  '🗳 Rahva partei',
         kansa:   '🧑‍🤝‍🧑 Rahvas',
         meme:    '🗿 Meme-jõuk',
+        goauld: "🐍 Goa'uld",
       },
       namesCount: ({ n }) => `${n} nime`,
     },

@@ -9,9 +9,10 @@
 //   t('moska.attack', { player, cards })  → interpoloitu merkkijono
 //
 // Locale-arvo voi olla joko merkkijono ({param}-paikkamerkit) tai funktio (params) => string.
-// Kielivalintaa EI tallenneta (tietoinen no-storage-sääntö) — detektoidaan selaimesta,
-// vaihto elää istunnon ajan useStatessa.
+// Kielivalinta TALLENNETAAN (preferenssipoikkeus no-storage-linjaan, ks. shared/storage.js):
+// jos käyttäjä on aiemmin valinnut kielen, se palautetaan; muuten detektoidaan selaimesta.
 import { createContext, useContext, useState, useCallback } from 'react';
+import { loadPref, savePref } from './storage.js';
 import { fi } from '../locales/fi.js';
 import { en } from '../locales/en.js';
 import { sv } from '../locales/sv.js';
@@ -99,7 +100,13 @@ function interpolate(str, params) {
 // vain yksi aktiivinen kieli, joten moduulimuuttuja riittää. LangProvider pitää tämän
 // synkassa Reactin tilan kanssa, jolloin hook-vapaa koodi (tapahtumalokin M-katalogit,
 // helpers.js:n taivutusapurit) voi kääntää ilman että lang pujotellaan jokaiseen kutsuun.
-let currentLang = detectLang();
+// Alkukieli: tallennettu valinta (jos kelvollinen koodi) voittaa selaindetektoinnin.
+function initialLang() {
+  const saved = loadPref('lang', null);
+  if (saved && LANGS.some(l => l.code === saved)) return saved;
+  return detectLang();
+}
+let currentLang = initialLang();
 export function getLang() { return currentLang; }
 
 // Hook-vapaa käännösfunktio — käytä moduulitason koodissa (M-katalogit, helpers).
@@ -117,7 +124,7 @@ const LangContext = createContext(null);
 
 export function LangProvider({ children }) {
   const [lang, setLangState] = useState(currentLang);
-  const setLang = useCallback((l) => { currentLang = l; setLangState(l); }, []);
+  const setLang = useCallback((l) => { currentLang = l; savePref('lang', l); setLangState(l); }, []);
   return <LangContext.Provider value={{ lang, setLang }}>{children}</LangContext.Provider>;
 }
 

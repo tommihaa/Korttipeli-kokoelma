@@ -39,6 +39,7 @@ export const el = {
         puolue:  '🗳 Το κόμμα του λαού',
         kansa:   '🧑‍🤝‍🧑 Ο λαός',
         meme:    '🗿 Συμμορία meme',
+        goauld: "🐍 Goa'uld",
       },
       namesCount: ({ n }) => `${n} ονόματα`,
     },

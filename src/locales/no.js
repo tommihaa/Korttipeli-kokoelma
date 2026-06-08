@@ -39,6 +39,7 @@ export const no = {
         puolue:  '🗳 Folkets parti',
         kansa:   '🧑‍🤝‍🧑 Folket',
         meme:    '🗿 Meme-gjengen',
+        goauld: "🐍 Goa'uld",
       },
       namesCount: ({ n }) => `${n} navn`,
     },

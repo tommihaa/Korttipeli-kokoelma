@@ -3,13 +3,46 @@ import { C, SUIT_COLOR, SUIT_COLOR_DARK } from './shared/colors.js';
 import GameResult from './shared/GameResult.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
+import { loadPref, savePref } from './shared/storage.js';
+
+// Kuin useState, mutta arvo persistoituu localStorageen (preferenssipoikkeus, ks. storage.js).
+// Käytössä vain äänille; pelitila ja cheat-toggle­t pysyvät tavallisessa useStatessa.
+function useStickySetting(key, fallback) {
+  const [value, setValue] = useState(() => loadPref(key, fallback));
+  useEffect(() => { savePref(key, value); }, [key, value]);
+  return [value, setValue];
+}
 
 /* eslint-disable no-undef */
 const APP_VERSION = __APP_VERSION__;
 const BUILD_DATE  = __BUILD_DATE__;
 const BUILD_TIME  = __BUILD_TIME__;
 /* eslint-enable no-undef */
-const MAILTO = `mailto:no.jopas@gmail.com?subject=${encodeURIComponent(`Version ${APP_VERSION}, Deploy ${BUILD_DATE}, Jako palaute`)}`;
+// Google Forms -palautelomake. Versio + kieli esitäytetään URL-parametreilla (entry.*);
+// vastaukset valuvat linkitettyyn Sheetiin. Arvosana + vapaa teksti jätetään pelaajan täytettäväksi.
+function feedbackUrl(version, lang) {
+  const base = 'https://docs.google.com/forms/d/e/1FAIpQLSfOV6KonFUGJ2VcG6BXITdY7WeXLTmfw5czQOMdDESWUTN5bg/viewform';
+  const params = new URLSearchParams({
+    'usp': 'pp_url',
+    'entry.1663935268': version, // Versio-kenttä
+    'entry.1066319749': lang,    // Kieli-kenttä
+  });
+  return `${base}?${params.toString()}`;
+}
+// Ihmisten Puolue -ryhmän YouTube-soittolista (englanninkieliset tekstitykset). EI lokalisoitu.
+const PUOLUE_YT = 'https://www.youtube.com/playlist?list=PL-vRZZ9yf7oqRYbSCXM4xlNvpNhhQktjz';
+// Lahjoituslinkki (Ko-fi). Bränditeksti — kuten YouTube-linkki, EI lokalisoitu.
+const KOFI = 'https://ko-fi.com/tommih';
+// Ryhmäkohtaiset kuvaukset — tietoisesti EI käännetä, käyttäjän oma ääni, näytetään aina englanniksi.
+const GROUP_BLURB = {
+  laituri: 'I learned many of these games with this gang.',
+  puolue:  'Ihmisten Puolue is strictly Finnish humor — until you understand it.',
+  jumalat: 'I love backgammon, and to the gods of luck we pray.',
+  kansa:   'Strictly Finnish archetypes.',
+  meme:    'The discourse, in card form.',
+};
+// Goa'uld: tekojumalan julkeudet — satunnainen poimitaan aina kun ryhmä valitaan.
+const GOAULD_TAUNTS = ['Kneel or fold.', 'You ante. We annex.', 'Bow. Then deal.', "Gods don't fold.", "We don't bluff. We reign."];
 // Pelit ladataan laiskasti (code splitting) — kukin oma chunkkinsa, haetaan vasta
 // kun peli avataan. Valikko ei enää kanna kaikkien 9 pelin koodia kerralla.
 const Koputus = lazy(() => import('./games/Koputus.jsx'));
@@ -23,10 +56,11 @@ const Ristiseiska = lazy(() => import('./games/Ristiseiska.jsx'));
 const Paskahousu = lazy(() => import('./games/Paskahousu.jsx'));
 
 const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
-const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Tommi Palleroine'];
+const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Onnetar','Macuilxochitl','Felicitas'];
 const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
 const KANSA            = ['Astraalitason tirehtööri','Jonne','Justiina','Kukkahattutäti','Lumihiutale','Rane','Setämies','Veeti'];
 const MEME_GANG        = ['Karen','Boomer','Zoomer','NPC','Random','Vegan','Nihilist','Chad','Doomer','Edgelord','Hipster','Influencer','Lurker','Tryhard','Noob','Troll','Crypto Bro','Main Character','AFK'];
+const GOAULD           = ['Ra','Apophis','Anubis','Ba\'al','Hathor','Cronus','Nirrti','Yu','Sokar','Osiris','Heru\'ur','Bastet','Camulus','Morrigan','Amaterasu','Svarog','Zipacna','Qetesh'];
 
 // Pikkukortti-ikoni valikon ruutuun (esim. Maija = Q♠) — luettavampi kuin tumma Unicode-korttiglyyfi
 const CardIcon = ({ rank, suit, suitColor = '#1a1a1a' }) => (
@@ -157,6 +191,16 @@ const MERKISTO = [
 
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
+  {
+    date: '7.6.2026',
+    items: [
+      'Palaute uudistui: pelin sisäinen palautelomake, jossa voit antaa arvosanan ja kehitysehdotuksia. Löytyy Info-paneelin (ℹ) Esittely-osiosta.',
+      'Voit halutessasi tukea peliä Ko-fissa — pieni tukilinkki palautteen vierestä. Ei mainoksia eikä pakkoa.',
+      'Kieli- ja ääniasetukset muistetaan nyt käyntien välillä. Muut asetukset palautuvat oletuksiin kuten ennenkin.',
+      'Uusi vastustajaryhmä Goa\'uld (Stargaten System Lordit). Onnen jumalat -ryhmä sai uusia jäseniä: Onnetar, Macuilxochitl ja Felicitas.',
+      'Jokaisella vastustajaryhmällä on nyt pieni kuvaus, ja ensimmäisellä käynnillä vastustajiksi valitaan Meme-jengi.',
+    ],
+  },
   {
     date: '5.6.2026',
     items: [
@@ -888,7 +932,7 @@ export default function App() {
   const [showInfo, setShowInfo]     = useState(false);
   const [stats, setStats]           = useState(mkStats);
   const [showLog, setShowLog]       = useState(true);   // tapahtumaloki auki oletuksena myös pienellä näytöllä
-  const [soundOn, setSoundOn]       = useState(false);  // äänet pois oletuksena
+  const [soundOn, setSoundOn]       = useStickySetting('soundOn', false);  // äänet pois oletuksena; valinta muistetaan
   const [seeAll, setSeeAll]         = useState(false);
   const [showCounts, setShowCounts] = useState(true);
   const [showLastPlay, setShowLastPlay] = useState(true);
@@ -897,10 +941,14 @@ export default function App() {
   const [showAIKnown, setShowAIKnown]   = useState(true);
   const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard'
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
+  // Ensikertalainen kokoelmassa → Meme-jengi oletuksena (hauska ensivaikutelma);
+  // sen jälkeen satunnainen ryhmä. 'visited'-lippu persistoidaan (onboarding-tila, ks. storage.js).
   const [playerGroup, setPlayerGroup] = useState(() => {
-    const groups = ['laituri', 'jumalat', 'puolue', 'kansa', 'meme'];
+    if (!loadPref('visited', false)) return 'meme';
+    const groups = ['laituri', 'jumalat', 'puolue', 'kansa', 'meme', 'goauld'];
     return groups[Math.floor(Math.random() * groups.length)];
   });
+  const [goauldTaunt, setGoauldTaunt] = useState(() => GOAULD_TAUNTS[Math.floor(Math.random() * GOAULD_TAUNTS.length)]);
   const [resultData, setResultData] = useState(null);   // {ranking, revealCards?, scoreBreakdown?}
   const [botResult, setBotResult]   = useState(null);   // bot-only result — stay on game view
   const [gameKey, setGameKey]       = useState(0);       // increment → remount game
@@ -913,6 +961,9 @@ export default function App() {
   const [showPeliasetukset, setShowPeliasetukset] = useState(false);
   const [showKonealy, setShowKonealy]           = useState(false);
   const [showPelaajat, setShowPelaajat]         = useState(false);
+
+  // Merkitse kokoelma nähdyksi → seuraavalla kerralla ryhmä arvotaan (ks. playerGroup-init).
+  useEffect(() => { savePref('visited', true); }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
@@ -944,7 +995,10 @@ export default function App() {
     : playerGroup === 'jumalat'  ? ONNEN_JUMALAT
     : playerGroup === 'puolue'   ? IHMISTEN_PUOLUE
     : playerGroup === 'meme'     ? MEME_GANG
+    : playerGroup === 'goauld'   ? GOAULD
     : KANSA;
+  // Goa'uld näyttää satunnaisen julkeuden, muut ryhmät kiinteän kuvauksen.
+  const currentBlurb = playerGroup === 'goauld' ? goauldTaunt : GROUP_BLURB[playerGroup];
 
   function selectGame(id) {
     setActive(id);
@@ -1174,10 +1228,14 @@ export default function App() {
               { key: 'puolue',  label: t('ui.settings.groups.puolue'),   pool: IHMISTEN_PUOLUE  },
               { key: 'kansa',   label: t('ui.settings.groups.kansa'),    pool: KANSA            },
               { key: 'meme',    label: t('ui.settings.groups.meme'),     pool: MEME_GANG        },
+              { key: 'goauld',  label: t('ui.settings.groups.goauld'),   pool: GOAULD           },
             ].map(({ key, label, pool }) => (
               <button
                 key={key}
-                onClick={() => setPlayerGroup(key)}
+                onClick={() => {
+                  setPlayerGroup(key);
+                  if (key === 'goauld') setGoauldTaunt(GOAULD_TAUNTS[Math.floor(Math.random() * GOAULD_TAUNTS.length)]);
+                }}
                 style={{
                   flex: 1, padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
                   fontFamily: 'sans-serif', fontSize: 12,
@@ -1192,6 +1250,18 @@ export default function App() {
               </button>
             ))}
           </div>
+          {currentBlurb && (
+            <p style={{ margin: '0 0 8px', fontSize: 11, color: C.dim, fontFamily: 'sans-serif', fontStyle: 'italic', opacity: 0.85 }}>
+              {currentBlurb}
+            </p>
+          )}
+          {playerGroup === 'puolue' && (
+            <a href={PUOLUE_YT} target="_blank" rel="noopener noreferrer" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6, margin: '0 0 8px',
+              color: C.gold, fontSize: 11, fontFamily: 'sans-serif', textDecoration: 'none',
+              border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '5px 10px',
+            }}>▶ Ihmisten Puolue · YouTube (English subtitles)</a>
+          )}
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.8, opacity: 0.7 }}>
             {playerPool.join(' · ')}
           </div>
@@ -1239,11 +1309,16 @@ export default function App() {
               {t('ui.infoPanel.esittelyParas').map((para, i) => (
                 <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{para}</p>
               ))}
-              <a href={MAILTO} style={{
+              <a href={feedbackUrl(APP_VERSION, lang)} target="_blank" rel="noopener noreferrer" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
                 color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
                 border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
               }}>{t('ui.infoPanel.feedback')}</a>
+              <a href={KOFI} target="_blank" rel="noopener noreferrer" style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, marginLeft: 8,
+                color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
+              }}>☕ Support on Ko-fi</a>
             </div>
           )}
         </div>

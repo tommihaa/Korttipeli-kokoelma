@@ -40,6 +40,7 @@ export const krl = {
         puolue:  '🗳 Rahvahan puolovehet',
         kansa:   '🧑‍🤝‍🧑 Rahvas',
         meme:    '🗿 Meme-joukko',
+        goauld: "🐍 Goa'uld",
       },
       namesCount: ({ n }) => `${n} nimie`,
     },

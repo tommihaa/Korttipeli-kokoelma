@@ -48,6 +48,7 @@ export const uk = {
         puolue:  '🗳 Народна партія',
         kansa:   '🧑‍🤝‍🧑 Народ',
         meme:    '🗿 Мем-банда',
+        goauld: "🐍 Goa'uld",
       },
       namesCount: ({ n }) => `${n} ${plural(n, 'ім’я', 'імені', 'імен')}`,
     },

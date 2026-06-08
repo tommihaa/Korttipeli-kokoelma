@@ -48,6 +48,7 @@ export const pl = {
         puolue:  '🗳 Partia ludowa',
         kansa:   '🧑‍🤝‍🧑 Lud',
         meme:    '🗿 Mem-ekipa',
+        goauld: "🐍 Goa'uld",
       },
       namesCount: ({ n }) => `${n} ${plural(n, 'imię', 'imiona', 'imion')}`,
     },
