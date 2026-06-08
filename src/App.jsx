@@ -20,11 +20,11 @@ const BUILD_TIME  = __BUILD_TIME__;
 /* eslint-enable no-undef */
 // Google Forms -palautelomake. Versio + kieli esitäytetään URL-parametreilla (entry.*);
 // vastaukset valuvat linkitettyyn Sheetiin. Arvosana + vapaa teksti jätetään pelaajan täytettäväksi.
-function feedbackUrl(version, lang) {
+function feedbackUrl(lang) {
   const base = 'https://docs.google.com/forms/d/e/1FAIpQLSfOV6KonFUGJ2VcG6BXITdY7WeXLTmfw5czQOMdDESWUTN5bg/viewform';
   const params = new URLSearchParams({
     'usp': 'pp_url',
-    'entry.1663935268': version, // Versio-kenttä
+    'entry.1663935268': `v${APP_VERSION} · ${BUILD_DATE} ${BUILD_TIME}`, // Versio-kenttä — sama leima kuin valikossa, esitäyttyy automaattisesti
     'entry.1066319749': lang,    // Kieli-kenttä
   });
   return `${base}?${params.toString()}`;
@@ -1322,7 +1322,7 @@ export default function App() {
               {t('ui.infoPanel.esittelyParas').map((para, i) => (
                 <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{para}</p>
               ))}
-              <a href={feedbackUrl(APP_VERSION, lang)} target="_blank" rel="noopener noreferrer" style={{
+              <a href={feedbackUrl(lang)} target="_blank" rel="noopener noreferrer" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
                 color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
                 border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
