@@ -60,6 +60,7 @@ export const fi = {
         'Hauskoja pelihetkiä toivottaen,\nTommi Haanranta',
       ],
       feedback: '✉ Lähetä risut ja ruusut',
+      feedbackForm: '⭐ Arvioi kokoelma',
       glossaryLink: 'Sanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
       todo: 'Tulossa 🗺',

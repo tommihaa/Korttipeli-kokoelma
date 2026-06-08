@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
 
-const MINOR_VERSION = '1.0'; // bumpataan käsin isomman milestone-uudistuksen kohdalla
+const MINOR_VERSION = '1.1'; // bumpataan käsin isomman milestone-uudistuksen kohdalla
 
 const commitCount = (() => {
   try { return execSync('git rev-list --count HEAD').toString().trim(); }

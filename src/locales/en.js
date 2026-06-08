@@ -56,6 +56,7 @@ export const en = {
         'Thank you and a bow,\nTommi Haanranta',
       ],
       feedback: '✉ Send praise and complaints',
+      feedbackForm: '⭐ Rate the collection',
       glossaryLink: 'Glossary & Symbols 📖',
       changelog: 'Changelog 📋',
       todo: 'Coming soon 🗺',

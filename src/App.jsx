@@ -29,6 +29,8 @@ function feedbackUrl(version, lang) {
   });
   return `${base}?${params.toString()}`;
 }
+// Suora sähköpostipalaute (mailto) — Forms-lomakkeen rinnalla. EI kerää mitään: avaa pelaajan oman sähköpostin.
+const MAILTO = `mailto:no.jopas@gmail.com?subject=${encodeURIComponent(`Jako ${APP_VERSION}, palaute`)}`;
 // Ihmisten Puolue -ryhmän YouTube-soittolista (englanninkieliset tekstitykset). EI lokalisoitu.
 const PUOLUE_YT = 'https://www.youtube.com/playlist?list=PL-vRZZ9yf7oqRYbSCXM4xlNvpNhhQktjz';
 // Lahjoituslinkki (Ko-fi). Bränditeksti — kuten YouTube-linkki, EI lokalisoitu.
@@ -191,6 +193,12 @@ const MERKISTO = [
 
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
+  {
+    date: '7.6.2026',
+    items: [
+      'Palautteen voi nyt antaa kahdella tavalla: arvioi kokoelma lomakkeella tai lähetä risut ja ruusut suoraan sähköpostilla — kumpi sinulle sopii.',
+    ],
+  },
   {
     date: '7.6.2026',
     items: [
@@ -1318,12 +1326,17 @@ export default function App() {
                 display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
                 color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
                 border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
-              }}>{t('ui.infoPanel.feedback')}</a>
-              <a href={KOFI} target="_blank" rel="noopener noreferrer" style={{
+              }}>{t('ui.infoPanel.feedbackForm')}</a>
+              <a href={MAILTO} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, marginLeft: 8,
                 color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
                 border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
-              }}>☕ Support on Ko-fi</a>
+              }}>{t('ui.infoPanel.feedback')}</a>
+              <a href={KOFI} target="_blank" rel="noopener noreferrer" style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, marginLeft: 8,
+                color: C.red, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                border: `1px solid ${C.red}55`, borderRadius: 8, padding: '6px 12px',
+              }}>☕ Support via Ko-fi</a>
             </div>
           )}
         </div>
