@@ -35,6 +35,8 @@ const MAILTO = `mailto:no.jopas@gmail.com?subject=${encodeURIComponent(`Jako ${A
 const PUOLUE_YT = 'https://www.youtube.com/playlist?list=PL-vRZZ9yf7oqRYbSCXM4xlNvpNhhQktjz';
 // Lahjoituslinkki (Ko-fi). Bränditeksti — kuten YouTube-linkki, EI lokalisoitu.
 const KOFI = 'https://ko-fi.com/tommih';
+// Jaettava pelin osoite (Web Share API / kopioi).
+const SHARE_URL = 'https://tommi-jako.vercel.app';
 // Ryhmäkohtaiset kuvaukset — tietoisesti EI käännetä, käyttäjän oma ääni, näytetään aina englanniksi.
 const GROUP_BLURB = {
   laituri: 'I learned many of these games with this gang.',
@@ -61,7 +63,7 @@ const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso',
 const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Onnetar','Macuilxochitl','Felicitas'];
 const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
 const KANSA            = ['Astraalitason tirehtööri','Jonne','Justiina','Kukkahattutäti','Lumihiutale','Rane','Setämies','Veeti'];
-const MEME_GANG        = ['Karen','Boomer','Zoomer','NPC','Random','Vegan','Nihilist','Chad','Doomer','Edgelord','Hipster','Influencer','Lurker','Tryhard','Noob','Troll','Crypto Bro','Main Character','AFK'];
+const MEME_GANG        = ['Karen','Boomer','Zoomer','NPC','Random','Vegan','Nihilist','Chad','Prepper','Edgelord','Hipster','Influencer','Lurker','Tryhard','Noob','Troll','Crypto Bro','Main Character','AFK'];
 const GOAULD           = ['Ra','Apophis','Anubis','Ba\'al','Hathor','Cronus','Nirrti','Yu','Sokar','Osiris','Heru\'ur','Bastet','Camulus','Morrigan','Amaterasu','Svarog','Zipacna','Qetesh'];
 
 // Pikkukortti-ikoni valikon ruutuun (esim. Maija = Q♠) — luettavampi kuin tumma Unicode-korttiglyyfi
@@ -193,6 +195,13 @@ const MERKISTO = [
 
 // ── Muutosloki ────────────────────────────────────────────────────────────────
 const CHANGELOG = [
+  {
+    date: '9.6.2026',
+    items: [
+      'Esittelyteksti on nyt luettavissa kaikilla kielillä, ei vain suomeksi.',
+      'Uusi Jaa-nappi valikossa: jaa pelin linkki kaverille yhdellä napautuksella.',
+    ],
+  },
   {
     date: '7.6.2026',
     items: [
@@ -943,6 +952,7 @@ export default function App() {
   const playerCount = 4;
   const [showSettings, setShowSettings] = useState(false);
   const [showInfo, setShowInfo]     = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const [stats, setStats]           = useState(mkStats);
   const [showLog, setShowLog]       = useState(true);   // tapahtumaloki auki oletuksena myös pienellä näytöllä
   const [soundOn, setSoundOn]       = useStickySetting('soundOn', false);  // äänet pois oletuksena; valinta muistetaan
@@ -1064,6 +1074,41 @@ export default function App() {
       }}
       aria-label={t('ui.menu.info')}
     >ℹ</button>
+  );
+
+  // Jaa peli: Web Share API (mobiili → natiivi jakovalikko), muuten kopioi linkki leikepöydälle.
+  const shareGame = async () => {
+    const data = { title: t('ui.share.title'), text: t('ui.share.text'), url: SHARE_URL };
+    if (navigator.share) {
+      try { await navigator.share(data); } catch { /* käyttäjä perui jaon */ }
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(SHARE_URL);
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2000);
+      } catch { /* leikepöytä ei käytettävissä */ }
+    }
+  };
+  const shareBtn = (
+    <button
+      onClick={shareGame}
+      style={{
+        background: 'transparent', border: `1px solid ${shareCopied ? C.gold : C.panelBorder}`,
+        color: shareCopied ? C.gold : C.dim, borderRadius: 9, padding: '9px 12px',
+        fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
+        flexShrink: 0,
+      }}
+      aria-label={t('ui.menu.share')}
+      title={shareCopied ? t('ui.share.copied') : t('ui.menu.share')}
+    >{shareCopied ? '✓' : (
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+    )}</button>
   );
 
   const glossaryScreen = showGlossary && (
@@ -1336,7 +1381,16 @@ export default function App() {
                 display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, marginLeft: 8,
                 color: C.red, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
                 border: `1px solid ${C.red}55`, borderRadius: 8, padding: '6px 12px',
-              }}>☕ Support via Ko-fi</a>
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                  <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                  <line x1="6" y1="1" x2="6" y2="4" />
+                  <line x1="10" y1="1" x2="10" y2="4" />
+                  <line x1="14" y1="1" x2="14" y2="4" />
+                </svg>
+                Support via Ko-fi
+              </a>
             </div>
           )}
         </div>
@@ -1527,7 +1581,7 @@ export default function App() {
             JAKO<span style={{ fontSize: isMobile ? 15 : 22, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
           </h1>
         </div>
-        <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8, alignItems: 'center' }}><LangSelector lang={lang} setLang={setLang} t={t} />{infoBtn}{gearBtn}</div>
+        <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8, alignItems: 'center' }}><LangSelector lang={lang} setLang={setLang} t={t} />{shareBtn}{infoBtn}{gearBtn}</div>
       </div>
 
       <div style={{
