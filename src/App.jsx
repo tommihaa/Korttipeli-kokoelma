@@ -1367,30 +1367,32 @@ export default function App() {
               {t('ui.infoPanel.esittelyParas').map((para, i) => (
                 <p key={i} style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif', whiteSpace: 'pre-line' }}>{para}</p>
               ))}
-              <a href={feedbackUrl(lang)} target="_blank" rel="noopener noreferrer" style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4,
-                color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
-                border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
-              }}>{t('ui.infoPanel.feedbackForm')}</a>
-              <a href={MAILTO} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, marginLeft: 8,
-                color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
-                border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
-              }}>{t('ui.infoPanel.feedback')}</a>
-              <a href={KOFI} target="_blank" rel="noopener noreferrer" style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, marginLeft: 8,
-                color: C.red, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
-                border: `1px solid ${C.red}55`, borderRadius: 8, padding: '6px 12px',
-              }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                  <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-                  <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-                  <line x1="6" y1="1" x2="6" y2="4" />
-                  <line x1="10" y1="1" x2="10" y2="4" />
-                  <line x1="14" y1="1" x2="14" y2="4" />
-                </svg>
-                Support via Ko-fi
-              </a>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                <a href={feedbackUrl(lang)} target="_blank" rel="noopener noreferrer" style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                  border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
+                }}>{t('ui.infoPanel.feedbackForm')}</a>
+                <a href={MAILTO} style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                  border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
+                }}>{t('ui.infoPanel.feedback')}</a>
+                <a href={KOFI} target="_blank" rel="noopener noreferrer" style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  color: C.red, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                  border: `1px solid ${C.red}55`, borderRadius: 8, padding: '6px 12px',
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                    <line x1="6" y1="1" x2="6" y2="4" />
+                    <line x1="10" y1="1" x2="10" y2="4" />
+                    <line x1="14" y1="1" x2="14" y2="4" />
+                  </svg>
+                  Support via Ko-fi
+                </a>
+              </div>
             </div>
           )}
         </div>
