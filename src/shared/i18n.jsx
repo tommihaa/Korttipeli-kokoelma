@@ -11,27 +11,27 @@
 // Locale-arvo voi olla joko merkkijono ({param}-paikkamerkit) tai funktio (params) => string.
 // Kielivalinta TALLENNETAAN (preferenssipoikkeus no-storage-linjaan, ks. shared/storage.js):
 // jos käyttäjä on aiemmin valinnut kielen, se palautetaan; muuten detektoidaan selaimesta.
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { loadPref, savePref } from './storage.js';
 import { fi } from '../locales/fi.js';
-import { en } from '../locales/en.js';
-import { sv } from '../locales/sv.js';
-import { de } from '../locales/de.js';
-import { no } from '../locales/no.js';
-import { da } from '../locales/da.js';
-import { is } from '../locales/is.js';
-import { fr } from '../locales/fr.js';
-import { es } from '../locales/es.js';
-import { it } from '../locales/it.js';
-import { uk } from '../locales/uk.js';
-import { ru } from '../locales/ru.js';
-import { el } from '../locales/el.js';
-import { pl } from '../locales/pl.js';
-import { et } from '../locales/et.js';
-import { pt } from '../locales/pt.js';
-import { krl } from '../locales/krl.js';
 
-const LOCALES = { fi, en, sv, de, no, da, is, fr, es, it, uk, ru, el, pl, et, pt, krl };
+// Vain fallback-kieli (fi) kulkee päädibundlessa. Muut 16 kieltä ovat omia laiskoja
+// chunkkeja: import.meta.glob antaa loader-funktiot, ja Vite splittaa kunkin tiedoston
+// omaksi tiedostokseen buildissa. Java-analogia: ResourceBundle.getBundle(locale) —
+// bundle haetaan classpathilta vasta kun kieli aktivoidaan, ei kaikkia käynnistyksessä.
+const LOCALES = { fi };
+const localeLoaders = import.meta.glob(['../locales/*.js', '!../locales/fi.js']);
+
+// Lataa kielen sanakirjan LOCALES-välimuistiin. tr() pysyy synkronisena:
+// kunnes lataus valmistuu, käännökset putoavat fi-fallbackiin (resolve → undefined).
+async function loadLocale(code) {
+  if (LOCALES[code]) return;
+  const loader = localeLoaders[`../locales/${code}.js`];
+  if (!loader) return;
+  const mod = await loader();
+  LOCALES[code] = mod[code];
+}
+
 const FALLBACK = 'fi'; // suomi on totuuden lähde — puuttuva avain putoaa tähän
 
 // Valikossa näytettävät kielet. Liput piirretään SVG:nä App.jsx:n <Flag code>
@@ -124,7 +124,17 @@ const LangContext = createContext(null);
 
 export function LangProvider({ children }) {
   const [lang, setLangState] = useState(currentLang);
-  const setLang = useCallback((l) => { currentLang = l; savePref('lang', l); setLangState(l); }, []);
+  // Alkukieli voi asua lazy-chunkissa: ensirender menee fi-fallbackilla, ja kun
+  // sanakirja on ladattu, setLoaded triggeröi re-renderin jolloin tr() löytää tekstit.
+  const [, setLoaded] = useState(false);
+  useEffect(() => { loadLocale(currentLang).then(() => setLoaded(true)).catch(() => {}); }, []);
+  // Kielen vaihto: sanakirja ladataan ENNEN aktivointia, jottei UI välähdä fallbackia.
+  // Jos chunkin haku epäonnistuu (esim. offline), kieli ei vaihdu — preferenssi on
+  // silti tallessa ja lataus onnistuu seuraavalla käynnillä.
+  const setLang = useCallback((l) => {
+    savePref('lang', l);
+    loadLocale(l).then(() => { currentLang = l; setLangState(l); }).catch(() => {});
+  }, []);
   return <LangContext.Provider value={{ lang, setLang }}>{children}</LangContext.Provider>;
 }
 

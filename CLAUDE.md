@@ -49,7 +49,7 @@ At the start of every session run `npm run dev` in the background so the dev ser
 
 ## Deploy
 **Ennen deployta (käsin — ei automatisoitua):**
-- Lisää `CHANGELOG`-merkintä `src/App.jsx`:ään (näkyy Asetukset → Muutosloki). `npm run deploy` EI päivitä tätä automaattisesti.
+- Lisää `CHANGELOG`-merkintä `src/changelog.js`:ään (näkyy Info → Muutosloki; eriytetty App.jsx:stä laiskaksi chunkiksi 10.6.2026). `npm run deploy` EI päivitä tätä automaattisesti.
 - Päivitä `TODO`-taulukko `src/App.jsx`:ssä (Asetukset → Tulossa), jos jokin kohta valmistui tai lisättiin.
 - `APP_VERSION` kasvaa buildissa automaattisesti (`__APP_VERSION__`) — sitä ei tarvitse koskea.
 
