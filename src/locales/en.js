@@ -1,7 +1,7 @@
 // ── English strings ───────────────────────────────────────────────────────────
 // Mirror of fi.js. Any key missing here falls back to fi automatically (see i18n.jsx).
 // Game proper names (Kultakala, Moska, …) are kept Finnish — only descriptions and
-// rules are translated. Changelog history stays Finnish by design.
+// rules are translated. Muutosloki on lokalisoitu: src/changelogs/en.js.
 export const en = {
   ui: {
     loading: 'Loading…',

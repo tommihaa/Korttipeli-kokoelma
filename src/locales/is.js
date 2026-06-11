@@ -1,7 +1,7 @@
 // ── Íslenskir strengir ────────────────────────────────────────────────────────
 // Hliðstæða við fi.js. Hver lykill sem vantar hér fellur sjálfkrafa aftur á fi (sjá i18n.jsx).
 // Eiginnöfn spilanna (Kultakala, Moska, …) eru höfð finnsk — aðeins lýsingar og
-// reglur eru þýddar. Breytingaskráin (changelog) er finnsk samkvæmt hönnun.
+// reglur eru þýddar. Muutosloki on lokalisoitu: src/changelogs/is.js.
 export const is = {
   ui: {
     loading: 'Hleð…',

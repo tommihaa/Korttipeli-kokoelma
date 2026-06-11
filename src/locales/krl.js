@@ -2,7 +2,7 @@
 // Mirror of fi.js. Any key missing here falls back to fi automatically (see i18n.jsx).
 // EXPERIMENTAL / untested locale — Karelian Proper (Latin orthography).
 // Game proper names (Kultakala, Moska, …) are kept Finnish — only descriptions and
-// rules are translated. Changelog history stays Finnish by design.
+// rules are translated. Muutosloki on lokalisoitu: src/changelogs/krl.js.
 export const krl = {
   ui: {
     loading: 'Ladauvuu…',

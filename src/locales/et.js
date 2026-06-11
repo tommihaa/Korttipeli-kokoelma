@@ -1,7 +1,7 @@
 // ── Eestikeelsed stringid ──────────────────────────────────────────────────────
 // fi.js peegelpilt. Puuduvad võtmed langevad automaatselt tagasi soome keelele (vt i18n.jsx).
 // Mängude pärisnimed (Kultakala, Moska, …) jäävad soomekeelseks — tõlgitakse ainult
-// kirjeldused ja reeglid. Muutuste logi ajalugu jääb soomekeelseks.
+// kirjeldused ja reeglid. Muutosloki on lokalisoitu: src/changelogs/et.js.
 export const et = {
   ui: {
     loading: 'Laadimine…',

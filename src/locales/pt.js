@@ -1,7 +1,7 @@
 // ── Strings em português (europeu) ─────────────────────────────────────────────
 // Espelho de fi.js. Qualquer chave em falta aqui recorre automaticamente ao fi (ver i18n.jsx).
 // Os nomes próprios dos jogos (Kultakala, Moska, …) mantêm-se em finlandês — apenas as
-// descrições e regras são traduzidas. O histórico do changelog mantém-se em finlandês por opção.
+// descrições e regras são traduzidas. Muutosloki on lokalisoitu: src/changelogs/pt.js.
 export const pt = {
   ui: {
     loading: 'A carregar…',

@@ -1,7 +1,7 @@
 // ── Svenska strängar ──────────────────────────────────────────────────────────
 // Spegling av fi.js. En nyckel som saknas här faller automatiskt tillbaka till fi
 // (se i18n.jsx). Spelens egennamn (Kultakala, Moska, …) hålls finska — endast
-// beskrivningar och regler översätts. Changelog-historiken hålls finsk avsiktligt.
+// beskrivningar och regler översätts. Muutosloki on lokalisoitu: src/changelogs/sv.js.
 export const sv = {
   ui: {
     loading: 'Laddar…',

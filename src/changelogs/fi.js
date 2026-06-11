@@ -1,8 +1,17 @@
-// ── Muutosloki ────────────────────────────────────────────────────────────────
-// Eriytetty App.jsx:stä omaksi laiskasti ladattavaksi chunkiksi: data kasvaa joka
-// julkaisussa eikä sitä tarvita ennen kuin Info → Muutosloki avataan.
-// /deploy lisää uusimman merkinnän TÄHÄN tiedostoon (taulukon alkuun).
+// ── Muutosloki (fi = totuuden lähde) ──────────────────────────────────────────
+// Kielikohtaiset versiot samassa kansiossa (en.js, sv.js, …) — kukin oma laiska
+// chunkkinsa, ladataan vasta kun Info → Muutosloki avataan; puuttuva kieli
+// putoaa tähän fi-versioon. Rakenteen on oltava identtinen kaikissa kielissä
+// (samat date-arvot, sama määrä items-rivejä samassa järjestyksessä).
+// /deploy lisää uusimman merkinnän TÄHÄN tiedostoon (taulukon alkuun) JA
+// käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
+  {
+    date: '11.6.2026',
+    items: [
+      'Muutosloki näkyy nyt omalla kielelläsi — koko historia on käännetty kaikille 17 kielelle.',
+    ],
+  },
   {
     date: '10.6.2026',
     items: [

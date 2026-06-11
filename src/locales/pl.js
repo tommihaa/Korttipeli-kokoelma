@@ -1,7 +1,7 @@
 // ── Polskie ciągi znaków ──────────────────────────────────────────────────────
 // Lustro fi.js. Każdy brakujący klucz jest automatycznie pobierany z fi (zob. i18n.jsx).
 // Własne nazwy gier (Kultakala, Moska, …) pozostają fińskie — tłumaczone są tylko
-// opisy i zasady. Historia zmian (changelog) z założenia pozostaje fińska.
+// opisy i zasady. Muutosloki on lokalisoitu: src/changelogs/pl.js.
 
 // Polska reguła liczby mnogiej: 1 karta, 2 karty, 5 kart.
 const plural = (n, one, few, many) => {

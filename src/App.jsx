@@ -193,7 +193,12 @@ const MERKISTO = [
   { kategoria: 'ui',        icon: '🔮', label: 'Mestari',          selitys: 'Koneälyn korkein taso — muistaa pakan menot ja optimoi täydellisesti.' },
 ];
 
-// ── Muutosloki: ks. src/changelog.js (laiska chunk, ladataan Info-paneelista) ──
+// ── Muutosloki: ks. src/changelogs/<kieli>.js (laiskat chunkit, ladataan Info-
+// paneelista; fi on totuuden lähde ja fallback puuttuvalle kielelle) ──────────
+const CHANGELOG_LOADERS = import.meta.glob('./changelogs/*.js');
+const loadChangelog = (lang) =>
+  (CHANGELOG_LOADERS[`./changelogs/${lang}.js`] || CHANGELOG_LOADERS['./changelogs/fi.js'])()
+    .then(m => m.CHANGELOG);
 
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
@@ -745,7 +750,11 @@ export default function App() {
   const [siirtorekisteri, setSiirtorekisteri] = useState([]); // allBots replay frames
   const [replayOpen, setReplayOpen]     = useState(false);
   const [showChangelog, setShowChangelog]       = useState(false);
-  const [changelogData, setChangelogData]       = useState(null); // ladataan laiskasti changelog.js:stä
+  const [changelogData, setChangelogData]       = useState(null); // ladataan laiskasti changelogs/<lang>.js:stä
+  // Lataa muutosloki kun se avataan, ja uudelleen jos kieli vaihtuu sen ollessa auki.
+  useEffect(() => {
+    if (showChangelog) loadChangelog(lang).then(setChangelogData).catch(() => {});
+  }, [showChangelog, lang]);
   const [showTodo, setShowTodo]                 = useState(false);
   const [showPeliasetukset, setShowPeliasetukset] = useState(false);
   const [showKonealy, setShowKonealy]           = useState(false);
@@ -1175,10 +1184,7 @@ export default function App() {
         {/* Muutosloki */}
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
           <button
-            onClick={() => {
-              if (!changelogData) import('./changelog.js').then(m => setChangelogData(m.CHANGELOG)).catch(() => {});
-              setShowChangelog(v => !v);
-            }}
+            onClick={() => setShowChangelog(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.changelog')}</span>
