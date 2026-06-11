@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'La cronologia modifiche ora appare nella tua lingua — l\'intera cronologia è stata tradotta in tutte le 17 lingue.',
+      'Nuova impostazione: mazzo bicolore (♠ e ♣ neri, ♥ e ♦ rossi). La scelta viene ricordata come lingua e suoni.',
+      'Nuova guida nel pannello Info: come aggiungere il gioco alla schermata Home o al desktop — si apre come un\'app.',
+      'Le icone delle carte di Maija e Kasino ora vengono visualizzate correttamente su tutti i dispositivi.',
     ],
   },
   {

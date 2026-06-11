@@ -26,6 +26,7 @@ export const krl = {
       showNextBtn: 'Šeizau ozuttamah kuapatun / kierroksen yksityiskohat (Kasino, Moska)',
       showLog: 'Tapahtumaloki avoi',
       sound: 'Iänet',
+      twoColorDeck: 'Kakšivärini pakka (♠ ♣ muššat, ♥ ♦ ruškiet)',
       aiTitle: 'Konehälyn taso 🤖',
       ai: {
         beginner: { label: 'Opastuja', desc: 'luadiu virheitä, voitettavissa' },
@@ -60,6 +61,24 @@ export const krl = {
       feedback: '✉ Työnnä risut da ruušut',
       glossaryLink: 'Šanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
+      a2hs: {
+        title: 'Ližiä algunäytöllä 📲',
+        intro: 'Ližiä kiza telefonan algunäytöllä tahi tiedokonehen työpövvällä, ka še avauduu omašta kuvakkehešta kuin sovellus — ilmain selaimen palkkija. Kerran avatut kizat toimitah i ilmain verkkuo.',
+        mobile: '📱 Telefona da tabletti',
+        desktop: '💻 Tiedokoneh',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Valikko ⋮ → ”Ližiä algunäyttöh” (tahi ”Aššenna sovellus”)'],
+          ['Samsung Internet', 'Valikko ☰ → ”Ližiä šivu” → ”Algunäyttö”'],
+          ['Firefox (Android)', 'Valikko ⋮ → ”Ližiä algunäyttöh”'],
+          ['Safari (iPhone/iPad)', 'Jua-painike (nellikkö, kušta nuoli ylöh) → ”Ližiä Koti-valikkoh”'],
+          ['Chrome da muut (iPhone/iPad)', 'Jua-painike → ”Ližiä Koti-valikkoh”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Adressirivin oigiešša reunašša olija aššennuškuvake → ”Aššenna”'],
+          ['Safari (Mac)', 'Tiedosto-valikko → ”Ližiä Dockih”'],
+          ['Firefox (tiedokoneh)', 'Ei tue aššendamista — ližiä kirjanmerkki'],
+        ],
+      },
       todo: 'Tulossa 🗺',
       todoItems: [
         'Kahenvärini korttipakka nelivärisen rinnalla (valittavissa Šiännöistä)',

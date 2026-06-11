@@ -12,6 +12,17 @@ import PoytaPanel from '../shared/PoytaPanel.jsx';
 const VAL = { A:14,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13 };
 
 const isMaija = c => c && c.r === 'Q' && c.s === '♠';
+
+// Q♠-minikortti (sama ulkoasu kuin valikon CardIcon, App.jsx) — korvaa Unicode-
+// korttiglyyfin 🂭, joka renderöityy monella laitteella tofu-laatikkona. s = skaala.
+const QCard = ({ s = 1 }) => (
+  <span style={{ display:'inline-flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+    width:26*s, height:34*s, background:'#f6efdd', borderRadius:Math.max(3, 4*s), lineHeight:1.05,
+    boxShadow:'0 1px 3px rgba(0,0,0,0.4)', fontFamily:'Georgia,serif', flexShrink:0, verticalAlign:'middle' }}>
+    <span style={{ fontSize:13*s, fontWeight:700, color:'#1a1a1a' }}>Q</span>
+    <span style={{ fontSize:13*s, color:'#1a1a1a' }}>♠</span>
+  </span>
+);
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 function newDeck() {
@@ -580,7 +591,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   if (screen === 'select') return (
     <div style={{ background:C.bg, minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', gap:28, paddingTop:isMobile ? 24 : 32, fontFamily:'Georgia,serif' }}>
       <div style={{ textAlign:'center' }}>
-        <div style={{ fontSize:48, marginBottom:8 }}>🂭</div>
+        <div style={{ marginBottom:8 }}><QCard s={2} /></div>
         <h1 style={{ fontSize:52, letterSpacing:12, margin:0, background:`linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>MAIJA</h1>
         <div style={{ display:'flex', gap:10, justifyContent:'center', fontSize:16, marginTop:8 }}>
           <span style={{ color:SUIT_COLOR['♠'] }}>♠</span>
@@ -625,7 +636,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
               alignItems:'center', gap:12,
               background:i===0 ? C.gold+'14' : p.rank===G.players.length ? C.maija+'14' : 'rgba(255,255,255,0.02)',
               border:`1px solid ${i===0 ? C.gold+'55' : p.rank===G.players.length ? C.maija+'55' : C.panelBorder}` }}>
-              <span style={{ fontSize:20 }}>{i===0 ? '🏆' : p.rank===G.players.length ? '🂭' : '🎯'}</span>
+              <span style={{ fontSize:20, display:'inline-flex', alignItems:'center' }}>{i===0 ? '🏆' : p.rank===G.players.length ? <QCard s={0.8} /> : '🎯'}</span>
               <span style={{ fontFamily:'sans-serif', fontSize:14, flex:1,
                 color:i===0 ? C.gold : p.rank===G.players.length ? C.maija : C.text }}>{p.name}</span>
               <span style={{ fontFamily:'sans-serif', fontSize:12, color:C.dim }}>
@@ -668,7 +679,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       <div style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`,
         borderRadius:14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12,
         minHeight: isMobile ? 44 : 60, display:'flex', alignItems:'center', gap:10 }}>
-        <span style={{ fontSize:15, flexShrink:0 }}>🂭</span>
+        <QCard s={0.7} />
         <p style={{ margin:0, fontFamily:'sans-serif', fontSize:13, lineHeight:1.55, color:C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
       </div>
 
@@ -880,11 +891,11 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       {allBots && pendingResult && (
         <div style={{ position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.75)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:16, zIndex:300 }}>
           <div style={{ background:'#1a0a2e', border:'2px solid rgba(123,47,190,0.7)', borderRadius:20, padding:'32px 40px', display:'flex', flexDirection:'column', alignItems:'center', gap:14, maxWidth:360 }}>
-            <span style={{ fontSize:32 }}>🂭</span>
+            <QCard s={1.3} />
             <span style={{ fontFamily:'Georgia,serif', fontSize:20, color:C.botMode, letterSpacing:4 }}>{t('ui.result.watchEnded')}</span>
             {pendingResult.ranking.map((p, i) => (
               <div key={i} style={{ display:'flex', gap:10, alignItems:'center', width:'100%' }}>
-                <span style={{ fontSize:16 }}>{i===0 ? '🏆' : i===pendingResult.ranking.length-1 ? '🂭' : '🎯'}</span>
+                <span style={{ fontSize:16, display:'inline-flex', alignItems:'center' }}>{i===0 ? '🏆' : i===pendingResult.ranking.length-1 ? <QCard s={0.65} /> : '🎯'}</span>
                 <span style={{ fontFamily:'sans-serif', fontSize:13, color:i===0 ? C.botMode : C.botModeDim, flex:1 }}>{p.name}</span>
                 <span style={{ fontFamily:'monospace', fontSize:12, color:i===0 ? C.botMode : C.botModeDimmer }}>{t('ui.result.place', { n: p.place })}</span>
               </div>

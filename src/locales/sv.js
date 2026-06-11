@@ -25,6 +25,7 @@ export const sv = {
       showNextBtn: 'Pausa för att visa detaljerna för fångst / runda (Kasino, Moska)',
       showLog: 'Händelselogg öppen',
       sound: 'Ljud',
+      twoColorDeck: 'Tvåfärgad kortlek (♠ ♣ svarta, ♥ ♦ röda)',
       aiTitle: 'AI-nivå 🤖',
       ai: {
         beginner: { label: 'Lärling',  desc: 'gör misstag, går att slå' },
@@ -59,6 +60,24 @@ export const sv = {
       feedback: '✉ Skicka ris och ros',
       glossaryLink: 'Ordlista & Symboler 📖',
       changelog: 'Ändringslogg 📋',
+      a2hs: {
+        title: 'Lägg till på hemskärmen 📲',
+        intro: 'Lägg till spelet på telefonens hemskärm eller datorns skrivbord, så öppnas det från en egen ikon som en app — utan webbläsarens fält. Spel som öppnats en gång fungerar även offline.',
+        mobile: '📱 Telefon och surfplatta',
+        desktop: '💻 Dator',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Meny ⋮ → ”Lägg till på startskärmen” (eller ”Installera app”)'],
+          ['Samsung Internet', 'Meny ☰ → ”Lägg till sida” → ”Startskärm”'],
+          ['Firefox (Android)', 'Meny ⋮ → ”Lägg till på startskärmen”'],
+          ['Safari (iPhone/iPad)', 'Dela-knappen (fyrkant med pil uppåt) → ”Lägg till på hemskärmen”'],
+          ['Chrome med flera (iPhone/iPad)', 'Dela-knappen → ”Lägg till på hemskärmen”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Installationsikonen till höger i adressfältet → ”Installera”'],
+          ['Safari (Mac)', 'Arkiv-menyn → ”Lägg till i Dock”'],
+          ['Firefox (dator)', 'Stöder inte installation — använd ett bokmärke'],
+        ],
+      },
       todo: 'På gång 🗺',
       todoItems: [
         'Tvåfärgad kortlek vid sidan av den fyrfärgade (valbar i Inställningar)',

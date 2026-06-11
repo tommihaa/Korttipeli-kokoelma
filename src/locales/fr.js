@@ -25,6 +25,7 @@ export const fr = {
       showNextBtn: 'Faire une pause pour montrer les détails de la capture / du tour (Kasino, Moska)',
       showLog: 'Journal des événements ouvert',
       sound: 'Sons',
+      twoColorDeck: 'Jeu de cartes bicolore (♠ ♣ noirs, ♥ ♦ rouges)',
       aiTitle: 'Niveau de l\'IA 🤖',
       ai: {
         beginner: { label: 'Apprenti',  desc: 'fait des erreurs, battable' },
@@ -59,6 +60,24 @@ export const fr = {
       feedback: '✉ Envoyer compliments et critiques',
       glossaryLink: 'Glossaire et symboles 📖',
       changelog: 'Journal des modifications 📋',
+      a2hs: {
+        title: 'Ajouter à l’écran d’accueil 📲',
+        intro: 'Ajoute le jeu à l’écran d’accueil de ton téléphone ou au bureau de ton ordinateur : il s’ouvrira depuis sa propre icône comme une appli — sans barres du navigateur. Les jeux déjà ouverts fonctionnent aussi hors ligne.',
+        mobile: '📱 Téléphone et tablette',
+        desktop: '💻 Ordinateur',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menu ⋮ → ”Ajouter à l’écran d’accueil” (ou ”Installer l’application”)'],
+          ['Samsung Internet', 'Menu ☰ → ”Ajouter la page à” → ”Écran d’accueil”'],
+          ['Firefox (Android)', 'Menu ⋮ → ”Ajouter à l’écran d’accueil”'],
+          ['Safari (iPhone/iPad)', 'Bouton Partager (carré avec flèche vers le haut) → ”Sur l’écran d’accueil”'],
+          ['Chrome et autres (iPhone/iPad)', 'Bouton Partager → ”Sur l’écran d’accueil”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Icône d’installation à droite de la barre d’adresse → ”Installer”'],
+          ['Safari (Mac)', 'Menu Fichier → ”Ajouter au Dock”'],
+          ['Firefox (ordinateur)', 'Installation non prise en charge — utilise un marque-page'],
+        ],
+      },
       todo: 'À venir 🗺',
       todoItems: [
         'Jeu de cartes bicolore en plus du quadricolore (à choisir dans les Paramètres)',

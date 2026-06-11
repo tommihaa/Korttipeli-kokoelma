@@ -26,6 +26,7 @@ export const en = {
       showNextBtn: 'Pause to show capture / round details (Kasino, Moska)',
       showLog: 'Event log open',
       sound: 'Sound',
+      twoColorDeck: 'Two-color deck (♠ ♣ black, ♥ ♦ red)',
       aiTitle: 'AI level 🤖',
       ai: {
         beginner: { label: 'Apprentice', desc: 'makes mistakes, beatable' },
@@ -61,6 +62,24 @@ export const en = {
       feedbackForm: '⭐ Rate the collection',
       glossaryLink: 'Glossary & Symbols 📖',
       changelog: 'Changelog 📋',
+      a2hs: {
+        title: 'Add to Home Screen 📲',
+        intro: 'Add the game to your phone’s home screen or your computer’s desktop and it opens from its own icon like an app — without browser bars. Once-opened games also work offline.',
+        mobile: '📱 Phone and tablet',
+        desktop: '💻 Computer',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menu ⋮ → ”Add to Home screen” (or ”Install app”)'],
+          ['Samsung Internet', 'Menu ☰ → ”Add page to” → ”Home screen”'],
+          ['Firefox (Android)', 'Menu ⋮ → ”Add to Home screen”'],
+          ['Safari (iPhone/iPad)', 'Share button (square with an up arrow) → ”Add to Home Screen”'],
+          ['Chrome and others (iPhone/iPad)', 'Share button → ”Add to Home Screen”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Install icon at the right end of the address bar → ”Install”'],
+          ['Safari (Mac)', 'File menu → ”Add to Dock”'],
+          ['Firefox (desktop)', 'Does not support installing — use a bookmark'],
+        ],
+      },
       todo: 'Coming soon 🗺',
       todoItems: [
         'Two-colour card deck alongside the four-colour one (selectable in Settings)',

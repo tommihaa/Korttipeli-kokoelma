@@ -1111,7 +1111,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   if (screen === 'select') return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif' }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 48, marginBottom: 8 }}>🂺</div>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>🪙</div>
         <h1 style={{ fontSize: 52, letterSpacing: 12, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KASINO</h1>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
           <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
@@ -1243,7 +1243,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
 
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 60 : 70, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 15, flexShrink: 0 }}>🂺</span>
+        <span style={{ fontSize: 15, flexShrink: 0 }}>🪙</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{renderLogMessage(msg)}</p>
       </div>
 

@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'Le journal des modifications s\'affiche désormais dans ta langue — tout l\'historique a été traduit dans les 17 langues.',
+      'Nouveau réglage : jeu de cartes bicolore (♠ et ♣ noirs, ♥ et ♦ rouges). Le choix est mémorisé comme la langue et les sons.',
+      'Nouveau guide dans le panneau Info : comment ajouter le jeu à l\'écran d\'accueil ou au bureau — il s\'ouvre comme une appli.',
+      'Les icônes de cartes de Maija et Kasino s\'affichent désormais correctement sur tous les appareils.',
     ],
   },
   {

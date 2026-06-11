@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'O registo de alterações é agora apresentado no seu idioma — todo o histórico foi traduzido para os 17 idiomas.',
+      'Nova definição: baralho de duas cores (♠ e ♣ pretos, ♥ e ♦ vermelhos). A escolha é recordada como o idioma e os sons.',
+      'Novo guia no painel de informações: como adicionar o jogo ao ecrã principal ou ao ambiente de trabalho — abre como uma app.',
+      'Os ícones de cartas no Maija e no Kasino aparecem agora corretamente em todos os dispositivos.',
     ],
   },
   {

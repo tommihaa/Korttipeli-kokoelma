@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'Muutuste logi kuvatakse nüüd sinu oma keeles — kogu ajalugu on tõlgitud kõigisse 17 keelde.',
+      'Uus säte: kahevärviline kaardipakk (♠ ja ♣ mustad, ♥ ja ♦ punased). Valik jäetakse meelde nagu keel ja helid.',
+      'Uus juhend infopaneelis: kuidas lisada mäng avakuvale või töölauale — see avaneb nagu rakendus.',
+      'Maija ja Kasino kaardiikoonid kuvatakse nüüd kõigil seadmetel õigesti.',
     ],
   },
   {

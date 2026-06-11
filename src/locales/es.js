@@ -25,6 +25,7 @@ export const es = {
       showNextBtn: 'Pausa para mostrar los detalles de la captura / ronda (Kasino, Moska)',
       showLog: 'Registro de eventos abierto',
       sound: 'Sonido',
+      twoColorDeck: 'Baraja de dos colores (♠ ♣ negros, ♥ ♦ rojos)',
       aiTitle: 'Nivel de IA 🤖',
       ai: {
         beginner: { label: 'Aprendiz',  desc: 'comete errores, se le puede ganar' },
@@ -59,6 +60,24 @@ export const es = {
       feedback: '✉ Envía críticas y elogios',
       glossaryLink: 'Glosario y Símbolos 📖',
       changelog: 'Registro de cambios 📋',
+      a2hs: {
+        title: 'Añadir a la pantalla de inicio 📲',
+        intro: 'Añade el juego a la pantalla de inicio del móvil o al escritorio del ordenador: se abrirá desde su propio icono como una app — sin barras del navegador. Los juegos ya abiertos funcionan también sin conexión.',
+        mobile: '📱 Móvil y tableta',
+        desktop: '💻 Ordenador',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menú ⋮ → ”Añadir a pantalla de inicio” (o ”Instalar aplicación”)'],
+          ['Samsung Internet', 'Menú ☰ → ”Añadir página a” → ”Pantalla de inicio”'],
+          ['Firefox (Android)', 'Menú ⋮ → ”Añadir a pantalla de inicio”'],
+          ['Safari (iPhone/iPad)', 'Botón Compartir (cuadrado con flecha hacia arriba) → ”Añadir a pantalla de inicio”'],
+          ['Chrome y otros (iPhone/iPad)', 'Botón Compartir → ”Añadir a pantalla de inicio”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Icono de instalación a la derecha de la barra de direcciones → ”Instalar”'],
+          ['Safari (Mac)', 'Menú Archivo → ”Añadir al Dock”'],
+          ['Firefox (ordenador)', 'No admite instalación — usa un marcador'],
+        ],
+      },
       todo: 'Próximamente 🗺',
       todoItems: [
         'Baraja de dos colores junto a la de cuatro colores (seleccionable en Ajustes)',

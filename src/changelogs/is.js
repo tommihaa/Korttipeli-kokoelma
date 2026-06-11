@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'Breytingaskráin birtist nú á þínu eigin tungumáli — öll sagan hefur verið þýdd á öll 17 tungumálin.',
+      'Ný stilling: tveggja lita stokkur (♠ og ♣ svört, ♥ og ♦ rauð). Valið er munað eins og tungumál og hljóð.',
+      'Ný leiðbeining í upplýsingaglugganum: svona seturðu leikinn á heimaskjáinn eða skjáborðið — leikurinn opnast eins og app.',
+      'Spilatáknin í Maija og Kasino birtast nú rétt á öllum tækjum.',
     ],
   },
   {

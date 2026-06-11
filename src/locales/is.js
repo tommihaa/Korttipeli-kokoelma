@@ -25,6 +25,7 @@ export const is = {
       showNextBtn: 'Staldra við til að sýna smáatriði um töku / umferð (Kasino, Moska)',
       showLog: 'Atburðaskrá opin',
       sound: 'Hljóð',
+      twoColorDeck: 'Tveggja lita stokkur (♠ ♣ svört, ♥ ♦ rauð)',
       aiTitle: 'Stig tölvuvits 🤖',
       ai: {
         beginner: { label: 'Lærlingur', desc: 'gerir mistök, hægt að vinna' },
@@ -59,6 +60,24 @@ export const is = {
       feedback: '✉ Senda hrós og kvartanir',
       glossaryLink: 'Orðasafn & Tákn 📖',
       changelog: 'Breytingaskrá 📋',
+      a2hs: {
+        title: 'Setja á heimaskjá 📲',
+        intro: 'Settu leikinn á heimaskjá símans eða skjáborð tölvunnar — þá opnast hann af eigin tákni eins og app, án vafrastiku. Leikir sem hafa verið opnaðir einu sinni virka líka án nettengingar.',
+        mobile: '📱 Sími og spjaldtölva',
+        desktop: '💻 Tölva',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Valmynd ⋮ → ”Bæta á heimaskjá” (eða ”Setja upp forrit”)'],
+          ['Samsung Internet', 'Valmynd ☰ → ”Bæta síðu við” → ”Heimaskjár”'],
+          ['Firefox (Android)', 'Valmynd ⋮ → ”Bæta á heimaskjá”'],
+          ['Safari (iPhone/iPad)', 'Deila-hnappurinn (ferningur með ör upp) → ”Bæta á heimaskjá”'],
+          ['Chrome og fleiri (iPhone/iPad)', 'Deila-hnappurinn → ”Bæta á heimaskjá”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Uppsetningartákn hægra megin í veffangastikunni → ”Setja upp”'],
+          ['Safari (Mac)', 'File-valmyndin → ”Add to Dock”'],
+          ['Firefox (tölva)', 'Styður ekki uppsetningu — notaðu bókamerki'],
+        ],
+      },
       todo: 'Væntanlegt 🗺',
       todoItems: [
         'Tvílita spilastokkur við hlið fjórlita (valanlegt í Stillingum)',

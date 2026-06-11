@@ -25,6 +25,7 @@ export const et = {
       showNextBtn: 'Peatu, et näidata haaramise / ringi üksikasju (Kasino, Moska)',
       showLog: 'Sündmuste logi avatud',
       sound: 'Heli',
+      twoColorDeck: 'Kahevärviline kaardipakk (♠ ♣ mustad, ♥ ♦ punased)',
       aiTitle: 'Tehisintellekti tase 🤖',
       ai: {
         beginner: { label: 'Õpipoiss', desc: 'teeb vigu, võidetav' },
@@ -59,6 +60,24 @@ export const et = {
       feedback: '✉ Saada kiitused ja kriitika',
       glossaryLink: 'Sõnastik & Tähistik 📖',
       changelog: 'Muutuste logi 📋',
+      a2hs: {
+        title: 'Lisa avakuvale 📲',
+        intro: 'Lisa mäng telefoni avakuvale või arvuti töölauale — see avaneb oma ikoonilt nagu rakendus, ilma brauseri ribadeta. Kord avatud mängud töötavad ka võrguta.',
+        mobile: '📱 Telefon ja tahvelarvuti',
+        desktop: '💻 Arvuti',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menüü ⋮ → ”Lisa avakuvale” (või ”Installi rakendus”)'],
+          ['Samsung Internet', 'Menüü ☰ → ”Lisa leht” → ”Avakuva”'],
+          ['Firefox (Android)', 'Menüü ⋮ → ”Lisa avakuvale”'],
+          ['Safari (iPhone/iPad)', 'Jagamisnupp (ruut noolega üles) → ”Lisa avakuvale”'],
+          ['Chrome ja teised (iPhone/iPad)', 'Jagamisnupp → ”Lisa avakuvale”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Installiikoon aadressiriba paremas servas → ”Installi”'],
+          ['Safari (Mac)', 'Menüü Fail → ”Lisa Docki”'],
+          ['Firefox (arvuti)', 'Installimist ei toetata — kasuta järjehoidjat'],
+        ],
+      },
       todo: 'Tulekul 🗺',
       todoItems: [
         'Kahevärviline kaardipakk neljavärvilise kõrval (valitav Seadetest)',

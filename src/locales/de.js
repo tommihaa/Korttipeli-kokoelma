@@ -25,6 +25,7 @@ export const de = {
       showNextBtn: 'Anhalten, um Details zu Fang / Runde zu zeigen (Kasino, Moska)',
       showLog: 'Ereignisprotokoll offen',
       sound: 'Ton',
+      twoColorDeck: 'Zweifarbiges Kartendeck (♠ ♣ schwarz, ♥ ♦ rot)',
       aiTitle: 'KI-Stufe 🤖',
       ai: {
         beginner: { label: 'Lehrling',  desc: 'macht Fehler, schlagbar' },
@@ -59,6 +60,24 @@ export const de = {
       feedback: '✉ Lob und Kritik senden',
       glossaryLink: 'Glossar & Symbole 📖',
       changelog: 'Änderungsprotokoll 📋',
+      a2hs: {
+        title: 'Zum Startbildschirm hinzufügen 📲',
+        intro: 'Füge das Spiel dem Startbildschirm deines Handys oder dem Desktop deines Computers hinzu — es öffnet sich dann über ein eigenes Symbol wie eine App, ohne Browserleisten. Einmal geöffnete Spiele funktionieren auch offline.',
+        mobile: '📱 Handy und Tablet',
+        desktop: '💻 Computer',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menü ⋮ → ”Zum Startbildschirm hinzufügen” (oder ”App installieren”)'],
+          ['Samsung Internet', 'Menü ☰ → ”Seite hinzufügen zu” → ”Startbildschirm”'],
+          ['Firefox (Android)', 'Menü ⋮ → ”Zum Startbildschirm hinzufügen”'],
+          ['Safari (iPhone/iPad)', 'Teilen-Taste (Quadrat mit Pfeil nach oben) → ”Zum Home-Bildschirm”'],
+          ['Chrome und andere (iPhone/iPad)', 'Teilen-Taste → ”Zum Home-Bildschirm”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Installationssymbol rechts in der Adressleiste → ”Installieren”'],
+          ['Safari (Mac)', 'Menü ”Ablage” → ”Zum Dock hinzufügen”'],
+          ['Firefox (Computer)', 'Unterstützt keine Installation — Lesezeichen verwenden'],
+        ],
+      },
       todo: 'Demnächst 🗺',
       todoItems: [
         'Zweifarbiges Kartenspiel neben dem vierfarbigen (in den Einstellungen wählbar)',

@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'The changelog now appears in your own language — the full history has been translated into all 17 languages.',
+      'New setting: a two-color deck (♠ and ♣ black, ♥ and ♦ red). The choice is remembered like language and sounds.',
+      'New guide in the Info panel: how to add the game to your home screen or desktop — it opens like an app.',
+      'The card icons in Maija and Kasino now display correctly on all devices.',
     ],
   },
   {

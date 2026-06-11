@@ -25,6 +25,7 @@ export const no = {
       showNextBtn: 'Stopp for å vise fangst-/rundedetaljer (Kasino, Moska)',
       showLog: 'Hendelseslogg åpen',
       sound: 'Lyd',
+      twoColorDeck: 'Tofarget kortstokk (♠ ♣ svarte, ♥ ♦ røde)',
       aiTitle: 'KI-nivå 🤖',
       ai: {
         beginner: { label: 'Lærling',  desc: 'gjør feil, kan slås' },
@@ -59,6 +60,24 @@ export const no = {
       feedback: '✉ Send ros og ris',
       glossaryLink: 'Ordliste & Symboler 📖',
       changelog: 'Endringslogg 📋',
+      a2hs: {
+        title: 'Legg til på startskjermen 📲',
+        intro: 'Legg spillet til på telefonens startskjerm eller datamaskinens skrivebord, så åpnes det fra sitt eget ikon som en app — uten nettleserens felter. Spill som er åpnet én gang fungerer også uten nett.',
+        mobile: '📱 Telefon og nettbrett',
+        desktop: '💻 Datamaskin',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Meny ⋮ → ”Legg til på startskjermen” (eller ”Installer app”)'],
+          ['Samsung Internet', 'Meny ☰ → ”Legg til side” → ”Startskjerm”'],
+          ['Firefox (Android)', 'Meny ⋮ → ”Legg til på startskjermen”'],
+          ['Safari (iPhone/iPad)', 'Del-knappen (firkant med pil opp) → ”Legg til på Hjem-skjerm”'],
+          ['Chrome og andre (iPhone/iPad)', 'Del-knappen → ”Legg til på Hjem-skjerm”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Installasjonsikonet til høyre i adressefeltet → ”Installer”'],
+          ['Safari (Mac)', 'Arkiv-menyen → ”Legg til i Dock”'],
+          ['Firefox (datamaskin)', 'Støtter ikke installasjon — bruk et bokmerke'],
+        ],
+      },
       todo: 'Kommer snart 🗺',
       todoItems: [
         'Tofarget kortstokk ved siden av den firefargete (kan velges i Innstillinger)',

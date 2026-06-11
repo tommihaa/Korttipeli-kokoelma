@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'Muutosloki on nyt luvettavissa omalla kielellä, ei vai šuomekši — kai vanhat merkinnät on kiännetty kaikilla 17 kielellä.',
+      'Uuži siändö: kakšivärini pakka (♠ da ♣ muššat, ♥ da ♦ ruškiet). Valinda muissetah kuin kieli da iänet.',
+      'Uuži ohjeh Info-panelissa: näin ližiät kizan algunäytöllä tahi työpövvällä — kiza avauduu kuin sovellus.',
+      'Maijan da Kasinon kortti-ikonat nävytäh nyt oigein kaikilla laittehilla.',
     ],
   },
   {

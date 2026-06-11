@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'Lista zmian wyświetla się teraz w Twoim języku — cała historia została przetłumaczona na wszystkie 17 języków.',
+      'Nowe ustawienie: dwukolorowa talia (♠ i ♣ czarne, ♥ i ♦ czerwone). Wybór jest zapamiętywany jak język i dźwięki.',
+      'Nowy poradnik w panelu Info: jak dodać grę do ekranu głównego lub pulpitu — otwiera się jak aplikacja.',
+      'Ikony kart w Maija i Kasino wyświetlają się teraz poprawnie na wszystkich urządzeniach.',
     ],
   },
   {

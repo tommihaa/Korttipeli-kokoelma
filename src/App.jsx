@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { C, SUIT_COLOR, SUIT_COLOR_DARK } from './shared/colors.js';
+import { C, SUIT_COLOR, SUIT_COLOR_DARK, setTwoColorDeck } from './shared/colors.js';
 import GameResult from './shared/GameResult.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
@@ -202,13 +202,13 @@ const loadChangelog = (lang) =>
 
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
-  { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'deferred' },
+  { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'done' },
   { label: 'Kieliversiointi (12 kieltä)', status: 'done' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
   // UKK herää palautteen mukana — lokalisoitu fi+en, muut kielet putoavat tähän labeliin
   { label: 'Usein kysytyt kysymykset (UKK)', status: 'deferred' },
   { label: 'Jaa peli kaverille (linkki tai QR-koodi)', status: 'deferred' },
-  { label: 'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle', status: 'deferred' },
+  { label: 'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle', status: 'done' },
 ];
 
 const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));
@@ -726,6 +726,8 @@ export default function App() {
   const [stats, setStats]           = useState(mkStats);
   const [showLog, setShowLog]       = useState(true);   // tapahtumaloki auki oletuksena myös pienellä näytöllä
   const [soundOn, setSoundOn]       = useStickySetting('soundOn', false);  // äänet pois oletuksena; valinta muistetaan
+  const [twoColorDeck, setTwoColorDeckPref] = useStickySetting('twoColorDeck', false); // ♠♣ musta + ♥♦ punainen; muistetaan kuten kieli ja äänet
+  useEffect(() => { setTwoColorDeck(twoColorDeck); }, [twoColorDeck]); // mutatoi SUIT_COLOR-paletit (colors.js) — re-render hoitaa loput
   const [seeAll, setSeeAll]         = useState(false);
   const [showCounts, setShowCounts] = useState(true);
   const [showLastPlay, setShowLastPlay] = useState(true);
@@ -756,6 +758,7 @@ export default function App() {
     if (showChangelog) loadChangelog(lang).then(setChangelogData).catch(() => {});
   }, [showChangelog, lang]);
   const [showTodo, setShowTodo]                 = useState(false);
+  const [showA2hs, setShowA2hs]                 = useState(false); // "Lisää aloitusnäytölle" -ohje
   const [showPeliasetukset, setShowPeliasetukset] = useState(false);
   const [showKonealy, setShowKonealy]           = useState(false);
   const [showPelaajat, setShowPelaajat]         = useState(false);
@@ -989,6 +992,7 @@ export default function App() {
                   { label: t('ui.settings.showNextBtn'),                val: showNextBtn,   set: setShowNextBtn   },
                   { label: t('ui.settings.showLog'),                    val: showLog,       set: setShowLog       },
                   { label: t('ui.settings.sound'),                      val: soundOn,       set: setSoundOn       },
+                  { label: t('ui.settings.twoColorDeck'),               val: twoColorDeck,  set: setTwoColorDeckPref },
                 ].filter(Boolean);
               })().map(({ label, val, set, disabled }) => (
                 <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
@@ -1180,6 +1184,33 @@ export default function App() {
           <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.glossaryLink')}</span>
           <span style={{ color: C.gold, fontSize: 16 }}>›</span>
         </button>
+
+        {/* Lisää aloitusnäytölle — ohje yleisimmille selaimille (mobiili + tietokone) */}
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowA2hs(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.a2hs.title')}</span>
+            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showA2hs ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showA2hs && (
+            <div style={{ padding: '0 14px 14px' }}>
+              <p style={{ margin: '0 0 10px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>{t('ui.infoPanel.a2hs.intro')}</p>
+              {[['mobile', 'mobileRows'], ['desktop', 'desktopRows']].map(([titleKey, rowsKey]) => (
+                <div key={titleKey} style={{ marginBottom: 10 }}>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, letterSpacing: 1, marginBottom: 4, textTransform: 'uppercase' }}>{t(`ui.infoPanel.a2hs.${titleKey}`)}</div>
+                  {t(`ui.infoPanel.a2hs.${rowsKey}`).map(([browser, steps], i) => (
+                    <div key={i} style={{ padding: '5px 0', borderBottom: `1px solid ${C.panelBorder}33` }}>
+                      <div style={{ fontSize: 11, color: C.text, fontFamily: 'sans-serif', fontWeight: 700, marginBottom: 1 }}>{browser}</div>
+                      <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.5 }}>{steps}</div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Muutosloki */}
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>

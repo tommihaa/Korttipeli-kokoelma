@@ -25,6 +25,7 @@ export const da = {
       showNextBtn: 'Stop for at vise detaljer om fangst / runde (Kasino, Moska)',
       showLog: 'Hændelseslog åben',
       sound: 'Lyd',
+      twoColorDeck: 'Tofarvet kortspil (♠ ♣ sorte, ♥ ♦ røde)',
       aiTitle: 'AI-niveau 🤖',
       ai: {
         beginner: { label: 'Lærling', desc: 'laver fejl, kan slås' },
@@ -59,6 +60,24 @@ export const da = {
       feedback: '✉ Send ris og ros',
       glossaryLink: 'Ordliste & Symboler 📖',
       changelog: 'Ændringslog 📋',
+      a2hs: {
+        title: 'Føj til hjemmeskærmen 📲',
+        intro: 'Føj spillet til telefonens hjemmeskærm eller computerens skrivebord, så åbner det fra sit eget ikon som en app — uden browserens bjælker. Spil, der har været åbnet én gang, virker også offline.',
+        mobile: '📱 Telefon og tablet',
+        desktop: '💻 Computer',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menu ⋮ → ”Føj til startskærm” (eller ”Installer app”)'],
+          ['Samsung Internet', 'Menu ☰ → ”Tilføj side til” → ”Startskærm”'],
+          ['Firefox (Android)', 'Menu ⋮ → ”Føj til startskærm”'],
+          ['Safari (iPhone/iPad)', 'Del-knappen (firkant med pil op) → ”Føj til hjemmeskærm”'],
+          ['Chrome og andre (iPhone/iPad)', 'Del-knappen → ”Føj til hjemmeskærm”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Installationsikonet i højre side af adresselinjen → ”Installer”'],
+          ['Safari (Mac)', 'Arkiv-menuen → ”Føj til Dock”'],
+          ['Firefox (computer)', 'Understøtter ikke installation — brug et bogmærke'],
+        ],
+      },
       todo: 'På vej 🗺',
       todoItems: [
         'Tofarvet kortspil ved siden af det firefarvede (kan vælges i Indstillinger)',

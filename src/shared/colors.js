@@ -16,19 +16,28 @@ export const C = {
   botModeDimmer: '#6b4a9a', // katselutila — himmein (sija-/pistemerkinnät)
 };
 
-export const SUIT_COLOR = {
-  '♠': '#1a1a1a',
-  '♥': '#cc2222',
-  '♦': '#ff8c42',
-  '♣': '#4caf7d',
-};
+import { loadPref } from './storage.js';
 
-// Tummalle taustalle (#1f5a3f) — SUIT_COLOR:n värit uppoavat tummaan vihreään
-export const SUIT_COLOR_DARK = {
-  '♠': '#c8c4d4',
-  '♥': '#ff6666',
-  '♦': '#ffb060',
-  '♣': '#5de08a',
-};
+// Kaksi palettia: neliväri (oletus) ja perinteinen kaksiväri (♠♣ musta, ♥♦ punainen).
+// SUIT_COLOR/SUIT_COLOR_DARK ovat mutatoituvia — setTwoColorDeck vaihtaa sisällön
+// paikallaan, joten pelien suorat SUIT_COLOR[s]-luvut seuraavat asetusta ilman propseja
+// (sama idea kuin i18n:n moduulitason tr()). Asetuksen vaihto App.jsx:ssä aiheuttaa
+// joka tapauksessa re-renderin, joten näkymä päivittyy heti.
+const FOUR_COLOR      = { '♠': '#1a1a1a', '♥': '#cc2222', '♦': '#ff8c42', '♣': '#4caf7d' };
+const TWO_COLOR       = { '♠': '#1a1a1a', '♥': '#cc2222', '♦': '#cc2222', '♣': '#1a1a1a' };
+// Tummalle taustalle (#1f5a3f) — vaaleiden korttipohjien värit uppoavat tummaan vihreään
+const FOUR_COLOR_DARK = { '♠': '#c8c4d4', '♥': '#ff6666', '♦': '#ffb060', '♣': '#5de08a' };
+const TWO_COLOR_DARK  = { '♠': '#c8c4d4', '♥': '#ff6666', '♦': '#ff6666', '♣': '#c8c4d4' };
+
+export const SUIT_COLOR      = { ...FOUR_COLOR };
+export const SUIT_COLOR_DARK = { ...FOUR_COLOR_DARK };
+
+export function setTwoColorDeck(on) {
+  Object.assign(SUIT_COLOR,      on ? TWO_COLOR      : FOUR_COLOR);
+  Object.assign(SUIT_COLOR_DARK, on ? TWO_COLOR_DARK : FOUR_COLOR_DARK);
+}
+
+// Tallennettu preferenssi voimaan heti moduulin latautuessa (ennen ensimmäistä renderiä)
+setTwoColorDeck(loadPref('twoColorDeck', false));
 
 export const suitColor = s => SUIT_COLOR[s] || '#1a1a2e';

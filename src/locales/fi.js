@@ -29,6 +29,7 @@ export const fi = {
       showNextBtn: 'Pysähdy näyttämään kaappauksen / kierroksen yksityiskohdat (Kasino, Moska)',
       showLog: 'Tapahtumaloki auki',
       sound: 'Äänet',
+      twoColorDeck: 'Kaksivärinen pakka (♠ ♣ mustia, ♥ ♦ punaisia)',
       aiTitle: 'Koneälyn taso 🤖',
       ai: {
         beginner: { label: 'Oppipoika', desc: 'tekee virheitä, voitettavissa' },
@@ -64,6 +65,24 @@ export const fi = {
       feedbackForm: '⭐ Arvioi kokoelma',
       glossaryLink: 'Sanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
+      a2hs: {
+        title: 'Lisää aloitusnäytölle 📲',
+        intro: 'Lisää peli puhelimen aloitusnäytölle tai tietokoneen työpöydälle, niin se avautuu omasta kuvakkeestaan kuin sovellus — ilman selaimen palkkeja. Kerran avatut pelit toimivat myös ilman verkkoa.',
+        mobile: '📱 Puhelin ja tabletti',
+        desktop: '💻 Tietokone',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Valikko ⋮ → ”Lisää aloitusnäyttöön” (tai ”Asenna sovellus”)'],
+          ['Samsung Internet', 'Valikko ☰ → ”Lisää sivu” → ”Aloitusnäyttö”'],
+          ['Firefox (Android)', 'Valikko ⋮ → ”Lisää aloitusnäyttöön”'],
+          ['Safari (iPhone/iPad)', 'Jaa-painike (neliö, josta nuoli ylös) → ”Lisää Koti-valikkoon”'],
+          ['Chrome ja muut (iPhone/iPad)', 'Jaa-painike → ”Lisää Koti-valikkoon”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Osoiterivin oikeassa reunassa oleva asennuskuvake → ”Asenna”'],
+          ['Safari (Mac)', 'Tiedosto-valikko → ”Lisää Dockiin”'],
+          ['Firefox (tietokone)', 'Ei tue asentamista — lisää kirjanmerkki'],
+        ],
+      },
       todo: 'Tulossa 🗺',
       todoItems: [
         'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)',

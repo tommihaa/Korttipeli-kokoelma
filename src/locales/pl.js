@@ -34,6 +34,7 @@ export const pl = {
       showNextBtn: 'Zatrzymuj się, aby pokazać szczegóły zbicia / rundy (Kasino, Moska)',
       showLog: 'Dziennik zdarzeń otwarty',
       sound: 'Dźwięk',
+      twoColorDeck: 'Dwukolorowa talia (♠ ♣ czarne, ♥ ♦ czerwone)',
       aiTitle: 'Poziom SI 🤖',
       ai: {
         beginner: { label: 'Uczeń',     desc: 'popełnia błędy, da się pokonać' },
@@ -68,6 +69,24 @@ export const pl = {
       feedback: '✉ Wyślij opinię',
       glossaryLink: 'Słownik i symbole 📖',
       changelog: 'Lista zmian 📋',
+      a2hs: {
+        title: 'Dodaj do ekranu głównego 📲',
+        intro: 'Dodaj grę do ekranu głównego telefonu lub pulpitu komputera — będzie się otwierać z własnej ikony jak aplikacja, bez pasków przeglądarki. Raz otwarte gry działają też offline.',
+        mobile: '📱 Telefon i tablet',
+        desktop: '💻 Komputer',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menu ⋮ → ”Dodaj do ekranu głównego” (lub ”Zainstaluj aplikację”)'],
+          ['Samsung Internet', 'Menu ☰ → ”Dodaj stronę do” → ”Ekran startowy”'],
+          ['Firefox (Android)', 'Menu ⋮ → ”Dodaj do ekranu głównego”'],
+          ['Safari (iPhone/iPad)', 'Przycisk udostępniania (kwadrat ze strzałką w górę) → ”Do ekranu początkowego”'],
+          ['Chrome i inne (iPhone/iPad)', 'Przycisk udostępniania → ”Do ekranu początkowego”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Ikona instalacji po prawej stronie paska adresu → ”Zainstaluj”'],
+          ['Safari (Mac)', 'Menu Plik → ”Dodaj do Docka”'],
+          ['Firefox (komputer)', 'Nie obsługuje instalacji — użyj zakładki'],
+        ],
+      },
       todo: 'Wkrótce 🗺',
       todoItems: [
         'Dwukolorowa talia obok czterokolorowej (do wyboru w Ustawieniach)',

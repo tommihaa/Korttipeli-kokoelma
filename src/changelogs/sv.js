@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'Ändringsloggen visas nu på ditt eget språk — hela historiken har översatts till alla 17 språk.',
+      'Ny inställning: tvåfärgad kortlek (♠ och ♣ svarta, ♥ och ♦ röda). Valet sparas liksom språk och ljud.',
+      'Ny guide i Info-panelen: så lägger du till spelet på hemskärmen eller skrivbordet — spelet öppnas som en app.',
+      'Kortikonerna i Maija och Kasino visas nu korrekt på alla enheter.',
     ],
   },
   {

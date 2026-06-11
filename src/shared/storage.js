@@ -1,6 +1,6 @@
 // ── Kevyt preferenssitallennus (localStorage) ──────────────────────────────────
-// TIETOINEN POIKKEUS no-storage-linjaan: vain käyttäjän PREFERENSSIT (kieli + äänet)
-// persistoidaan. Pelitila, cheat-/näkyvyystoggle­t ja edistyminen EIVÄT tallennu —
+// TIETOINEN POIKKEUS no-storage-linjaan: vain käyttäjän PREFERENSSIT (kieli + äänet
+// + pakan väritila) persistoidaan. Pelitila, cheat-/näkyvyystoggle­t ja edistyminen EIVÄT tallennu —
 // "karvalakki" säilyy siellä missä se on tärkeää. Ei henkilötietoa → ei suostumusbanneria.
 //
 // Java-analogia: tämä on ohut Preferences-fasadi (kuin java.util.prefs.Preferences),

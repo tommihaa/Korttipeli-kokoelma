@@ -4,6 +4,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'Das Änderungsprotokoll erscheint jetzt in deiner eigenen Sprache — die gesamte Historie wurde in alle 17 Sprachen übersetzt.',
+      'Neue Einstellung: zweifarbiges Kartendeck (♠ und ♣ schwarz, ♥ und ♦ rot). Die Wahl wird wie Sprache und Töne gespeichert.',
+      'Neue Anleitung im Info-Bereich: So fügst du das Spiel dem Startbildschirm oder Desktop hinzu — es öffnet sich wie eine App.',
+      'Die Kartensymbole in Maija und Kasino werden jetzt auf allen Geräten korrekt angezeigt.',
     ],
   },
   {

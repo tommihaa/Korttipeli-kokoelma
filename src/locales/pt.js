@@ -25,6 +25,7 @@ export const pt = {
       showNextBtn: 'Parar para mostrar os detalhes da captura / ronda (Kasino, Moska)',
       showLog: 'Registo de eventos aberto',
       sound: 'Som',
+      twoColorDeck: 'Baralho de duas cores (♠ ♣ pretos, ♥ ♦ vermelhos)',
       aiTitle: 'Nível da IA 🤖',
       ai: {
         beginner: { label: 'Aprendiz',  desc: 'comete erros, vencível' },
@@ -59,6 +60,24 @@ export const pt = {
       feedback: '✉ Enviar elogios e críticas',
       glossaryLink: 'Glossário e Símbolos 📖',
       changelog: 'Registo de alterações 📋',
+      a2hs: {
+        title: 'Adicionar ao ecrã principal 📲',
+        intro: 'Adiciona o jogo ao ecrã principal do telemóvel ou ao ambiente de trabalho do computador: abre a partir do seu próprio ícone como uma app — sem barras do navegador. Os jogos já abertos funcionam também offline.',
+        mobile: '📱 Telemóvel e tablet',
+        desktop: '💻 Computador',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menu ⋮ → ”Adicionar ao ecrã principal” (ou ”Instalar aplicação”)'],
+          ['Samsung Internet', 'Menu ☰ → ”Adicionar página a” → ”Ecrã principal”'],
+          ['Firefox (Android)', 'Menu ⋮ → ”Adicionar ao ecrã principal”'],
+          ['Safari (iPhone/iPad)', 'Botão Partilhar (quadrado com seta para cima) → ”Adicionar ao ecrã principal”'],
+          ['Chrome e outros (iPhone/iPad)', 'Botão Partilhar → ”Adicionar ao ecrã principal”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Ícone de instalação à direita na barra de endereço → ”Instalar”'],
+          ['Safari (Mac)', 'Menu Ficheiro → ”Adicionar à Dock”'],
+          ['Firefox (computador)', 'Não suporta instalação — usa um marcador'],
+        ],
+      },
       todo: 'Em breve 🗺',
       todoItems: [
         'Baralho de cartas a duas cores além do de quatro cores (selecionável nas Definições)',

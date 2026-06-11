@@ -140,7 +140,7 @@ Virstanpylväät:
 ## Tech
 - React functional components + hooks only (no class components)
 - Tailwind core utilities only (no custom compiler)
-- localStorage VAIN preferensseille: kieli (`jako:lang`) + äänet (`jako:soundOn`) persistoidaan `src/shared/storage.js`:n kautta (`loadPref`/`savePref`, try/catch-suojattu). KAIKKI muu (pelitila, cheat-/näkyvyystoggle­t, AI-taso, edistyminen) pysyy useStatessa eikä tallennu — "tyylikäs karvalakki" säilyy siellä missä se on tärkeää. ÄLÄ laajenna tallennusta muihin asetuksiin ilman lupaa (tietoinen kompromissi C, 2026-06-07).
+- localStorage VAIN preferensseille: kieli (`jako:lang`) + äänet (`jako:soundOn`) + kaksivärinen pakka (`jako:twoColorDeck`, lupa 2026-06-11) persistoidaan `src/shared/storage.js`:n kautta (`loadPref`/`savePref`, try/catch-suojattu). KAIKKI muu (pelitila, cheat-/näkyvyystoggle­t, AI-taso, edistyminen) pysyy useStatessa eikä tallennu — "tyylikäs karvalakki" säilyy siellä missä se on tärkeää. ÄLÄ laajenna tallennusta muihin asetuksiin ilman lupaa (tietoinen kompromissi C, 2026-06-07).
 - Single-file artifacts (.jsx) — no separate CSS/JS files
 - Touch + stylus primary input (phone + tablet), no hover-dependent interactions
 - Responsive: `window.innerWidth < 600` = mobile, else tablet

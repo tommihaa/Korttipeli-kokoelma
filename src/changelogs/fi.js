@@ -10,6 +10,9 @@ export const CHANGELOG = [
     date: '11.6.2026',
     items: [
       'Muutosloki näkyy nyt omalla kielelläsi — koko historia on käännetty kaikille 17 kielelle.',
+      'Uusi asetus: kaksivärinen korttipakka (♠ ja ♣ mustia, ♥ ja ♦ punaisia). Valinta muistetaan kuten kieli ja äänet.',
+      'Uusi ohje Info-paneelissa: näin lisäät pelin aloitusnäytölle tai työpöydälle — peli avautuu kuin sovellus.',
+      'Maijan ja Kasinon kortti-ikonit näkyvät nyt oikein kaikilla laitteilla.',
     ],
   },
   {

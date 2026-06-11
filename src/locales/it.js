@@ -25,6 +25,7 @@ export const it = {
       showNextBtn: 'Fermati per mostrare i dettagli della presa / del turno (Kasino, Moska)',
       showLog: 'Registro eventi aperto',
       sound: 'Audio',
+      twoColorDeck: 'Mazzo bicolore (♠ ♣ neri, ♥ ♦ rossi)',
       aiTitle: 'Livello IA 🤖',
       ai: {
         beginner: { label: 'Apprendista', desc: 'commette errori, battibile' },
@@ -59,6 +60,24 @@ export const it = {
       feedback: '✉ Invia critiche e complimenti',
       glossaryLink: 'Glossario & Simboli 📖',
       changelog: 'Cronologia modifiche 📋',
+      a2hs: {
+        title: 'Aggiungi alla schermata Home 📲',
+        intro: 'Aggiungi il gioco alla schermata Home del telefono o al desktop del computer: si aprirà dalla sua icona come un’app — senza barre del browser. I giochi già aperti funzionano anche offline.',
+        mobile: '📱 Telefono e tablet',
+        desktop: '💻 Computer',
+        mobileRows: [
+          ['Chrome · Brave · Edge · Opera · Vivaldi (Android)', 'Menu ⋮ → ”Aggiungi a schermata Home” (o ”Installa app”)'],
+          ['Samsung Internet', 'Menu ☰ → ”Aggiungi pagina a” → ”Schermata Home”'],
+          ['Firefox (Android)', 'Menu ⋮ → ”Aggiungi a schermata Home”'],
+          ['Safari (iPhone/iPad)', 'Pulsante Condividi (quadrato con freccia in su) → ”Aggiungi a Home”'],
+          ['Chrome e altri (iPhone/iPad)', 'Pulsante Condividi → ”Aggiungi a Home”'],
+        ],
+        desktopRows: [
+          ['Chrome · Edge · Brave · Opera · Vivaldi · Comet', 'Icona di installazione a destra nella barra degli indirizzi → ”Installa”'],
+          ['Safari (Mac)', 'Menu File → ”Aggiungi al Dock”'],
+          ['Firefox (computer)', 'Non supporta l’installazione — usa un segnalibro'],
+        ],
+      },
       todo: 'In arrivo 🗺',
       todoItems: [
         'Mazzo di carte a due colori accanto a quello a quattro colori (selezionabile nelle Impostazioni)',
