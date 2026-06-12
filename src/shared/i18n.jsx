@@ -59,6 +59,9 @@ export const LANGS = [
   { code: 'et', label: 'ET', name: 'Eesti',       status: 'auto' },
   { code: 'pt', label: 'PT', name: 'Português',   status: 'auto' },
   { code: 'krl', label: 'KRL', name: 'Karjala',   status: 'untested' },
+  { code: 'se', label: 'SE', name: 'Davvisámegiella', status: 'untested' },
+  { code: 'rom', label: 'ROM', name: 'Romani',    status: 'untested' },
+  { code: 'la', label: 'LA', name: 'Latina',      status: 'untested' },
 ];
 
 function detectLang() {
@@ -79,6 +82,9 @@ function detectLang() {
     if (/^et/i.test(l)) return 'et';
     if (/^pt/i.test(l)) return 'pt';
     if (/^krl/i.test(l)) return 'krl';
+    if (/^rom/i.test(l)) return 'rom';   // tarkista ennen /^ro/-tyyppisiä ja /^en/
+    if (/^se/i.test(l)) return 'se';     // pohjoissaame (se / sme)
+    if (/^la/i.test(l)) return 'la';     // latina
     if (/^en/i.test(l)) return 'en';
   }
   return FALLBACK;

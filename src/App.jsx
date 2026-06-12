@@ -427,6 +427,18 @@ function Flag({ code }) {
   if (code === 'krl') return (
     <svg {...c}><rect width="18" height="12" fill="#159b3b"/><rect x="4" width="5" height="12" fill="#d2222d"/><rect y="3.5" width="18" height="5" fill="#d2222d"/><rect x="5" width="3" height="12" fill="#000"/><rect y="4.5" width="18" height="3" fill="#000"/></svg>
   );
+  // Pohjoissaame: punainen + sininen kenttä, kapeat keltainen/vihreä raidat, náži-rengas
+  if (code === 'se') return (
+    <svg {...c}><rect width="18" height="12" fill="#0e3692"/><rect width="7.6" height="12" fill="#d72727"/><rect x="7.6" width="0.7" height="12" fill="#e6c200"/><rect x="8.3" width="0.7" height="12" fill="#0a7d2c"/><path d="M9 3 A3 3 0 0 0 9 9" fill="none" stroke="#0e3692" strokeWidth="1.1"/><path d="M9 3 A3 3 0 0 1 9 9" fill="none" stroke="#d72727" strokeWidth="1.1"/></svg>
+  );
+  // Romani: sininen yläosa, vihreä alaosa, punainen chakra-pyörä keskellä
+  if (code === 'rom') return (
+    <svg {...c}><rect width="18" height="6" fill="#0a4ea2"/><rect y="6" width="18" height="6" fill="#1c7c34"/><g stroke="#c81d25" strokeWidth="0.5"><line x1="6.6" y1="6" x2="11.4" y2="6"/><line x1="9" y1="3.6" x2="9" y2="8.4"/><line x1="7.3" y1="4.3" x2="10.7" y2="7.7"/><line x1="7.3" y1="7.7" x2="10.7" y2="4.3"/></g><circle cx="9" cy="6" r="2.4" fill="none" stroke="#c81d25" strokeWidth="0.6"/></svg>
+  );
+  // Latina: SPQR-viiri (Rooman punainen + kultainen teksti) — latinalla ei ole maalippua
+  if (code === 'la') return (
+    <svg {...c}><rect width="18" height="12" fill="#7c1419"/><text x="9" y="8.3" textAnchor="middle" fontSize="4.8" fontWeight="700" fill="#e8c24a" fontFamily="Georgia, 'Times New Roman', serif">SPQR</text></svg>
+  );
   return null;
 }
 

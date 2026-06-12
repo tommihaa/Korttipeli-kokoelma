@@ -26,6 +26,9 @@ const SUIT_NAME = {
   et: { '♠': 'poti',    '♥': 'ärtu',    '♦': 'ruutu',     '♣': 'risti' },
   pt: { '♠': 'espadas', '♥': 'copas',   '♦': 'ouros',     '♣': 'paus' },
   krl: { '♠': 'pata',   '♥': 'hertta',  '♦': 'ruutu',     '♣': 'risti' },
+  se: { '♠': 'speađa',  '♥': 'váibmu',  '♦': 'ruvdu',     '♣': 'risti' },
+  rom: { '♠': 'pika',   '♥': 'ilo',     '♦': 'karo',      '♣': 'treflo' },
+  la: { '♠': 'pica',    '♥': 'cor',     '♦': 'rhombus',   '♣': 'trifolium' },
 };
 const RANK_NAME = {
   fi: { A: 'ässä', J: 'jätkä', Q: 'rouva', K: 'kuningas' },
@@ -45,8 +48,11 @@ const RANK_NAME = {
   et: { A: 'äss',  J: 'soldat', Q: 'emand', K: 'kuningas' },
   pt: { A: 'ás',   J: 'valete', Q: 'dama',  K: 'rei' },
   krl: { A: 'ässä', J: 'jätkä', Q: 'rouva', K: 'kuningas' },
+  se: { A: 'áhssa', J: 'gánda', Q: 'dronnet', K: 'gonagas' },
+  rom: { A: 'aso',  J: 'žandari', Q: 'krajica', K: 'kraj' },
+  la: { A: 'as',    J: 'iuvenis', Q: 'regina', K: 'rex' },
 };
-const EMPTY = { fi: 'tyhjä', en: 'empty', sv: 'tomt', de: 'leer', no: 'tom', da: 'tom', is: 'tómt', fr: 'vide', es: 'vacío', it: 'vuoto', uk: 'пусто', ru: 'пусто', el: 'άδειο', pl: 'puste', et: 'tühi', pt: 'vazio', krl: 'tyhjä' };
+const EMPTY = { fi: 'tyhjä', en: 'empty', sv: 'tomt', de: 'leer', no: 'tom', da: 'tom', is: 'tómt', fr: 'vide', es: 'vacío', it: 'vuoto', uk: 'пусто', ru: 'пусто', el: 'άδειο', pl: 'puste', et: 'tühi', pt: 'vazio', krl: 'tyhjä', se: 'gures', rom: 'nango', la: 'vacuus' };
 // Slaavilaisten kielten 3-muotoinen monikko (1 / 2-4 / 5+).
 const slavicPlural = (n, one, few, many) => {
   const m10 = n % 10, m100 = n % 100;
@@ -81,6 +87,9 @@ function cardCount(n) {
     case 'et': return n === 1 ? '1 kaart' : `${n} kaarti`;
     case 'pt': return n === 1 ? '1 carta' : `${n} cartas`;
     case 'krl': return n === 1 ? '1 kortti' : `${n} korttie`;
+    case 'se':  return n === 1 ? '1 goarta' : `${n} goartta`;
+    case 'rom': return n === 1 ? '1 karta' : `${n} karti`;
+    case 'la':  return n === 1 ? '1 charta' : `${n} chartae`;
     default:   return null; // fi hoidetaan kutsujassa (partitiivi/genetiivi eroaa)
   }
 }

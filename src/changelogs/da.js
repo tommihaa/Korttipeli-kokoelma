@@ -1,6 +1,12 @@
 // Muutosloki — tanska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '12.6.2026',
+    items: [
+      'Tre nye sprog tilføjet: nordsamisk, romani og latin (i alt 20 sprog). Du finder dem i gruppen "Utestede" i sprogmenuen — oversættelserne afventer stadig gennemgang af en indfødt taler.',
+    ],
+  },
+  {
     date: '11.6.2026',
     items: [
       'Ændringsloggen vises nu på dit eget sprog — hele historikken er oversat til alle 17 sprog.',

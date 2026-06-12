@@ -1,6 +1,12 @@
 // Muutosloki — viro. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '12.6.2026',
+    items: [
+      'Lisatud kolm uut keelt: põhjasaami, romi ja ladina keel (kokku 20 keelt). Leiad need keelemenüü rühmast "Testimata" — tõlked ootavad veel emakeelse kõneleja ülevaatust.',
+    ],
+  },
+  {
     date: '11.6.2026',
     items: [
       'Muutuste logi kuvatakse nüüd sinu oma keeles — kogu ajalugu on tõlgitud kõigisse 17 keelde.',

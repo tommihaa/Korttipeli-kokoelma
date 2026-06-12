@@ -1,6 +1,12 @@
 // Muutosloki — englanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '12.6.2026',
+    items: [
+      'Three new languages added: Northern Sámi, Romani and Latin (20 languages in total). You\'ll find them in the "Untested" group of the language menu — the translations still await review by a native speaker.',
+    ],
+  },
+  {
     date: '11.6.2026',
     items: [
       'The changelog now appears in your own language — the full history has been translated into all 17 languages.',

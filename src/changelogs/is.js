@@ -1,6 +1,12 @@
 // Muutosloki — islanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '12.6.2026',
+    items: [
+      'Þrjú ný tungumál bætt við: norðursamíska, romaní og latína (alls 20 tungumál). Þú finnur þau í hópnum „Óprófuð" í tungumálavalmyndinni — þýðingarnar bíða enn yfirferðar móðurmálshafa.',
+    ],
+  },
+  {
     date: '11.6.2026',
     items: [
       'Breytingaskráin birtist nú á þínu eigin tungumáli — öll sagan hefur verið þýdd á öll 17 tungumálin.',

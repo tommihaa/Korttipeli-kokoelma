@@ -1,6 +1,12 @@
 // Muutosloki — italia. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '12.6.2026',
+    items: [
+      'Tre nuove lingue aggiunte: sami settentrionale, romaní e latino (20 lingue in totale). Le trovi nel gruppo "Non testate" del menu delle lingue — le traduzioni attendono ancora la revisione di un madrelingua.',
+    ],
+  },
+  {
     date: '11.6.2026',
     items: [
       'La cronologia modifiche ora appare nella tua lingua — l\'intera cronologia è stata tradotta in tutte le 17 lingue.',

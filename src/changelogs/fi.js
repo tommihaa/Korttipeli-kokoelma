@@ -7,6 +7,12 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '12.6.2026',
+    items: [
+      'Kolme uutta kieltä lisätty: pohjoissaame, romani ja latina (yhteensä 20 kieltä). Ne löytyvät kielivalikon "Testaamattomat"-ryhmästä — käännökset odottavat vielä natiivipuhujan tarkistusta.',
+    ],
+  },
+  {
     date: '11.6.2026',
     items: [
       'Muutosloki näkyy nyt omalla kielelläsi — koko historia on käännetty kaikille 17 kielelle.',

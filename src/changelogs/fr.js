@@ -1,6 +1,12 @@
 // Muutosloki — ranska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '12.6.2026',
+    items: [
+      'Trois nouvelles langues ajoutées : same du Nord, romani et latin (20 langues au total). Vous les trouverez dans le groupe « Non testées » du menu des langues — les traductions attendent encore une révision par un locuteur natif.',
+    ],
+  },
+  {
     date: '11.6.2026',
     items: [
       'Le journal des modifications s\'affiche désormais dans ta langue — tout l\'historique a été traduit dans les 17 langues.',
