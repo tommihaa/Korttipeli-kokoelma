@@ -1,6 +1,12 @@
 // Muutosloki — puola. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '13.6.2026',
+    items: [
+      'Dodano trzy nowe języki: czeski, węgierski i rumuński (łącznie 23 języki). Znajdziesz je w grupie „Niesprawdzone" w menu języków — tłumaczenia wciąż czekają na weryfikację przez rodzimego użytkownika.',
+    ],
+  },
+  {
     date: '12.6.2026',
     items: [
       'Dodano trzy nowe języki: język północnolapoński, romski i łacinę (łącznie 20 języków). Znajdziesz je w grupie „Niesprawdzone" w menu języków — tłumaczenia wciąż czekają na weryfikację przez rodzimego użytkownika.',

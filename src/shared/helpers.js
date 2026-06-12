@@ -29,6 +29,9 @@ const SUIT_NAME = {
   se: { '♠': 'speađa',  '♥': 'váibmu',  '♦': 'ruvdu',     '♣': 'risti' },
   rom: { '♠': 'pika',   '♥': 'ilo',     '♦': 'karo',      '♣': 'treflo' },
   la: { '♠': 'pica',    '♥': 'cor',     '♦': 'rhombus',   '♣': 'trifolium' },
+  cs: { '♠': 'piky',    '♥': 'srdce',   '♦': 'káry',      '♣': 'kříže' },
+  hu: { '♠': 'pikk',    '♥': 'kőr',     '♦': 'káró',      '♣': 'treff' },
+  ro: { '♠': 'pică',    '♥': 'cupă',    '♦': 'caro',      '♣': 'treflă' },
 };
 const RANK_NAME = {
   fi: { A: 'ässä', J: 'jätkä', Q: 'rouva', K: 'kuningas' },
@@ -51,8 +54,11 @@ const RANK_NAME = {
   se: { A: 'áhssa', J: 'gánda', Q: 'dronnet', K: 'gonagas' },
   rom: { A: 'aso',  J: 'žandari', Q: 'krajica', K: 'kraj' },
   la: { A: 'as',    J: 'iuvenis', Q: 'regina', K: 'rex' },
+  cs: { A: 'eso',   J: 'kluk',   Q: 'dáma',   K: 'král' },
+  hu: { A: 'ász',   J: 'bubi',   Q: 'dáma',   K: 'király' },
+  ro: { A: 'as',    J: 'valet',  Q: 'damă',   K: 'rege' },
 };
-const EMPTY = { fi: 'tyhjä', en: 'empty', sv: 'tomt', de: 'leer', no: 'tom', da: 'tom', is: 'tómt', fr: 'vide', es: 'vacío', it: 'vuoto', uk: 'пусто', ru: 'пусто', el: 'άδειο', pl: 'puste', et: 'tühi', pt: 'vazio', krl: 'tyhjä', se: 'gures', rom: 'nango', la: 'vacuus' };
+const EMPTY = { fi: 'tyhjä', en: 'empty', sv: 'tomt', de: 'leer', no: 'tom', da: 'tom', is: 'tómt', fr: 'vide', es: 'vacío', it: 'vuoto', uk: 'пусто', ru: 'пусто', el: 'άδειο', pl: 'puste', et: 'tühi', pt: 'vazio', krl: 'tyhjä', se: 'gures', rom: 'nango', la: 'vacuus', cs: 'prázdné', hu: 'üres', ro: 'gol' };
 // Slaavilaisten kielten 3-muotoinen monikko (1 / 2-4 / 5+).
 const slavicPlural = (n, one, few, many) => {
   const m10 = n % 10, m100 = n % 100;
@@ -90,6 +96,9 @@ function cardCount(n) {
     case 'se':  return n === 1 ? '1 goarta' : `${n} goartta`;
     case 'rom': return n === 1 ? '1 karta' : `${n} karti`;
     case 'la':  return n === 1 ? '1 charta' : `${n} chartae`;
+    case 'cs':  return `${n} ${slavicPlural(n, 'karta', 'karty', 'karet')}`;
+    case 'hu':  return `${n} kártya`;
+    case 'ro':  return n === 1 ? '1 carte' : `${n} cărți`;
     default:   return null; // fi hoidetaan kutsujassa (partitiivi/genetiivi eroaa)
   }
 }

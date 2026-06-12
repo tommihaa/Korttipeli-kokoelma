@@ -1,6 +1,12 @@
 // Muutosloki — norja (bokmål). Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '13.6.2026',
+    items: [
+      'Tre nye språk lagt til: tsjekkisk, ungarsk og rumensk (totalt 23 språk). Du finner dem i gruppen «Utestet» i språkmenyen — oversettelsene venter fortsatt på gjennomgang av en morsmålsbruker.',
+    ],
+  },
+  {
     date: '12.6.2026',
     items: [
       'Tre nye språk lagt til: nordsamisk, romani og latin (totalt 20 språk). Du finner dem i gruppen «Utestet» i språkmenyen — oversettelsene venter fortsatt på gjennomgang av en morsmålsbruker.',

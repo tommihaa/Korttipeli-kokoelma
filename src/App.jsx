@@ -439,6 +439,18 @@ function Flag({ code }) {
   if (code === 'la') return (
     <svg {...c}><rect width="18" height="12" fill="#7c1419"/><text x="9" y="8.3" textAnchor="middle" fontSize="4.8" fontWeight="700" fill="#e8c24a" fontFamily="Georgia, 'Times New Roman', serif">SPQR</text></svg>
   );
+  // Tšekki: valkoinen/punainen + sininen kiila vasemmalta
+  if (code === 'cs') return (
+    <svg {...c}><rect width="18" height="6" fill="#fff"/><rect y="6" width="18" height="6" fill="#d7141a"/><path d="M0 0 L9 6 L0 12 Z" fill="#11457e"/></svg>
+  );
+  // Unkari: vaakaraidat punainen/valkoinen/vihreä
+  if (code === 'hu') return (
+    <svg {...c}><rect width="18" height="4" fill="#ce2939"/><rect y="4" width="18" height="4" fill="#fff"/><rect y="8" width="18" height="4" fill="#477050"/></svg>
+  );
+  // Romania: pystyraidat sininen/keltainen/punainen
+  if (code === 'ro') return (
+    <svg {...c}><rect width="6" height="12" fill="#002b7f"/><rect x="6" width="6" height="12" fill="#fcd116"/><rect x="12" width="6" height="12" fill="#ce1126"/></svg>
+  );
   return null;
 }
 

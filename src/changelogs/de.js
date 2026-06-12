@@ -1,6 +1,12 @@
 // Muutosloki — saksa. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '13.6.2026',
+    items: [
+      'Drei neue Sprachen hinzugefügt: Tschechisch, Ungarisch und Rumänisch (insgesamt 23 Sprachen). Sie finden sie in der Gruppe „Ungetestet" im Sprachmenü — die Übersetzungen warten noch auf die Prüfung durch Muttersprachler.',
+    ],
+  },
+  {
     date: '12.6.2026',
     items: [
       'Drei neue Sprachen hinzugefügt: Nordsamisch, Romani und Latein (insgesamt 20 Sprachen). Sie finden sie in der Gruppe „Ungetestet" im Sprachmenü — die Übersetzungen warten noch auf die Prüfung durch Muttersprachler.',

@@ -1,6 +1,12 @@
 // Muutosloki — karjala. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '13.6.2026',
+    items: [
+      'Lisätty kolme uutta kieldä: čekki, ungari da rumienie (kaikkiedah 23 kieldä). Net löytäh kielivalikon "Testuamattomat"-joukos — kiännökset vuotetah vie natiivipuhujan tarkistusta.',
+    ],
+  },
+  {
     date: '12.6.2026',
     items: [
       'Lisätty kolme uutta kieldä: pohjassuami, romani da latina (kaikkiedah 20 kieldä). Net löytäh kielivalikon "Testuamattomat"-joukos — kiännökset vuotetah vie natiivipuhujan tarkistusta.',

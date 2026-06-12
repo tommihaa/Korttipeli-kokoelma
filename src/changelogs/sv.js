@@ -1,6 +1,12 @@
 // Muutosloki — ruotsi. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '13.6.2026',
+    items: [
+      'Tre nya språk tillagda: tjeckiska, ungerska och rumänska (totalt 23 språk). Du hittar dem i gruppen "Otestade" i språkmenyn — översättningarna väntar fortfarande på granskning av en modersmålstalare.',
+    ],
+  },
+  {
     date: '12.6.2026',
     items: [
       'Tre nya språk tillagda: nordsamiska, romani och latin (totalt 20 språk). Du hittar dem i gruppen "Otestade" i språkmenyn — översättningarna väntar fortfarande på granskning av en modersmålstalare.',
