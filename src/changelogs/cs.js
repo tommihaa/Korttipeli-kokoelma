@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Kulturní přezdívky her jsou teď vhodnější pro děti. Finské názvy her zůstávají beze změny.',
       'Verze 1.2 🎉 Seznam změn se teď zobrazuje ve vašem jazyce ve všech 23 jazycích, včetně těch nejnovějších.',
       'Přidány tři nové jazyky: čeština, maďarština a rumunština (celkem 23 jazyků). Včetně známých klasik — Seiska = Prší / Makaó / Septică, Maija = Černý Petr / Fekete Péter / Baba. Najdete je ve skupině „Neověřené" v nabídce jazyků — překlady ještě čekají na kontrolu rodilým mluvčím.',
       'Tlačítko Sdílet teď otevře QR kód: kamarád se do hry dostane jeho naskenováním telefonem, bez psaní odkazu.',

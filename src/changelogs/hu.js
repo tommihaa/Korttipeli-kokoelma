@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'A játékok kulturális becenevei most gyermekbarátabbak. A finn játéknevek változatlanok maradnak.',
       'Verzió 1.2 🎉 A változásnapló most a saját nyelveden jelenik meg mind a 23 nyelven, a legújabbakat is beleértve.',
       'Három új nyelv hozzáadva: cseh, magyar és román (összesen 23 nyelv). Köztük ismerős klasszikusok — Seiska = Prší / Makaó / Septică, Maija = Černý Petr / Fekete Péter / Baba. A nyelvmenü „Ellenőrizetlen" csoportjában találhatók — a fordítások még anyanyelvi ellenőrzésre várnak.',
       'A Megosztás gomb most QR-kódot nyit: a barát a játékba a telefonjával beolvasva lép be, a link begépelése nélkül.',

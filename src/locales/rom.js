@@ -7,7 +7,7 @@ export const rom = {
     info: { title: 'ℹ Info', close: '✕ Phande' },
     lang: { label: 'Čhib', tested: 'Probime', untested: 'Naprobime', note: '✓ dajaki čhib · web = mašina sikadas (bi dajaka čhibako probipe)' },
     menu: { back: '← Lista', settings: 'Lačharimata', info: 'Info', share: 'Ulav Jako⁹' },
-    share: { title: 'Jako – ivja khelimata kartenca', text: 'Khel 9 khelimata kartenca direkt ando brauzero:', copied: 'Liako kopisardo' },
+    share: { title: 'Jako – ivja khelimata kartenca', text: 'Khel 9 khelimata kartenca direkt ando brauzero:', copied: 'Liako kopisardo', scan: 'Skanir o kodo e telefonosa vaj ulav o linko', copy: 'Kopisar o linko', shareVia: 'Ulav…' },
     difficulty: { easy: 'Loko', medium: 'Maškarutno', hard: 'Pharo' },
     rulesAria: '{name}: sikav o regule',
     stat: ({ w, p, pct }) => `${w}N / ${p}K · ${pct}%`,
@@ -572,7 +572,7 @@ export const rom = {
       ],
     },
     paskahousu: {
-      altName: 'Shithead',
+      altName: 'Palace',
       desc: 'Paše o tradicionalno paskahousu šove kartenca. 2♦ 2♥ vrednota 2 · 2♠ 2♣ zorale',
       msg: {
         gameStart: 'Paskahousu šuru! {name} šurul (majcikni karta).{hint}',

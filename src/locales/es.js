@@ -7,7 +7,8 @@ export const es = {
     loading: 'Cargando…',
     info: { title: 'ℹ Info', close: '✕ Cerrar' },
     lang: { label: 'Idioma', tested: 'Verificados', untested: 'No verificados', note: '✓ nativo · web = verificado automáticamente (no por nativo)' },
-    menu: { back: '← Menú', settings: 'Ajustes', info: 'Info' },
+    menu: { back: '← Menú', settings: 'Ajustes', info: 'Info', share: 'Compartir Jako⁹' },
+    share: { title: 'Jako – juegos de cartas gratis', text: 'Juega 9 juegos de cartas directamente en el navegador:', copied: 'Enlace copiado', scan: 'Escanea el código con el móvil o comparte el enlace', copy: 'Copiar enlace', shareVia: 'Compartir…' },
     difficulty: { easy: 'Fácil', medium: 'Medio', hard: 'Difícil' },
     rulesAria: '{name}: mostrar reglas',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
@@ -568,7 +569,7 @@ export const es = {
       ],
     },
     paskahousu: {
-      altName: "El culo (El presidente)",
+      altName: "El presidente",
       desc: 'Casi el clásico paskahousu con seis cartas. 2♦ 2♥ valor 2 · 2♠ 2♣ son duras',
       msg: {
         gameStart: '¡Empieza Paskahousu! {name} comienza (la carta más baja).{hint}',

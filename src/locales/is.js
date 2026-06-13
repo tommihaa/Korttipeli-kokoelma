@@ -7,7 +7,8 @@ export const is = {
     loading: 'Hleð…',
     info: { title: 'ℹ Upplýsingar', close: '✕ Loka' },
     lang: { label: 'Tungumál', tested: 'Staðfest', untested: 'Óstaðfest', note: '✓ málhafi · web = vélstaðfest (ekki yfirfarið af málhafa)' },
-    menu: { back: '← Valmynd', settings: 'Stillingar', info: 'Upplýsingar' },
+    menu: { back: '← Valmynd', settings: 'Stillingar', info: 'Upplýsingar', share: 'Deila Jako⁹' },
+    share: { title: 'Jako – ókeypis spilaleikir', text: 'Spilaðu 9 spilaleiki beint í vafranum:', copied: 'Hlekkur afritaður', scan: 'Skannaðu kóðann með símanum eða deildu hlekknum', copy: 'Afrita hlekk', shareVia: 'Deila…' },
     difficulty: { easy: 'Auðvelt', medium: 'Miðlungs', hard: 'Erfitt' },
     rulesAria: '{name}: sýna reglur',
     stat: ({ w, p, pct }) => `${w}S / ${p}L · ${pct}%`,
@@ -568,7 +569,7 @@ export const is = {
       ],
     },
     paskahousu: {
-      altName: "Skítakall",
+      altName: "Palace",
       desc: 'Nánast hinn klassíski paskahousu með sex spilum. 2♦ 2♥ gildi 2 · 2♠ 2♣ eru hörð',
       msg: {
         gameStart: 'Paskahousu hefst! {name} byrjar (lægsta spil).{hint}',

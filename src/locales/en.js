@@ -573,8 +573,8 @@ export const en = {
       ],
     },
     paskahousu: {
-      desc: 'Almost the classic Shithead with six cards. 2♦ 2♥ value 2 · 2♠ 2♣ are hard',
-      altName: "Shithead",
+      desc: 'Almost the classic Paskahousu with six cards. 2♦ 2♥ value 2 · 2♠ 2♣ are hard',
+      altName: "Palace",
       msg: {
         gameStart: 'Paskahousu begins! {name} starts (lowest card).{hint}',
         gameStartHint: ' You can play several of the same rank at once.',

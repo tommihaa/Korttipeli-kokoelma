@@ -7,7 +7,8 @@ export const it = {
     loading: 'Caricamento…',
     info: { title: 'ℹ Info', close: '✕ Chiudi' },
     lang: { label: 'Lingua', tested: 'Verificate', untested: 'Non verificate', note: '✓ madrelingua · web = verificato automaticamente (non madrelingua)' },
-    menu: { back: '← Menu', settings: 'Impostazioni', info: 'Info' },
+    menu: { back: '← Menu', settings: 'Impostazioni', info: 'Info', share: 'Condividi Jako⁹' },
+    share: { title: 'Jako – giochi di carte gratuiti', text: 'Gioca a 9 giochi di carte direttamente nel browser:', copied: 'Link copiato', scan: 'Scansiona il codice col telefono o condividi il link', copy: 'Copia link', shareVia: 'Condividi…' },
     difficulty: { easy: 'Facile', medium: 'Intermedio', hard: 'Difficile' },
     rulesAria: '{name}: mostra le regole',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
@@ -568,7 +569,7 @@ export const it = {
       ],
     },
     paskahousu: {
-      altName: "lo Stronzo (Presidente)",
+      altName: "Presidente",
       desc: 'Quasi il classico Paskahousu con sei carte. 2♦ 2♥ valore 2 · 2♠ 2♣ dure',
       msg: {
         gameStart: 'Paskahousu comincia! {name} inizia (carta più bassa).{hint}',

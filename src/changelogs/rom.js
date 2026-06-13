@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Le kulturne alava le khelimatengere si akana maj lačhe vaš čhave. Le finlandikane anava le khelimatengere ačhen biparuvde.',
       'Versija 1.2 🎉 O lista le paruvimatengi sikavel pe akana ki tiri čhib pe sa 23 čhiba, vi pe le maj neve.',
       'Trin neve čhiba thodine: čehengi, ungrikani thaj rumunikani (sa 23 čhiba). Maškar lende prinđarde klasikurja — Seiska = Prší / Makaó / Septică, Maija = Černý Petr / Fekete Péter / Baba. Arakhen pe ko grupo „Bi-probirde" ko meni le čhibengo — le boldimata ažutinen vi e kontrola le dajakere-čhibakere manušestar.',
       'O Ulav-knapo putrel akana QR-kodo: o amal del ko khelipe skanirinde les e telefonosa, bi te ramol o linko.',

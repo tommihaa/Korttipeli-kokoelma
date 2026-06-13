@@ -7,7 +7,8 @@ export const sv = {
     loading: 'Laddar…',
     info: { title: 'ℹ Info', close: '✕ Stäng' },
     lang: { label: 'Språk', tested: 'Verifierade', untested: 'Overifierade', note: '✓ modersmål · web = maskinverifierad (ej modersmålskontroll)' },
-    menu: { back: '← Meny', settings: 'Inställningar', info: 'Info' },
+    menu: { back: '← Meny', settings: 'Inställningar', info: 'Info', share: 'Dela Jako⁹' },
+    share: { title: 'Jako – gratis kortspel', text: 'Spela 9 kortspel direkt i webbläsaren:', copied: 'Länk kopierad', scan: 'Skanna koden med telefonen eller dela länken', copy: 'Kopiera länk', shareVia: 'Dela…' },
     difficulty: { easy: 'Lätt', medium: 'Medel', hard: 'Svår' },
     rulesAria: '{name}: visa regler',
     stat: ({ w, p, pct }) => `${w}V / ${p}S · ${pct}%`,
@@ -568,8 +569,8 @@ export const sv = {
       ],
     },
     paskahousu: {
-      altName: "Skitgubbe",
-      desc: 'Nästan den klassiska Skitgubben med sex kort. 2♦ 2♥ värde 2 · 2♠ 2♣ hårda',
+      altName: "Palace",
+      desc: 'Nästan den klassiska Paskahousu med sex kort. 2♦ 2♥ värde 2 · 2♠ 2♣ hårda',
       msg: {
         gameStart: 'Paskahousu börjar! {name} börjar (lägsta kortet).{hint}',
         gameStartHint: ' Du kan spela flera av samma valör på en gång.',

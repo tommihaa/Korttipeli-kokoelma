@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Poreclele culturale ale jocurilor sunt acum mai potrivite pentru copii. Numele finlandeze ale jocurilor rămân neschimbate.',
       'Versiunea 1.2 🎉 Jurnalul de modificări apare acum în limba ta în toate cele 23 de limbi, inclusiv cele mai noi.',
       'Adăugate trei limbi noi: cehă, maghiară și română (în total 23 de limbi). Inclusiv clasice cunoscute — Seiska = Prší / Makaó / Septică, Maija = Černý Petr / Fekete Péter / Baba. Le găsești în grupul „Neverificate" din meniul de limbi — traducerile așteaptă încă verificarea unui vorbitor nativ.',
       'Butonul Distribuie deschide acum un cod QR: un prieten intră în joc scanându-l cu telefonul, fără să tasteze linkul.',

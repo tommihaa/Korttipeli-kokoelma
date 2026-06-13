@@ -6,7 +6,7 @@ export const ro = {
     info: { title: 'ℹ Info', close: '✕ Închide' },
     lang: { label: 'Limbă', tested: 'Verificate', untested: 'Neverificate', note: '✓ vorbitor nativ · web = verificat automat (fără verificare de vorbitor nativ)' },
     menu: { back: '← Meniu', settings: 'Setări', info: 'Info', share: 'Distribuie Jako⁹' },
-    share: { title: 'Jako – jocuri de cărți gratuite', text: 'Joacă 9 jocuri de cărți direct în browser:', copied: 'Link copiat' },
+    share: { title: 'Jako – jocuri de cărți gratuite', text: 'Joacă 9 jocuri de cărți direct în browser:', copied: 'Link copiat', scan: 'Scanează codul cu telefonul sau distribuie linkul', copy: 'Copiază linkul', shareVia: 'Distribuie…' },
     difficulty: { easy: 'Ușor', medium: 'Mediu', hard: 'Greu' },
     rulesAria: '{name}: arată regulile',
     stat: ({ w, p, pct }) => `${w}V / ${p}J · ${pct}%`,

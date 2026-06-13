@@ -6,7 +6,7 @@ export const la = {
     info: { title: 'ℹ Info', close: '✕ Claude' },
     lang: { label: 'Lingua', tested: 'Probatae', untested: 'Non probatae', note: '✓ nativus · web = machina confirmavit (sine nativa probatione)' },
     menu: { back: '← Index', settings: 'Optiones', info: 'Info', share: 'Communica Jako⁹' },
-    share: { title: 'Jako – chartarum lusus gratuiti', text: 'Lude 9 chartarum lusus in navigatro:', copied: 'Nexus exscriptus' },
+    share: { title: 'Jako – chartarum lusus gratuiti', text: 'Lude 9 chartarum lusus in navigatro:', copied: 'Nexus exscriptus', scan: 'Codicem telephono scande vel nexum communica', copy: 'Nexum exscribe', shareVia: 'Communica…' },
     difficulty: { easy: 'Facilis', medium: 'Medius', hard: 'Difficilis' },
     rulesAria: '{name}: monstra regulas',
     stat: ({ w, p, pct }) => `${w}V / ${p}L · ${pct}%`,
@@ -571,7 +571,7 @@ export const la = {
       ],
     },
     paskahousu: {
-      altName: 'Caput Stercoris',
+      altName: 'Praeses',
       desc: 'Fere ille traditus paskahousu sex chartis. 2♦ 2♥ valor 2 · 2♠ 2♣ dura',
       msg: {
         gameStart: 'Paskahousu incipit! {name} incipit (minima charta).{hint}',

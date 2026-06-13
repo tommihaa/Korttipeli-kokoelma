@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Cognomina culturalia lusuum nunc pueris aptiora sunt. Nomina lusuum Finnica immutata manent.',
       'Versio 1.2 🎉 Index mutationum nunc lingua tua apparet in omnibus 23 linguis, etiam in novissimis.',
       'Tres novae linguae additae: Bohemica, Hungarica et Romanica (in summa 23 linguae). Inter eas notae classicae — Seiska = Prší / Makaó / Septică, Maija = Černý Petr / Fekete Péter / Baba. In grege „Non probatae" in menu linguarum inveniuntur — translationes adhuc probationem locutoris nativi exspectant.',
       'Pyxis Communica nunc codicem QR aperit: amicus in lusum intrat eo telephono scando, sine nexu typando.',

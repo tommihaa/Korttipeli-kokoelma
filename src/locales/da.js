@@ -7,7 +7,8 @@ export const da = {
     loading: 'Indlæser…',
     info: { title: 'ℹ Info', close: '✕ Luk' },
     lang: { label: 'Sprog', tested: 'Verificerede', untested: 'Uverificerede', note: '✓ modersmål · web = maskinverificeret (ikke modersmål)' },
-    menu: { back: '← Menu', settings: 'Indstillinger', info: 'Info' },
+    menu: { back: '← Menu', settings: 'Indstillinger', info: 'Info', share: 'Del Jako⁹' },
+    share: { title: 'Jako – gratis kortspil', text: 'Spil 9 kortspil direkte i browseren:', copied: 'Link kopieret', scan: 'Skan koden med telefonen, eller del linket', copy: 'Kopiér link', shareVia: 'Del…' },
     difficulty: { easy: 'Let', medium: 'Mellem', hard: 'Svær' },
     rulesAria: '{name}: vis regler',
     stat: ({ w, p, pct }) => `${w}S / ${p}P · ${pct}%`,
@@ -568,7 +569,7 @@ export const da = {
       ],
     },
     paskahousu: {
-      altName: "Røvhul",
+      altName: "Præsident",
       desc: 'Næsten den klassiske paskahousu med seks kort. 2♦ 2♥ værdi 2 · 2♠ 2♣ er hårde',
       msg: {
         gameStart: 'Paskahousu begynder! {name} starter (laveste kort).{hint}',

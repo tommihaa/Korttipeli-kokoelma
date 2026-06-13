@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Spealuid kultuvrralaš nammat leat dál mánáidustitlažžat. Suomagiel speallonamat bisuhit nuppástuhttekeahttá.',
       'Veršuvdna 1.2 🎉 Rievdadanlohku oidno dál iežat gillii buot 23 gielas, maiddái dain ođđaseamos.',
       'Golbma ođđa giela lasihuvvon: čeahkkagiella, ungáragiella ja romániagiella (oktiibuot 23 giela). Searvvis dovddus klassihkat — Seiska = Prší / Makaó / Septică, Maija = Černý Petr / Fekete Péter / Baba. Gávdnojit giellafálu „Iskkakeahttá" jovkkus — jorgalusat ain vurdet eatnigiela hálli dárkkisteami.',
       'Juoge-boallu rahpá dál QR-koda: ustit beassá spillui dan telefovnnain skannemiin, almmá liŋkka čállima haga.',

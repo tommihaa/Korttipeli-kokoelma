@@ -6,7 +6,7 @@ export const se = {
     info: { title: 'ℹ Diehtu', close: '✕ Gidde' },
     lang: { label: 'Giella', tested: 'Geahččaluvvon', untested: 'Geahččalkeahttá', note: '✓ eatnigiella · web = mašiidnaduhkkojuvvon (ii eatnigielalaš dárkkisteapmi)' },
     menu: { back: '← Fállu', settings: 'Heivehusat', info: 'Diehtu', share: 'Juoge Jako⁹' },
-    share: { title: 'Jako – nuvttá goartaspeallut', text: 'Speala 9 goartaspeallu njuolga lohkanprográmmas:', copied: 'Liŋka kopierejuvvon' },
+    share: { title: 'Jako – nuvttá goartaspeallut', text: 'Speala 9 goartaspeallu njuolga lohkanprográmmas:', copied: 'Liŋka kopierejuvvon', scan: 'Skanne koda telefovnnain dahje juoge liŋkka', copy: 'Kopiere liŋkka', shareVia: 'Juoge…' },
     difficulty: { easy: 'Álki', medium: 'Gaska', hard: 'Váttis' },
     rulesAria: '{name}: čájet njuolggadusaid',
     stat: ({ w, p, pct }) => `${w}V / ${p}S · ${pct}%`,
@@ -571,7 +571,7 @@ export const se = {
       ],
     },
     paskahousu: {
-      altName: 'Shithead',
+      altName: 'Palace',
       desc: 'Measta dat árbevirolaš paskahousu guđain goarttain. 2♦ 2♥ árvu 2 · 2♠ 2♣ garra',
       msg: {
         gameStart: 'Paskahousu álgá! {name} álgá (unnimus goartta).{hint}',

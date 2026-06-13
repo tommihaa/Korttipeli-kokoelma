@@ -7,7 +7,8 @@ export const de = {
     loading: 'Lädt…',
     info: { title: 'ℹ Info', close: '✕ Schließen' },
     lang: { label: 'Sprache', tested: 'Geprüft', untested: 'Ungeprüft', note: '✓ Muttersprache · web = maschinell geprüft (nicht muttersprachlich)' },
-    menu: { back: '← Menü', settings: 'Einstellungen', info: 'Info' },
+    menu: { back: '← Menü', settings: 'Einstellungen', info: 'Info', share: 'Jako⁹ teilen' },
+    share: { title: 'Jako – kostenlose Kartenspiele', text: 'Spiele 9 Kartenspiele direkt im Browser:', copied: 'Link kopiert', scan: 'Scanne den Code mit dem Handy oder teile den Link', copy: 'Link kopieren', shareVia: 'Teilen…' },
     difficulty: { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer' },
     rulesAria: '{name}: Regeln anzeigen',
     stat: ({ w, p, pct }) => `${w}S / ${p}P · ${pct}%`,
@@ -568,8 +569,8 @@ export const de = {
       ],
     },
     paskahousu: {
-      altName: "Arschloch",
-      desc: 'Fast das klassische Arschloch mit sechs Karten. 2♦ 2♥ Wert 2 · 2♠ 2♣ hart',
+      altName: "Präsident",
+      desc: 'Fast das klassische Paskahousu mit sechs Karten. 2♦ 2♥ Wert 2 · 2♠ 2♣ hart',
       msg: {
         gameStart: 'Paskahousu beginnt! {name} beginnt (niedrigste Karte).{hint}',
         gameStartHint: ' Du kannst mehrere desselben Werts auf einmal spielen.',

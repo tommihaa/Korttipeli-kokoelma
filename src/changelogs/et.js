@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Mängude kultuurilised hüüdnimed on nüüd lapsesõbralikumad. Soomekeelsed mängunimed jäävad samaks.',
       'Versioon 1.2 🎉 Muutuste logi kuvatakse nüüd sinu oma keeles kõigis 23 keeles, sealhulgas kõige uuemates.',
       'Lisatud kolm uut keelt: tšehhi, ungari ja rumeenia keel (kokku 23 keelt). Leiad need keelemenüü rühmast "Testimata" — tõlked ootavad veel emakeelse kõneleja ülevaatust.',
       'Jaga-nupp avab nüüd QR-koodi: sõber pääseb mängu seda telefoniga skannides, ilma linki trükkimata.',

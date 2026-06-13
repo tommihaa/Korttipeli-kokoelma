@@ -7,7 +7,8 @@ export const fr = {
     loading: 'Chargement…',
     info: { title: 'ℹ Info', close: '✕ Fermer' },
     lang: { label: 'Langue', tested: 'Vérifiées', untested: 'Non vérifiées', note: '✓ natif · web = vérifié automatiquement (pas par un natif)' },
-    menu: { back: '← Menu', settings: 'Paramètres', info: 'Info' },
+    menu: { back: '← Menu', settings: 'Paramètres', info: 'Info', share: 'Partager Jako⁹' },
+    share: { title: 'Jako – jeux de cartes gratuits', text: 'Joue à 9 jeux de cartes directement dans le navigateur :', copied: 'Lien copié', scan: 'Scanne le code avec ton téléphone ou partage le lien', copy: 'Copier le lien', shareVia: 'Partager…' },
     difficulty: { easy: 'Facile', medium: 'Intermédiaire', hard: 'Difficile' },
     rulesAria: '{name} : afficher les règles',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
@@ -568,7 +569,7 @@ export const fr = {
       ],
     },
     paskahousu: {
-      altName: "le Trou du cul",
+      altName: "le Président",
       desc: 'Presque le Paskahousu classique avec six cartes. 2♦ 2♥ valeur 2 · 2♠ 2♣ sont fortes',
       msg: {
         gameStart: 'Paskahousu commence ! {name} ouvre (carte la plus basse).{hint}',

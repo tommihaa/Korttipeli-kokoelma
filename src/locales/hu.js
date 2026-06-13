@@ -7,7 +7,7 @@ export const hu = {
     info: { title: 'ℹ Infó', close: '✕ Bezárás' },
     lang: { label: 'Nyelv', tested: 'Ellenőrzött', untested: 'Nem ellenőrzött', note: '✓ anyanyelvi · web = gépileg ellenőrizve (anyanyelvi ellenőrzés nélkül)' },
     menu: { back: '← Menü', settings: 'Beállítások', info: 'Infó', share: 'Jako⁹ megosztása' },
-    share: { title: 'Jako – ingyenes kártyajátékok', text: 'Játssz 9 kártyajátékot közvetlenül a böngészőben:', copied: 'Link másolva' },
+    share: { title: 'Jako – ingyenes kártyajátékok', text: 'Játssz 9 kártyajátékot közvetlenül a böngészőben:', copied: 'Link másolva', scan: 'Olvasd be a kódot a telefonnal, vagy oszd meg a linket', copy: 'Link másolása', shareVia: 'Megosztás…' },
     difficulty: { easy: 'Könnyű', medium: 'Közepes', hard: 'Nehéz' },
     rulesAria: '{name}: szabályok megjelenítése',
     stat: ({ w, p, pct }) => `${w}Gy / ${p}J · ${pct}%`,

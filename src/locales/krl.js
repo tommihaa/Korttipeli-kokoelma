@@ -8,7 +8,8 @@ export const krl = {
     loading: 'Ladauvuu…',
     info: { title: 'ℹ Info', close: '✕ Salbua' },
     lang: { label: 'Kieli', tested: 'Tarkastetut', untested: 'Tarkastamattomat', note: '✓ omakielini · web = konehen tarkastettu (ei omakielistä tarkastusta)' },
-    menu: { back: '← Valikko', settings: 'Šiännöt', info: 'Info' },
+    menu: { back: '← Valikko', settings: 'Šiännöt', info: 'Info', share: 'Jua Jako⁹' },
+    share: { title: 'Jako – ilmazet korttipelit', text: 'Kiza 9 korttipeliä suorah selaimešša:', copied: 'Linkki kopiu', scan: 'Skannua koodi telefonalla tahi jua linkki', copy: 'Kopiu linkki', shareVia: 'Jua…' },
     difficulty: { easy: 'Kebie', medium: 'Keskitaso', hard: 'Vaigie' },
     rulesAria: '{name}: ozuta šiännöt',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
@@ -569,7 +570,7 @@ export const krl = {
       ],
     },
     paskahousu: {
-      altName: "Shithead",
+      altName: "Palace",
       desc: 'Liki še perindöllini paskahousu kuvella kortilla. 2♦ 2♥ arvo 2 · 2♠ 2♣ kovie',
       msg: {
         gameStart: 'Paskahousu alkau! {name} alkau (pienin kortti).{hint}',

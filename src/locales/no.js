@@ -7,7 +7,8 @@ export const no = {
     loading: 'Laster…',
     info: { title: 'ℹ Info', close: '✕ Lukk' },
     lang: { label: 'Språk', tested: 'Verifiserte', untested: 'Uverifiserte', note: '✓ morsmål · web = maskinverifisert (ikke morsmål)' },
-    menu: { back: '← Meny', settings: 'Innstillinger', info: 'Info' },
+    menu: { back: '← Meny', settings: 'Innstillinger', info: 'Info', share: 'Del Jako⁹' },
+    share: { title: 'Jako – gratis kortspill', text: 'Spill 9 kortspill rett i nettleseren:', copied: 'Lenke kopiert', scan: 'Skann koden med telefonen, eller del lenken', copy: 'Kopier lenke', shareVia: 'Del…' },
     difficulty: { easy: 'Lett', medium: 'Middels', hard: 'Vanskelig' },
     rulesAria: '{name}: vis regler',
     stat: ({ w, p, pct }) => `${w}S / ${p}S · ${pct}%`,
@@ -568,7 +569,7 @@ export const no = {
       ],
     },
     paskahousu: {
-      altName: "Drittsekk",
+      altName: "President",
       desc: 'Nesten den klassiske paskahousu med seks kort. 2♦ 2♥ verdi 2 · 2♠ 2♣ er harde',
       msg: {
         gameStart: 'Paskahousu begynner! {name} begynner (laveste kort).{hint}',

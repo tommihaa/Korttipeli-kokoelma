@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Spillenes kulturelle kælenavne er nu mere børnevenlige. De finske spilnavne er uændrede.',
       'Version 1.2 🎉 Ændringsloggen vises nu på dit eget sprog på alle 23 sprog, også de allernyeste.',
       'Tre nye sprog tilføjet: tjekkisk, ungarsk og rumænsk (i alt 23 sprog). Du finder dem i gruppen "Utestede" i sprogmenuen — oversættelserne afventer stadig gennemgang af en indfødt taler.',
       'Del-knappen åbner nu en QR-kode: en ven kommer ind i spillet ved at skanne den med telefonen, uden at taste linket.',

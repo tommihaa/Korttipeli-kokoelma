@@ -6,7 +6,7 @@ export const cs = {
     info: { title: 'ℹ Info', close: '✕ Zavřít' },
     lang: { label: 'Jazyk', tested: 'Ověřené', untested: 'Neověřené', note: '✓ rodilý mluvčí · web = ověřeno strojově (bez kontroly rodilým mluvčím)' },
     menu: { back: '← Nabídka', settings: 'Nastavení', info: 'Info', share: 'Sdílet Jako⁹' },
-    share: { title: 'Jako – karetní hry zdarma', text: 'Hraj 9 karetních her přímo v prohlížeči:', copied: 'Odkaz zkopírován' },
+    share: { title: 'Jako – karetní hry zdarma', text: 'Hraj 9 karetních her přímo v prohlížeči:', copied: 'Odkaz zkopírován', scan: 'Naskenuj kód telefonem nebo sdílej odkaz', copy: 'Kopírovat odkaz', shareVia: 'Sdílet…' },
     difficulty: { easy: 'Lehká', medium: 'Střední', hard: 'Těžká' },
     rulesAria: '{name}: zobrazit pravidla',
     stat: ({ w, p, pct }) => `${w}V / ${p}H · ${pct}%`,
