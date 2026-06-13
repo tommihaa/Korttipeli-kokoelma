@@ -7,7 +7,7 @@ export const en = {
     loading: 'Loading…',
     info: { title: 'ℹ Info', close: '✕ Close' },
     lang: { label: 'Language', tested: 'Verified', untested: 'Unverified', note: '✓ native · web = machine-verified (not native-checked)' },
-    menu: { back: '← Menu', settings: 'Settings', info: 'Info', share: 'Share the game' },
+    menu: { back: '← Menu', settings: 'Settings', info: 'Info', share: 'Share Jako⁹' },
     share: { title: 'Jako – free card games', text: 'Play 9 card games right in your browser:', copied: 'Link copied', scan: 'Scan the code with your phone or share the link', copy: 'Copy link', shareVia: 'Share…' },
     difficulty: { easy: 'Easy', medium: 'Medium', hard: 'Hard' },
     rulesAria: '{name}: show rules',
@@ -63,7 +63,7 @@ export const en = {
       glossaryLink: 'Glossary & Symbols 📖',
       changelog: 'Changelog 📋',
       a2hs: {
-        title: 'Add to Home Screen 📲',
+        title: 'Add Jako⁹ to Home Screen 📲',
         intro: 'Add the game to your phone’s home screen or your computer’s desktop and it opens from its own icon like an app — without browser bars. Once-opened games also work offline.',
         mobile: '📱 Phone and tablet',
         desktop: '💻 Computer',

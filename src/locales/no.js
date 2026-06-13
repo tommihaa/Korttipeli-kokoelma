@@ -61,7 +61,7 @@ export const no = {
       glossaryLink: 'Ordliste & Symboler 📖',
       changelog: 'Endringslogg 📋',
       a2hs: {
-        title: 'Legg til på startskjermen 📲',
+        title: 'Legg Jako⁹ til på startskjermen 📲',
         intro: 'Legg spillet til på telefonens startskjerm eller datamaskinens skrivebord, så åpnes det fra sitt eget ikon som en app — uten nettleserens felter. Spill som er åpnet én gang fungerer også uten nett.',
         mobile: '📱 Telefon og nettbrett',
         desktop: '💻 Datamaskin',

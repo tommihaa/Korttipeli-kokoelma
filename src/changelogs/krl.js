@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Versii 1.2 🎉 Muutosloki nägyy nyt omalla kielellä kaikilla 23 kielellä, i kaikkein uuzimmilla.',
       'Lisätty kolme uutta kieldä: čekki, ungari da rumienie (kaikkiedah 23 kieldä). Net löytäh kielivalikon "Testuamattomat"-joukos — kiännökset vuotetah vie natiivipuhujan tarkistusta.',
       'Jaa-napista avauduu nyt QR-koodi: kaveri piäžöy kizah skannaamalla šen telefonalla, ilmain linkin näppiämistä.',
     ],

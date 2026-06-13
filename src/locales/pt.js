@@ -61,7 +61,7 @@ export const pt = {
       glossaryLink: 'Glossário e Símbolos 📖',
       changelog: 'Registo de alterações 📋',
       a2hs: {
-        title: 'Adicionar ao ecrã principal 📲',
+        title: 'Adicionar Jako⁹ ao ecrã principal 📲',
         intro: 'Adiciona o jogo ao ecrã principal do telemóvel ou ao ambiente de trabalho do computador: abre a partir do seu próprio ícone como uma app — sem barras do navegador. Os jogos já abertos funcionam também offline.',
         mobile: '📱 Telemóvel e tablet',
         desktop: '💻 Computador',

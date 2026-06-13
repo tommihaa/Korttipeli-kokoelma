@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Versione 1.2 🎉 La cronologia modifiche ora appare nella tua lingua in tutte le 23 lingue, comprese le più recenti.',
       'Tre nuove lingue aggiunte: ceco, ungherese e rumeno (23 lingue in totale). Le trovi nel gruppo "Non testate" del menu delle lingue — le traduzioni attendono ancora la revisione di un madrelingua.',
       'Il pulsante Condividi ora apre un codice QR: un amico entra nel gioco scansionandolo col telefono, senza digitare il link.',
     ],

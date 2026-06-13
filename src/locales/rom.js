@@ -6,7 +6,7 @@ export const rom = {
     loading: 'Del pe…',
     info: { title: 'ℹ Info', close: '✕ Phande' },
     lang: { label: 'Čhib', tested: 'Probime', untested: 'Naprobime', note: '✓ dajaki čhib · web = mašina sikadas (bi dajaka čhibako probipe)' },
-    menu: { back: '← Lista', settings: 'Lačharimata', info: 'Info', share: 'Ulav o khelipe' },
+    menu: { back: '← Lista', settings: 'Lačharimata', info: 'Info', share: 'Ulav Jako⁹' },
     share: { title: 'Jako – ivja khelimata kartenca', text: 'Khel 9 khelimata kartenca direkt ando brauzero:', copied: 'Liako kopisardo' },
     difficulty: { easy: 'Loko', medium: 'Maškarutno', hard: 'Pharo' },
     rulesAria: '{name}: sikav o regule',
@@ -62,7 +62,7 @@ export const rom = {
       glossaryLink: 'Alavari & Simbule 📖',
       changelog: 'Logo le parugimatengo 📋',
       a2hs: {
-        title: 'Tho ko ekrano-šerutno 📲',
+        title: 'Tho Jako⁹ ko ekrano-šerutno 📲',
         intro: 'Tho o khelipe ko ekrano-šerutno le telefonosko vaj ko skafidi le kompjuterosko, kaj te putardol pesko ikonosa sar aplikacija — bi le brauzeroske bareske. Khelimata jekh data putarde keren vi bi internetosko.',
         mobile: '📱 Telefono thaj tableta',
         desktop: '💻 Kompjutero',

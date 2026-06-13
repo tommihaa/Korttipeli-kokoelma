@@ -6,7 +6,7 @@ export const hu = {
     loading: 'Betöltés…',
     info: { title: 'ℹ Infó', close: '✕ Bezárás' },
     lang: { label: 'Nyelv', tested: 'Ellenőrzött', untested: 'Nem ellenőrzött', note: '✓ anyanyelvi · web = gépileg ellenőrizve (anyanyelvi ellenőrzés nélkül)' },
-    menu: { back: '← Menü', settings: 'Beállítások', info: 'Infó', share: 'Játék megosztása' },
+    menu: { back: '← Menü', settings: 'Beállítások', info: 'Infó', share: 'Jako⁹ megosztása' },
     share: { title: 'Jako – ingyenes kártyajátékok', text: 'Játssz 9 kártyajátékot közvetlenül a böngészőben:', copied: 'Link másolva' },
     difficulty: { easy: 'Könnyű', medium: 'Közepes', hard: 'Nehéz' },
     rulesAria: '{name}: szabályok megjelenítése',
@@ -62,7 +62,7 @@ export const hu = {
       glossaryLink: 'Szótár & Jelek 📖',
       changelog: 'Változásnapló 📋',
       a2hs: {
-        title: 'Hozzáadás a kezdőképernyőhöz 📲',
+        title: 'Jako⁹ hozzáadása a kezdőképernyőhöz 📲',
         intro: 'Add hozzá a játékot a telefon kezdőképernyőjéhez vagy a számítógép asztalához, hogy saját ikonjáról nyíljon, mint egy alkalmazás — böngészősávok nélkül. Az egyszer megnyitott játékok hálózat nélkül is működnek.',
         mobile: '📱 Telefon és tablet',
         desktop: '💻 Számítógép',

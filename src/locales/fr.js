@@ -61,7 +61,7 @@ export const fr = {
       glossaryLink: 'Glossaire et symboles 📖',
       changelog: 'Journal des modifications 📋',
       a2hs: {
-        title: 'Ajouter à l’écran d’accueil 📲',
+        title: 'Ajouter Jako⁹ à l’écran d’accueil 📲',
         intro: 'Ajoute le jeu à l’écran d’accueil de ton téléphone ou au bureau de ton ordinateur : il s’ouvrira depuis sa propre icône comme une appli — sans barres du navigateur. Les jeux déjà ouverts fonctionnent aussi hors ligne.',
         mobile: '📱 Téléphone et tablette',
         desktop: '💻 Ordinateur',

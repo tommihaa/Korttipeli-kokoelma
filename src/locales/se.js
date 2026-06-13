@@ -5,7 +5,7 @@ export const se = {
     loading: 'Viežžamin…',
     info: { title: 'ℹ Diehtu', close: '✕ Gidde' },
     lang: { label: 'Giella', tested: 'Geahččaluvvon', untested: 'Geahččalkeahttá', note: '✓ eatnigiella · web = mašiidnaduhkkojuvvon (ii eatnigielalaš dárkkisteapmi)' },
-    menu: { back: '← Fállu', settings: 'Heivehusat', info: 'Diehtu', share: 'Juoge speallu' },
+    menu: { back: '← Fállu', settings: 'Heivehusat', info: 'Diehtu', share: 'Juoge Jako⁹' },
     share: { title: 'Jako – nuvttá goartaspeallut', text: 'Speala 9 goartaspeallu njuolga lohkanprográmmas:', copied: 'Liŋka kopierejuvvon' },
     difficulty: { easy: 'Álki', medium: 'Gaska', hard: 'Váttis' },
     rulesAria: '{name}: čájet njuolggadusaid',
@@ -61,7 +61,7 @@ export const se = {
       glossaryLink: 'Sátnelistu & Mearkkat 📖',
       changelog: 'Rievdadanlogga 📋',
       a2hs: {
-        title: 'Lasit álgomuitui 📲',
+        title: 'Lasit Jako⁹ álgomuitui 📲',
         intro: 'Lasit speallu telefovnna álgomuitui dahje dihtora bargobeavdái, de dat rahppo iežas govažis dego prográmma — telefovnna holggaid haga. Oktii rahppojuvvon spealut doibmet maiddái fierpmádaga haga.',
         mobile: '📱 Telefovdna ja tablehtta',
         desktop: '💻 Dihtor',

@@ -70,7 +70,7 @@ export const pl = {
       glossaryLink: 'Słownik i symbole 📖',
       changelog: 'Lista zmian 📋',
       a2hs: {
-        title: 'Dodaj do ekranu głównego 📲',
+        title: 'Dodaj Jako⁹ do ekranu głównego 📲',
         intro: 'Dodaj grę do ekranu głównego telefonu lub pulpitu komputera — będzie się otwierać z własnej ikony jak aplikacja, bez pasków przeglądarki. Raz otwarte gry działają też offline.',
         mobile: '📱 Telefon i tablet',
         desktop: '💻 Komputer',

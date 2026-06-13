@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Wersja 1.2 🎉 Lista zmian wyświetla się teraz w Twoim języku we wszystkich 23 językach, także w najnowszych.',
       'Dodano trzy nowe języki: czeski, węgierski i rumuński (łącznie 23 języki). Znajdziesz je w grupie „Niesprawdzone" w menu języków — tłumaczenia wciąż czekają na weryfikację przez rodzimego użytkownika.',
       'Przycisk Udostępnij otwiera teraz kod QR: znajomy dołącza do gry, skanując go telefonem, bez wpisywania linku.',
     ],

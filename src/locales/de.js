@@ -61,7 +61,7 @@ export const de = {
       glossaryLink: 'Glossar & Symbole 📖',
       changelog: 'Änderungsprotokoll 📋',
       a2hs: {
-        title: 'Zum Startbildschirm hinzufügen 📲',
+        title: 'Jako⁹ zum Startbildschirm hinzufügen 📲',
         intro: 'Füge das Spiel dem Startbildschirm deines Handys oder dem Desktop deines Computers hinzu — es öffnet sich dann über ein eigenes Symbol wie eine App, ohne Browserleisten. Einmal geöffnete Spiele funktionieren auch offline.',
         mobile: '📱 Handy und Tablet',
         desktop: '💻 Computer',

@@ -10,7 +10,7 @@ export const fi = {
     loading: 'Ladataan…',
     info: { title: 'ℹ Info', close: '✕ Sulje' },
     lang: { label: 'Kieli', tested: 'Testatut', untested: 'Testaamattomat', note: '✓ natiivi · web = konevarmistettu (ei natiivitarkistusta)' },
-    menu: { back: '← Valikko', settings: 'Asetukset', info: 'Info', share: 'Jaa peli' },
+    menu: { back: '← Valikko', settings: 'Asetukset', info: 'Info', share: 'Jaa Jako⁹' },
     share: { title: 'Jako – ilmaiset korttipelit', text: 'Pelaa 9 korttipeliä suoraan selaimessa:', copied: 'Linkki kopioitu', scan: 'Skannaa koodi puhelimella tai jaa linkki', copy: 'Kopioi linkki', shareVia: 'Jaa…' },
     difficulty: { easy: 'Helppo', medium: 'Keskitaso', hard: 'Vaativa' },
     rulesAria: '{name}: näytä säännöt',
@@ -66,7 +66,7 @@ export const fi = {
       glossaryLink: 'Sanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
       a2hs: {
-        title: 'Lisää aloitusnäytölle 📲',
+        title: 'Lisää Jako⁹ aloitusnäytölle 📲',
         intro: 'Lisää peli puhelimen aloitusnäytölle tai tietokoneen työpöydälle, niin se avautuu omasta kuvakkeestaan kuin sovellus — ilman selaimen palkkeja. Kerran avatut pelit toimivat myös ilman verkkoa.',
         mobile: '📱 Puhelin ja tabletti',
         desktop: '💻 Tietokone',

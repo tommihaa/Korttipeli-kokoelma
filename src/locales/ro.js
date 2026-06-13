@@ -5,7 +5,7 @@ export const ro = {
     loading: 'Se încarcă…',
     info: { title: 'ℹ Info', close: '✕ Închide' },
     lang: { label: 'Limbă', tested: 'Verificate', untested: 'Neverificate', note: '✓ vorbitor nativ · web = verificat automat (fără verificare de vorbitor nativ)' },
-    menu: { back: '← Meniu', settings: 'Setări', info: 'Info', share: 'Distribuie jocul' },
+    menu: { back: '← Meniu', settings: 'Setări', info: 'Info', share: 'Distribuie Jako⁹' },
     share: { title: 'Jako – jocuri de cărți gratuite', text: 'Joacă 9 jocuri de cărți direct în browser:', copied: 'Link copiat' },
     difficulty: { easy: 'Ușor', medium: 'Mediu', hard: 'Greu' },
     rulesAria: '{name}: arată regulile',
@@ -61,7 +61,7 @@ export const ro = {
       glossaryLink: 'Glosar & Simboluri 📖',
       changelog: 'Jurnal de modificări 📋',
       a2hs: {
-        title: 'Adaugă pe ecranul de pornire 📲',
+        title: 'Adaugă Jako⁹ pe ecranul de pornire 📲',
         intro: 'Adaugă jocul pe ecranul de pornire al telefonului sau pe desktopul calculatorului, ca să se deschidă din propria pictogramă ca o aplicație — fără barele browserului. Jocurile deschise o dată funcționează și fără rețea.',
         mobile: '📱 Telefon și tabletă',
         desktop: '💻 Calculator',

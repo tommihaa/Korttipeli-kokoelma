@@ -61,7 +61,7 @@ export const da = {
       glossaryLink: 'Ordliste & Symboler 📖',
       changelog: 'Ændringslog 📋',
       a2hs: {
-        title: 'Føj til hjemmeskærmen 📲',
+        title: 'Føj Jako⁹ til hjemmeskærmen 📲',
         intro: 'Føj spillet til telefonens hjemmeskærm eller computerens skrivebord, så åbner det fra sit eget ikon som en app — uden browserens bjælker. Spil, der har været åbnet én gang, virker også offline.',
         mobile: '📱 Telefon og tablet',
         desktop: '💻 Computer',

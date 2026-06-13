@@ -61,7 +61,7 @@ export const et = {
       glossaryLink: 'Sõnastik & Tähistik 📖',
       changelog: 'Muutuste logi 📋',
       a2hs: {
-        title: 'Lisa avakuvale 📲',
+        title: 'Lisa Jako⁹ avakuvale 📲',
         intro: 'Lisa mäng telefoni avakuvale või arvuti töölauale — see avaneb oma ikoonilt nagu rakendus, ilma brauseri ribadeta. Kord avatud mängud töötavad ka võrguta.',
         mobile: '📱 Telefon ja tahvelarvuti',
         desktop: '💻 Arvuti',

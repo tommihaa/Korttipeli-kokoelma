@@ -5,7 +5,7 @@ export const la = {
     loading: 'Oneratur…',
     info: { title: 'ℹ Info', close: '✕ Claude' },
     lang: { label: 'Lingua', tested: 'Probatae', untested: 'Non probatae', note: '✓ nativus · web = machina confirmavit (sine nativa probatione)' },
-    menu: { back: '← Index', settings: 'Optiones', info: 'Info', share: 'Communica lusum' },
+    menu: { back: '← Index', settings: 'Optiones', info: 'Info', share: 'Communica Jako⁹' },
     share: { title: 'Jako – chartarum lusus gratuiti', text: 'Lude 9 chartarum lusus in navigatro:', copied: 'Nexus exscriptus' },
     difficulty: { easy: 'Facilis', medium: 'Medius', hard: 'Difficilis' },
     rulesAria: '{name}: monstra regulas',
@@ -61,7 +61,7 @@ export const la = {
       glossaryLink: 'Glossarium & Signa 📖',
       changelog: 'Acta mutationum 📋',
       a2hs: {
-        title: 'Adde ad initialem 📲',
+        title: 'Adde Jako⁹ ad initialem 📲',
         intro: 'Adde lusum ad initialem telephoni vel mensam computatri, ut suo ipsius signo aperiatur quasi applicatio — sine navigatri vittis. Lusus semel aperti etiam sine rete operantur.',
         mobile: '📱 Telephonum et tabella',
         desktop: '💻 Computatrum',

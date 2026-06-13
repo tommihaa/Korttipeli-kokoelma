@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Útgáfa 1.2 🎉 Breytingaskráin birtist nú á þínu eigin tungumáli á öllum 23 tungumálunum, líka þeim allra nýjustu.',
       'Þrjú ný tungumál bætt við: tékkneska, ungverska og rúmenska (alls 23 tungumál). Þú finnur þau í hópnum „Óprófuð" í tungumálavalmyndinni — þýðingarnar bíða enn yfirferðar móðurmálshafa.',
       'Deila-hnappurinn opnar nú QR-kóða: vinur kemst í leikinn með því að skanna hann með símanum, án þess að slá inn hlekkinn.',
     ],

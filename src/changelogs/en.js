@@ -3,6 +3,7 @@ export const CHANGELOG = [
   {
     date: '13.6.2026',
     items: [
+      'Version 1.2 🎉 The changelog now appears in your own language in all 23 languages, including the newest ones.',
       'Three new languages added: Czech, Hungarian and Romanian (23 languages in total). You\'ll find them in the "Untested" group of the language menu — the translations still await review by a native speaker.',
       'The Share button now opens a QR code: a friend can join the game by scanning it with their phone, no typing the link.',
     ],

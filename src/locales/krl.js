@@ -62,7 +62,7 @@ export const krl = {
       glossaryLink: 'Šanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
       a2hs: {
-        title: 'Ližiä algunäytöllä 📲',
+        title: 'Ližiä Jako⁹ algunäytöllä 📲',
         intro: 'Ližiä kiza telefonan algunäytöllä tahi tiedokonehen työpövvällä, ka še avauduu omašta kuvakkehešta kuin sovellus — ilmain selaimen palkkija. Kerran avatut kizat toimitah i ilmain verkkuo.',
         mobile: '📱 Telefona da tabletti',
         desktop: '💻 Tiedokoneh',

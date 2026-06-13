@@ -5,7 +5,7 @@ export const cs = {
     loading: 'Načítání…',
     info: { title: 'ℹ Info', close: '✕ Zavřít' },
     lang: { label: 'Jazyk', tested: 'Ověřené', untested: 'Neověřené', note: '✓ rodilý mluvčí · web = ověřeno strojově (bez kontroly rodilým mluvčím)' },
-    menu: { back: '← Nabídka', settings: 'Nastavení', info: 'Info', share: 'Sdílet hru' },
+    menu: { back: '← Nabídka', settings: 'Nastavení', info: 'Info', share: 'Sdílet Jako⁹' },
     share: { title: 'Jako – karetní hry zdarma', text: 'Hraj 9 karetních her přímo v prohlížeči:', copied: 'Odkaz zkopírován' },
     difficulty: { easy: 'Lehká', medium: 'Střední', hard: 'Těžká' },
     rulesAria: '{name}: zobrazit pravidla',
@@ -61,7 +61,7 @@ export const cs = {
       glossaryLink: 'Slovník & Symboly 📖',
       changelog: 'Seznam změn 📋',
       a2hs: {
-        title: 'Přidat na domovskou obrazovku 📲',
+        title: 'Přidat Jako⁹ na domovskou obrazovku 📲',
         intro: 'Přidej hru na domovskou obrazovku telefonu nebo na plochu počítače, aby se otvírala z vlastní ikony jako aplikace — bez lišt prohlížeče. Jednou otevřené hry fungují i bez sítě.',
         mobile: '📱 Telefon a tablet',
         desktop: '💻 Počítač',

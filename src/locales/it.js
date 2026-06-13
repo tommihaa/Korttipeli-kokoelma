@@ -61,7 +61,7 @@ export const it = {
       glossaryLink: 'Glossario & Simboli 📖',
       changelog: 'Cronologia modifiche 📋',
       a2hs: {
-        title: 'Aggiungi alla schermata Home 📲',
+        title: 'Aggiungi Jako⁹ alla schermata Home 📲',
         intro: 'Aggiungi il gioco alla schermata Home del telefono o al desktop del computer: si aprirà dalla sua icona come un’app — senza barre del browser. I giochi già aperti funzionano anche offline.',
         mobile: '📱 Telefono e tablet',
         desktop: '💻 Computer',

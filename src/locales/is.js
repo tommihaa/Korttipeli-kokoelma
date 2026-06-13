@@ -61,7 +61,7 @@ export const is = {
       glossaryLink: 'Orðasafn & Tákn 📖',
       changelog: 'Breytingaskrá 📋',
       a2hs: {
-        title: 'Setja á heimaskjá 📲',
+        title: 'Setja Jako⁹ á heimaskjá 📲',
         intro: 'Settu leikinn á heimaskjá símans eða skjáborð tölvunnar — þá opnast hann af eigin tákni eins og app, án vafrastiku. Leikir sem hafa verið opnaðir einu sinni virka líka án nettengingar.',
         mobile: '📱 Sími og spjaldtölva',
         desktop: '💻 Tölva',
