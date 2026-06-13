@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { C, SUIT_COLOR, SUIT_COLOR_DARK, setTwoColorDeck } from './shared/colors.js';
 import GameResult from './shared/GameResult.jsx';
+import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref } from './shared/storage.js';
@@ -207,7 +208,7 @@ const TODO = [
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
   // UKK herää palautteen mukana — lokalisoitu fi+en, muut kielet putoavat tähän labeliin
   { label: 'Usein kysytyt kysymykset (UKK)', status: 'deferred' },
-  { label: 'Jaa peli kaverille (linkki tai QR-koodi)', status: 'deferred' },
+  { label: 'Jaa peli kaverille (linkki tai QR-koodi)', status: 'done' },
   { label: 'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle', status: 'done' },
 ];
 
@@ -747,6 +748,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showInfo, setShowInfo]     = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [showShare, setShowShare]     = useState(false); // jako-modaali (QR + linkki)
   const [stats, setStats]           = useState(mkStats);
   const [showLog, setShowLog]       = useState(true);   // tapahtumaloki auki oletuksena myös pienellä näytöllä
   const [soundOn, setSoundOn]       = useStickySetting('soundOn', false);  // äänet pois oletuksena; valinta muistetaan
@@ -878,31 +880,49 @@ export default function App() {
     >ℹ</button>
   );
 
-  // Jaa peli: Web Share API (mobiili → natiivi jakovalikko), muuten kopioi linkki leikepöydälle.
-  const shareGame = async () => {
-    const data = { title: t('ui.share.title'), text: t('ui.share.text'), url: SHARE_URL };
-    if (navigator.share) {
-      try { await navigator.share(data); } catch { /* käyttäjä perui jaon */ }
-    } else if (navigator.clipboard) {
+  // Natiivijako (Web Share API) — mobiilin jakovalikko. Vain jos selain tukee.
+  const shareNative = async () => {
+    try { await navigator.share({ title: t('ui.share.title'), text: t('ui.share.text'), url: SHARE_URL }); }
+    catch { /* käyttäjä perui jaon */ }
+  };
+  // Kopioi linkki leikepöydälle + ✓-palaute 2 s. Kaksi tasoa, koska Clipboard API
+  // toimii VAIN suojatussa kontekstissa (https/localhost) — esim. dev-palvelin
+  // LAN-osoitteen (http://192.168.x.x) kautta putoaa execCommand-varareittiin.
+  const copyShareLink = async () => {
+    let ok = false;
+    if (navigator.clipboard?.writeText) {
+      try { await navigator.clipboard.writeText(SHARE_URL); ok = true; } catch { /* varareittiin */ }
+    }
+    if (!ok) {
       try {
-        await navigator.clipboard.writeText(SHARE_URL);
-        setShareCopied(true);
-        setTimeout(() => setShareCopied(false), 2000);
+        const ta = document.createElement('textarea');
+        ta.value = SHARE_URL;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ok = document.execCommand('copy');
+        document.body.removeChild(ta);
       } catch { /* leikepöytä ei käytettävissä */ }
+    }
+    if (ok) {
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
     }
   };
   const shareBtn = (
     <button
-      onClick={shareGame}
+      onClick={() => setShowShare(true)}
       style={{
-        background: 'transparent', border: `1px solid ${shareCopied ? C.gold : C.panelBorder}`,
-        color: shareCopied ? C.gold : C.dim, borderRadius: 9, padding: '9px 12px',
+        background: 'transparent', border: `1px solid ${C.panelBorder}`,
+        color: C.dim, borderRadius: 9, padding: '9px 12px',
         fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
       aria-label={t('ui.menu.share')}
-      title={shareCopied ? t('ui.share.copied') : t('ui.menu.share')}
-    >{shareCopied ? '✓' : (
+      title={t('ui.menu.share')}
+    >
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
         <circle cx="18" cy="5" r="3" />
         <circle cx="6" cy="12" r="3" />
@@ -910,7 +930,7 @@ export default function App() {
         <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
         <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
       </svg>
-    )}</button>
+    </button>
   );
 
   const glossaryScreen = showGlossary && (
@@ -1289,6 +1309,42 @@ export default function App() {
     </div>
   );
 
+  // Jako-modaali: QR-koodi (kasvotusten / desktop) + linkki + kopiointi; natiivijako jos tuettu.
+  const shareModal = showShare && (
+    <div
+      onClick={() => setShowShare(false)}
+      style={{ position: 'fixed', inset: 0, zIndex: 700, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{ width: '100%', maxWidth: 340, background: C.bg, border: `1px solid ${C.gold}55`, borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}
+      >
+        <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2, textAlign: 'center' }}>{t('ui.menu.share')}</span>
+        <div style={{ background: '#f6efdd', borderRadius: 12, padding: 12, lineHeight: 0 }}>
+          <ShareQR size={200} />
+        </div>
+        <span style={{ fontSize: 12, color: C.dim, fontFamily: 'sans-serif', textAlign: 'center', lineHeight: 1.5 }}>{t('ui.share.scan')}</span>
+        <span style={{ fontSize: 13, color: C.text, fontFamily: 'monospace', wordBreak: 'break-all', textAlign: 'center' }}>{SHARE_URL}</span>
+        <div style={{ display: 'flex', gap: 8, width: '100%' }}>
+          <button
+            onClick={copyShareLink}
+            style={{ flex: 1, padding: '10px', borderRadius: 9, cursor: 'pointer', fontFamily: 'sans-serif', fontSize: 13, background: shareCopied ? `${C.gold}22` : 'transparent', border: `1px solid ${shareCopied ? C.gold : C.panelBorder}`, color: shareCopied ? C.gold : C.text }}
+          >{shareCopied ? `✓ ${t('ui.share.copied')}` : t('ui.share.copy')}</button>
+          {typeof navigator !== 'undefined' && navigator.share && (
+            <button
+              onClick={shareNative}
+              style={{ flex: 1, padding: '10px', borderRadius: 9, cursor: 'pointer', fontFamily: 'sans-serif', fontSize: 13, background: `${C.gold}22`, border: `1px solid ${C.gold}`, color: C.gold }}
+            >{t('ui.share.shareVia')}</button>
+          )}
+        </div>
+        <button
+          onClick={() => setShowShare(false)}
+          style={{ background: 'transparent', border: 'none', color: C.dim, cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13, marginTop: -4 }}
+        >{t('ui.info.close')}</button>
+      </div>
+    </div>
+  );
+
   if (active) {
     const game = GAMES.find(g => g.id === active);
     const GameComponent = game.component;
@@ -1399,6 +1455,7 @@ export default function App() {
       {settingsPanel}
       {infoPanel}
       {glossaryScreen}
+      {shareModal}
 
       <div style={{
         position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',

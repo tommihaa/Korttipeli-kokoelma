@@ -11,7 +11,7 @@ export const fi = {
     info: { title: 'ℹ Info', close: '✕ Sulje' },
     lang: { label: 'Kieli', tested: 'Testatut', untested: 'Testaamattomat', note: '✓ natiivi · web = konevarmistettu (ei natiivitarkistusta)' },
     menu: { back: '← Valikko', settings: 'Asetukset', info: 'Info', share: 'Jaa peli' },
-    share: { title: 'Jako – ilmaiset korttipelit', text: 'Pelaa 9 korttipeliä suoraan selaimessa:', copied: 'Linkki kopioitu' },
+    share: { title: 'Jako – ilmaiset korttipelit', text: 'Pelaa 9 korttipeliä suoraan selaimessa:', copied: 'Linkki kopioitu', scan: 'Skannaa koodi puhelimella tai jaa linkki', copy: 'Kopioi linkki', shareVia: 'Jaa…' },
     difficulty: { easy: 'Helppo', medium: 'Keskitaso', hard: 'Vaativa' },
     rulesAria: '{name}: näytä säännöt',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,

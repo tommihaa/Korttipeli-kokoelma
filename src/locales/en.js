@@ -8,7 +8,7 @@ export const en = {
     info: { title: 'ℹ Info', close: '✕ Close' },
     lang: { label: 'Language', tested: 'Verified', untested: 'Unverified', note: '✓ native · web = machine-verified (not native-checked)' },
     menu: { back: '← Menu', settings: 'Settings', info: 'Info', share: 'Share the game' },
-    share: { title: 'Jako – free card games', text: 'Play 9 card games right in your browser:', copied: 'Link copied' },
+    share: { title: 'Jako – free card games', text: 'Play 9 card games right in your browser:', copied: 'Link copied', scan: 'Scan the code with your phone or share the link', copy: 'Copy link', shareVia: 'Share…' },
     difficulty: { easy: 'Easy', medium: 'Medium', hard: 'Hard' },
     rulesAria: '{name}: show rules',
     stat: ({ w, p, pct }) => `${w}W / ${p}P · ${pct}%`,

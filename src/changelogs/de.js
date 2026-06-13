@@ -4,6 +4,7 @@ export const CHANGELOG = [
     date: '13.6.2026',
     items: [
       'Drei neue Sprachen hinzugefügt: Tschechisch, Ungarisch und Rumänisch (insgesamt 23 Sprachen). Sie finden sie in der Gruppe „Ungetestet" im Sprachmenü — die Übersetzungen warten noch auf die Prüfung durch Muttersprachler.',
+      'Die Teilen-Schaltfläche öffnet jetzt einen QR-Code: Freunde kommen ins Spiel, indem sie ihn mit dem Handy scannen — ohne den Link einzutippen.',
     ],
   },
   {

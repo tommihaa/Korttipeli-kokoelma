@@ -4,6 +4,7 @@ export const CHANGELOG = [
     date: '13.6.2026',
     items: [
       'Três novos idiomas adicionados: checo, húngaro e romeno (23 idiomas no total). Encontra-os no grupo "Não testados" do menu de idiomas — as traduções ainda aguardam revisão por um falante nativo.',
+      'O botão Partilhar abre agora um código QR: um amigo entra no jogo digitalizando-o com o telemóvel, sem escrever o link.',
     ],
   },
   {

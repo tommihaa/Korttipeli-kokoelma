@@ -4,6 +4,7 @@ export const CHANGELOG = [
     date: '13.6.2026',
     items: [
       'Tre nya språk tillagda: tjeckiska, ungerska och rumänska (totalt 23 språk). Du hittar dem i gruppen "Otestade" i språkmenyn — översättningarna väntar fortfarande på granskning av en modersmålstalare.',
+      'Dela-knappen öppnar nu en QR-kod: en vän kommer in i spelet genom att skanna den med telefonen, utan att skriva länken.',
     ],
   },
   {

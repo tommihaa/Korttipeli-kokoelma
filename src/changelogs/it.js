@@ -4,6 +4,7 @@ export const CHANGELOG = [
     date: '13.6.2026',
     items: [
       'Tre nuove lingue aggiunte: ceco, ungherese e rumeno (23 lingue in totale). Le trovi nel gruppo "Non testate" del menu delle lingue — le traduzioni attendono ancora la revisione di un madrelingua.',
+      'Il pulsante Condividi ora apre un codice QR: un amico entra nel gioco scansionandolo col telefono, senza digitare il link.',
     ],
   },
   {

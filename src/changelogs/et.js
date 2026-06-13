@@ -4,6 +4,7 @@ export const CHANGELOG = [
     date: '13.6.2026',
     items: [
       'Lisatud kolm uut keelt: tšehhi, ungari ja rumeenia keel (kokku 23 keelt). Leiad need keelemenüü rühmast "Testimata" — tõlked ootavad veel emakeelse kõneleja ülevaatust.',
+      'Jaga-nupp avab nüüd QR-koodi: sõber pääseb mängu seda telefoniga skannides, ilma linki trükkimata.',
     ],
   },
   {

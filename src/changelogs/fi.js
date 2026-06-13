@@ -10,6 +10,7 @@ export const CHANGELOG = [
     date: '13.6.2026',
     items: [
       'Kolme uutta kieltä lisätty: tšekki, unkari ja romania (yhteensä 23 kieltä). Mukana tuttuja klassikoita — Seiska = Prší / Makaó / Septică, Maija = Černý Petr / Fekete Péter / Baba. Löytyvät kielivalikon "Testaamattomat"-ryhmästä — käännökset odottavat vielä natiivipuhujan tarkistusta.',
+      'Jaa-napista aukeaa nyt QR-koodi: kaveri pääsee peliin skannaamalla sen puhelimella, ilman linkin näpyttelyä.',
     ],
   },
   {
