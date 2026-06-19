@@ -1,6 +1,13 @@
 // Muutosloki — viro. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Sinu seaded jäetakse nüüd meelde: valitud nähtavuse valikud, tehisintellekti tase, vastaste nimed ning Paskahousu, Ristiseiska ja Kasino reeglivalikud säilivad järgmiseks mänguks.',
+      'Menüü ülemine riba on väikestel ekraanidel selgem: mängu nimi ja keelevalik ei kattu enam.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'Mängude kultuurilised hüüdnimed on nüüd lapsesõbralikumad. Soomekeelsed mängunimed jäävad samaks.',

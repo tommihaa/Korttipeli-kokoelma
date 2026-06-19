@@ -4,6 +4,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
+import { useStickySetting } from '../shared/storage.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -274,7 +275,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   const t = useT();
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
-  const [rules,    setRules]   = useState(DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä
+  const [rules,    setRules]   = useStickySetting('paskahousu:rules', DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G,        setG]       = useState(null);

@@ -4,6 +4,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble, newDeck } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
+import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -288,7 +289,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
-  const [rules, setRules] = useState(KASINO_DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä
+  const [rules, setRules] = useStickySetting('kasino:rules', KASINO_DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
   const buildCap = rules.specialBuilds ? 16 : 13; // rakennelman max-arvo (13=K, 16=♦10 erikoissäännöllä)
   const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';

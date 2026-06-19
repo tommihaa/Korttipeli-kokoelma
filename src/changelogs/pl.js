@@ -1,6 +1,13 @@
 // Muutosloki — puola. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Twoje ustawienia są teraz zapamiętywane: wybrane opcje widoczności, poziom SI, imiona przeciwników oraz wybory zasad dla Paskahousu, Ristiseiska i Kasino zostają zachowane do następnej gry.',
+      'Górny pasek menu jest czytelniejszy na małych ekranach: nazwa gry i wybór języka już się nie nakładają.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'Kulturowe przezwiska gier są teraz bardziej przyjazne dzieciom. Fińskie nazwy gier pozostają bez zmian.',

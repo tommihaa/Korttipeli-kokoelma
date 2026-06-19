@@ -18,11 +18,13 @@ Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 ## Global settings (App.jsx → props to all games)
 | Prop | Default | Selitys |
 |---|---|---|
-| `showLog` | window.innerWidth≥600 | Tapahtumaloki auki |
+| `showLog` | true | Tapahtumaloki auki |
 | `soundOn` | true | Äänet |
 | `seeAll` | false | Cheat Mode — Hero näkee kaikki kortit |
 | `showCounts` | true | Korttimäärät näkyvillä |
 | `showLastPlay` | true | Kelluva viimeisin siirto -indikaattori |
+
+Asetukset persistoidaan `useStickySetting`-hookilla (ks. Tech-osio). Poikkeus: `seeAll` ei tallennu (nollautuu joka latauksessa).
 
 ## Component props (kaikki 9 peliä)
 App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa** — yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, hints, soundOn, seeAll, showCounts, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange`.
@@ -140,7 +142,7 @@ Virstanpylväät:
 ## Tech
 - React functional components + hooks only (no class components)
 - Tailwind core utilities only (no custom compiler)
-- localStorage VAIN preferensseille: kieli (`jako:lang`) + äänet (`jako:soundOn`) + kaksivärinen pakka (`jako:twoColorDeck`, lupa 2026-06-11) persistoidaan `src/shared/storage.js`:n kautta (`loadPref`/`savePref`, try/catch-suojattu). KAIKKI muu (pelitila, cheat-/näkyvyystoggle­t, AI-taso, edistyminen) pysyy useStatessa eikä tallennu — "tyylikäs karvalakki" säilyy siellä missä se on tärkeää. ÄLÄ laajenna tallennusta muihin asetuksiin ilman lupaa (tietoinen kompromissi C, 2026-06-07).
+- localStorage asetuksille (lupa laajentaa 2026-06-19, kumoaa aiemman "preferenssit-vain"-linjan): kaikki Asetukset-paneelin togglet (`jako:showLog`, `jako:soundOn`, `jako:twoColorDeck`, `jako:showCounts`, `jako:showLastPlay`, `jako:showIntention`, `jako:showNextBtn`, `jako:showAIKnown`), AI-taso (`jako:aiLevel`), nimiryhmä (`jako:playerGroup`) sekä pelikohtaiset sääntövalinnat (`jako:paskahousu:rules`, `jako:ristiseiska:rules`, `jako:kasino:rules`) persistoidaan `useStickySetting`-hookilla (`src/shared/storage.js`, `loadPref`/`savePref`, try/catch-suojattu). **POIKKEUKSET (eivät tallennu):** `seeAll` (cheat — nollautuu joka latauksessa tahallaan), `stats` (pelitila/edistyminen) ja `godMode` (disabloitu placeholder).
 - Single-file artifacts (.jsx) — no separate CSS/JS files
 - Touch + stylus primary input (phone + tablet), no hover-dependent interactions
 - Responsive: `window.innerWidth < 600` = mobile, else tablet

@@ -1,6 +1,13 @@
 // Muutosloki — ranska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Tes réglages sont désormais mémorisés : les options d\'affichage choisies, le niveau de l\'IA, les noms des adversaires ainsi que les choix de règles pour Paskahousu, Ristiseiska et Kasino sont conservés pour ta prochaine partie.',
+      'La barre supérieure du menu est plus claire sur les petits écrans : le nom du jeu et le choix de la langue ne se chevauchent plus.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'Les surnoms culturels des jeux sont désormais plus adaptés aux enfants. Les noms finnois des jeux restent inchangés.',

@@ -4,6 +4,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
+import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
@@ -201,7 +202,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   const t = useT();
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
-  const [rules,    setRules]   = useState(DEFAULT_RULES);
+  const [rules,    setRules]   = useStickySetting('ristiseiska:rules', DEFAULT_RULES); // sääntövalinta muistetaan
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G,        setG]       = useState(null);

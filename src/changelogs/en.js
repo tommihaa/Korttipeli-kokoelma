@@ -1,6 +1,13 @@
 // Muutosloki — englanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Your settings are now remembered: the visibility options you choose, the AI level, opponent names, and the rule choices for Paskahousu, Ristiseiska and Kasino all carry over to your next game.',
+      'The menu\'s top bar is clearer on small screens: the game name and the language picker no longer overlap.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'The cultural nicknames shown for the games are now more child-friendly. The Finnish game names stay as they are.',

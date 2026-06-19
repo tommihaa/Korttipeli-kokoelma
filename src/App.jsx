@@ -4,15 +4,7 @@ import GameResult from './shared/GameResult.jsx';
 import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
-import { loadPref, savePref } from './shared/storage.js';
-
-// Kuin useState, mutta arvo persistoituu localStorageen (preferenssipoikkeus, ks. storage.js).
-// Käytössä vain äänille; pelitila ja cheat-toggle­t pysyvät tavallisessa useStatessa.
-function useStickySetting(key, fallback) {
-  const [value, setValue] = useState(() => loadPref(key, fallback));
-  useEffect(() => { savePref(key, value); }, [key, value]);
-  return [value, setValue];
-}
+import { loadPref, savePref, useStickySetting } from './shared/storage.js';
 
 /* eslint-disable no-undef */
 const APP_VERSION = __APP_VERSION__;
@@ -526,7 +518,7 @@ function langMarker(status) {
   if (status === 'auto') return <span title="konevarmistettu (web), ei natiivitarkistusta" style={{ fontSize: 8, color: C.dim, opacity: 0.7, border: `1px solid ${C.panelBorder}`, borderRadius: 3, padding: '0 3px', lineHeight: 1.5, fontFamily: 'sans-serif' }}>web</span>;
   return null;
 }
-function LangSelector({ lang, setLang, t }) {
+function LangSelector({ lang, setLang, t, isMobile }) {
   const [open, setOpen] = useState(false);
   const groups = [
     { key: 'tested', langs: LANGS.filter(l => l.status === 'native' || l.status === 'auto') },
@@ -544,11 +536,13 @@ function LangSelector({ lang, setLang, t }) {
         style={{
           display: 'flex', alignItems: 'center', gap: 5,
           background: 'transparent', border: `1px solid ${open ? C.gold : C.panelBorder}`,
-          color: open ? C.gold : C.dim, borderRadius: 9, padding: '9px 9px', cursor: 'pointer',
+          color: open ? C.gold : C.dim, borderRadius: 9,
+          padding: isMobile ? '6px 9px' : '9px 9px', cursor: 'pointer',
           fontFamily: 'sans-serif', lineHeight: 1, flexShrink: 0,
         }}
       >
         <Flag code={current.code} />
+        {isMobile && <span style={{ fontSize: 12 }}>{current.name}</span>}  {/* omalla rivillään → tilaa koko nimelle */}
         <span style={{ fontSize: 9, opacity: 0.7 }}>{open ? '▲' : '▼'}</span>
       </button>
       {open && (
@@ -558,7 +552,7 @@ function LangSelector({ lang, setLang, t }) {
             position: 'absolute', top: '100%', right: 0,
             marginTop: 6, zIndex: 591,
             background: '#0f2419', border: `1px solid ${C.panelBorder}`, borderRadius: 10,
-            padding: 8, minWidth: 210, maxHeight: 340, overflowY: 'auto',
+            padding: 8, minWidth: 210, maxWidth: 'calc(100vw - 24px)', maxHeight: 340, overflowY: 'auto',  // rajaa näytön leveyteen → ei levity reunan yli
             boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
           }}>
             {groups.map(({ key, langs }) => langs.length > 0 && (
@@ -750,21 +744,21 @@ export default function App() {
   const [shareCopied, setShareCopied] = useState(false);
   const [showShare, setShowShare]     = useState(false); // jako-modaali (QR + linkki)
   const [stats, setStats]           = useState(mkStats);
-  const [showLog, setShowLog]       = useState(true);   // tapahtumaloki auki oletuksena myös pienellä näytöllä
+  const [showLog, setShowLog]       = useStickySetting('showLog', true);   // tapahtumaloki auki oletuksena; valinta muistetaan
   const [soundOn, setSoundOn]       = useStickySetting('soundOn', false);  // äänet pois oletuksena; valinta muistetaan
   const [twoColorDeck, setTwoColorDeckPref] = useStickySetting('twoColorDeck', false); // ♠♣ musta + ♥♦ punainen; muistetaan kuten kieli ja äänet
   useEffect(() => { setTwoColorDeck(twoColorDeck); }, [twoColorDeck]); // mutatoi SUIT_COLOR-paletit (colors.js) — re-render hoitaa loput
-  const [seeAll, setSeeAll]         = useState(false);
-  const [showCounts, setShowCounts] = useState(true);
-  const [showLastPlay, setShowLastPlay] = useState(true);
-  const [showIntention, setShowIntention] = useState(true);
-  const [showNextBtn, setShowNextBtn]   = useState(true);
-  const [showAIKnown, setShowAIKnown]   = useState(true);
-  const [aiLevel, setAiLevel]           = useState('normal'); // 'beginner' | 'normal' | 'hard'
+  const [seeAll, setSeeAll]         = useState(false);  // POIKKEUS: cheat-tila EI tallennu — nollautuu joka latauksessa (ks. storage.js)
+  const [showCounts, setShowCounts] = useStickySetting('showCounts', true);
+  const [showLastPlay, setShowLastPlay] = useStickySetting('showLastPlay', true);
+  const [showIntention, setShowIntention] = useStickySetting('showIntention', true);
+  const [showNextBtn, setShowNextBtn]   = useStickySetting('showNextBtn', true);
+  const [showAIKnown, setShowAIKnown]   = useStickySetting('showAIKnown', true);
+  const [aiLevel, setAiLevel]           = useStickySetting('aiLevel', 'normal'); // 'beginner' | 'normal' | 'hard'
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
   // Ensikertalainen kokoelmassa → Meme-jengi oletuksena (hauska ensivaikutelma);
-  // sen jälkeen satunnainen ryhmä. 'visited'-lippu persistoidaan (onboarding-tila, ks. storage.js).
-  const [playerGroup, setPlayerGroup] = useState(() => {
+  // sen jälkeen satunnainen ryhmä. Valinta muistetaan; 'visited'-lippu ratkaisee laiskan oletuksen.
+  const [playerGroup, setPlayerGroup] = useStickySetting('playerGroup', () => {
     if (!loadPref('visited', false)) return 'meme';
     const groups = ['laituri', 'jumalat', 'puolue', 'kansa', 'meme', 'goauld'];
     return groups[Math.floor(Math.random() * groups.length)];
@@ -859,8 +853,8 @@ export default function App() {
       onClick={() => setShowSettings(v => !v)}
       style={{
         background: 'transparent', border: `1px solid ${showSettings ? C.gold : C.panelBorder}`,
-        color: showSettings ? C.gold : C.dim, borderRadius: 9, padding: '9px 12px',
-        fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
+        color: showSettings ? C.gold : C.dim, borderRadius: 9, padding: isMobile ? '7px 8px' : '9px 12px',
+        fontSize: isMobile ? 16 : 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
       aria-label={t('ui.menu.settings')}
@@ -872,8 +866,8 @@ export default function App() {
       onClick={() => setShowInfo(v => !v)}
       style={{
         background: 'transparent', border: `1px solid ${showInfo ? C.gold : C.panelBorder}`,
-        color: showInfo ? C.gold : C.dim, borderRadius: 9, padding: '9px 12px',
-        fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
+        color: showInfo ? C.gold : C.dim, borderRadius: 9, padding: isMobile ? '7px 8px' : '9px 12px',
+        fontSize: isMobile ? 16 : 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
       aria-label={t('ui.menu.info')}
@@ -916,8 +910,8 @@ export default function App() {
       onClick={() => setShowShare(true)}
       style={{
         background: 'transparent', border: `1px solid ${C.panelBorder}`,
-        color: C.dim, borderRadius: 9, padding: '9px 12px',
-        fontSize: 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
+        color: C.dim, borderRadius: 9, padding: isMobile ? '7px 8px' : '9px 12px',
+        fontSize: isMobile ? 16 : 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
       aria-label={t('ui.menu.share')}
@@ -1457,21 +1451,41 @@ export default function App() {
       {glossaryScreen}
       {shareModal}
 
-      <div style={{
-        position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: '100%', maxWidth: isMobile ? '100%' : 900, marginBottom: 4,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: isMobile ? 8 : 14 }}>
+      {isMobile ? (
+        // Mobiili: yksi rivi — JAKO vasemmalla (pystysuunnassa keskitetty), kontrollit oikealla
+        // (kieli + jako + info + asetukset). space-between → eivät mene otsikon päälle, ⁹ näkyy.
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          width: '100%', marginBottom: 4, gap: 8,
+        }}>
           <h1 style={{
-            fontSize: isMobile ? 32 : 48, letterSpacing: isMobile ? 6 : 12, margin: 0,
+            fontSize: 34, letterSpacing: 4, margin: 0, lineHeight: 1, flexShrink: 0,
             background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`,
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
           }}>
-            JAKO<span style={{ fontSize: isMobile ? 15 : 22, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
+            JAKO<span style={{ fontSize: 16, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
           </h1>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <LangSelector lang={lang} setLang={setLang} t={t} isMobile={isMobile} />{shareBtn}{infoBtn}{gearBtn}
+          </div>
         </div>
-        <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8, alignItems: 'center' }}><LangSelector lang={lang} setLang={setLang} t={t} />{shareBtn}{infoBtn}{gearBtn}</div>
-      </div>
+      ) : (
+        <div style={{
+          position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          width: '100%', maxWidth: 900, marginBottom: 4,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 14 }}>
+            <h1 style={{
+              fontSize: 48, letterSpacing: 12, margin: 0,
+              background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`,
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>
+              JAKO<span style={{ fontSize: 22, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
+            </h1>
+          </div>
+          <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8, alignItems: 'center' }}><LangSelector lang={lang} setLang={setLang} t={t} isMobile={isMobile} />{shareBtn}{infoBtn}{gearBtn}</div>
+        </div>
+      )}
 
       <div style={{
         width: '100%',

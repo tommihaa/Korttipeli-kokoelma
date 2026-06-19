@@ -1,6 +1,13 @@
 // Muutosloki — romania. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Setările tale sunt acum reținute: opțiunile de vizibilitate alese, nivelul inteligenței artificiale, numele adversarilor și alegerile de reguli pentru Paskahousu, Ristiseiska și Kasino se păstrează pentru jocul următor.',
+      'Bara de sus a meniului este mai clară pe ecrane mici: numele jocului și selectorul de limbă nu se mai suprapun.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'Poreclele culturale ale jocurilor sunt acum mai potrivite pentru copii. Numele finlandeze ale jocurilor rămân neschimbate.',

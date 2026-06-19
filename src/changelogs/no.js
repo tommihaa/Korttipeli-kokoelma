@@ -1,6 +1,13 @@
 // Muutosloki — norja (bokmål). Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Innstillingene dine huskes nå: synlighetsvalgene du gjør, AI-nivået, motstandernes navn og regelvalgene for Paskahousu, Ristiseiska og Kasino følger med til neste spill.',
+      'Menyens øverste linje er tydeligere på små skjermer: spillets navn og språkvalget overlapper ikke lenger.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'Spillenes kulturelle kallenavn er nå mer barnevennlige. De finske spillnavnene er uendret.',

@@ -1,6 +1,13 @@
 // Muutosloki — italia. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Le tue impostazioni ora vengono ricordate: le opzioni di visibilità che scegli, il livello dell\'IA, i nomi degli avversari e le scelte di regole per Paskahousu, Ristiseiska e Kasino restano per la prossima partita.',
+      'La barra superiore del menu è più chiara sugli schermi piccoli: il nome del gioco e la scelta della lingua non si sovrappongono più.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'I soprannomi culturali dei giochi sono ora più adatti ai bambini. I nomi finlandesi dei giochi restano invariati.',

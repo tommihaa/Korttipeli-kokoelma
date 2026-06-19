@@ -1,6 +1,13 @@
 // Muutosloki — latina. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Optiones tuae nunc memorantur: optiones visibilitatis quas eligis, gradus intellegentiae artificialis, nomina adversariorum atque optiones regularum pro Paskahousu, Ristiseiska et Kasino ad ludum proximum servantur.',
+      'Tabula superior menus in parvis scriniis clarior est: nomen ludi et electio linguae non amplius se superponunt.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'Cognomina culturalia lusuum nunc pueris aptiora sunt. Nomina lusuum Finnica immutata manent.',

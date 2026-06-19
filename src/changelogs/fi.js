@@ -7,6 +7,13 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Asetukset muistetaan nyt: valitsemasi näkyvyysasetukset, koneälyn taso, vastustajien nimet sekä Paskahousun, Ristiseiskan ja Kasinon sääntövalinnat säilyvät seuraavallakin pelikerralla.',
+      'Valikon yläpalkki on selkeämpi pienellä näytöllä: pelin nimi ja kielivalinta eivät enää mene päällekkäin.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'Muilla kielillä pelien lempinimet on siistitty lapsiystävällisemmiksi. Suomenkieliset pelinimet pysyvät ennallaan.',

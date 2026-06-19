@@ -1,6 +1,13 @@
 // Muutosloki — unkari. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'A beállításaid mostantól megmaradnak: a kiválasztott megjelenítési beállítások, a mesterséges intelligencia szintje, az ellenfelek nevei, valamint a Paskahousu, Ristiseiska és Kasino szabályválasztásai megőrződnek a következő játékra.',
+      'A menü felső sávja kis képernyőkön áttekinthetőbb: a játék neve és a nyelvválasztó már nem fedi egymást.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'A játékok kulturális becenevei most gyermekbarátabbak. A finn játéknevek változatlanok maradnak.',

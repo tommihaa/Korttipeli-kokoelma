@@ -1,6 +1,13 @@
 // Muutosloki — karjala. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '19.6.2026',
+    items: [
+      'Asetukset muistetah nygöi: sinun vallitut näkyvys-asetukset, tekoälyn taso, vastustajien nimet da Paskahousun, Ristiseiskan da Kasinon sääntövalinnat säilytäh seuruavah pelikerdah.',
+      'Valikon yläpalkki on selkiembi pienel ekranal: pelin nimi da kielenvalinta ei enämbi mennä piällekkäi.',
+    ],
+  },
+  {
     date: '13.6.2026',
     items: [
       'Kizojen lempinimet on nyt lapsiystävällizemmät. Suomenkielizet kizannimet pyzytäh endizelläh.',
