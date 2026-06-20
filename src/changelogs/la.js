@@ -1,6 +1,13 @@
 // Muutosloki — latina. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: "20.6.2026",
+    items: [
+      "Nova fenestra 📊 Census (in menu Info): vide pro quoque lusu quotiens luseris et viceris, locos tuos et victorias per difficultatem. Praeterea summarium lusuum temptatorum, numeri lusuum et sessionum. Census in hoc navigatro solum servatur et eum quandocumque delere potes.",
+      "Fenestra census in omnibus 23 linguis praesto est.",
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Optiones tuae nunc memorantur: optiones visibilitatis quas eligis, gradus intellegentiae artificialis, nomina adversariorum atque optiones regularum pro Paskahousu, Ristiseiska et Kasino ad ludum proximum servantur.',

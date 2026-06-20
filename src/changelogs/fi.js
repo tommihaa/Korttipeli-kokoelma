@@ -7,6 +7,13 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '20.6.2026',
+    items: [
+      'Uusi 📊 Tilastot-näkymä (Info-valikosta): näet pelikohtaisesti montako kertaa olet pelannut ja voittanut, sijoitusjakaumasi sekä voitot eri vaikeustasoilla. Lisäksi yhteenveto kokeilluista peleistä, pelikerroista ja pelisessioista. Tilastot tallentuvat vain tähän selaimeen ja voit tyhjentää ne koska tahansa.',
+      'Tilastonäkymä on käännetty kaikille 23 kielelle.',
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Asetukset muistetaan nyt: valitsemasi näkyvyysasetukset, koneälyn taso, vastustajien nimet sekä Paskahousun, Ristiseiskan ja Kasinon sääntövalinnat säilyvät seuraavallakin pelikerralla.',

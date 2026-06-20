@@ -94,6 +94,28 @@ export const fi = {
       ],
     },
 
+    stats: {
+      menuLink: 'Tilastot 📊',
+      title: '📊 Tilastot',
+      explored: 'Eri pelejä kokeiltu',
+      exploredHint: 'Montako eri peliä olet pelannut vähintään kerran',
+      plays: 'Pelikertoja yhteensä',
+      playsHint: 'Kaikki loppuun pelatut pelit yhteenlaskettuna',
+      sessions: 'Pelisessioita yhteensä',
+      sessionsHint: 'Erillisiä sovelluskäyntejä, joina olet pelannut vähintään yhden pelin',
+      empty: 'Ei vielä pelattuja pelejä. Pelaa peli loppuun ihmispelaajana, niin tilastot kertyvät tähän.',
+      notPlayed: 'ei vielä pelattu',
+      winLine: ({ w, p, pct }) => `${w}/${p} voittoa · ${pct}%`,
+      winPctTooltip: 'Voitto-% = voitot jaettuna pelatuilla',
+      placesTitle: 'Sijoitukset',
+      levelsTitle: 'Voitot vaikeustasoittain',
+      levelNotPlayed: 'Et ole pelannut tällä vaikeustasolla',
+      clear: '🗑️ Tyhjennä tilastot',
+      clearConfirm: 'Tyhjennetäänkö kaikki tilastot pysyvästi?',
+      clearYes: 'Kyllä, tyhjennä',
+      clearCancel: 'Peruuta',
+    },
+
     botBanner: {
       won: ({ name }) => `🏆 ${name} voitti`,
       replay: ({ n }) => `▶ Toisto (${n})`,

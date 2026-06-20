@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { C, SUIT_COLOR, SUIT_COLOR_DARK, setTwoColorDeck } from './shared/colors.js';
 import GameResult from './shared/GameResult.jsx';
+import StatsPanel from './shared/StatsPanel.jsx';
 import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
@@ -204,7 +205,44 @@ const TODO = [
   { label: 'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle', status: 'done' },
 ];
 
-const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, { played: 0, wins: 0 }]));
+// Tyhjä per-peli-tilastorakenne. places = sijoitusjakauma (1.–4.), byLevel = erittely AI-tasoittain.
+const mkGameStat = () => ({
+  played: 0, wins: 0,
+  places: { 1: 0, 2: 0, 3: 0, 4: 0 },
+  byLevel: {
+    beginner: { played: 0, wins: 0 },
+    normal:   { played: 0, wins: 0 },
+    hard:     { played: 0, wins: 0 },
+  },
+});
+const mkStats = () => Object.fromEntries(GAMES.map(g => [g.id, mkGameStat()]));
+
+// Yhdistä tallennettu (mahd. vanha/vajaa) tilasto-objekti tuoreiden oletusten päälle.
+// Migraatio: vanha tallenne oli pelkkä { played, wins } ilman places/byLevel-kenttiä, ja
+// myöhemmin lisätty peli puuttuu kokonaan → ilman tätä recordResult kaatuisi.
+const normalizeStats = (raw) => {
+  const base = mkStats();
+  if (!raw || typeof raw !== 'object') return base;
+  for (const id of Object.keys(base)) {
+    const r = raw[id];
+    if (!r || typeof r !== 'object') continue;
+    base[id].played = Number(r.played) || 0;
+    base[id].wins   = Number(r.wins) || 0;
+    if (r.places && typeof r.places === 'object') {
+      for (const p of [1, 2, 3, 4]) base[id].places[p] = Number(r.places[p]) || 0;
+    }
+    if (r.byLevel && typeof r.byLevel === 'object') {
+      for (const lvl of ['beginner', 'normal', 'hard']) {
+        const lr = r.byLevel[lvl];
+        if (lr && typeof lr === 'object') {
+          base[id].byLevel[lvl].played = Number(lr.played) || 0;
+          base[id].byLevel[lvl].wins   = Number(lr.wins) || 0;
+        }
+      }
+    }
+  }
+  return base;
+};
 
 // ── Sanasto-apufunktiot ───────────────────────────────────────────────────────
 
@@ -743,7 +781,11 @@ export default function App() {
   const [showInfo, setShowInfo]     = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [showShare, setShowShare]     = useState(false); // jako-modaali (QR + linkki)
-  const [stats, setStats]           = useState(mkStats);
+  const [stats, setStats]           = useState(() => normalizeStats(loadPref('stats', {}))); // persistoidaan jako:stats-avaimeen
+  const [showStats, setShowStats]   = useState(false);
+  useEffect(() => { savePref('stats', stats); }, [stats]);
+  const [sessions, setSessions]     = useState(() => loadPref('sessions', 0)); // pelisessio = sovelluskäynti; lasketaan kerran per selainistunto (ks. recordResult)
+  useEffect(() => { savePref('sessions', sessions); }, [sessions]);
   const [showLog, setShowLog]       = useStickySetting('showLog', true);   // tapahtumaloki auki oletuksena; valinta muistetaan
   const [soundOn, setSoundOn]       = useStickySetting('soundOn', false);  // äänet pois oletuksena; valinta muistetaan
   const [twoColorDeck, setTwoColorDeckPref] = useStickySetting('twoColorDeck', false); // ♠♣ musta + ♥♦ punainen; muistetaan kuten kieli ja äänet
@@ -825,11 +867,37 @@ export default function App() {
     setActive(id);
   }
 
-  function recordResult(gameId, heroWon) {
-    setStats(prev => ({
-      ...prev,
-      [gameId]: { played: prev[gameId].played + 1, wins: prev[gameId].wins + (heroWon ? 1 : 0) },
-    }));
+  function recordResult(gameId, result, level) {
+    const place = result.ranking.find(r => r.isHuman)?.place;
+    if (!place) return; // ei ihmistä rankingissa → ei kirjata (varmistus; bot-only suodatetaan jo aiemmin)
+    // Pelisessio = sovelluskäynti: kasvata kerran per selainistunto, ensimmäisellä pelatulla pelillä.
+    // sessionStorage säilyy reloadin yli mutta nollautuu välilehden sulkeutuessa → 1 käynti = 1 sessio.
+    try {
+      if (!sessionStorage.getItem('jako:sessionStarted')) {
+        sessionStorage.setItem('jako:sessionStarted', '1');
+        setSessions(s => s + 1);
+      }
+    } catch { /* sessionStorage ei käytettävissä — ohitetaan sessiolaskenta */ }
+    const heroWon = place === 1;
+    const lvl = ['beginner', 'normal', 'hard'].includes(level) ? level : 'normal';
+    setStats(prev => {
+      const g = prev[gameId] || mkGameStat();
+      return {
+        ...prev,
+        [gameId]: {
+          played: g.played + 1,
+          wins: g.wins + (heroWon ? 1 : 0),
+          places: { ...g.places, [place]: (g.places[place] || 0) + 1 },
+          byLevel: {
+            ...g.byLevel,
+            [lvl]: {
+              played: g.byLevel[lvl].played + 1,
+              wins: g.byLevel[lvl].wins + (heroWon ? 1 : 0),
+            },
+          },
+        },
+      };
+    });
   }
 
   function handleSnapshot(frame) {
@@ -842,8 +910,7 @@ export default function App() {
     if (isBotOnly) {
       setBotResult(result);
     } else {
-      const heroWon = result.ranking.find(r => r.isHuman)?.place === 1;
-      recordResult(gameId, heroWon);
+      recordResult(gameId, result, aiLevel);
       setResultData(result);
     }
   }
@@ -1214,6 +1281,15 @@ export default function App() {
           )}
         </div>
 
+        {/* Tilastot — pelikohtaiset pelatut/voitot/sijoitukset (vain suomeksi toistaiseksi) */}
+        <button
+          onClick={() => setShowStats(true)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
+        >
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.stats.menuLink')}</span>
+          <span style={{ color: C.gold, fontSize: 16 }}>›</span>
+        </button>
+
         {/* Sanasto & Merkistö */}
         <button
           onClick={() => setShowGlossary(true)}
@@ -1448,6 +1524,7 @@ export default function App() {
     }}>
       {settingsPanel}
       {infoPanel}
+      {showStats && <StatsPanel stats={stats} games={GAMES} sessions={sessions} isMobile={isMobile} onClear={() => { setStats(mkStats()); setSessions(0); try { sessionStorage.removeItem('jako:sessionStarted'); } catch { /* ohitetaan */ } }} onClose={() => setShowStats(false)} />}
       {glossaryScreen}
       {shareModal}
 

@@ -1,6 +1,13 @@
 // Muutosloki — ranska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: "20.6.2026",
+    items: [
+      "Nouvelle vue 📊 Statistiques (dans le menu Info) : vois pour chaque jeu combien de fois tu as joué et gagné, tes classements et tes victoires par difficulté. Avec aussi un résumé des jeux essayés, du nombre de parties et des sessions de jeu. Les statistiques sont enregistrées uniquement dans ce navigateur et tu peux les effacer à tout moment.",
+      "La vue Statistiques est disponible dans les 23 langues.",
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Tes réglages sont désormais mémorisés : les options d\'affichage choisies, le niveau de l\'IA, les noms des adversaires ainsi que les choix de règles pour Paskahousu, Ristiseiska et Kasino sont conservés pour ta prochaine partie.',

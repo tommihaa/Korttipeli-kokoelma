@@ -1,6 +1,13 @@
 // Muutosloki — islanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: "20.6.2026",
+    items: [
+      "Nýtt 📊 Tölfræði-yfirlit (í Info-valmynd): sjáðu fyrir hvert spil hversu oft þú hefur spilað og unnið, sætin þín og sigra eftir erfiðleikastigi. Einnig samantekt um prófuð spil, fjölda spila og spilalotur. Tölfræðin er aðeins vistuð í þessum vafra og þú getur hreinsað hana hvenær sem er.",
+      "Tölfræði-yfirlitið er fáanlegt á öllum 23 tungumálum.",
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Stillingarnar þínar eru nú geymdar: sýnileikavalkostirnir sem þú velur, gervigreindarstigið, nöfn andstæðinga og reglustillingarnar fyrir Paskahousu, Ristiseiska og Kasino fylgja með í næsta leik.',

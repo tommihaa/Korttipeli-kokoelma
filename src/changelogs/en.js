@@ -1,6 +1,13 @@
 // Muutosloki — englanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: "20.6.2026",
+    items: [
+      "New 📊 Statistics view (in the Info menu): see for each game how many times you've played and won, your placements, and wins by difficulty. Plus a summary of games tried, play count and play sessions. Statistics are saved only in this browser and you can clear them anytime.",
+      "The statistics view is available in all 23 languages.",
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Your settings are now remembered: the visibility options you choose, the AI level, opponent names, and the rule choices for Paskahousu, Ristiseiska and Kasino all carry over to your next game.',

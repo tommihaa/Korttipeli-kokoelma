@@ -1,6 +1,13 @@
 // Muutosloki — puola. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: "20.6.2026",
+    items: [
+      "Nowy widok 📊 Statystyki (w menu Info): zobacz dla każdej gry, ile razy zagrałeś i wygrałeś, swoje miejsca oraz wygrane wg poziomu trudności. Do tego podsumowanie wypróbowanych gier, liczby gier i sesji. Statystyki są zapisywane tylko w tej przeglądarce i możesz je wyczyścić w każdej chwili.",
+      "Widok statystyk jest dostępny we wszystkich 23 językach.",
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Twoje ustawienia są teraz zapamiętywane: wybrane opcje widoczności, poziom SI, imiona przeciwników oraz wybory zasad dla Paskahousu, Ristiseiska i Kasino zostają zachowane do następnej gry.',

@@ -1,6 +1,13 @@
 // Muutosloki — ruotsi. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: "20.6.2026",
+    items: [
+      "Ny 📊 Statistik-vy (i Info-menyn): se för varje spel hur många gånger du har spelat och vunnit, dina placeringar och vinster per svårighetsgrad. Dessutom en sammanfattning av provade spel, antal spel och spelsessioner. Statistiken sparas bara i den här webbläsaren och du kan rensa den när som helst.",
+      "Statistikvyn finns på alla 23 språk.",
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Dina inställningar kommer nu ihåg: de synlighetsval du gör, AI-nivån, motståndarnas namn samt regelvalen för Paskahousu, Ristiseiska och Kasino följer med till nästa spel.',

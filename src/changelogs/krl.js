@@ -1,6 +1,13 @@
 // Muutosloki — karjala. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: "20.6.2026",
+    items: [
+      "Uuzi 📊 Tilastot-nägymä (Info-valikos): näit pelikohtazesti, migai kerdua olet pelannuh da voittanuh, sijat da voitot eri vaigevuksil. Mugai yhteenveto koetelluloi pelilöi, pelikerdua da pelisessieloi näh. Tilastot tallennetah vai täh selaimeh, da voit tyhjendiä net konzu tahto.",
+      "Tilastot-nägymä on kaikil 23 kielel.",
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Asetukset muistetah nygöi: sinun vallitut näkyvys-asetukset, tekoälyn taso, vastustajien nimet da Paskahousun, Ristiseiskan da Kasinon sääntövalinnat säilytäh seuruavah pelikerdah.',

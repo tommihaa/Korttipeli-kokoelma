@@ -1,6 +1,13 @@
 // Muutosloki — tanska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: "20.6.2026",
+    items: [
+      "Ny 📊 Statistik-visning (i Info-menuen): se for hvert spil hvor mange gange du har spillet og vundet, dine placeringer og sejre pr. sværhedsgrad. Desuden en oversigt over prøvede spil, antal spil og spilsessioner. Statistikken gemmes kun i denne browser, og du kan rydde den når som helst.",
+      "Statistik-visningen findes på alle 23 sprog.",
+    ],
+  },
+  {
     date: '19.6.2026',
     items: [
       'Dine indstillinger huskes nu: de synlighedsvalg du foretager, AI-niveauet, modstandernes navne samt regelvalgene for Paskahousu, Ristiseiska og Kasino følger med til næste spil.',
