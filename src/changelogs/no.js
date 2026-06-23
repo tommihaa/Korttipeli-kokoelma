@@ -1,6 +1,16 @@
 // Muutosloki — norja (bokmål). Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "En tydeligere start for nye spillere: anbefalte spill er merket med en ★, og før ditt første spill tipser menyen om hvor du kan begynne.",
+      "Reglene for hvert spill ligger nå bak en tydelig Regler-knapp, og derfra kommer du rett til ordlisten.",
+      "Innstillingene har nå et hurtigvalg Nybegynner/Erfaren som justerer all veiledning på én gang; enkeltinnstillinger ligger nå under Avansert.",
+      "Du kan nå velge motstandernes navnegruppe rett på spillets startskjerm, ved siden av antall spillere.",
+      "Hvert spill har nå en tydelig ”Din tur”-melding som forteller hva du skal gjøre på din tur.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Ny 📊 Statistikk-visning (i Info-menyen): se for hvert spill hvor mange ganger du har spilt og vunnet, plasseringene dine og seire per vanskelighetsgrad. I tillegg et sammendrag av prøvde spill, antall spill og spilløkter. Statistikken lagres bare i denne nettleseren, og du kan tømme den når som helst.",

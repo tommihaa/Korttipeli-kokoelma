@@ -4,16 +4,19 @@
 // si traducono solo descrizioni e regole. Muutosloki on lokalisoitu: src/changelogs/it.js.
 export const it = {
   ui: {
+    rules: { label: "Regole", moreTerms: "Altri termini — Glossario" },
+    turn: { yours: "Tocca a te —", kultakala: "pesca una carta dal mazzo o dagli scarti", koputus: "pesca una carta dal mazzo o dagli scarti", lapsy: "gira una carta al centro", seiska: "gioca una carta o pesca", ristiseiska: "gioca una carta valida o passa", paskahousu: "gioca una carta, o pesca se non puoi", kasino: "cattura, costruisci o scarta una carta", maijaAttack: "gioca carte dello stesso seme", maijaDefend: "batti le carte o raccoglile", moskaAttack: "gioca carte dello stesso valore", moskaDefend: "batti le carte o raccoglile" },
     loading: 'Caricamento…',
     info: { title: 'ℹ Info', close: '✕ Chiudi' },
     lang: { label: 'Lingua', tested: 'Verificate', untested: 'Non verificate', note: '✓ madrelingua · web = verificato automaticamente (non madrelingua)' },
-    menu: { back: '← Menu', settings: 'Impostazioni', info: 'Info', share: 'Condividi Jako⁹' },
+    menu: { recommended: "Consigliato", startHere: "Nuovo ai giochi? Prova prima i preferiti ★.", back: '← Menu', settings: 'Impostazioni', info: 'Info', share: 'Condividi Jako⁹' },
     share: { title: 'Jako – giochi di carte gratuiti', text: 'Gioca a 9 giochi di carte direttamente nel browser:', copied: 'Link copiato', scan: 'Scansiona il codice col telefono o condividi il link', copy: 'Copia link', shareVia: 'Condividi…' },
     difficulty: { easy: 'Facile', medium: 'Intermedio', hard: 'Difficile' },
     rulesAria: '{name}: mostra le regole',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Avanzate", preset: { beginner: "Principiante", beginnerDesc: "tutta la guida visibile", experienced: "Esperto", experiencedDesc: "meno rumore", custom: "Personalizzato — hai modificato le impostazioni tu stesso." },
       title: '⚙ Impostazioni',
       close: '✕ Chiudi',
       gameSettings: 'Impostazioni di gioco',
@@ -168,7 +171,7 @@ export const it = {
       winCards: ({ n }) => `VITTORIA — ${n} ${n === 1 ? 'carta' : 'carte'}`,
     },
 
-    start: {
+    start: { opponents: "AVVERSARI",
       players: 'GIOCATORI',
       begin: 'Inizia →',
       beginGame: 'Inizia la partita →',

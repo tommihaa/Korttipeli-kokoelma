@@ -1,6 +1,16 @@
 // Muutosloki — espanja. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Un inicio más claro para los jugadores nuevos: los juegos recomendados están marcados con una ★, y antes de tu primera partida el menú sugiere por dónde empezar.",
+      "Las reglas de cada juego están ahora tras un botón Reglas bien visible, y desde ahí se accede directamente al glosario.",
+      "Los ajustes tienen ahora una opción rápida Principiante/Experto que ajusta toda la ayuda de una vez; las opciones individuales están ahora en Avanzado.",
+      "Ahora puedes elegir el grupo de nombres de los rivales directamente en la pantalla de inicio del juego, junto al número de jugadores.",
+      "Cada juego tiene ahora un aviso claro de “Tu turno” que te dice qué hacer en tu turno.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Nueva vista de 📊 Estadísticas (en el menú Info): mira para cada juego cuántas veces has jugado y ganado, tus posiciones y victorias por dificultad. Además, un resumen de juegos probados, número de partidas y sesiones de juego. Las estadísticas se guardan solo en este navegador y puedes borrarlas cuando quieras.",

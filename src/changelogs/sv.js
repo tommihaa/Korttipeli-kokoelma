@@ -1,6 +1,16 @@
 // Muutosloki — ruotsi. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "En tydligare start för nya spelare: rekommenderade spel är märkta med en ★, och innan ditt första spel tipsar menyn om var du kan börja.",
+      "Varje spels regler finns nu bakom en tydlig Regler-knapp, och därifrån kommer du direkt till ordlistan.",
+      "Inställningarna har nu ett snabbval Nybörjare/Erfaren som justerar all vägledning på en gång; enskilda inställningar ligger nu under Avancerat.",
+      "Du kan nu välja motståndarnas namngrupp direkt på spelets startskärm, bredvid antalet spelare.",
+      "Varje spel har nu en tydlig ”Din tur”-uppmaning som visar vad du ska göra på din tur.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Ny 📊 Statistik-vy (i Info-menyn): se för varje spel hur många gånger du har spelat och vunnit, dina placeringar och vinster per svårighetsgrad. Dessutom en sammanfattning av provade spel, antal spel och spelsessioner. Statistiken sparas bara i den här webbläsaren och du kan rensa den när som helst.",

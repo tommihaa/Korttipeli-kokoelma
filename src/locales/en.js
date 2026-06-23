@@ -4,16 +4,19 @@
 // rules are translated. Muutosloki on lokalisoitu: src/changelogs/en.js.
 export const en = {
   ui: {
+    rules: { label: "Rules", moreTerms: "More terms — Glossary" },
+    turn: { yours: "Your turn —", kultakala: "draw a card from the deck or discard pile", koputus: "draw a card from the deck or discard pile", lapsy: "flip a card to the middle", seiska: "play a card or draw", ristiseiska: "play a valid card or pass", paskahousu: "play a card, or draw if you can't", kasino: "capture, build or trail a card", maijaAttack: "play cards of the same suit", maijaDefend: "beat the cards or pick them up", moskaAttack: "play cards of the same rank", moskaDefend: "beat the cards or pick them up" },
     loading: 'Loading…',
     info: { title: 'ℹ Info', close: '✕ Close' },
     lang: { label: 'Language', tested: 'Verified', untested: 'Unverified', note: '✓ native · web = machine-verified (not native-checked)' },
-    menu: { back: '← Menu', settings: 'Settings', info: 'Info', share: 'Share Jako⁹' },
+    menu: { recommended: "Recommended", startHere: "New to games? Try the ★ favourites first.", back: '← Menu', settings: 'Settings', info: 'Info', share: 'Share Jako⁹' },
     share: { title: 'Jako – free card games', text: 'Play 9 card games right in your browser:', copied: 'Link copied', scan: 'Scan the code with your phone or share the link', copy: 'Copy link', shareVia: 'Share…' },
     difficulty: { easy: 'Easy', medium: 'Medium', hard: 'Hard' },
     rulesAria: '{name}: show rules',
     stat: ({ w, p, pct }) => `${w}W / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Advanced", preset: { beginner: "Beginner", beginnerDesc: "full guidance shown", experienced: "Experienced", experiencedDesc: "less clutter", custom: "Custom — you've adjusted settings yourself." },
       title: '⚙ Settings',
       close: '✕ Close',
       gameSettings: 'Game settings',
@@ -172,7 +175,7 @@ export const en = {
       winCards: ({ n }) => `WIN — ${n} ${n === 1 ? 'card' : 'cards'}`,
     },
 
-    start: {
+    start: { opponents: "OPPONENTS",
       players: 'PLAYERS',
       begin: 'Start →',
       beginGame: 'Start game →',

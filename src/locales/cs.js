@@ -2,16 +2,19 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const cs = {
   ui: {
+    rules: { label: "Pravidla", moreTerms: "Více pojmů — Slovníček" },
+    turn: { yours: "Jsi na řadě —", kultakala: "lízni si kartu z balíčku nebo odhazovacího balíčku", koputus: "lízni si kartu z balíčku nebo odhazovacího balíčku", lapsy: "otoč kartu doprostřed", seiska: "zahraj kartu nebo si lízni", ristiseiska: "zahraj povolenou kartu nebo pas", paskahousu: "zahraj kartu, nebo si lízni, když nemůžeš", kasino: "seber, postav nebo odhoď kartu", maijaAttack: "zahraj karty stejné barvy", maijaDefend: "přebij karty nebo si je vezmi", moskaAttack: "zahraj karty stejné hodnoty", moskaDefend: "přebij karty nebo si je vezmi" },
     loading: 'Načítání…',
     info: { title: 'ℹ Info', close: '✕ Zavřít' },
     lang: { label: 'Jazyk', tested: 'Ověřené', untested: 'Neověřené', note: '✓ rodilý mluvčí · web = ověřeno strojově (bez kontroly rodilým mluvčím)' },
-    menu: { back: '← Nabídka', settings: 'Nastavení', info: 'Info', share: 'Sdílet Jako⁹' },
+    menu: { recommended: "Doporučeno", startHere: "Nový ve hrách? Zkus nejdřív ★-oblíbené.", back: '← Nabídka', settings: 'Nastavení', info: 'Info', share: 'Sdílet Jako⁹' },
     share: { title: 'Jako – karetní hry zdarma', text: 'Hraj 9 karetních her přímo v prohlížeči:', copied: 'Odkaz zkopírován', scan: 'Naskenuj kód telefonem nebo sdílej odkaz', copy: 'Kopírovat odkaz', shareVia: 'Sdílet…' },
     difficulty: { easy: 'Lehká', medium: 'Střední', hard: 'Těžká' },
     rulesAria: '{name}: zobrazit pravidla',
     stat: ({ w, p, pct }) => `${w}V / ${p}H · ${pct}%`,
 
     settings: {
+      advanced: "Pokročilé", preset: { beginner: "Začátečník", beginnerDesc: "všechna vodítka viditelná", experienced: "Zkušený", experiencedDesc: "méně rušení", custom: "Vlastní — nastavení sis upravil sám." },
       title: '⚙ Nastavení',
       close: '✕ Zavřít',
       gameSettings: 'Nastavení hry',
@@ -170,7 +173,7 @@ export const cs = {
       winCards: ({ n }) => `VÝHRA — ${n} ${n >= 2 && n <= 4 ? 'karty' : 'karet'}`,
     },
 
-    start: {
+    start: { opponents: "SOUPEŘI",
       players: 'HRÁČI',
       begin: 'Začít →',
       beginGame: 'Začít hru →',

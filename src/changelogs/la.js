@@ -1,6 +1,16 @@
 // Muutosloki — latina. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Initium clarius novis lusoribus: ludi commendati ★ signantur, et ante primum ludum menu monet ubi incipias.",
+      "Regulae cuiusque ludi nunc post clarum pulsabulum Regulae sunt, unde recta ad glossarium pervenis.",
+      "Optiones nunc electionem celerem Tiro/Peritus habent quae omnem ductum simul aptat; singulae optiones nunc sub Provectis sunt.",
+      "Gregem nominum adversariorum nunc recta in initiali scaena ludi eligere potes, iuxta numerum lusorum.",
+      "Quisque ludus nunc clarum monitum „Tua vices“ habet quod tibi dicit quid in vice tua faciendum sit.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Nova fenestra 📊 Census (in menu Info): vide pro quoque lusu quotiens luseris et viceris, locos tuos et victorias per difficultatem. Praeterea summarium lusuum temptatorum, numeri lusuum et sessionum. Census in hoc navigatro solum servatur et eum quandocumque delere potes.",

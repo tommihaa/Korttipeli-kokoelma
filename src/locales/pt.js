@@ -4,16 +4,19 @@
 // descrições e regras são traduzidas. Muutosloki on lokalisoitu: src/changelogs/pt.js.
 export const pt = {
   ui: {
+    rules: { label: "Regras", moreTerms: "Mais termos — Glossário" },
+    turn: { yours: "Tua vez —", kultakala: "compra uma carta do baralho ou do descarte", koputus: "compra uma carta do baralho ou do descarte", lapsy: "vira uma carta para o centro", seiska: "joga uma carta ou compra", ristiseiska: "joga uma carta válida ou passa", paskahousu: "joga uma carta, ou compra se não puderes", kasino: "captura, constrói ou descarta uma carta", maijaAttack: "joga cartas do mesmo naipe", maijaDefend: "vence as cartas ou apanha-as", moskaAttack: "joga cartas do mesmo valor", moskaDefend: "vence as cartas ou apanha-as" },
     loading: 'A carregar…',
     info: { title: 'ℹ Info', close: '✕ Fechar' },
     lang: { label: 'Idioma', tested: 'Verificados', untested: 'Não verificados', note: '✓ nativo · web = verificado por máquina (sem revisão nativa)' },
-    menu: { back: '← Menu', settings: 'Definições', info: 'Info', share: 'Partilhar Jako⁹' },
+    menu: { recommended: "Recomendado", startHere: "Novo nos jogos? Experimenta primeiro os favoritos ★.", back: '← Menu', settings: 'Definições', info: 'Info', share: 'Partilhar Jako⁹' },
     share: { title: 'Jako – jogos de cartas grátis', text: 'Joga 9 jogos de cartas diretamente no navegador:', copied: 'Link copiado', scan: 'Digitaliza o código com o telemóvel ou partilha o link', copy: 'Copiar link', shareVia: 'Partilhar…' },
     difficulty: { easy: 'Fácil', medium: 'Médio', hard: 'Difícil' },
     rulesAria: '{name}: mostrar regras',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Avançadas", preset: { beginner: "Iniciante", beginnerDesc: "toda a ajuda visível", experienced: "Experiente", experiencedDesc: "menos ruído", custom: "Personalizado — ajustaste as definições tu mesmo." },
       title: '⚙ Definições',
       close: '✕ Fechar',
       gameSettings: 'Definições do jogo',
@@ -168,7 +171,7 @@ export const pt = {
       winCards: ({ n }) => `VITÓRIA — ${n} ${n === 1 ? 'carta' : 'cartas'}`,
     },
 
-    start: {
+    start: { opponents: "ADVERSÁRIOS",
       players: 'JOGADORES',
       begin: 'Começar →',
       beginGame: 'Começar jogo →',

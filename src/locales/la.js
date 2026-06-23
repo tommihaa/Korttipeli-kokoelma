@@ -2,16 +2,19 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const la = {
   ui: {
+    rules: { label: "Regulae", moreTerms: "Plura verba — Glossarium" },
+    turn: { yours: "Tua vices —", kultakala: "carte e pila vel acervo abiecto trahe", koputus: "carte e pila vel acervo abiecto trahe", lapsy: "cartam in medium verte", seiska: "cartam pone vel trahe", ristiseiska: "cartam licitam pone vel transi", paskahousu: "cartam pone, vel trahe si non potes", kasino: "cape, aedifica vel cartam relinque", maijaAttack: "cartas eiusdem coloris pone", maijaDefend: "cartas vince vel eas tolle", moskaAttack: "cartas eiusdem valoris pone", moskaDefend: "cartas vince vel eas tolle" },
     loading: 'Oneratur…',
     info: { title: 'ℹ Info', close: '✕ Claude' },
     lang: { label: 'Lingua', tested: 'Probatae', untested: 'Non probatae', note: '✓ nativus · web = machina confirmavit (sine nativa probatione)' },
-    menu: { back: '← Index', settings: 'Optiones', info: 'Info', share: 'Communica Jako⁹' },
+    menu: { recommended: "Commendatum", startHere: "Novus in ludis? Prius ★-grata tempta.", back: '← Index', settings: 'Optiones', info: 'Info', share: 'Communica Jako⁹' },
     share: { title: 'Jako – chartarum lusus gratuiti', text: 'Lude 9 chartarum lusus in navigatro:', copied: 'Nexus exscriptus', scan: 'Codicem telephono scande vel nexum communica', copy: 'Nexum exscribe', shareVia: 'Communica…' },
     difficulty: { easy: 'Facilis', medium: 'Medius', hard: 'Difficilis' },
     rulesAria: '{name}: monstra regulas',
     stat: ({ w, p, pct }) => `${w}V / ${p}L · ${pct}%`,
 
     settings: {
+      advanced: "Provecta", preset: { beginner: "Tiro", beginnerDesc: "omnis ductus apparet", experienced: "Peritus", experiencedDesc: "minus strepitus", custom: "Proprium — optiones ipse mutavisti." },
       title: '⚙ Optiones',
       close: '✕ Claude',
       gameSettings: 'Optiones lusus',
@@ -170,7 +173,7 @@ export const la = {
       winCards: ({ n }) => `VICTORIA — ${n} chartae`,
     },
 
-    start: {
+    start: { opponents: "ADVERSARII",
       players: 'LUSORES',
       begin: 'Incipe →',
       beginGame: 'Incipe lusum →',

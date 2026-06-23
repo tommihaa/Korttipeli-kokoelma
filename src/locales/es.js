@@ -4,16 +4,19 @@
 // solo se traducen las descripciones y las reglas.
 export const es = {
   ui: {
+    rules: { label: "Reglas", moreTerms: "Más términos — Glosario" },
+    turn: { yours: "Tu turno —", kultakala: "roba una carta del mazo o del descarte", koputus: "roba una carta del mazo o del descarte", lapsy: "voltea una carta al centro", seiska: "juega una carta o roba", ristiseiska: "juega una carta válida o pasa", paskahousu: "juega una carta, o roba si no puedes", kasino: "captura, construye o descarta una carta", maijaAttack: "juega cartas del mismo palo", maijaDefend: "vence las cartas o recógelas", moskaAttack: "juega cartas del mismo valor", moskaDefend: "vence las cartas o recógelas" },
     loading: 'Cargando…',
     info: { title: 'ℹ Info', close: '✕ Cerrar' },
     lang: { label: 'Idioma', tested: 'Verificados', untested: 'No verificados', note: '✓ nativo · web = verificado automáticamente (no por nativo)' },
-    menu: { back: '← Menú', settings: 'Ajustes', info: 'Info', share: 'Compartir Jako⁹' },
+    menu: { recommended: "Recomendado", startHere: "¿Nuevo en los juegos? Prueba primero los favoritos ★.", back: '← Menú', settings: 'Ajustes', info: 'Info', share: 'Compartir Jako⁹' },
     share: { title: 'Jako – juegos de cartas gratis', text: 'Juega 9 juegos de cartas directamente en el navegador:', copied: 'Enlace copiado', scan: 'Escanea el código con el móvil o comparte el enlace', copy: 'Copiar enlace', shareVia: 'Compartir…' },
     difficulty: { easy: 'Fácil', medium: 'Medio', hard: 'Difícil' },
     rulesAria: '{name}: mostrar reglas',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Avanzado", preset: { beginner: "Principiante", beginnerDesc: "toda la ayuda visible", experienced: "Experto", experiencedDesc: "menos ruido", custom: "Personalizado — has ajustado opciones tú mismo." },
       title: '⚙ Ajustes',
       close: '✕ Cerrar',
       gameSettings: 'Ajustes del juego',
@@ -168,7 +171,7 @@ export const es = {
       winCards: ({ n }) => `VICTORIA — ${n} ${n === 1 ? 'carta' : 'cartas'}`,
     },
 
-    start: {
+    start: { opponents: "RIVALES",
       players: 'JUGADORES',
       begin: 'Empezar →',
       beginGame: 'Empezar partida →',

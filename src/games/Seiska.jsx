@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
+import GroupPicker from '../shared/GroupPicker.jsx';
+import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } from '../shared/helpers.js';
@@ -185,7 +187,7 @@ function initSlots(count) {
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT } from '../shared/i18n.jsx';
 
-export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
@@ -860,6 +862,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
           ))}
         </div>
       </div>
+      <GroupPicker value={playerGroup} onChange={onPlayerGroupChange} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
         <button onClick={() => {
           const slots = Array(4).fill(null).map((_, i) => ({ name: i === 0 ? 'Hero' : '', isHuman: i === 0, active: i < nP }));
@@ -927,6 +930,8 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
 
       {/* Peittokuva (pass-and-play) */}
       {handoff && <HandoffScreen playerName={handoff.name} onReady={onHandoffReady} />}
+
+      <TurnPrompt show={isMyTurn} action={t('ui.turn.seiska')} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>

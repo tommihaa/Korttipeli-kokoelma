@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR, SUIT_COLOR_DARK, suitColor } from '../shared/colors.js';
+import GroupPicker from '../shared/GroupPicker.jsx';
+import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
@@ -271,7 +273,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 
 import { useT } from '../shared/i18n.jsx';
 
-export default function Paskahousu({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot }) {
+export default function Paskahousu({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
@@ -894,6 +896,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
           ))}
         </div>
       </div>
+      <GroupPicker value={playerGroup} onChange={onPlayerGroupChange} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: isMobile ? 300 : 360 }}>
         {[
           { key: 'handSize', label: t('games.paskahousu.opts.handSize'), opts: [5, 6] },
@@ -970,6 +973,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 580, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
+
+      <TurnPrompt show={isMyTurn && !mustSkip} action={t('ui.turn.paskahousu')} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 40 : 56, display: 'flex', alignItems: 'center', gap: 10 }}>

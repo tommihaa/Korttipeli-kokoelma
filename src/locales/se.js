@@ -2,16 +2,19 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const se = {
   ui: {
+    rules: { label: "Njuolggadusat", moreTerms: "Eanet tearpmat — Sátnegirji" },
+    turn: { yours: "Du vuorru —", kultakala: "gáso goartta stohkkii dahje bálkestanstohkkii", koputus: "gáso goartta stohkkii dahje bálkestanstohkkii", lapsy: "jorgal goartta gasku", seiska: "speala goartta dahje gáso", ristiseiska: "speala lobálaš goartta dahje passe", paskahousu: "speala goartta, dahje gáso jus it sáhte", kasino: "gáhte, hukse dahje guođe goartta", maijaAttack: "speala seamma šlájá goarttaid", maijaDefend: "vuoitte goarttaid dahje váldde daid", moskaAttack: "speala seamma árvosaš goarttaid", moskaDefend: "vuoitte goarttaid dahje váldde daid" },
     loading: 'Viežžamin…',
     info: { title: 'ℹ Diehtu', close: '✕ Gidde' },
     lang: { label: 'Giella', tested: 'Geahččaluvvon', untested: 'Geahččalkeahttá', note: '✓ eatnigiella · web = mašiidnaduhkkojuvvon (ii eatnigielalaš dárkkisteapmi)' },
-    menu: { back: '← Fállu', settings: 'Heivehusat', info: 'Diehtu', share: 'Juoge Jako⁹' },
+    menu: { recommended: "Ávžžuhuvvon", startHere: "Ođđa spealuide? Geahččal vuos ★-favoriihtaid.", back: '← Fállu', settings: 'Heivehusat', info: 'Diehtu', share: 'Juoge Jako⁹' },
     share: { title: 'Jako – nuvttá goartaspeallut', text: 'Speala 9 goartaspeallu njuolga lohkanprográmmas:', copied: 'Liŋka kopierejuvvon', scan: 'Skanne koda telefovnnain dahje juoge liŋkka', copy: 'Kopiere liŋkka', shareVia: 'Juoge…' },
     difficulty: { easy: 'Álki', medium: 'Gaska', hard: 'Váttis' },
     rulesAria: '{name}: čájet njuolggadusaid',
     stat: ({ w, p, pct }) => `${w}V / ${p}S · ${pct}%`,
 
     settings: {
+      advanced: "Liigeheivehusat", preset: { beginner: "Álgáláš", beginnerDesc: "buot bagadeapmi oidno", experienced: "Hárjánan", experiencedDesc: "unnit ráfehisvuohta", custom: "Iešheivehuvvon — leat ieš rievdadan heivehusaid." },
       title: '⚙ Heivehusat',
       close: '✕ Gidde',
       gameSettings: 'Spealloheivehusat',
@@ -170,7 +173,7 @@ export const se = {
       winCards: ({ n }) => `VUOITU — ${n} goartta`,
     },
 
-    start: {
+    start: { opponents: "VUOSTÁLASTIT",
       players: 'SPEALÁRAT',
       begin: 'Álgge →',
       beginGame: 'Álgge speallu →',

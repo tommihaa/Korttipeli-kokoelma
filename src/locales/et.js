@@ -4,16 +4,19 @@
 // kirjeldused ja reeglid. Muutosloki on lokalisoitu: src/changelogs/et.js.
 export const et = {
   ui: {
+    rules: { label: "Reeglid", moreTerms: "Rohkem termineid — Sõnastik" },
+    turn: { yours: "Sinu käik —", kultakala: "tõmba kaart pakist või viskepakist", koputus: "tõmba kaart pakist või viskepakist", lapsy: "pööra kaart keskele", seiska: "käi kaart või tõmba", ristiseiska: "käi lubatud kaart või passi", paskahousu: "käi kaart või tõmba, kui ei saa", kasino: "püüa, ehita või jäta kaart", maijaAttack: "käi sama masti kaarte", maijaDefend: "löö kaardid või võta need", moskaAttack: "käi sama väärtusega kaarte", moskaDefend: "löö kaardid või võta need" },
     loading: 'Laadimine…',
     info: { title: 'ℹ Info', close: '✕ Sulge' },
     lang: { label: 'Keel', tested: 'Kinnitatud', untested: 'Kinnitamata', note: '✓ emakeelne · web = masinkontrollitud (mitte emakeelne kontroll)' },
-    menu: { back: '← Menüü', settings: 'Seaded', info: 'Info', share: 'Jaga Jako⁹' },
+    menu: { recommended: "Soovitatud", startHere: "Uus mängudes? Proovi kõigepealt ★-lemmikuid.", back: '← Menüü', settings: 'Seaded', info: 'Info', share: 'Jaga Jako⁹' },
     share: { title: 'Jako – tasuta kaardimängud', text: 'Mängi 9 kaardimängu otse brauseris:', copied: 'Link kopeeritud', scan: 'Skanni kood telefoniga või jaga linki', copy: 'Kopeeri link', shareVia: 'Jaga…' },
     difficulty: { easy: 'Lihtne', medium: 'Keskmine', hard: 'Raske' },
     rulesAria: '{name}: näita reegleid',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Lisasätted", preset: { beginner: "Algaja", beginnerDesc: "kogu juhendamine nähtaval", experienced: "Kogenud", experiencedDesc: "vähem müra", custom: "Kohandatud — oled sätteid ise muutnud." },
       title: '⚙ Seaded',
       close: '✕ Sulge',
       gameSettings: 'Mängu seaded',
@@ -168,7 +171,7 @@ export const et = {
       winCards: ({ n }) => `VÕIT — ${n} kaarti`,
     },
 
-    start: {
+    start: { opponents: "VASTASED",
       players: 'MÄNGIJAID',
       begin: 'Alusta →',
       beginGame: 'Alusta mängu →',

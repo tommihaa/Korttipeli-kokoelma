@@ -1,6 +1,16 @@
 // Muutosloki — unkari. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Világosabb kezdés új játékosoknak: az ajánlott játékokat ★ jelöli, és az első játék előtt a menü megsúgja, hol érdemes kezdeni.",
+      "Az egyes játékok szabályai most egy jól látható Szabályok gomb mögött vannak, onnan pedig egyenesen a szójegyzékhez juthatsz.",
+      "A beállításokban most van egy Kezdő/Haladó gyorsválasztás, amely egyszerre állítja be az összes segítséget; az egyes beállítások most a További beállítások alatt vannak.",
+      "Az ellenfelek névcsoportját most közvetlenül a játék kezdőképernyőjén választhatod ki, a játékosok száma mellett.",
+      "Minden játékban van most egy világos „Te jössz” jelzés, amely megmondja, mit kell tenned a körödben.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Új 📊 Statisztika nézet (az Info menüben): játékonként láthatod, hányszor játszottál és nyertél, a helyezéseidet és a győzelmeket nehézség szerint. Emellett összegzés a kipróbált játékokról, a játékok és a játékalkalmak számáról. A statisztika csak ebben a böngészőben tárolódik, és bármikor törölheted.",

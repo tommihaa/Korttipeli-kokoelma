@@ -1,6 +1,16 @@
 // Muutosloki — tšekki. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Přehlednější začátek pro nové hráče: doporučené hry jsou označeny ★ a před první hrou menu napoví, kde začít.",
+      "Pravidla každé hry jsou nyní za přehledným tlačítkem Pravidla, odkud se dostanete přímo do slovníčku.",
+      "Nastavení má nyní rychlou volbu Začátečník/Zkušený, která najednou upraví všechna vodítka; jednotlivé možnosti jsou nyní v sekci Pokročilé.",
+      "Skupinu jmen soupeřů můžete nyní vybrat přímo na úvodní obrazovce hry, vedle počtu hráčů.",
+      "Každá hra má nyní jasnou výzvu „Jsi na řadě“, která vám řekne, co máte udělat ve svém tahu.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Nový pohled 📊 Statistiky (v menu Info): u každé hry uvidíš, kolikrát jsi hrál a vyhrál, svá umístění a výhry podle obtížnosti. K tomu přehled vyzkoušených her, počtu her a herních sezení. Statistiky se ukládají jen v tomto prohlížeči a kdykoli je můžeš vymazat.",

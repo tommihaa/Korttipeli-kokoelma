@@ -1,6 +1,16 @@
 // Muutosloki — romani. Konekäännös fi.js:stä (auto-taso, testaamaton). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Jekh maj šukar šuruipen le neve khelitorenge: le rekomandime khelimata si semnime ★-sa, thaj angla o angluno khelipen o meni phenel katar te šurus.",
+      "Le regule sako khelimasko si akana pala jekh šukar buton Regule, thaj kotar žas durės ki lista le lavenge.",
+      "Le setărja si akana jekh sigo aljosaripen Anglutno/Sikado kaj kerel sa o sikajipen jekhvar; le individualne opcie si akana telal Avansa.",
+      "Akana šaj alosės e grupa anavenge le rivālenge durės po startoski ekrano le khelimasko, paša o gindo le khelitorengo.",
+      "Sako khelipen si akana jekh šukar phenipen „To rândo” kaj phenel tuke so te keres ko to rândo.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Nevo 📊 Statistika-dikhipen (ando Info-meni): dikh anda sako khelimos kiti data khelden thaj inzardan, te thana thaj izimata pala pharimos. Vi jekh kidipen pa zumavde khelimata, pa o gindo le khelimatengo thaj le sesiengo. I statistika garavela pe numa ande kado browser, thaj šaj te khoses la kana kames.",

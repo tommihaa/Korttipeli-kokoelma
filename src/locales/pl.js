@@ -13,16 +13,19 @@ const plural = (n, one, few, many) => {
 
 export const pl = {
   ui: {
+    rules: { label: "Zasady", moreTerms: "Więcej terminów — Słowniczek" },
+    turn: { yours: "Twój ruch —", kultakala: "dobierz kartę z talii lub stosu odrzuconych", koputus: "dobierz kartę z talii lub stosu odrzuconych", lapsy: "odwróć kartę na środek", seiska: "zagraj kartę lub dobierz", ristiseiska: "zagraj dozwoloną kartę lub spasuj", paskahousu: "zagraj kartę lub dobierz, jeśli nie możesz", kasino: "zbierz, zbuduj lub odłóż kartę", maijaAttack: "zagraj karty w tym samym kolorze", maijaDefend: "pobij karty lub je weź", moskaAttack: "zagraj karty o tej samej wartości", moskaDefend: "pobij karty lub je weź" },
     loading: 'Ładowanie…',
     info: { title: 'ℹ Info', close: '✕ Zamknij' },
     lang: { label: 'Język', tested: 'Sprawdzone', untested: 'Niesprawdzone', note: '✓ native · web = sprawdzone maszynowo (bez weryfikacji native)' },
-    menu: { back: '← Menu', settings: 'Ustawienia', info: 'Info', share: 'Udostępnij Jako⁹' },
+    menu: { recommended: "Polecane", startHere: "Nowy w grach? Najpierw wypróbuj ★-ulubione.", back: '← Menu', settings: 'Ustawienia', info: 'Info', share: 'Udostępnij Jako⁹' },
     share: { title: 'Jako – darmowe gry karciane', text: 'Zagraj w 9 gier karcianych prosto w przeglądarce:', copied: 'Link skopiowany', scan: 'Zeskanuj kod telefonem lub udostępnij link', copy: 'Kopiuj link', shareVia: 'Udostępnij…' },
     difficulty: { easy: 'Łatwy', medium: 'Średni', hard: 'Trudny' },
     rulesAria: '{name}: pokaż zasady',
     stat: ({ w, p, pct }) => `${w}W / ${p}G · ${pct}%`,
 
     settings: {
+      advanced: "Zaawansowane", preset: { beginner: "Początkujący", beginnerDesc: "pełne wskazówki widoczne", experienced: "Doświadczony", experiencedDesc: "mniej szumu", custom: "Własne — samodzielnie zmieniłeś ustawienia." },
       title: '⚙ Ustawienia',
       close: '✕ Zamknij',
       gameSettings: 'Ustawienia gry',
@@ -177,7 +180,7 @@ export const pl = {
       winCards: ({ n }) => `WYGRANA — ${n} ${plural(n, 'karta', 'karty', 'kart')}`,
     },
 
-    start: {
+    start: { opponents: "PRZECIWNICY",
       players: 'GRACZY',
       begin: 'Rozpocznij →',
       beginGame: 'Rozpocznij grę →',

@@ -1,6 +1,16 @@
 // Muutosloki — ranska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Un démarrage plus clair pour les nouveaux joueurs : les jeux recommandés sont marqués d’une ★, et avant votre première partie le menu indique par où commencer.",
+      "Les règles de chaque jeu se trouvent désormais derrière un bouton Règles bien visible, d’où vous accédez directement au glossaire.",
+      "Les paramètres proposent maintenant un choix rapide Débutant/Expérimenté qui ajuste toute l’aide d’un coup ; les options individuelles sont désormais sous Paramètres avancés.",
+      "Vous pouvez désormais choisir le groupe de noms des adversaires directement sur l’écran de départ du jeu, à côté du nombre de joueurs.",
+      "Chaque jeu affiche maintenant une invite claire « À vous de jouer » qui vous indique quoi faire à votre tour.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Nouvelle vue 📊 Statistiques (dans le menu Info) : vois pour chaque jeu combien de fois tu as joué et gagné, tes classements et tes victoires par difficulté. Avec aussi un résumé des jeux essayés, du nombre de parties et des sessions de jeu. Les statistiques sont enregistrées uniquement dans ce navigateur et tu peux les effacer à tout moment.",

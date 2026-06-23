@@ -4,16 +4,19 @@
 // nur Beschreibungen und Regeln werden übersetzt. Muutosloki on lokalisoitu: src/changelogs/de.js.
 export const de = {
   ui: {
+    rules: { label: "Regeln", moreTerms: "Mehr Begriffe — Glossar" },
+    turn: { yours: "Du bist dran —", kultakala: "zieh eine Karte vom Stapel oder Ablagestapel", koputus: "zieh eine Karte vom Stapel oder Ablagestapel", lapsy: "dreh eine Karte in die Mitte", seiska: "spiel eine Karte oder zieh", ristiseiska: "spiel eine gültige Karte oder passe", paskahousu: "spiel eine Karte, oder zieh, wenn du nicht kannst", kasino: "fangen, bauen oder eine Karte ablegen", maijaAttack: "spiel Karten derselben Farbe", maijaDefend: "schlag die Karten oder nimm sie auf", moskaAttack: "spiel Karten desselben Werts", moskaDefend: "schlag die Karten oder nimm sie auf" },
     loading: 'Lädt…',
     info: { title: 'ℹ Info', close: '✕ Schließen' },
     lang: { label: 'Sprache', tested: 'Geprüft', untested: 'Ungeprüft', note: '✓ Muttersprache · web = maschinell geprüft (nicht muttersprachlich)' },
-    menu: { back: '← Menü', settings: 'Einstellungen', info: 'Info', share: 'Jako⁹ teilen' },
+    menu: { recommended: "Empfohlen", startHere: "Neu bei Spielen? Probier zuerst die ★-Favoriten.", back: '← Menü', settings: 'Einstellungen', info: 'Info', share: 'Jako⁹ teilen' },
     share: { title: 'Jako – kostenlose Kartenspiele', text: 'Spiele 9 Kartenspiele direkt im Browser:', copied: 'Link kopiert', scan: 'Scanne den Code mit dem Handy oder teile den Link', copy: 'Link kopieren', shareVia: 'Teilen…' },
     difficulty: { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer' },
     rulesAria: '{name}: Regeln anzeigen',
     stat: ({ w, p, pct }) => `${w}S / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Erweitert", preset: { beginner: "Anfänger", beginnerDesc: "volle Hilfe sichtbar", experienced: "Erfahren", experiencedDesc: "weniger Ablenkung", custom: "Benutzerdefiniert — du hast Einstellungen selbst geändert." },
       title: '⚙ Einstellungen',
       close: '✕ Schließen',
       gameSettings: 'Spieleinstellungen',
@@ -168,7 +171,7 @@ export const de = {
       winCards: ({ n }) => `SIEG — ${n === 1 ? '1 Karte' : `${n} Karten`}`,
     },
 
-    start: {
+    start: { opponents: "GEGNER",
       players: 'SPIELER',
       begin: 'Start →',
       beginGame: 'Spiel starten →',

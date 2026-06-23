@@ -4,16 +4,19 @@
 // beskrivningar och regler översätts. Muutosloki on lokalisoitu: src/changelogs/sv.js.
 export const sv = {
   ui: {
+    rules: { label: "Regler", moreTerms: "Fler termer — Ordlista" },
+    turn: { yours: "Din tur —", kultakala: "dra ett kort från leken eller slänghögen", koputus: "dra ett kort från leken eller slänghögen", lapsy: "vänd ett kort till mitten", seiska: "spela ett kort eller dra", ristiseiska: "spela ett tillåtet kort eller passa", paskahousu: "spela ett kort, eller dra om du inte kan", kasino: "fånga, bygg eller lägg ett kort", maijaAttack: "spela kort i samma färg", maijaDefend: "slå korten eller ta upp dem", moskaAttack: "spela kort av samma valör", moskaDefend: "slå korten eller ta upp dem" },
     loading: 'Laddar…',
     info: { title: 'ℹ Info', close: '✕ Stäng' },
     lang: { label: 'Språk', tested: 'Verifierade', untested: 'Overifierade', note: '✓ modersmål · web = maskinverifierad (ej modersmålskontroll)' },
-    menu: { back: '← Meny', settings: 'Inställningar', info: 'Info', share: 'Dela Jako⁹' },
+    menu: { recommended: "Rekommenderas", startHere: "Ny på spel? Prova ★-favoriterna först.", back: '← Meny', settings: 'Inställningar', info: 'Info', share: 'Dela Jako⁹' },
     share: { title: 'Jako – gratis kortspel', text: 'Spela 9 kortspel direkt i webbläsaren:', copied: 'Länk kopierad', scan: 'Skanna koden med telefonen eller dela länken', copy: 'Kopiera länk', shareVia: 'Dela…' },
     difficulty: { easy: 'Lätt', medium: 'Medel', hard: 'Svår' },
     rulesAria: '{name}: visa regler',
     stat: ({ w, p, pct }) => `${w}V / ${p}S · ${pct}%`,
 
     settings: {
+      advanced: "Avancerat", preset: { beginner: "Nybörjare", beginnerDesc: "all vägledning visas", experienced: "Erfaren", experiencedDesc: "mindre brus", custom: "Anpassad — du har ändrat inställningar själv." },
       title: '⚙ Inställningar',
       close: '✕ Stäng',
       gameSettings: 'Spelinställningar',
@@ -168,7 +171,7 @@ export const sv = {
       winCards: ({ n }) => `VINST — ${n} kort`,
     },
 
-    start: {
+    start: { opponents: "MOTSTÅNDARE",
       players: 'SPELARE',
       begin: 'Börja →',
       beginGame: 'Börja spelet →',

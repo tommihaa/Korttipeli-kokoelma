@@ -13,16 +13,19 @@ const plural = (n, one, few, many) => {
 
 export const ru = {
   ui: {
+    rules: { label: "Правила", moreTerms: "Больше терминов — Глоссарий" },
+    turn: { yours: "Ваш ход —", kultakala: "возьмите карту из колоды или сброса", koputus: "возьмите карту из колоды или сброса", lapsy: "переверните карту в центр", seiska: "сыграйте карту или возьмите", ristiseiska: "сыграйте допустимую карту или пас", paskahousu: "сыграйте карту или возьмите, если не можете", kasino: "захватите, постройте или сбросьте карту", maijaAttack: "сыграйте карты одной масти", maijaDefend: "побейте карты или заберите их", moskaAttack: "сыграйте карты одного достоинства", moskaDefend: "побейте карты или заберите их" },
     loading: 'Загрузка…',
     info: { title: 'ℹ Инфо', close: '✕ Закрыть' },
     lang: { label: 'Язык', tested: 'Проверенные', untested: 'Непроверенные', note: '✓ носитель · web = автоматическая проверка (не носителем)' },
-    menu: { back: '← Меню', settings: 'Настройки', info: 'Инфо', share: 'Поделиться Jako⁹' },
+    menu: { recommended: "Рекомендуется", startHere: "Новичок? Сначала попробуй ★-избранные.", back: '← Меню', settings: 'Настройки', info: 'Инфо', share: 'Поделиться Jako⁹' },
     share: { title: 'Jako – бесплатные карточные игры', text: 'Играй в 9 карточных игр прямо в браузере:', copied: 'Ссылка скопирована', scan: 'Отсканируй код телефоном или поделись ссылкой', copy: 'Копировать ссылку', shareVia: 'Поделиться…' },
     difficulty: { easy: 'Лёгкая', medium: 'Средняя', hard: 'Сложная' },
     rulesAria: '{name}: показать правила',
     stat: ({ w, p, pct }) => `${w}П / ${p}И · ${pct}%`,
 
     settings: {
+      advanced: "Дополнительно", preset: { beginner: "Новичок", beginnerDesc: "все подсказки видны", experienced: "Опытный", experiencedDesc: "меньше лишнего", custom: "Своё — вы сами изменили настройки." },
       title: '⚙ Настройки',
       close: '✕ Закрыть',
       gameSettings: 'Настройки игры',
@@ -177,7 +180,7 @@ export const ru = {
       winCards: ({ n }) => `ПОБЕДА — ${n} ${plural(n, 'карта', 'карты', 'карт')}`,
     },
 
-    start: {
+    start: { opponents: "СОПЕРНИКИ",
       players: 'ИГРОКОВ',
       begin: 'Начать →',
       beginGame: 'Начать игру →',

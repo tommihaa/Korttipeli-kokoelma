@@ -1,6 +1,16 @@
 // Muutosloki — puola. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Jaśniejszy start dla nowych graczy: polecane gry są oznaczone ★, a przed pierwszą grą menu podpowiada, od czego zacząć.",
+      "Zasady każdej gry są teraz pod czytelnym przyciskiem Zasady, a stamtąd przejdziesz wprost do słowniczka.",
+      "Ustawienia mają teraz szybki wybór Początkujący/Doświadczony, który od razu dopasowuje wszystkie podpowiedzi; pojedyncze opcje są teraz w sekcji Zaawansowane.",
+      "Możesz teraz wybrać grupę imion przeciwników bezpośrednio na ekranie startowym gry, obok liczby graczy.",
+      "Każda gra ma teraz wyraźne wskazanie „Twój ruch”, które mówi, co zrobić w swojej turze.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Nowy widok 📊 Statystyki (w menu Info): zobacz dla każdej gry, ile razy zagrałeś i wygrałeś, swoje miejsca oraz wygrane wg poziomu trudności. Do tego podsumowanie wypróbowanych gier, liczby gier i sesji. Statystyki są zapisywane tylko w tej przeglądarce i możesz je wyczyścić w każdej chwili.",

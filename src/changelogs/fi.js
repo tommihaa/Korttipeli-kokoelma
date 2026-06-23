@@ -7,6 +7,16 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      'Uusille pelaajille selkeämpi aloitus: suositellut pelit on merkitty ★-tähdellä, ja ennen ensimmäistä peliä valikko vinkkaa mistä kannattaa aloittaa.',
+      'Jokaisen pelin säännöt löytyvät nyt selkeästä Säännöt-painikkeesta, ja samasta paikasta pääsee suoraan sanastoon.',
+      'Asetuksiin lisätty Aloittelija/Kokenut-pikavalinta, joka säätää opastuksen kerralla sopivaksi; yksittäiset asetukset löytyvät nyt Lisäasetukset-kohdan takaa.',
+      'Vastustajien nimiryhmän voi nyt valita suoraan pelin aloitusnäytöltä, pelaajamäärän vierestä.',
+      'Jokaiseen peliin lisätty selkeä Sinun vuorosi -kehote, joka kertoo omalla vuorollasi mitä sinun on määrä tehdä.',
+    ],
+  },
+  {
     date: '20.6.2026',
     items: [
       'Uusi 📊 Tilastot-näkymä (Info-valikosta): näet pelikohtaisesti montako kertaa olet pelannut ja voittanut, sijoitusjakaumasi sekä voitot eri vaikeustasoilla. Lisäksi yhteenveto kokeilluista peleistä, pelikerroista ja pelisessioista. Tilastot tallentuvat vain tähän selaimeen ja voit tyhjentää ne koska tahansa.',

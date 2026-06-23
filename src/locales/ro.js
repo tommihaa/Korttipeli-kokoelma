@@ -2,16 +2,19 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const ro = {
   ui: {
+    rules: { label: "Reguli", moreTerms: "Mai mulți termeni — Glosar" },
+    turn: { yours: "Este rândul tău —", kultakala: "trage o carte din pachet sau din teancul de descărcare", koputus: "trage o carte din pachet sau din teancul de descărcare", lapsy: "întoarce o carte în centru", seiska: "joacă o carte sau trage", ristiseiska: "joacă o carte validă sau pasează", paskahousu: "joacă o carte sau trage dacă nu poți", kasino: "capturează, construiește sau lasă o carte", maijaAttack: "joacă cărți de aceeași culoare", maijaDefend: "bate cărțile sau ia-le", moskaAttack: "joacă cărți de aceeași valoare", moskaDefend: "bate cărțile sau ia-le" },
     loading: 'Se încarcă…',
     info: { title: 'ℹ Info', close: '✕ Închide' },
     lang: { label: 'Limbă', tested: 'Verificate', untested: 'Neverificate', note: '✓ vorbitor nativ · web = verificat automat (fără verificare de vorbitor nativ)' },
-    menu: { back: '← Meniu', settings: 'Setări', info: 'Info', share: 'Distribuie Jako⁹' },
+    menu: { recommended: "Recomandat", startHere: "Nou la jocuri? Încearcă întâi favoritele ★.", back: '← Meniu', settings: 'Setări', info: 'Info', share: 'Distribuie Jako⁹' },
     share: { title: 'Jako – jocuri de cărți gratuite', text: 'Joacă 9 jocuri de cărți direct în browser:', copied: 'Link copiat', scan: 'Scanează codul cu telefonul sau distribuie linkul', copy: 'Copiază linkul', shareVia: 'Distribuie…' },
     difficulty: { easy: 'Ușor', medium: 'Mediu', hard: 'Greu' },
     rulesAria: '{name}: arată regulile',
     stat: ({ w, p, pct }) => `${w}V / ${p}J · ${pct}%`,
 
     settings: {
+      advanced: "Avansate", preset: { beginner: "Începător", beginnerDesc: "tot ghidajul vizibil", experienced: "Experimentat", experiencedDesc: "mai puțină aglomerare", custom: "Personalizat — ai ajustat tu setările." },
       title: '⚙ Setări',
       close: '✕ Închide',
       gameSettings: 'Setări joc',
@@ -170,7 +173,7 @@ export const ro = {
       winCards: ({ n }) => `VICTORIE — ${n === 1 ? '1 carte' : `${n} cărți`}`,
     },
 
-    start: {
+    start: { opponents: "ADVERSARI",
       players: 'JUCĂTORI',
       begin: 'Începe →',
       beginGame: 'Începe jocul →',

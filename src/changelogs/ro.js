@@ -1,6 +1,16 @@
 // Muutosloki — romania. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Un început mai clar pentru jucătorii noi: jocurile recomandate sunt marcate cu ★, iar înainte de prima partidă meniul sugerează de unde să începi.",
+      "Regulile fiecărui joc sunt acum în spatele unui buton clar Reguli, de unde ajungi direct la glosar.",
+      "Setările au acum o alegere rapidă Începător/Experimentat care ajustează tot ghidajul dintr-o dată; opțiunile individuale sunt acum la Avansate.",
+      "Poți alege acum grupul de nume al adversarilor direct pe ecranul de start al jocului, lângă numărul de jucători.",
+      "Fiecare joc are acum un mesaj clar „Este rândul tău” care îți spune ce să faci la rândul tău.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Vizualizare nouă 📊 Statistici (în meniul Info): vezi pentru fiecare joc de câte ori ai jucat și ai câștigat, clasările tale și victoriile după dificultate. În plus, un rezumat al jocurilor încercate, al numărului de jocuri și al sesiunilor de joc. Statisticile se salvează doar în acest browser și le poți șterge oricând.",

@@ -1,6 +1,16 @@
 // Muutosloki — karjala. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Selgiembi alku uuzile pelaajile: suvaitut pelit on merkitty ★-tähtel, da enne enzimäst pelii valikko näyttäy, mistä kannattau alkua.",
+      "Joga pelin säännöt löütyy nyt selgiäst Säännöt-painikkehes, da sit pääzet kohti sanastoh.",
+      "Azetuksih on lizätty Alguniekku/Kogenut-pikavalindu, kudai azettau opastuksen kerrallah; erillizät azetukset ollah nyt Lizäazetukset-kohtas.",
+      "Vastustajien nimiryhmän voit nyt valita kohti pelin alguruavuz, pelaajien lugumäärän vieres.",
+      "Jogah pelih on lizätty selgiä Sinun vuoro -kehoitus, kudai sanou omal vuorol, midä sinun pidäy ruadua.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Uuzi 📊 Tilastot-nägymä (Info-valikos): näit pelikohtazesti, migai kerdua olet pelannuh da voittanuh, sijat da voitot eri vaigevuksil. Mugai yhteenveto koetelluloi pelilöi, pelikerdua da pelisessieloi näh. Tilastot tallennetah vai täh selaimeh, da voit tyhjendiä net konzu tahto.",

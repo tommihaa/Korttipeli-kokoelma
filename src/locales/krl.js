@@ -5,16 +5,19 @@
 // rules are translated. Muutosloki on lokalisoitu: src/changelogs/krl.js.
 export const krl = {
   ui: {
+    rules: { label: "Säännöt", moreTerms: "Enämbi sanoi — Sanasto" },
+    turn: { yours: "Sinun vuoro —", kultakala: "ota kortti pakas libo bunkas", koputus: "ota kortti pakas libo bunkas", lapsy: "kiännä kortti keskele", seiska: "lyö kortti libo ota", ristiseiska: "lyö passibu kortti libo passua", paskahousu: "lyö kortti, libo ota gu et voi", kasino: "kerdä, raanna libo jätä kortti", maijaAttack: "lyö saman muan kortit", maijaDefend: "kuada kortit libo ota net", moskaAttack: "lyö saman vägevyön kortit", moskaDefend: "kuada kortit libo ota net" },
     loading: 'Ladauvuu…',
     info: { title: 'ℹ Info', close: '✕ Salbua' },
     lang: { label: 'Kieli', tested: 'Tarkastetut', untested: 'Tarkastamattomat', note: '✓ omakielini · web = konehen tarkastettu (ei omakielistä tarkastusta)' },
-    menu: { back: '← Valikko', settings: 'Šiännöt', info: 'Info', share: 'Jua Jako⁹' },
+    menu: { recommended: "Suvaittu", startHere: "Uuzi peleis? Kokeile enzimäi ★-suvattuloi.", back: '← Valikko', settings: 'Šiännöt', info: 'Info', share: 'Jua Jako⁹' },
     share: { title: 'Jako – ilmazet korttipelit', text: 'Kiza 9 korttipeliä suorah selaimešša:', copied: 'Linkki kopiu', scan: 'Skannua koodi telefonalla tahi jua linkki', copy: 'Kopiu linkki', shareVia: 'Jua…' },
     difficulty: { easy: 'Kebie', medium: 'Keskitaso', hard: 'Vaigie' },
     rulesAria: '{name}: ozuta šiännöt',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Lizäazetukset", preset: { beginner: "Alguniekku", beginnerDesc: "kogo opastus nägyy", experienced: "Kogenut", experiencedDesc: "vähembi ptöriegö", custom: "Mugavoitettu — olet iče muuttanuh azetuksii." },
       title: '⚙ Šiännöt',
       close: '✕ Salbua',
       gameSettings: 'Kizan šiännöt',
@@ -169,7 +172,7 @@ export const krl = {
       winCards: ({ n }) => `VOITTO — ${n} korttie`,
     },
 
-    start: {
+    start: { opponents: "VASTUSTAJAT",
       players: 'KIZUAJIE',
       begin: 'Ala →',
       beginGame: 'Ala kiza →',

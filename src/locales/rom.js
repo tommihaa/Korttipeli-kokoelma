@@ -3,16 +3,19 @@
 // Pelien erisnimet pidetään suomeksi (altName).
 export const rom = {
   ui: {
+    rules: { label: "Regule", moreTerms: "Maj but lava — Lista le lavenge" },
+    turn: { yours: "To rândo —", kultakala: "le jekh karta andar o pakos vaj o gulo", koputus: "le jekh karta andar o pakos vaj o gulo", lapsy: "amboldav jekh karta ko maškar", seiska: "khel jekh karta vaj le", ristiseiska: "khel jekh mukli karta vaj nakh", paskahousu: "khel jekh karta, vaj le te našti", kasino: "astar, vazde vaj mukh jekh karta", maijaAttack: "khel karti le sa rangoske", maijaDefend: "izde le karti vaj le len", moskaAttack: "khel karti le sa vrednostoske", moskaDefend: "izde le karti vaj le len" },
     loading: 'Del pe…',
     info: { title: 'ℹ Info', close: '✕ Phande' },
     lang: { label: 'Čhib', tested: 'Probime', untested: 'Naprobime', note: '✓ dajaki čhib · web = mašina sikadas (bi dajaka čhibako probipe)' },
-    menu: { back: '← Lista', settings: 'Lačharimata', info: 'Info', share: 'Ulav Jako⁹' },
+    menu: { recommended: "Rekomandime", startHere: "Nevo ko khelimata? Probisar angluno le ★-drago.", back: '← Lista', settings: 'Lačharimata', info: 'Info', share: 'Ulav Jako⁹' },
     share: { title: 'Jako – ivja khelimata kartenca', text: 'Khel 9 khelimata kartenca direkt ando brauzero:', copied: 'Liako kopisardo', scan: 'Skanir o kodo e telefonosa vaj ulav o linko', copy: 'Kopisar o linko', shareVia: 'Ulav…' },
     difficulty: { easy: 'Loko', medium: 'Maškarutno', hard: 'Pharo' },
     rulesAria: '{name}: sikav o regule',
     stat: ({ w, p, pct }) => `${w}N / ${p}K · ${pct}%`,
 
     settings: {
+      advanced: "Avansa", preset: { beginner: "Anglutno", beginnerDesc: "sa o sikajipen dikhol pe", experienced: "Sikado", experiencedDesc: "maj cïra bujanga", custom: "Korkoro — korkoro paruvdan le setărja." },
       title: '⚙ Lačharimata',
       close: '✕ Phande',
       gameSettings: 'Khelimasko lačharimo',
@@ -171,7 +174,7 @@ export const rom = {
       winCards: ({ n }) => `NIRIPE — ${n} karti`,
     },
 
-    start: {
+    start: { opponents: "RIVĀLE",
       players: 'KHELUTNE',
       begin: 'Šuru →',
       beginGame: 'Šuru o khelipe →',

@@ -4,16 +4,19 @@
 // regler oversættes. Muutosloki on lokalisoitu: src/changelogs/da.js.
 export const da = {
   ui: {
+    rules: { label: "Regler", moreTerms: "Flere termer — Ordliste" },
+    turn: { yours: "Din tur —", kultakala: "træk et kort fra bunken eller kastebunken", koputus: "træk et kort fra bunken eller kastebunken", lapsy: "vend et kort til midten", seiska: "spil et kort eller træk", ristiseiska: "spil et tilladt kort eller pas", paskahousu: "spil et kort, eller træk hvis du ikke kan", kasino: "fang, byg eller læg et kort", maijaAttack: "spil kort i samme farve", maijaDefend: "slå kortene eller saml dem op", moskaAttack: "spil kort af samme værdi", moskaDefend: "slå kortene eller saml dem op" },
     loading: 'Indlæser…',
     info: { title: 'ℹ Info', close: '✕ Luk' },
     lang: { label: 'Sprog', tested: 'Verificerede', untested: 'Uverificerede', note: '✓ modersmål · web = maskinverificeret (ikke modersmål)' },
-    menu: { back: '← Menu', settings: 'Indstillinger', info: 'Info', share: 'Del Jako⁹' },
+    menu: { recommended: "Anbefales", startHere: "Ny til spil? Prøv ★-favoritterne først.", back: '← Menu', settings: 'Indstillinger', info: 'Info', share: 'Del Jako⁹' },
     share: { title: 'Jako – gratis kortspil', text: 'Spil 9 kortspil direkte i browseren:', copied: 'Link kopieret', scan: 'Skan koden med telefonen, eller del linket', copy: 'Kopiér link', shareVia: 'Del…' },
     difficulty: { easy: 'Let', medium: 'Mellem', hard: 'Svær' },
     rulesAria: '{name}: vis regler',
     stat: ({ w, p, pct }) => `${w}S / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Avanceret", preset: { beginner: "Begynder", beginnerDesc: "al vejledning vises", experienced: "Erfaren", experiencedDesc: "mindre støj", custom: "Tilpasset — du har selv ændret indstillinger." },
       title: '⚙ Indstillinger',
       close: '✕ Luk',
       gameSettings: 'Spilindstillinger',
@@ -168,7 +171,7 @@ export const da = {
       winCards: ({ n }) => `SEJR — ${n} kort`,
     },
 
-    start: {
+    start: { opponents: "MODSTANDERE",
       players: 'SPILLERE',
       begin: 'Start →',
       beginGame: 'Start spil →',

@@ -4,16 +4,19 @@
 // reglur eru þýddar. Muutosloki on lokalisoitu: src/changelogs/is.js.
 export const is = {
   ui: {
+    rules: { label: "Reglur", moreTerms: "Fleiri hugtök — Orðalisti" },
+    turn: { yours: "Þín gerð —", kultakala: "dragðu spil úr stokknum eða kasthaugnum", koputus: "dragðu spil úr stokknum eða kasthaugnum", lapsy: "snúðu spili í miðjuna", seiska: "spilaðu spil eða dragðu", ristiseiska: "spilaðu leyfilegt spil eða segðu pass", paskahousu: "spilaðu spil, eða dragðu ef þú getur ekki", kasino: "fangaðu, byggðu eða leggðu spil", maijaAttack: "spilaðu spil í sama lit", maijaDefend: "sláðu spilin eða taktu þau upp", moskaAttack: "spilaðu spil með sama gildi", moskaDefend: "sláðu spilin eða taktu þau upp" },
     loading: 'Hleð…',
     info: { title: 'ℹ Upplýsingar', close: '✕ Loka' },
     lang: { label: 'Tungumál', tested: 'Staðfest', untested: 'Óstaðfest', note: '✓ málhafi · web = vélstaðfest (ekki yfirfarið af málhafa)' },
-    menu: { back: '← Valmynd', settings: 'Stillingar', info: 'Upplýsingar', share: 'Deila Jako⁹' },
+    menu: { recommended: "Mælt með", startHere: "Nýr í spilum? Prófaðu ★-uppáhöldin fyrst.", back: '← Valmynd', settings: 'Stillingar', info: 'Upplýsingar', share: 'Deila Jako⁹' },
     share: { title: 'Jako – ókeypis spilaleikir', text: 'Spilaðu 9 spilaleiki beint í vafranum:', copied: 'Hlekkur afritaður', scan: 'Skannaðu kóðann með símanum eða deildu hlekknum', copy: 'Afrita hlekk', shareVia: 'Deila…' },
     difficulty: { easy: 'Auðvelt', medium: 'Miðlungs', hard: 'Erfitt' },
     rulesAria: '{name}: sýna reglur',
     stat: ({ w, p, pct }) => `${w}S / ${p}L · ${pct}%`,
 
     settings: {
+      advanced: "Nánar", preset: { beginner: "Byrjandi", beginnerDesc: "öll leiðsögn sýnd", experienced: "Vanur", experiencedDesc: "minna af áreiti", custom: "Sérsniðið — þú hefur breytt stillingum sjálf." },
       title: '⚙ Stillingar',
       close: '✕ Loka',
       gameSettings: 'Leikjastillingar',
@@ -168,7 +171,7 @@ export const is = {
       winCards: ({ n }) => `SIGUR — ${n} spil`,
     },
 
-    start: {
+    start: { opponents: "ANDSTÆÐINGAR",
       players: 'LEIKMENN',
       begin: 'Byrja →',
       beginGame: 'Hefja leik →',

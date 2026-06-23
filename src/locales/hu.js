@@ -3,16 +3,19 @@
 // Unkarissa lukusanan jälkeen yksikkö: "2 kártya" (ei monikkoa).
 export const hu = {
   ui: {
+    rules: { label: "Szabályok", moreTerms: "További fogalmak — Szójegyzék" },
+    turn: { yours: "Te jössz —", kultakala: "húzz egy lapot a pakliból vagy a dobóból", koputus: "húzz egy lapot a pakliból vagy a dobóból", lapsy: "fordíts egy lapot középre", seiska: "tegyél le egy lapot vagy húzz", ristiseiska: "tegyél le egy érvényes lapot vagy passzolj", paskahousu: "tegyél le egy lapot, vagy húzz, ha nem tudsz", kasino: "fogj, építs vagy tegyél le egy lapot", maijaAttack: "tegyél le azonos színű lapokat", maijaDefend: "üsd a lapokat vagy vedd fel őket", moskaAttack: "tegyél le azonos értékű lapokat", moskaDefend: "üsd a lapokat vagy vedd fel őket" },
     loading: 'Betöltés…',
     info: { title: 'ℹ Infó', close: '✕ Bezárás' },
     lang: { label: 'Nyelv', tested: 'Ellenőrzött', untested: 'Nem ellenőrzött', note: '✓ anyanyelvi · web = gépileg ellenőrizve (anyanyelvi ellenőrzés nélkül)' },
-    menu: { back: '← Menü', settings: 'Beállítások', info: 'Infó', share: 'Jako⁹ megosztása' },
+    menu: { recommended: "Ajánlott", startHere: "Új a játékokban? Próbáld előbb a ★-kedvenceket.", back: '← Menü', settings: 'Beállítások', info: 'Infó', share: 'Jako⁹ megosztása' },
     share: { title: 'Jako – ingyenes kártyajátékok', text: 'Játssz 9 kártyajátékot közvetlenül a böngészőben:', copied: 'Link másolva', scan: 'Olvasd be a kódot a telefonnal, vagy oszd meg a linket', copy: 'Link másolása', shareVia: 'Megosztás…' },
     difficulty: { easy: 'Könnyű', medium: 'Közepes', hard: 'Nehéz' },
     rulesAria: '{name}: szabályok megjelenítése',
     stat: ({ w, p, pct }) => `${w}Gy / ${p}J · ${pct}%`,
 
     settings: {
+      advanced: "További beállítások", preset: { beginner: "Kezdő", beginnerDesc: "minden segítség látszik", experienced: "Haladó", experiencedDesc: "kevesebb zaj", custom: "Egyéni — magad módosítottad a beállításokat." },
       title: '⚙ Beállítások',
       close: '✕ Bezárás',
       gameSettings: 'Játékbeállítások',
@@ -171,7 +174,7 @@ export const hu = {
       winCards: ({ n }) => `GYŐZELEM — ${n} kártya`,
     },
 
-    start: {
+    start: { opponents: "ELLENFELEK",
       players: 'JÁTÉKOSOK',
       begin: 'Kezdés →',
       beginGame: 'Játék kezdése →',

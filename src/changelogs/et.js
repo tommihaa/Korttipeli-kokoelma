@@ -1,6 +1,16 @@
 // Muutosloki — viro. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Selgem algus uutele mängijatele: soovitatud mängud on märgitud ★-ga ja enne esimest mängu annab menüü vihje, kust alustada.",
+      "Iga mängu reeglid on nüüd selge Reeglid-nupu taga ja sealt pääseb otse sõnastikku.",
+      "Sätetes on nüüd kiirvalik Algaja/Kogenud, mis kohandab kogu juhendamise korraga; üksikud valikud on nüüd jaotises Lisasätted.",
+      "Nüüd saab vastaste nimerühma valida otse mängu avakuval, mängijate arvu kõrval.",
+      "Igal mängul on nüüd selge „Sinu käik“ teade, mis ütleb, mida oma käigul teha.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Uus 📊 Statistika vaade (Info-menüüs): näe iga mängu kohta, mitu korda oled mänginud ja võitnud, oma kohad ja võidud raskusastme järgi. Lisaks kokkuvõte proovitud mängudest, mängude arvust ja mängusessioonidest. Statistika salvestatakse ainult sellesse brauserisse ja saad selle igal ajal tühjendada.",

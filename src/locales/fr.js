@@ -4,16 +4,19 @@
 // descriptions et les règles sont traduites. Muutosloki on lokalisoitu: src/changelogs/fr.js.
 export const fr = {
   ui: {
+    rules: { label: "Règles", moreTerms: "Plus de termes — Glossaire" },
+    turn: { yours: "À vous de jouer —", kultakala: "piochez une carte dans la pioche ou la défausse", koputus: "piochez une carte dans la pioche ou la défausse", lapsy: "retournez une carte au centre", seiska: "jouez une carte ou piochez", ristiseiska: "jouez une carte valide ou passez", paskahousu: "jouez une carte, ou piochez si vous ne pouvez pas", kasino: "capturez, construisez ou défaussez une carte", maijaAttack: "jouez des cartes de la même couleur", maijaDefend: "battez les cartes ou ramassez-les", moskaAttack: "jouez des cartes de même valeur", moskaDefend: "battez les cartes ou ramassez-les" },
     loading: 'Chargement…',
     info: { title: 'ℹ Info', close: '✕ Fermer' },
     lang: { label: 'Langue', tested: 'Vérifiées', untested: 'Non vérifiées', note: '✓ natif · web = vérifié automatiquement (pas par un natif)' },
-    menu: { back: '← Menu', settings: 'Paramètres', info: 'Info', share: 'Partager Jako⁹' },
+    menu: { recommended: "Recommandé", startHere: "Nouveau ? Essaie d’abord les favoris ★.", back: '← Menu', settings: 'Paramètres', info: 'Info', share: 'Partager Jako⁹' },
     share: { title: 'Jako – jeux de cartes gratuits', text: 'Joue à 9 jeux de cartes directement dans le navigateur :', copied: 'Lien copié', scan: 'Scanne le code avec ton téléphone ou partage le lien', copy: 'Copier le lien', shareVia: 'Partager…' },
     difficulty: { easy: 'Facile', medium: 'Intermédiaire', hard: 'Difficile' },
     rulesAria: '{name} : afficher les règles',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
 
     settings: {
+      advanced: "Paramètres avancés", preset: { beginner: "Débutant", beginnerDesc: "toute l’aide affichée", experienced: "Expérimenté", experiencedDesc: "moins d’encombrement", custom: "Personnalisé — tu as modifié des réglages toi-même." },
       title: '⚙ Paramètres',
       close: '✕ Fermer',
       gameSettings: 'Paramètres de jeu',
@@ -168,7 +171,7 @@ export const fr = {
       winCards: ({ n }) => `VICTOIRE — ${n} ${n === 1 ? 'carte' : 'cartes'}`,
     },
 
-    start: {
+    start: { opponents: "ADVERSAIRES",
       players: 'JOUEURS',
       begin: 'Commencer →',
       beginGame: 'Commencer la partie →',

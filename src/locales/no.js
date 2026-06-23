@@ -4,16 +4,19 @@
 // regler oversettes. Muutosloki on lokalisoitu: src/changelogs/no.js.
 export const no = {
   ui: {
+    rules: { label: "Regler", moreTerms: "Flere termer — Ordliste" },
+    turn: { yours: "Din tur —", kultakala: "trekk et kort fra bunken eller kasthaugen", koputus: "trekk et kort fra bunken eller kasthaugen", lapsy: "snu et kort til midten", seiska: "spill et kort eller trekk", ristiseiska: "spill et tillatt kort eller pass", paskahousu: "spill et kort, eller trekk hvis du ikke kan", kasino: "fang, bygg eller legg et kort", maijaAttack: "spill kort i samme farge", maijaDefend: "slå kortene eller ta dem opp", moskaAttack: "spill kort av samme verdi", moskaDefend: "slå kortene eller ta dem opp" },
     loading: 'Laster…',
     info: { title: 'ℹ Info', close: '✕ Lukk' },
     lang: { label: 'Språk', tested: 'Verifiserte', untested: 'Uverifiserte', note: '✓ morsmål · web = maskinverifisert (ikke morsmål)' },
-    menu: { back: '← Meny', settings: 'Innstillinger', info: 'Info', share: 'Del Jako⁹' },
+    menu: { recommended: "Anbefales", startHere: "Ny på spill? Prøv ★-favorittene først.", back: '← Meny', settings: 'Innstillinger', info: 'Info', share: 'Del Jako⁹' },
     share: { title: 'Jako – gratis kortspill', text: 'Spill 9 kortspill rett i nettleseren:', copied: 'Lenke kopiert', scan: 'Skann koden med telefonen, eller del lenken', copy: 'Kopier lenke', shareVia: 'Del…' },
     difficulty: { easy: 'Lett', medium: 'Middels', hard: 'Vanskelig' },
     rulesAria: '{name}: vis regler',
     stat: ({ w, p, pct }) => `${w}S / ${p}S · ${pct}%`,
 
     settings: {
+      advanced: "Avansert", preset: { beginner: "Nybegynner", beginnerDesc: "all veiledning vises", experienced: "Erfaren", experiencedDesc: "mindre støy", custom: "Tilpasset — du har endret innstillinger selv." },
       title: '⚙ Innstillinger',
       close: '✕ Lukk',
       gameSettings: 'Spillinnstillinger',
@@ -168,7 +171,7 @@ export const no = {
       winCards: ({ n }) => `SEIER — ${n} kort`,
     },
 
-    start: {
+    start: { opponents: "MOTSTANDERE",
       players: 'SPILLERE',
       begin: 'Start →',
       beginGame: 'Start spill →',

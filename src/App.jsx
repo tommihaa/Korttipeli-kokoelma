@@ -6,6 +6,7 @@ import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
+import { KANSA, NAME_GROUPS, POOL_BY_GROUP } from './shared/playerGroups.js';
 
 /* eslint-disable no-undef */
 const APP_VERSION = __APP_VERSION__;
@@ -53,12 +54,8 @@ const Seiska = lazy(() => import('./games/Seiska.jsx'));
 const Ristiseiska = lazy(() => import('./games/Ristiseiska.jsx'));
 const Paskahousu = lazy(() => import('./games/Paskahousu.jsx'));
 
-const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
-const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Onnetar','Macuilxochitl','Felicitas'];
-const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
-const KANSA            = ['Astraalitason tirehtööri','Jonne','Justiina','Kukkahattutäti','Lumihiutale','Rane','Setämies','Veeti'];
-const MEME_GANG        = ['Karen','Boomer','Zoomer','NPC','Random','Vegan','Nihilist','Chad','Prepper','Edgelord','Hipster','Influencer','Lurker','Tryhard','Noob','Troll','Crypto Bro','Main Character','AFK'];
-const GOAULD           = ['Ra','Apophis','Anubis','Ba\'al','Hathor','Cronus','Nirrti','Yu','Sokar','Osiris','Heru\'ur','Bastet','Camulus','Morrigan','Amaterasu','Svarog','Zipacna','Qetesh'];
+// Nimipoolit (LAITURI_SPECIAL ym.) ja NAME_GROUPS on siirretty shared/playerGroups.js:ään,
+// jotta päävalikon asetukset ja aloitusnäytön GroupPicker jakavat saman datan.
 
 // Pikkukortti-ikoni valikon ruutuun (esim. Maija = Q♠) — luettavampi kuin tumma Unicode-korttiglyyfi
 const CardIcon = ({ rank, suit, suitColor = '#1a1a1a' }) => (
@@ -485,7 +482,7 @@ function Flag({ code }) {
   return null;
 }
 
-function GameBtn({ g, stats, onSelect }) {
+function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
   const t = useT();
   const { lang } = useLang();
   const [showDesc, setShowDesc] = useState(false);
@@ -514,7 +511,12 @@ function GameBtn({ g, stats, onSelect }) {
         >
           <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2 }}>{g.name}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
+              {g.name}
+              {g.suosikki && (
+                <span title={t('ui.menu.recommended')} aria-label={t('ui.menu.recommended')} style={{ fontSize: 11, color: C.gold, lineHeight: 1 }}>★</span>
+              )}
+            </div>
             {lang !== 'fi' && (
               <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', fontStyle: 'italic', marginBottom: 3 }}>
                 {renderSelitys(t(`games.${g.id}.altName`))}
@@ -528,13 +530,16 @@ function GameBtn({ g, stats, onSelect }) {
           aria-label={t('ui.rulesAria', { name: g.name })}
           aria-expanded={showDesc}
           style={{
-            flexShrink: 0, margin: '0 12px 0 4px', background: 'transparent',
-            border: `1px solid ${C.panelBorder}`,
-            borderRadius: 6, width: 28, height: 28, fontSize: 12, cursor: 'pointer',
+            flexShrink: 0, margin: '0 12px 0 4px', background: showDesc ? `${C.gold}1a` : 'transparent',
+            border: `1px solid ${showDesc ? C.gold : C.panelBorder}`,
+            borderRadius: 8, padding: '6px 10px', fontSize: 12, cursor: 'pointer',
             color: showDesc ? C.gold : C.dim, fontFamily: 'sans-serif', lineHeight: 1,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            display: 'flex', alignItems: 'center', gap: 5, fontWeight: 600,
           }}
-        >ℹ</button>
+        >
+          {t('ui.rules.label')}
+          <span style={{ fontSize: 9, opacity: 0.8 }}>{showDesc ? '▲' : '▼'}</span>
+        </button>
       </div>
       {showDesc && (
         <div style={{ padding: '0 14px 12px 52px' }}>
@@ -542,6 +547,16 @@ function GameBtn({ g, stats, onSelect }) {
             {renderSelitys(desc)}
           </div>
           {Array.isArray(rules) && rules.map((rule, i) => <RuleRow key={i} text={rule} />)}
+          {onOpenGlossary && (
+            <button
+              onClick={onOpenGlossary}
+              style={{
+                marginTop: 10, background: 'transparent', border: 'none', cursor: 'pointer',
+                color: C.gold, fontFamily: 'sans-serif', fontSize: 11.5, padding: 0,
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+              }}
+            >📖 {t('ui.rules.moreTerms')}</button>
+          )}
         </div>
       )}
     </div>
@@ -796,6 +811,21 @@ export default function App() {
   const [showIntention, setShowIntention] = useStickySetting('showIntention', true);
   const [showNextBtn, setShowNextBtn]   = useStickySetting('showNextBtn', true);
   const [showAIKnown, setShowAIKnown]   = useStickySetting('showAIKnown', true);
+  // Näkyvyysesiasetus: yksi merkityksellinen valinta, joka asettaa kaikki opastustogglet kerralla.
+  // 'beginner' = täysi opastus, 'experienced' = vähemmän kohinaa, 'custom' = käyttäjä on säätänyt
+  // yksittäisiä toggleja Lisäasetuksista. Yksittäiset togglet persistoituvat edelleen erikseen.
+  const UI_PRESETS = {
+    beginner:    { showCounts: true, showAIKnown: true,  showLastPlay: true, showIntention: true,  showNextBtn: true,  showLog: true  },
+    experienced: { showCounts: true, showAIKnown: false, showLastPlay: true, showIntention: false, showNextBtn: false, showLog: false },
+  };
+  const [uiPreset, setUiPreset] = useStickySetting('uiPreset', 'beginner');
+  const applyPreset = (p) => {
+    const v = UI_PRESETS[p];
+    if (!v) return;
+    setShowCounts(v.showCounts); setShowAIKnown(v.showAIKnown); setShowLastPlay(v.showLastPlay);
+    setShowIntention(v.showIntention); setShowNextBtn(v.showNextBtn); setShowLog(v.showLog);
+    setUiPreset(p);
+  };
   const [aiLevel, setAiLevel]           = useStickySetting('aiLevel', 'normal'); // 'beginner' | 'normal' | 'hard'
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
   // Ensikertalainen kokoelmassa → Meme-jengi oletuksena (hauska ensivaikutelma);
@@ -822,6 +852,7 @@ export default function App() {
   const [showTodo, setShowTodo]                 = useState(false);
   const [showA2hs, setShowA2hs]                 = useState(false); // "Lisää aloitusnäytölle" -ohje
   const [showPeliasetukset, setShowPeliasetukset] = useState(false);
+  const [showLisaasetukset, setShowLisaasetukset] = useState(false); // yksittäiset togglet preset-valinnan takana
   const [showKonealy, setShowKonealy]           = useState(false);
   const [showPelaajat, setShowPelaajat]         = useState(false);
 
@@ -854,12 +885,7 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePop);
   }, []);
 
-  const playerPool = playerGroup === 'laituri' ? LAITURI_SPECIAL
-    : playerGroup === 'jumalat'  ? ONNEN_JUMALAT
-    : playerGroup === 'puolue'   ? IHMISTEN_PUOLUE
-    : playerGroup === 'meme'     ? MEME_GANG
-    : playerGroup === 'goauld'   ? GOAULD
-    : KANSA;
+  const playerPool = POOL_BY_GROUP[playerGroup] || KANSA;
   // Goa'uld näyttää satunnaisen julkeuden, muut ryhmät kiinteän kuvauksen.
   const currentBlurb = playerGroup === 'goauld' ? goauldTaunt : GROUP_BLURB[playerGroup];
 
@@ -1085,30 +1111,70 @@ export default function App() {
           </button>
           {showPeliasetukset && (
             <div style={{ padding: '0 14px 14px' }}>
-              {(() => {
+              {/* Esiasetus: yksi merkityksellinen valinta opastuksen tasolle. */}
+              <div style={{ display: 'flex', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                {[
+                  { key: 'beginner',    label: t('ui.settings.preset.beginner'),    desc: t('ui.settings.preset.beginnerDesc') },
+                  { key: 'experienced', label: t('ui.settings.preset.experienced'), desc: t('ui.settings.preset.experiencedDesc') },
+                ].map(({ key, label, desc }) => (
+                  <button
+                    key={key}
+                    onClick={() => applyPreset(key)}
+                    style={{
+                      flex: 1, minWidth: 'calc(50% - 4px)', padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
+                      fontFamily: 'sans-serif', fontSize: 12,
+                      background: uiPreset === key ? `${C.gold}22` : 'transparent',
+                      border: `1px solid ${uiPreset === key ? C.gold : C.panelBorder}`,
+                      color: uiPreset === key ? C.gold : C.dim,
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    {label}
+                    <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{desc}</div>
+                  </button>
+                ))}
+              </div>
+              {uiPreset === 'custom' && (
+                <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', fontStyle: 'italic', opacity: 0.7, marginBottom: 6 }}>
+                  {t('ui.settings.preset.custom')}
+                </div>
+              )}
+
+              {/* Yksittäiset togglet preset-valinnan takana — etuovi pysyy kevyenä. */}
+              <button
+                onClick={() => setShowLisaasetukset(v => !v)}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '8px 0', background: 'transparent', border: 'none', borderTop: `1px solid ${C.panelBorder}`, marginTop: 4, cursor: 'pointer', textAlign: 'left' }}
+              >
+                <span style={{ fontFamily: 'Georgia,serif', fontSize: 12, color: C.dim, opacity: 0.8 }}>{t('ui.settings.advanced')}</span>
+                <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showLisaasetukset ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+              </button>
+              {showLisaasetukset && (() => {
                 const isAllBots = siirtorekisteri.length > 0 || !!botResult;
+                // preset:true → toggle kuuluu esiasetukseen; manuaalinen muutos merkitsee 'custom'.
+                const markCustom = () => setUiPreset('custom');
                 return [
                   !isAllBots && { label: t('ui.settings.seeAll'),       val: seeAll,        set: setSeeAll        },
                   { label: t('ui.settings.godMode'),                    disabled: true                          },
-                  { label: t('ui.settings.showCounts'),                 val: showCounts,    set: setShowCounts    },
-                  !isAllBots && { label: t('ui.settings.showAIKnown'),  val: showAIKnown,   set: setShowAIKnown   },
-                  { label: t('ui.settings.showLastPlay'),               val: showLastPlay,  set: setShowLastPlay  },
-                  { label: t('ui.settings.showIntention'),              val: showIntention, set: setShowIntention },
-                  { label: t('ui.settings.showNextBtn'),                val: showNextBtn,   set: setShowNextBtn   },
-                  { label: t('ui.settings.showLog'),                    val: showLog,       set: setShowLog       },
+                  { label: t('ui.settings.showCounts'),                 val: showCounts,    set: setShowCounts,    preset: true },
+                  !isAllBots && { label: t('ui.settings.showAIKnown'),  val: showAIKnown,   set: setShowAIKnown,   preset: true },
+                  { label: t('ui.settings.showLastPlay'),               val: showLastPlay,  set: setShowLastPlay,  preset: true },
+                  { label: t('ui.settings.showIntention'),              val: showIntention, set: setShowIntention, preset: true },
+                  { label: t('ui.settings.showNextBtn'),                val: showNextBtn,   set: setShowNextBtn,   preset: true },
+                  { label: t('ui.settings.showLog'),                    val: showLog,       set: setShowLog,       preset: true },
                   { label: t('ui.settings.sound'),                      val: soundOn,       set: setSoundOn       },
                   { label: t('ui.settings.twoColorDeck'),               val: twoColorDeck,  set: setTwoColorDeckPref },
-                ].filter(Boolean);
-              })().map(({ label, val, set, disabled }) => (
-                <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
-                  <input
-                    type="checkbox" checked={disabled ? false : val} onChange={disabled ? undefined : () => set(v => !v)}
-                    disabled={!!disabled}
-                    style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
-                  />
-                  <span style={{ fontSize: isMobile ? 11 : 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
-                </label>
-              ))}
+                ].filter(Boolean).map(({ label, val, set, disabled, preset }) => (
+                  <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
+                    <input
+                      type="checkbox" checked={disabled ? false : val}
+                      onChange={disabled ? undefined : () => { set(v => !v); if (preset) markCustom(); }}
+                      disabled={!!disabled}
+                      style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
+                    />
+                    <span style={{ fontSize: isMobile ? 11 : 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
+                  </label>
+                ));
+              })()}
             </div>
           )}
         </div>
@@ -1164,14 +1230,7 @@ export default function App() {
             {t('ui.settings.playersIntro')}
           </p>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-            {[
-              { key: 'laituri', label: t('ui.settings.groups.laituri'),  pool: LAITURI_SPECIAL  },
-              { key: 'jumalat', label: t('ui.settings.groups.jumalat'),  pool: ONNEN_JUMALAT    },
-              { key: 'puolue',  label: t('ui.settings.groups.puolue'),   pool: IHMISTEN_PUOLUE  },
-              { key: 'kansa',   label: t('ui.settings.groups.kansa'),    pool: KANSA            },
-              { key: 'meme',    label: t('ui.settings.groups.meme'),     pool: MEME_GANG        },
-              { key: 'goauld',  label: t('ui.settings.groups.goauld'),   pool: GOAULD           },
-            ].map(({ key, label, pool }) => (
+            {NAME_GROUPS.map(({ key, pool }) => (
               <button
                 key={key}
                 onClick={() => {
@@ -1187,7 +1246,7 @@ export default function App() {
                   transition: 'all 0.15s',
                 }}
               >
-                {label}
+                {t('ui.settings.groups.' + key)}
                 <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{t('ui.settings.namesCount', { n: pool.length })}</div>
               </button>
             ))}
@@ -1502,6 +1561,8 @@ export default function App() {
           isMobile={isMobile}
           playerCount={Math.max(playerCount, game.minPlayers)}
           playerNames={playerPool}
+          playerGroup={playerGroup}
+          onPlayerGroupChange={setPlayerGroup}
           showNextBtn={showNextBtn}
           showAIKnown={showAIKnown}
           aiLevel={aiLevel}
@@ -1568,12 +1629,24 @@ export default function App() {
         width: '100%',
         maxWidth: isMobile ? '100%' : 900,
       }}>
+        {!Object.values(stats).some(s => s.played > 0) && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            margin: '0 0 8px', padding: '9px 12px',
+            border: `1px solid ${C.gold}55`, borderRadius: 10,
+            background: `${C.gold}12`,
+            fontFamily: 'sans-serif', fontSize: isMobile ? 11 : 12, color: C.text, lineHeight: 1.4,
+          }}>
+            <span style={{ color: C.gold, fontSize: 13, flexShrink: 0 }}>★</span>
+            {t('ui.menu.startHere')}
+          </div>
+        )}
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
           gap: 8,
         }}>
-          {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={selectGame} />)}
+          {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={selectGame} onOpenGlossary={() => setShowGlossary(true)} />)}
         </div>
       </div>
       <div style={{ fontSize: 10, color: '#b9c7b2', fontFamily: 'sans-serif', letterSpacing: 0.5 }}>

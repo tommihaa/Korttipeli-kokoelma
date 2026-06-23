@@ -1,6 +1,16 @@
 // Muutosloki — englanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "A clearer start for new players: recommended games are marked with a ★, and before your first game the menu hints where to begin.",
+      "Each game’s rules are now behind a clear Rules button, and from there you can jump straight to the glossary.",
+      "Settings now has a Beginner/Experienced quick-choice that adjusts all guidance at once; individual options now live behind an Advanced section.",
+      "You can now pick the opponents’ name group right on the game’s start screen, next to the player count.",
+      "Every game now has a clear “Your turn” prompt that tells you what to do on your turn.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "New 📊 Statistics view (in the Info menu): see for each game how many times you've played and won, your placements, and wins by difficulty. Plus a summary of games tried, play count and play sessions. Statistics are saved only in this browser and you can clear them anytime.",

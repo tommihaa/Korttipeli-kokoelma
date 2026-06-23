@@ -1,6 +1,16 @@
 // Muutosloki — islanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '23.6.2026',
+    items: [
+      "Skýrari byrjun fyrir nýja spilara: ráðlögð spil eru merkt með ★, og fyrir fyrsta spilið gefur valmyndin vísbendingu um hvar er best að byrja.",
+      "Reglur hvers spils eru nú bak við skýran Reglur-hnapp, og þaðan kemstu beint í orðalistann.",
+      "Stillingar hafa nú flýtival Byrjandi/Vanur sem stillir alla leiðsögn í einu; einstakar stillingar eru nú undir Nánar.",
+      "Þú getur nú valið nafnahóp andstæðinga beint á upphafsskjá spilsins, við hliðina á fjölda spilara.",
+      "Hvert spil hefur nú skýra „Þú átt leik“-ábendingu sem segir þér hvað þú átt að gera þegar röðin er að þér.",
+    ],
+  },
+  {
     date: "20.6.2026",
     items: [
       "Nýtt 📊 Tölfræði-yfirlit (í Info-valmynd): sjáðu fyrir hvert spil hversu oft þú hefur spilað og unnið, sætin þín og sigra eftir erfiðleikastigi. Einnig samantekt um prófuð spil, fjölda spila og spilalotur. Tölfræðin er aðeins vistuð í þessum vafra og þú getur hreinsað hana hvenær sem er.",
