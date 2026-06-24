@@ -1,6 +1,12 @@
 // Muutosloki — tšekki. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Vylepšení přístupnosti: tlačítko Pravidla a přepínač jazyka v hlavní nabídce nyní lépe vystupují z pozadí a přepínač jazyka lépe rozpoznávají čtečky obrazovky.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "Přehlednější začátek pro nové hráče: doporučené hry jsou označeny ★ a před první hrou menu napoví, kde začít.",

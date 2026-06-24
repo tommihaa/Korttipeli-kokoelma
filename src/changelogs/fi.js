@@ -7,6 +7,12 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Saavutettavuusparannus: päävalikon Säännöt-painikkeen ja kielivalitsimen tekstit erottuvat nyt selkeämmin taustasta, ja kielivalitsin tunnistuu paremmin ruudunlukijalla.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       'Uusille pelaajille selkeämpi aloitus: suositellut pelit on merkitty ★-tähdellä, ja ennen ensimmäistä peliä valikko vinkkaa mistä kannattaa aloittaa.',

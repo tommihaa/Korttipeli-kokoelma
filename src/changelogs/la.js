@@ -1,6 +1,12 @@
 // Muutosloki — latina. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Emendatio accessibilitatis: in tabula principali pyxis Regularum et electio linguae nunc clarius a fundo distinguuntur, et electio linguae a lectoribus screeni melius cognoscitur.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "Initium clarius novis lusoribus: ludi commendati ★ signantur, et ante primum ludum menu monet ubi incipias.",

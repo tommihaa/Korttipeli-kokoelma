@@ -1,6 +1,12 @@
 // Muutosloki — puola. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Poprawa dostępności: przycisk Zasady i wybór języka w menu głównym wyraźniej odcinają się teraz od tła, a wybór języka jest lepiej rozpoznawany przez czytniki ekranu.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "Jaśniejszy start dla nowych graczy: polecane gry są oznaczone ★, a przed pierwszą grą menu podpowiada, od czego zacząć.",

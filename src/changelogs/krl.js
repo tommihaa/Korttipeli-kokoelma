@@ -1,6 +1,12 @@
 // Muutosloki — karjala. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Šuavutettavuon parandamine: piävalikon Šiännöt-nappuli da kielenvaliččija eroijah nyt šelvembäh taustašta, da kielenvaliččijan tundou parembah ekrananlugija.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "Selgiembi alku uuzile pelaajile: suvaitut pelit on merkitty ★-tähtel, da enne enzimäst pelii valikko näyttäy, mistä kannattau alkua.",

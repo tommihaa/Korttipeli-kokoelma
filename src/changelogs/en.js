@@ -1,6 +1,12 @@
 // Muutosloki — englanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Accessibility improvement: the Rules button and the language selector in the main menu now stand out more clearly against the background, and the language selector is better recognised by screen readers.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "A clearer start for new players: recommended games are marked with a ★, and before your first game the menu hints where to begin.",

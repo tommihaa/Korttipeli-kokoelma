@@ -1,6 +1,12 @@
 // Muutosloki — islanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Aðgengisbót: Reglur-hnappurinn og tungumálavalið í aðalvalmyndinni skera sig nú skýrar frá bakgrunni, og tungumálavalið þekkist betur af skjálesurum.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "Skýrari byrjun fyrir nýja spilara: ráðlögð spil eru merkt með ★, og fyrir fyrsta spilið gefur valmyndin vísbendingu um hvar er best að byrja.",

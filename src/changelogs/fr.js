@@ -1,6 +1,12 @@
 // Muutosloki — ranska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Amélioration de l’accessibilité : le bouton Règles et le sélecteur de langue du menu principal se détachent désormais plus nettement de l’arrière-plan, et le sélecteur de langue est mieux reconnu par les lecteurs d’écran.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "Un démarrage plus clair pour les nouveaux joueurs : les jeux recommandés sont marqués d’une ★, et avant votre première partie le menu indique par où commencer.",

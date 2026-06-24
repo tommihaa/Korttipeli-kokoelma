@@ -1,6 +1,12 @@
 // Muutosloki — norja (bokmål). Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Tilgjengelighetsforbedring: Regler-knappen og språkvelgeren i hovedmenyen skiller seg nå tydeligere ut fra bakgrunnen, og språkvelgeren gjenkjennes bedre av skjermlesere.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "En tydeligere start for nye spillere: anbefalte spill er merket med en ★, og før ditt første spill tipser menyen om hvor du kan begynne.",

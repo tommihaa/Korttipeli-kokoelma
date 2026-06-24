@@ -533,7 +533,7 @@ function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
             flexShrink: 0, margin: '0 12px 0 4px', background: showDesc ? `${C.gold}1a` : 'transparent',
             border: `1px solid ${showDesc ? C.gold : C.panelBorder}`,
             borderRadius: 8, padding: '6px 10px', fontSize: 12, cursor: 'pointer',
-            color: showDesc ? C.gold : C.dim, fontFamily: 'sans-serif', lineHeight: 1,
+            color: showDesc ? C.gold : C.dimAA, fontFamily: 'sans-serif', lineHeight: 1,
             display: 'flex', alignItems: 'center', gap: 5, fontWeight: 600,
           }}
         >
@@ -584,12 +584,12 @@ function LangSelector({ lang, setLang, t, isMobile }) {
         onClick={() => setOpen(o => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={t('ui.lang.label')}
+        aria-label={`${t('ui.lang.label')}: ${current.name}`}
         title={current.name}
         style={{
           display: 'flex', alignItems: 'center', gap: 5,
           background: 'transparent', border: `1px solid ${open ? C.gold : C.panelBorder}`,
-          color: open ? C.gold : C.dim, borderRadius: 9,
+          color: open ? C.gold : C.dimAA, borderRadius: 9,
           padding: isMobile ? '6px 9px' : '9px 9px', cursor: 'pointer',
           fontFamily: 'sans-serif', lineHeight: 1, flexShrink: 0,
         }}

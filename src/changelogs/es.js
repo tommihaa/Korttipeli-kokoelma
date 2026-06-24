@@ -1,6 +1,12 @@
 // Muutosloki — espanja. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Mejora de accesibilidad: el botón Reglas y el selector de idioma del menú principal ahora destacan con más claridad sobre el fondo, y el selector de idioma se reconoce mejor con los lectores de pantalla.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "Un inicio más claro para los jugadores nuevos: los juegos recomendados están marcados con una ★, y antes de tu primera partida el menú sugiere por dónde empezar.",

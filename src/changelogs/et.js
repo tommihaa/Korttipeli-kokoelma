@@ -1,6 +1,12 @@
 // Muutosloki — viro. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Juurdepääsetavuse parandus: peamenüü Reeglid-nupp ja keelevalija eristuvad nüüd taustast selgemini ning keelevalijat tunnevad ekraanilugejad paremini ära.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "Selgem algus uutele mängijatele: soovitatud mängud on märgitud ★-ga ja enne esimest mängu annab menüü vihje, kust alustada.",

@@ -3,6 +3,7 @@ export const C = {
   gold: '#c9a84c',
   text: '#f0e6cc',
   dim: '#a8b8a0',
+  dimAA: '#cdd8c4',          // saavutettava dim — läpäisee 4.5:1 12px-tekstinä bg:llä (#1f5a3f) ja korteilla (#2a6249); käytä pienissä labeleissa joissa C.dim putoaa kontrastista (Lighthouse a11y)
   red: '#e05c3b',
   blue: '#5ba8d4',
   panelBorder: '#2a4a32',

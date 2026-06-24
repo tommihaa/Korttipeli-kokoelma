@@ -1,6 +1,12 @@
 // Muutosloki — ruotsi. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '24.6.2026',
+    items: [
+      'Tillgänglighetsförbättring: Regler-knappen och språkväljaren i huvudmenyn syns nu tydligare mot bakgrunden, och språkväljaren känns bättre igen av skärmläsare.',
+    ],
+  },
+  {
     date: '23.6.2026',
     items: [
       "En tydligare start för nya spelare: rekommenderade spel är märkta med en ★, och innan ditt första spel tipsar menyn om var du kan börja.",
