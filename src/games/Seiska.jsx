@@ -1188,7 +1188,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
           <span style={{
             color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : 'inherit',
             fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 'inherit',
-            animation: pakaAnim ? 'pakaFlash 2.5s ease forwards' : undefined }}>
+            animation: pakaAnim ? 'pakkaFlash 2.5s ease forwards' : undefined }}>
             {G.deck.length === 0 && G.discardPile.length <= 1 ? t('games.seiska.ui.deckEmpty') : t('games.seiska.ui.deckCount', { n: G.deck.length })}
           </span>
           {' · '}{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}
@@ -1218,7 +1218,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       </div>
 
 
-      <style>{`button:active{transform:scale(0.97)}@keyframes pakaFlash{0%{color:inherit}20%{color:#e05555;font-weight:700;transform:scale(1.15)}60%{color:#e05555;font-weight:700}100%{color:#e05555;font-weight:700}}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
+      <style>{`button:active{transform:scale(0.97)}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>
   );
 }

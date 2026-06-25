@@ -9,6 +9,7 @@ import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
+import { useT, tr } from '../shared/i18n.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
@@ -100,8 +101,6 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
     </div>
   );
 }
-
-import { useT, tr } from '../shared/i18n.jsx';
 
 export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();

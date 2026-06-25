@@ -9,6 +9,7 @@ import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
+import { useT, tr } from '../shared/i18n.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 function shuffledAINames(pool) {
@@ -153,8 +154,6 @@ function DiceRoll({ players, onDone, soundOn }) {
     </div>
   );
 }
-
-import { useT, tr } from '../shared/i18n.jsx';
 
 export default function Kultakala({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
