@@ -1,10 +1,5 @@
-Julkaise projekti: build → commit → deploy.
+Julkaise Jako-pelini käyttämällä **`deploy`-skilliä** (`.claude/skills/deploy/SKILL.md`) — älä toista ohjeita tässä.
 
-1. Aja `npm run build`. Jos build epäonnistuu, pysähdy ja raportoi virhe.
-2. Tarkista muutokset: `git diff --stat` ja `git log --oneline -5` tyylin varmistamiseksi.
-3. **Päivitä CHANGELOG**: lisää uusin merkintä `CHANGELOG`-taulukkoon `src/changelogs/fi.js`:ssä (heti taulukon alkuun, uusi `{ date, items }` -objekti) **ja käännä sama merkintä kaikkiin 16 muuhun `src/changelogs/*.js`-tiedostoon** (rakenne 1:1: sama date, sama items-määrä ja -järjestys). Kirjoita muutokset lyhyesti, käyttäjäystävällisesti — ei teknistä jargonia.
-4. Stage muutetut tiedostot: `src/`-kansio ja `CLAUDE.md`. Jätä pois `.claude/`, `package-lock.json`, `node_modules/`.
-5. Jos käyttäjä antoi viestin argumenttina (`$ARGUMENTS`), käytä sitä commit-viestinä. Muuten tee lyhyt suomenkielinen viesti muutosten perusteella (tyyli: "fix: ..." tai "feat: ...").
-6. Aja `git commit`.
-7. Aja `npm run deploy` (= vercel build + deploy --prebuilt --prod, avaa selaimen automaattisesti).
-8. Raportoi commit-hash ja Vercel-URL.
+Kutsu `deploy`-skilli ja seuraa sitä. Jos käyttäjä antoi commit-viestin argumenttina, välitä se: `$ARGUMENTS`.
+
+(Tämä komento oli ennen erillinen, vanhentunut julkaisuohje josta puuttui `git push`. Skilli on nyt ainoa totuuden lähde.)

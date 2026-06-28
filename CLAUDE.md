@@ -55,7 +55,7 @@ At the start of every session run `npm run dev` in the background so the dev ser
 
 ## Deploy
 **Ennen deployta (käsin — ei automatisoitua):**
-- Lisää `CHANGELOG`-merkintä `src/changelogs/fi.js`:ään (näkyy Info → Muutosloki; fi = totuuden lähde) **ja käännä sama merkintä kaikkiin 16 muuhun `src/changelogs/*.js`-tiedostoon** (rakenne 1:1: sama date, sama items-määrä ja -järjestys; pelinimet pysyvät suomeksi, UI-termit localesta). Muutosloki on lokalisoitu 10.6.2026 alkaen — kukin kieli on oma laiska chunkkinsa, puuttuva kieli putoaa fi:hin. `npm run deploy` EI päivitä tätä automaattisesti.
+- Lisää `CHANGELOG`-merkintä `src/changelogs/fi.js`:ään (näkyy Info → Muutosloki; fi = totuuden lähde) **ja käännä sama merkintä kaikkiin 22 muuhun `src/changelogs/*.js`-tiedostoon** (23 kieltä yhteensä; tarkista määrä ajossa `ls src/changelogs/*.js`; rakenne 1:1: sama date, sama items-määrä ja -järjestys; pelinimet pysyvät suomeksi, UI-termit localesta). Muutosloki on lokalisoitu 10.6.2026 alkaen — kukin kieli on oma laiska chunkkinsa, puuttuva kieli putoaa fi:hin. `npm run deploy` EI päivitä tätä automaattisesti.
 - Päivitä `TODO`-taulukko `src/App.jsx`:ssä (Asetukset → Tulossa), jos jokin kohta valmistui tai lisättiin.
 - `APP_VERSION` kasvaa buildissa automaattisesti (`__APP_VERSION__`) — sitä ei tarvitse koskea.
 
