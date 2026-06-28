@@ -1,6 +1,12 @@
 // Muutosloki — portugali. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'O Jako tem um novo ícone de aplicação: um leque de cartas nas quatro cores do baralho. Se adicionaste o Jako ao ecrã inicial do teu dispositivo, o ícone e o ecrã de arranque estão agora mais limpos e harmoniosos.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Melhoria de acessibilidade: o botão Regras e o seletor de idioma no menu principal destacam-se agora com mais clareza do fundo, e o seletor de idioma é melhor reconhecido pelos leitores de ecrã.',

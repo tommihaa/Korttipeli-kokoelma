@@ -7,6 +7,12 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'Jakolla on uusi sovelluskuvake: korttiviuhka pakan neljällä värillä. Jos olet lisännyt Jakon laitteesi aloitusnäytölle, kuvake ja avausruutu näyttävät nyt siistimmiltä ja yhtenäisiltä.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Saavutettavuusparannus: päävalikon Säännöt-painikkeen ja kielivalitsimen tekstit erottuvat nyt selkeämmin taustasta, ja kielivalitsin tunnistuu paremmin ruudunlukijalla.',

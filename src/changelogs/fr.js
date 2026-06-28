@@ -1,6 +1,12 @@
 // Muutosloki — ranska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'Jako a une nouvelle icône d’application : un éventail de cartes aux quatre couleurs du jeu. Si vous avez ajouté Jako à l’écran d’accueil de votre appareil, l’icône et l’écran de démarrage paraissent désormais plus nets et plus harmonieux.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Amélioration de l’accessibilité : le bouton Règles et le sélecteur de langue du menu principal se détachent désormais plus nettement de l’arrière-plan, et le sélecteur de langue est mieux reconnu par les lecteurs d’écran.',

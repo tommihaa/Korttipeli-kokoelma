@@ -1,6 +1,12 @@
 // Muutosloki — englanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'Jako has a new app icon: a fan of cards in the deck’s four colours. If you’ve added Jako to your device’s home screen, the icon and the launch screen now look cleaner and more unified.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Accessibility improvement: the Rules button and the language selector in the main menu now stand out more clearly against the background, and the language selector is better recognised by screen readers.',

@@ -1,6 +1,12 @@
 // Muutosloki — unkari. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'A Jako új alkalmazásikont kapott: kártyalegyező a pakli négy színében. Ha felvetted a Jakót az eszközöd kezdőképernyőjére, az ikon és az indítóképernyő mostantól letisztultabb és egységesebb.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Akadálymentesítési fejlesztés: a főmenü Szabályok gombja és a nyelvválasztó most jobban elüt a háttértől, a nyelvválasztót pedig jobban felismerik a képernyőolvasók.',

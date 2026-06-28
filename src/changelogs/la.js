@@ -1,6 +1,12 @@
 // Muutosloki — latina. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'Jako novam imaginem applicationis habet: flabellum chartarum in quattuor coloribus chartularum. Si Jako ad principalem tabulam instrumenti tui addidisti, imago et tabula initialis nunc mundiores et magis congruentes apparent.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Emendatio accessibilitatis: in tabula principali pyxis Regularum et electio linguae nunc clarius a fundo distinguuntur, et electio linguae a lectoribus screeni melius cognoscitur.',

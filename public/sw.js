@@ -7,7 +7,7 @@
 // Laiskat chunkit (pelit, kielet, muutosloki) tallentuvat sitä mukaa kun niitä
 // avataan — offline toimii niille peleille ja kielille, joissa on kerran käyty.
 // Sourcemappeja (.map) ei tallenneta: vain devtools hakee niitä, ja ne ovat isoja.
-const CACHE = 'jako-v1';
+const CACHE = 'jako-v2';
 
 self.addEventListener('install', () => self.skipWaiting());
 

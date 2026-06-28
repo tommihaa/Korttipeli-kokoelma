@@ -1,6 +1,12 @@
 // Muutosloki — puola. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'Jako ma nową ikonę aplikacji: wachlarz kart w czterech kolorach talii. Jeśli dodałeś Jako do ekranu głównego urządzenia, ikona i ekran startowy wyglądają teraz czyściej i bardziej spójnie.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Poprawa dostępności: przycisk Zasady i wybór języka w menu głównym wyraźniej odcinają się teraz od tła, a wybór języka jest lepiej rozpoznawany przez czytniki ekranu.',

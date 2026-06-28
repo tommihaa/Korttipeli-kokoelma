@@ -1,4 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#0d2118"/>
-  <text x="256" y="390" font-size="400" text-anchor="middle" fill="#c9a84c" font-family="Georgia,serif" font-weight="bold">J</text>
+  <rect width="512" height="512" rx="100" fill="#1f5a3f"/>
+  <g transform="rotate(-30, 256, 455)">
+    <rect x="190" y="160" width="132" height="200" rx="16" fill="#f8f2e6" stroke="#c9a84c" stroke-width="4"/>
+    <text x="256" y="232" text-anchor="middle" fill="#4caf7d" font-size="62">&#9827;</text>
+  </g>
+  <g transform="rotate(30, 256, 455)">
+    <rect x="190" y="160" width="132" height="200" rx="16" fill="#f8f2e6" stroke="#c9a84c" stroke-width="4"/>
+    <text x="256" y="232" text-anchor="middle" fill="#1a1a1a" font-size="62">&#9824;</text>
+  </g>
+  <g transform="rotate(-15, 256, 455)">
+    <rect x="190" y="160" width="132" height="200" rx="16" fill="#f8f2e6" stroke="#c9a84c" stroke-width="4"/>
+    <text x="256" y="232" text-anchor="middle" fill="#ff8c42" font-size="62">&#9830;</text>
+  </g>
+  <g transform="rotate(15, 256, 455)">
+    <rect x="190" y="160" width="132" height="200" rx="16" fill="#f8f2e6" stroke="#c9a84c" stroke-width="4"/>
+    <text x="256" y="232" text-anchor="middle" fill="#cc2222" font-size="62">&#9829;</text>
+  </g>
+  <g transform="rotate(0, 256, 455)">
+    <rect x="190" y="158" width="132" height="200" rx="16" fill="#f8f2e6" stroke="#c9a84c" stroke-width="4"/>
+    <text x="210" y="212" text-anchor="middle" fill="#cc2222" font-family="Georgia, serif" font-weight="bold" font-size="40">A</text>
+    <text x="256" y="318" text-anchor="middle" fill="#cc2222" font-size="104">&#9829;</text>
+  </g>
 </svg>

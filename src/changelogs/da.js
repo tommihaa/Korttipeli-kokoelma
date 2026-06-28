@@ -1,6 +1,12 @@
 // Muutosloki — tanska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'Jako har et nyt app-ikon: en vifte af kort i kortspillets fire farver. Hvis du har føjet Jako til enhedens startskærm, ser ikonet og startskærmen nu renere og mere ensartede ud.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Tilgængelighedsforbedring: Regler-knappen og sprogvælgeren i hovedmenuen træder nu tydeligere frem mod baggrunden, og sprogvælgeren genkendes bedre af skærmlæsere.',

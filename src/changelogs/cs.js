@@ -1,6 +1,12 @@
 // Muutosloki — tšekki. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '28.6.2026',
+    items: [
+      'Jako má novou ikonu aplikace: vějíř karet ve čtyřech barvách balíčku. Pokud sis Jako přidal na domovskou obrazovku zařízení, ikona i úvodní obrazovka teď vypadají čistěji a jednotněji.',
+    ],
+  },
+  {
     date: '24.6.2026',
     items: [
       'Vylepšení přístupnosti: tlačítko Pravidla a přepínač jazyka v hlavní nabídce nyní lépe vystupují z pozadí a přepínač jazyka lépe rozpoznávají čtečky obrazovky.',
