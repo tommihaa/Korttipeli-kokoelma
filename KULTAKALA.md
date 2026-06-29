@@ -10,7 +10,7 @@ Nosta vuorollasi kortti pakasta tai poistopakasta. Voit vaihtaa sen paikalle 5 r
 
 ## Pelaajakohtainen näkyvyys
 
-- Jokainen pelaaja näkee vain **omat pöytäkortit** (paikat 1-5)
+- Jokainen pelaaja oppii **omat pöytäkorttinsa** (paikat 1-5) vasta vaihtaessaan kortin kuhunkin paikkaan — alussa nekin ovat häneltä piilossa
 - Jokainen pelaaja näkee **oman tuntemattoman kortin** (paikka 0) vasta pelin lopussa
 - Muiden pelaajien kortit ovat **piilossa** koko pelin ajan
 - Poistopakka on **näkyvä kaikille** (ylin kortti)

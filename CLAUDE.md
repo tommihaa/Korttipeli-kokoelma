@@ -1,14 +1,14 @@
 # Jako – Finnish Card Game Collection
 
 ## Project
-Mobile-responsive card game app (React/JSX + Vite). Dark green (#1a3a2a) + gold (#c9a84c) aesthetic.
+Mobile-responsive card game app (React/JSX + Vite). Dark green (#1f5a3f) + gold (#c9a84c) aesthetic.
 Structure: `src/App.jsx` (entry), `src/games/*.jsx` (9 games), `src/shared/` (Card, FanStack, colors, helpers, audio).
 Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS.md`, `LAEPSY.md`, `KULTAKALA.md`, `MAIJA.md`, `KASINO.md`, `MOSKA.md`, `SEISKA.md`, `RISTISEISKA.md`, `PASKAHOUSU.md`. Dev server: `http://localhost:5173/`.
 Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 
 ## Sääntölogiikan muokkaus
-**Ennen minkään pelin näkyvyys-, vaihto- tai muun sääntölogiikan muokkaamista lue ensin kyseisen pelin `PELI.md` ja toista sääntö minulle vahvistettavaksi** (suunnat, mitkä kortit pysyvät piilossa, kynnykset). Säännöt ovat hienovaraisia ja niitä on luettu väärin — esim. Kultakalassa pelaaja näkee omat 5 pöytäkorttiaan, vain 1 tuntematon (paikka 0) pysyy piilossa loppuun; vaihtoketju etenee oikealta vasemmalle (5→4→3→2→1). Älä päättele sääntöä koodista tai muistista, kun dokumentti on olemassa.
+**Ennen minkään pelin näkyvyys-, vaihto- tai muun sääntölogiikan muokkaamista lue ensin kyseisen pelin `PELI.md` ja toista sääntö minulle vahvistettavaksi** (suunnat, mitkä kortit pysyvät piilossa, kynnykset). Säännöt ovat hienovaraisia ja niitä on luettu väärin — esim. Kultakalassa pelaaja EI näe omia pöytäkorttejaan alussa — hän oppii kunkin paikan (1–5) vasta vaihtaessaan kortin siihen (vaihtoketju oikealta vasemmalle 5→4→3→2→1); tuntematon (paikka 0) ei ole vaihdettavissa ja paljastuu vain lopussa. Älä päättele sääntöä koodista tai muistista, kun dokumentti on olemassa.
 
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
@@ -19,7 +19,7 @@ Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 | Prop | Default | Selitys |
 |---|---|---|
 | `showLog` | true | Tapahtumaloki auki |
-| `soundOn` | true | Äänet |
+| `soundOn` | false | Äänet (oletuksena pois) |
 | `seeAll` | false | Cheat Mode — Hero näkee kaikki kortit |
 | `showCounts` | true | Korttimäärät näkyvillä |
 | `showLastPlay` | true | Kelluva viimeisin siirto -indikaattori |

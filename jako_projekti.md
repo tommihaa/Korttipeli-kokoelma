@@ -47,7 +47,7 @@ Yhtenäinen termistö jota käytetään kaikissa peleissä:
 
 ## Ääni- ja efektiperiaatteet
 
-- **Äänet oletuksena päällä** kaikissa tiloissa — löydettävissä asetuksista
+- **Äänet oletuksena pois** kaikissa tiloissa — löydettävissä asetuksista
 - **Boss-fight-hetket** joissa ääni on perusteltua (jos pelaaja sen sallinut):
   - Valttikakkonen vaihtuu automaattisesti → kultainen transformaatio
   - Patakuningatar jää viimeiselle → dramaattinen häviö
@@ -60,18 +60,15 @@ Yhtenäinen termistö jota käytetään kaikissa peleissä:
 
 ## Pelien kehitysjärjestys
 
+Alkuperäiset kuusi:
 1. Koputus (yksinkertaisin mekaniikka, hyvä aloituspiste)
 2. Läpsy (reaktiopeli, sopii mobiiliin)
-3. Kultakala (muistipeli, tuntematon elementti)
+3. Kultakala (muistipeli, tuntematon elementti — lisätty ystävän pyynnöstä)
 4. Maija (valttimaa, hyökkäys/puolustus)
 5. Kasino (kaappausmekaniikka, pisteet)
 6. Moska (monimutkaisin)
 
----
-
-## Tuleva peli
-
-**Kultakala** lisätty ystävän pyynnöstä. Mahdollisesti myös muita pelejä tulossa kokoelmaan.
+Myöhemmin lisätyt: Seiska, Ristiseiska, Paskahousu. Kokoelmassa on nyt **yhdeksän peliä**.
 
 ---
 
@@ -233,14 +230,15 @@ Yhtenäinen termistö jota käytetään kaikissa peleissä:
 **Pisteet:** A = 1, numerokortit = nimellisarvo, J = 11, Q = 12, K = 13.
 
 **Valmistelu**
-1. Kukin vetää viuhkasta yhden kortin — jää katsomattomana omaksi tuntemattomaksi koko peliksi. Kukaan ei voi koskea siihen.
-2. Kullekin jaetaan 5 pöytäkorttia jonoon kasvot alaspäin.
+1. Kukin vetää viuhkasta yhden kortin — jää katsomattomana omaksi tuntemattomaksi (paikka 0) koko peliksi. Kukaan ei voi koskea siihen; se paljastuu vasta lopussa.
+2. Kullekin jaetaan 5 pöytäkorttia jonoon (paikat 1–5) kasvot alaspäin. Pelaaja ei näe omiakaan pöytäkorttejaan alussa.
 3. Loput muodostavat nostopakan.
 
 **Vuoron kulku**
 1. Jakajasta seuraava aloittaa. Nosta joko nostopakasta tai kaatopakasta.
-2. Vertaa nostettuun — vaihda jonon viimeiseen sokkona tai heitä kaatopakkaan.
-3. Jos vaihdettu viimeinen on huono, voi jatkaa vaihtamista jonossa eteenpäin.
+2. Vaihda nostettu kortti pöytäkorttipaikkaan — **vasta tällöin näet, mikä kortti siinä paikassa oli** (vanha kortti paljastuu sinulle). Tai heitä nostettu suoraan kaatopakkaan paljastamatta mitään.
+3. Vaihtoketju etenee jonon oikeasta päästä vasemmalle (5→4→3→2→1): voit jatkaa paljastunutta korttia seuraavaan paikkaan tai päättää ketjun heittämällä sen kaatopakkaan. Tuntemattomaan (paikka 0) ei voi vaihtaa.
+4. Näin opit omat korttisi yksi kerrallaan vaihtamalla — muiden pöytäkortit pysyvät sinulta piilossa koko pelin.
 4. Vaihdettava kortti menee aina kaatopakkaan josta seuraava pelaaja voi nostaa sen.
 5. Kukin vuoro kartuttaa tietoa — mutta niin myös vastustajille.
 
@@ -345,15 +343,17 @@ Yhtenäinen termistö jota käytetään kaikissa peleissä:
 
 ## Tekninen toteutus
 
-**Teknologia:** React (JSX), inline styles, CSS animaatiot
-**Tiedostot:**
-- `jako_v3.jsx` — viimeisin prototyyppi (6 peliä, tilanvalinta, pelattava rakenne)
+**Teknologia:** React 18 + Vite, JSX, inline styles, CSS-animaatiot. Ei TypeScriptiä eikä ylimääräisiä npm-riippuvuuksia. Oma kevyt i18n (23 kieltä).
+**Rakenne:**
+- `src/App.jsx` — sovelluksen runko (valikko, asetukset, navigaatio)
+- `src/games/*.jsx` — yhdeksän peliä (Koputus, Läpsy, Kultakala, Maija, Kasino, Moska, Seiska, Ristiseiska, Paskahousu)
+- `src/shared/` — jaetut komponentit ja apurit (Card, FanStack, colors, helpers, audio)
 
 **Navigaatiovirtaus:**
 Etusivu → Pelin sivu → Säännöt TAI Tilanvalinta → Pelitila
 
 **Väripaletti:**
-- Tausta: #0d2118 (tummanvihreä)
+- Tausta: #1f5a3f (tummanvihreä)
 - Kulta: #c9a84c
 - Teksti: #f0e6cc
 - Opetustila: #5ba8d4
