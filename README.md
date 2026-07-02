@@ -12,7 +12,7 @@ Selaimessa pelattava kokoelma: opi moninpelikorttipelit pelaamalla botteja vasta
 ```bash
 npm run dev      # kehityspalvelin (http://localhost:5173/)
 npm run build    # tuotantobuild
-npm run deploy   # Vercel-tuotanto (ks. .claude/skills/deploy: hoitaa changelogin + git pushin)
+git push         # julkaisu: Vercel git-integraatio deployaa tuotantoon (npm run deploy = hätävara)
 ```
 
 ## Mistä mikäkin löytyy

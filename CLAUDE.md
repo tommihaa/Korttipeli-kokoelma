@@ -55,17 +55,17 @@ At the start of every session run `npm run dev` in the background so the dev ser
 
 ## Deploy
 **Ennen deployta (käsin — ei automatisoitua):**
-- Lisää `CHANGELOG`-merkintä `src/changelogs/fi.js`:ään (näkyy Info → Muutosloki; fi = totuuden lähde) **ja käännä sama merkintä kaikkiin 22 muuhun `src/changelogs/*.js`-tiedostoon** (23 kieltä yhteensä; tarkista määrä ajossa `ls src/changelogs/*.js`; rakenne 1:1: sama date, sama items-määrä ja -järjestys; pelinimet pysyvät suomeksi, UI-termit localesta). Muutosloki on lokalisoitu 10.6.2026 alkaen — kukin kieli on oma laiska chunkkinsa, puuttuva kieli putoaa fi:hin. `npm run deploy` EI päivitä tätä automaattisesti.
+- Lisää `CHANGELOG`-merkintä `src/changelogs/fi.js`:ään (näkyy Info → Muutosloki; fi = totuuden lähde) **ja käännä sama merkintä kaikkiin 22 muuhun `src/changelogs/*.js`-tiedostoon** (23 kieltä yhteensä; tarkista määrä ajossa `ls src/changelogs/*.js`; rakenne 1:1: sama date, sama items-määrä ja -järjestys; pelinimet pysyvät suomeksi, UI-termit localesta). Muutosloki on lokalisoitu 10.6.2026 alkaen — kukin kieli on oma laiska chunkkinsa, puuttuva kieli putoaa fi:hin. Julkaisu EI päivitä tätä automaattisesti.
 - Päivitä `TODO`-taulukko `src/App.jsx`:ssä (Asetukset → Tulossa), jos jokin kohta valmistui tai lisättiin.
 - `APP_VERSION` kasvaa buildissa automaattisesti (`__APP_VERSION__`) — sitä ei tarvitse koskea.
 
-Production deploy: `npm run deploy`  (= `vercel build --prod && vercel deploy --prebuilt --prod`)
-One-time setup per machine: `npx vercel pull --yes --environment production`
+Production deploy: **`git push origin main`** — Vercelin git-integraatio deployaa tuotantoon automaattisesti (todennettu 25.6.2026). Koko protokolla: `deploy`-skill (`.claude/skills/deploy/SKILL.md`).
+Hätävara, vain jos git-integraatio irtoaa eikä push päivitä tuotantoa: `npm run deploy` (= `vercel build --prod && vercel deploy --prebuilt --prod`); kertasetup per kone `npx vercel pull --yes --environment production`.
 Live URL: https://tommi-jako.vercel.app  (ensisijainen)
 Vanha URL: https://tommi-jako52.vercel.app  (yhä voimassa — jaettu linkki kesälomalaisille; molemmat ovat tuotantodomaineja ja päivittyvät joka deployssa)
 
 **Varoitukset:**
-- Deploy vain `npm run deploy`- / git push -reittiä. **ÄLÄ käytä `vercel alias set`** julkista domainia varten — se luo suojatun 401-aliaksen; domain-aliasointi hoidetaan Vercel-dashboardista.
+- Deploy vain git push -reittiä (hätävarana `npm run deploy`). **ÄLÄ käytä `vercel alias set`** julkista domainia varten — se luo suojatun 401-aliaksen; domain-aliasointi hoidetaan Vercel-dashboardista.
 - Deployn jälkeen huomioi välimuisti-/aikavyöhykeviive ennen kuin tulkitset, ettei muutos mennyt perille. Todenna tuotanto hakemalla bundle (`assets/index-*.js`) ja vertaamalla hash lokaaliin buildiin, älä pelkästä selaimen näkymästä.
 
 ## Games & Terminology
