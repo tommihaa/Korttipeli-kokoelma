@@ -750,7 +750,7 @@ export const pl = {
       'kaikki paitsi Koputus, Kultakala': 'wszystkie oprócz Koputus, Kultakala',
     },
 
-    // Klucz — termin fiński (App.jsx SANASTO.term).
+    // Klucz — termin fiński (shared/glossary.js SANASTO.term).
     sanasto: {
       'Maat': { term: 'Kolory', selitys: 'Cztery kolory: ♠ Pik · ♥ Kier · ♦ Karo · ♣ Trefl. Czerwone: ♥ ♦. Czarne: ♠ ♣. Zwykle decyduje nie kolor, lecz wartość — z wyjątkiem gier z atutami.' },
       'Kuvakortti': { term: 'Figura', selitys: 'J (walet), Q (dama), K (król). Często wyjątkowe: w Paskahousu nie wolno na nie zagrać niżej niż siódemka, w Läpsy uruchamiają wyzwanie.' },

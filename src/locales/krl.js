@@ -742,7 +742,7 @@ export const krl = {
       'kaikki paitsi Koputus, Kultakala': 'kaikki paiči Koputus, Kultakala',
     },
 
-    // Avaimena suomenkielinen termi (App.jsx:n SANASTO.term).
+    // Avaimena suomenkielinen termi (shared/glossary.js:n SANASTO.term).
     sanasto: {
       'Maat': { term: 'Muat', selitys: 'Nellä muada: ♠ Puadat · ♥ Hertat · ♦ Ruuvut · ♣ Ristit. Ruškiet: ♥ ♦. Muššat: ♠ ♣. Mua ei ušein riäškä — arvo riäškäy, paiči valttikizoissa.' },
       'Kuvakortti': { term: 'Kuvakortti', selitys: 'J (Jätkä), Q (Kuningatar), K (Kuningaš). Ušein erikoini: Paskahousussa et voi kizata šeiskua alemmua niien piällä, Läpšyssä ne käynnistetäh haaštien.' },

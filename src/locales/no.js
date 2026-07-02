@@ -741,7 +741,7 @@ export const no = {
       'kaikki paitsi Koputus, Kultakala': 'alle unntatt Koputus, Kultakala',
     },
 
-    // Nøkkel er det finske begrepet (App.jsx sin SANASTO.term).
+    // Nøkkel er det finske begrepet (shared/glossary.js sin SANASTO.term).
     sanasto: {
       'Maat': { term: 'Farger', selitys: 'Fire farger: ♠ Spar · ♥ Hjerter · ♦ Ruter · ♣ Kløver. Røde: ♥ ♦. Svarte: ♠ ♣. Fargen avgjør vanligvis ikke — det gjør verdien, unntatt i trumfspill.' },
       'Kuvakortti': { term: 'Bildekort', selitys: 'J (Knekt), Q (Dame), K (Konge). Ofte spesielle: i Paskahousu kan du ikke spille under en sjuer på dem, i Läpsy utløser de en utfordring.' },

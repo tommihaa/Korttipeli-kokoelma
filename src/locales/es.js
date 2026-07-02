@@ -741,7 +741,7 @@ export const es = {
       'kaikki paitsi Koputus, Kultakala': 'todos excepto Koputus, Kultakala',
     },
 
-    // La clave es el término en finés (App.jsx SANASTO.term).
+    // La clave es el término en finés (shared/glossary.js SANASTO.term).
     sanasto: {
       'Maat': { term: 'Palos', selitys: 'Cuatro palos: ♠ Picas · ♥ Corazones · ♦ Diamantes · ♣ Tréboles. Rojos: ♥ ♦. Negros: ♠ ♣. Normalmente el palo no decide — lo hace el valor, salvo en los juegos de triunfo.' },
       'Kuvakortti': { term: 'Figura', selitys: 'J (jota), Q (reina), K (rey). A menudo especiales: en Paskahousu no puedes jugar por debajo de un siete sobre ellas, en Läpsy desencadenan un reto.' },

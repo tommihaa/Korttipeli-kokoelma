@@ -741,7 +741,7 @@ export const pt = {
       'kaikki paitsi Koputus, Kultakala': 'todos exceto Koputus, Kultakala',
     },
 
-    // Chave = termo finlandês (App.jsx SANASTO.term).
+    // Chave = termo finlandês (shared/glossary.js SANASTO.term).
     sanasto: {
       'Maat': { term: 'Naipes', selitys: 'Quatro naipes: ♠ Espadas · ♥ Copas · ♦ Ouros · ♣ Paus. Vermelhos: ♥ ♦. Pretos: ♠ ♣. Normalmente o naipe não decide — é o valor que decide, exceto nos jogos de trunfo.' },
       'Kuvakortti': { term: 'Figura', selitys: 'J (Valete), Q (Dama), K (Rei). Muitas vezes especiais: no Paskahousu não podes jogar abaixo de um sete sobre elas, no Läpsy desencadeiam um desafio.' },

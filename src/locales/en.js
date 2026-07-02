@@ -745,7 +745,7 @@ export const en = {
       'kaikki paitsi Koputus, Kultakala': 'all except Koputus, Kultakala',
     },
 
-    // Avaimena suomenkielinen termi (App.jsx:n SANASTO.term).
+    // Avaimena suomenkielinen termi (shared/glossary.js:n SANASTO.term).
     sanasto: {
       'Maat': { term: 'Suits', selitys: 'Four suits: ♠ Spades · ♥ Hearts · ♦ Diamonds · ♣ Clubs. Red: ♥ ♦. Black: ♠ ♣. The suit usually doesn’t decide — the rank does, except in trump games.' },
       'Kuvakortti': { term: 'Face card', selitys: 'J (Jack), Q (Queen), K (King). Often special: in Paskahousu you can’t play below a seven onto them, in Läpsy they trigger a challenge.' },

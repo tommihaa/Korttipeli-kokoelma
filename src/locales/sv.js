@@ -741,7 +741,7 @@ export const sv = {
       'kaikki paitsi Koputus, Kultakala': 'alla utom Koputus, Kultakala',
     },
 
-    // Nyckel är den finska termen (App.jsx:s SANASTO.term).
+    // Nyckel är den finska termen (shared/glossary.js:s SANASTO.term).
     sanasto: {
       'Maat': { term: 'Färger', selitys: 'Fyra färger: ♠ Spader · ♥ Hjärter · ♦ Ruter · ♣ Klöver. Röda: ♥ ♦. Svarta: ♠ ♣. Färgen avgör oftast inte — det gör valören, utom i trumfspel.' },
       'Kuvakortti': { term: 'Klätt kort', selitys: 'J (Knekt), Q (Dam), K (Kung). Ofta speciella: i Paskahousu kan du inte spela under en sjua på dem, i Läpsy utlöser de en utmaning.' },

@@ -750,7 +750,7 @@ export const uk = {
       'kaikki paitsi Koputus, Kultakala': 'усі, крім Koputus, Kultakala',
     },
 
-    // Ключем є фінський термін (App.jsx SANASTO.term).
+    // Ключем є фінський термін (shared/glossary.js SANASTO.term).
     sanasto: {
       'Maat': { term: 'Масті', selitys: 'Чотири масті: ♠ Піки · ♥ Черви · ♦ Бубни · ♣ Трефи. Червоні: ♥ ♦. Чорні: ♠ ♣. Зазвичай масть не вирішує — вирішує значення, окрім козирних ігор.' },
       'Kuvakortti': { term: 'Фігурна карта', selitys: 'J (валет), Q (дама), K (король). Часто особливі: у Paskahousu на них не можна грати нижче сімки, у Läpsy вони запускають виклик.' },

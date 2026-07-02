@@ -741,7 +741,7 @@ export const el = {
       'kaikki paitsi Koputus, Kultakala': 'όλα εκτός από Koputus, Kultakala',
     },
 
-    // Avaimena suomenkielinen termi (App.jsx:n SANASTO.term).
+    // Avaimena suomenkielinen termi (shared/glossary.js:n SANASTO.term).
     sanasto: {
       'Maat': { term: 'Χρώματα', selitys: 'Τέσσερα χρώματα: ♠ Μπαστούνι · ♥ Κούπα · ♦ Καρό · ♣ Σπαθί. Κόκκινα: ♥ ♦. Μαύρα: ♠ ♣. Το χρώμα συνήθως δεν κρίνει — η αξία κρίνει, εκτός από τα παιχνίδια ατού.' },
       'Kuvakortti': { term: 'Φιγούρα', selitys: 'J (Βαλές), Q (Ντάμα), K (Ρήγας). Συχνά ειδικά: στο Paskahousu δεν μπορείς να παίξεις κάτω από επτάρι πάνω τους, στο Läpsy ξεκινούν πρόκληση.' },

@@ -2,7 +2,8 @@
 
 ## Project
 Mobile-responsive card game app (React/JSX + Vite). Dark green (#1f5a3f) + gold (#c9a84c) aesthetic.
-Structure: `src/App.jsx` (entry), `src/games/*.jsx` (9 games), `src/shared/` (Card, FanStack, colors, helpers, audio).
+Structure: `src/App.jsx` (entry), `src/games/*.jsx` (9 games), `src/shared/` (Card, FanStack, colors, helpers, audio, glossary).
+Sanasto-termit + `splitWithGlossary` ovat `src/shared/glossary.js`:ssä (Lahja-kokoelman jaettu termiskeema, speksi Projects-juuren `TERMIMODUULI.md`; sisarkopio Itussa). MERKISTO on yhä App.jsx:ssä.
 Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS.md`, `LAEPSY.md`, `KULTAKALA.md`, `MAIJA.md`, `KASINO.md`, `MOSKA.md`, `SEISKA.md`, `RISTISEISKA.md`, `PASKAHOUSU.md`. Dev server: `http://localhost:5173/`.
 Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)

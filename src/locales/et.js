@@ -741,7 +741,7 @@ export const et = {
       'kaikki paitsi Koputus, Kultakala': 'kõik peale Koputus, Kultakala',
     },
 
-    // Võtmeks soomekeelne termin (App.jsx SANASTO.term).
+    // Võtmeks soomekeelne termin (shared/glossary.js SANASTO.term).
     sanasto: {
       'Maat': { term: 'Mastid', selitys: 'Neli masti: ♠ Poti · ♥ Ärtu · ♦ Ruutu · ♣ Risti. Punased: ♥ ♦. Mustad: ♠ ♣. Mast tavaliselt ei otsusta — väärtus otsustab, välja arvatud trumbimängudes.' },
       'Kuvakortti': { term: 'Pildikaart', selitys: 'J (Soldat), Q (Emand), K (Kuningas). Sageli eriline: Paskahousus ei saa nende peale lüüa seitsmest madalamat, Läpsys käivitavad need väljakutse.' },

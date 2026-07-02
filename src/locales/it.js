@@ -741,7 +741,7 @@ export const it = {
       'kaikki paitsi Koputus, Kultakala': 'tutti tranne Koputus, Kultakala',
     },
 
-    // Chiave = termine finlandese (App.jsx SANASTO.term).
+    // Chiave = termine finlandese (shared/glossary.js SANASTO.term).
     sanasto: {
       'Maat': { term: 'Semi', selitys: 'Quattro semi: ♠ Picche · ♥ Cuori · ♦ Quadri · ♣ Fiori. Rossi: ♥ ♦. Neri: ♠ ♣. Di solito non è il seme a decidere, ma il valore, tranne nei giochi di briscola.' },
       'Kuvakortti': { term: 'Figura', selitys: 'J (fante), Q (regina), K (re). Spesso speciali: in Paskahousu non puoi giocarci sotto un sette, in Läpsy fanno scattare una sfida.' },

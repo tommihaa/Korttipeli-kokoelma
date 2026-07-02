@@ -738,8 +738,8 @@ export const fi = {
     },
   },
 
-  // Sanasto & Merkistö. fi käyttää App.jsx:n SANASTO/MERKISTO-dataa suoraan
-  // (term/selitys), joten täällä vain kehys + kategoriat + pelit-labelit.
+  // Sanasto & Merkistö. fi käyttää lähdedataa suoraan (SANASTO: shared/glossary.js,
+  // MERKISTO: App.jsx) (term/selitys), joten täällä vain kehys + kategoriat + pelit-labelit.
   // en.js sisältää lisäksi sanasto/merkisto-käännökset (avaimena suomenkielinen termi).
   glossary: {
     backInfo: '← Info',

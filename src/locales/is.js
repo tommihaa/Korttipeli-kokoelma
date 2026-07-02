@@ -741,7 +741,7 @@ export const is = {
       'kaikki paitsi Koputus, Kultakala': 'öll nema Koputus, Kultakala',
     },
 
-    // Lykillinn er finnskt hugtak (SANASTO.term í App.jsx).
+    // Lykillinn er finnskt hugtak (SANASTO.term í shared/glossary.js).
     sanasto: {
       'Maat': { term: 'Litir', selitys: 'Fjórir litir: ♠ Spaðar · ♥ Hjörtu · ♦ Tíglar · ♣ Lauf. Rauðir: ♥ ♦. Svartir: ♠ ♣. Liturinn ræður yfirleitt ekki — gildið gerir það, nema í trompleikjum.' },
       'Kuvakortti': { term: 'Mannspil', selitys: 'J (Gosi), Q (Drottning), K (Kóngur). Oft sérstök: í Paskahousu má ekki spila lægra en sjö ofan á þau, í Läpsy ræsa þau áskorun.' },

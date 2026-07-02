@@ -741,7 +741,7 @@ export const de = {
       'kaikki paitsi Koputus, Kultakala': 'alle außer Koputus, Kultakala',
     },
 
-    // Schlüssel ist der finnische Begriff (SANASTO.term in App.jsx).
+    // Schlüssel ist der finnische Begriff (SANASTO.term in shared/glossary.js).
     sanasto: {
       'Maat': { term: 'Farben', selitys: 'Vier Farben: ♠ Pik · ♥ Herz · ♦ Karo · ♣ Kreuz. Rot: ♥ ♦. Schwarz: ♠ ♣. Die Farbe entscheidet meist nicht — das tut der Wert, außer in Trumpfspielen.' },
       'Kuvakortti': { term: 'Bildkarte', selitys: 'B (Bube), D (Dame), K (König). Oft besonders: in Paskahousu kannst du keine Karte unter einer Sieben darauf spielen, in Läpsy lösen sie eine Herausforderung aus.' },
