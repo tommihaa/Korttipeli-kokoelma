@@ -11,8 +11,6 @@
 //   empty      — jos true, näytetään tyhjä paikka (optional)
 //   glowColor  — CSS-väri hehkulle (optional)
 
-import React from 'react';
-
 export default function FanStack({ count, w, h, backStyle, borderColor, topCard, onClick, empty, glowColor }) {
   const br = Math.round(w * 0.1);
   const bc = borderColor || backStyle?.border || '#2a4a32';

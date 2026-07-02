@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
-import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle, aiShouldFumble, cardName } from '../shared/helpers.js';
+import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle, aiShouldFumble, cardName, sortHand as sortHandBy } from '../shared/helpers.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -88,23 +88,10 @@ function Card({ card, small, xsmall, highlight, dim, selected, onClick, backStyl
   );
 }
 
-const SUIT_ORDER = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
-function sortHand(hand) {
-  return [...hand].sort((a, b) => {
-    const sd = SUIT_ORDER[a.s] - SUIT_ORDER[b.s];
-    return sd !== 0 ? sd : a.v - b.v;
-  });
-}
+const sortHand = hand => sortHandBy(hand, c => c.v);
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 // ── Alustus ─────────────────────────────────────────────────────────
 function initGame(nPlayers, pool, allBots = false) {

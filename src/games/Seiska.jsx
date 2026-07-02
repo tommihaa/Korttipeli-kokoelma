@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName, sortHand as sortHandBy } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -54,9 +54,14 @@ function mkInitState(playerDefs) {
     id: i, name: def.name, isHuman: def.isHuman,
     hand: deck.splice(0, 7),
   }));
-  let top;
-  do { top = deck.shift(); }
-  while ((top.r === '7' || top.r === 'A') && deck.length > 0);
+  // 7:t ja ässät eivät kelpaa aloituskortiksi — hylätyt kortit palaavat pakan pohjalle, eivät katoa
+  const rejected = [];
+  let top = deck.shift();
+  while ((top.r === '7' || top.r === 'A') && deck.length > 0) {
+    rejected.push(top);
+    top = deck.shift();
+  }
+  if (rejected.length) deck = [...deck, ...rejected];
   return {
     players, deck,
     discardPile: [top], discardTop: top,
@@ -167,13 +172,7 @@ function aiSuit(hand) {
   return SUIT_SYMS.reduce((a, b) => cnt[a] >= cnt[b] ? a : b);
 }
 
-const SUIT_ORDER = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
-function sortHand(hand) {
-  return [...hand].sort((a, b) => {
-    const sd = SUIT_ORDER[a.s] - SUIT_ORDER[b.s];
-    return sd !== 0 ? sd : a.v - b.v;
-  });
-}
+const sortHand = hand => sortHandBy(hand, c => c.v);
 
 function initSlots(count) {
   return [
@@ -896,7 +895,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
           })}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+          <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
           <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
         </div>
       </div>

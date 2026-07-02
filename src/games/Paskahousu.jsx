@@ -14,14 +14,7 @@ import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 // ── Paskahousu (Wikipedia-versio) ────────────────────────────────────────────
 // Arvot: ♥2/♦2 = 2 (pienin) · 3=3 … A=14 · ♠2/♣2 = 15 (suurin)
@@ -951,7 +944,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
           })}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+          <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
           <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
         </div>
       </div>

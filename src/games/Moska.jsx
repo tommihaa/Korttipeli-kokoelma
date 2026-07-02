@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed, aiShouldFumble } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed, aiShouldFumble, sortHand as sortHandBy } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -47,14 +47,7 @@ function nextActive(players, from) {
 }
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 // ── Alustus ───────────────────────────────────────────────────
 function initGame(nP, pool, allBots = false) {
@@ -104,13 +97,7 @@ function initGame(nP, pool, allBots = false) {
   };
 }
 
-const SUIT_ORDER = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
-function sortHand(hand) {
-  return [...hand].sort((a, b) => {
-    const sd = SUIT_ORDER[a.s] - SUIT_ORDER[b.s];
-    return sd !== 0 ? sd : MV(a) - MV(b);
-  });
-}
+const sortHand = hand => sortHandBy(hand, MV);
 
 // ── AI-logiikka ───────────────────────────────────────────────
 function aiPickAttack(p, defenderHandSize, ts) {
@@ -901,14 +888,53 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
         }
       }
 
+      // Tarkista valmistuneet (pakka voi ehtyä juuri tämän noston aikana —
+      // sama tarkistus kuin heti-nosto-polulla, jotta 0-kortin pelaaja ei jää aktiiviseksi)
+      const deckGone = deck.length === 0 && tc === null;
+      let rankings = [...g2.rankings];
+      players.forEach((p, i) => {
+        if (p.rank === null && p.hand.length === 0 && deckGone) {
+          const rank = rankings.length + 1;
+          players[i] = { ...p, rank };
+          rankings = [...rankings, i];
+          addLog(rank === 1 ? M.won(p.name) : M.out(p.name));
+        }
+      });
+
+      const active = players.filter(p => p.rank === null);
+      if (active.length <= 1) {
+        active.forEach(p => {
+          const rank = rankings.length + 1;
+          players[p.id] = { ...p, rank };
+          rankings = [...rankings, p.id];
+          addLog(M.lost(p.name));
+        });
+        const ranking = rankings.map((id, pos) => ({
+          name: players[id].name, place: pos + 1, isHuman: players[id].isHuman,
+        }));
+        if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 600); }
+        else { onResult?.({ ranking }); }
+        setGS({ ...g2, players, deck, trumpCard: tc, rankings, table: [], phase: 'gameover' });
+        setPendingDraw(null);
+        return;
+      }
+
+      // Jos noston aikana valmistunut pelaaja oli jo valittu seuraavaksi hyökkääjäksi/puolustajaksi,
+      // valitse tilalle seuraava aktiivinen pelaaja
+      let finalAtk = nextAtk, finalDef = g2.defender;
+      if (players[finalAtk].rank !== null) finalAtk = nextActive(players, finalAtk);
+      if (finalDef === finalAtk || players[finalDef].rank !== null) finalDef = nextActive(players, finalAtk);
+
       // Päivitä g2:n deck ja tc
-      const g2Updated = { ...g2, deck, trumpCard: tc };
+      const g2Updated = {
+        ...g2, players, deck, trumpCard: tc, rankings,
+        primaryAtk: finalAtk, defender: finalDef, attackers: [finalAtk],
+      };
       setGS(g2Updated);
       setPendingDraw(null);
 
       // Näytä seuraavan kierroksen viesti
-      const { nextDef } = pendingDraw;
-      addLog(M.nextRound(players[nextAtk].name, players[nextDef].name));
+      addLog(M.nextRound(players[finalAtk].name, players[finalDef].name));
 
       // Aloita seuraava kierros
       if (!g2Updated.players[g2Updated.primaryAtk].isHuman) {

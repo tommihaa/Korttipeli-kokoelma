@@ -118,6 +118,16 @@ export function newDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));
 }
 
+// Käden UI-järjestys: maittain (pata→hertta→ruutu→risti), saman maan sisällä val-funktion mukaan.
+// val valitaan pelikohtaisesti (esim. handVal Kasinossa, RANK_VAL Ristiseiskassa).
+export const SUIT_ORDER = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
+export function sortHand(hand, val) {
+  return [...hand].sort((a, b) => {
+    const sd = SUIT_ORDER[a.s] - SUIT_ORDER[b.s];
+    return sd !== 0 ? sd : val(a) - val(b);
+  });
+}
+
 // AI:n vaikeustaso: noise = todennäköisyys että AI valitsee satunnaisen sallitun
 // siirron strategisen sijaan. Käytetään kaikissa peleissä yhtenäisesti.
 //   beginner  — 50% virheitä, oppilaalle voitettavissa

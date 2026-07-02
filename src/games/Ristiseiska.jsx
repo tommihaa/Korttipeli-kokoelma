@@ -3,7 +3,7 @@ import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import GroupPicker from '../shared/GroupPicker.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName, sortHand as sortHandBy } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -19,14 +19,7 @@ import PoytaPanel from '../shared/PoytaPanel.jsx';
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 const RANK_VAL = { A: 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, J: 11, Q: 12, K: 13 };
 
@@ -83,11 +76,12 @@ const DEFAULT_RULES = { randomPantti: false };
 function initGame(nP, pool, allBots = false, rules = DEFAULT_RULES) {
   const aiNames = shuffledAINames(pool);
   const deck = mkDeck();
-  const per  = Math.floor(52 / nP);
+  const per   = Math.floor(52 / nP);
+  const extra = 52 % nP; // ylijäävät kortit jaetaan yksi kerrallaan, ettei mikään kortti jää jakamatta
   const players = Array.from({ length: nP }, (_, i) => ({
     id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1],
     isHuman: allBots ? false : i === 0,
-    hand: deck.splice(0, per),
+    hand: deck.splice(0, per + (i < extra ? 1 : 0)),
   }));
 
   let starter = 0;
@@ -128,16 +122,194 @@ function prevWithCards(players, from, finished) {
   return -1;
 }
 
-const SUIT_ORDER = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
-function sortHand(hand) {
-  return [...hand].sort((a, b) => {
-    const sd = SUIT_ORDER[a.s] - SUIT_ORDER[b.s];
-    return sd !== 0 ? sd : RANK_VAL[a.r] - RANK_VAL[b.r];
-  });
-}
+const sortHand = hand => sortHandBy(hand, c => RANK_VAL[c.r]);
 
 // Montako korttia käsikorteista on samaa maata kuin annettu kortti
 function suitCount(hand, suit) { return hand.filter(c => c.s === suit).length; }
+
+const rankFromVal = v => {
+  if (v === 1)  return 'A';
+  if (v <= 10)  return String(v);
+  return ['J', 'Q', 'K'][v - 11];
+};
+
+// Yksi maan pinorivi (ala-pino + 7 + ylä-pino). Module-scopessa ettei React remounttaa
+// koko pinoriviä (ja siten CSS-hehkuja/-transitioneja) joka pelinäytön renderillä.
+function StackRow({ suit, G, isMobile, cardBack, t }) {
+  const row = G.rows[suit];
+  const cW = isMobile ? 46 : 60;
+  const cH = isMobile ? 52 : 85;
+  const sc  = suitColor(suit);
+  // ♠ = #1a1a1a on näkymätön tummalla taustalla → käytetään vaalempaa mustaa
+  const tc  = suit === '♠' ? '#333333' : sc;
+
+  // Ala-pinon tila
+  const lowerActive   = row.active && row.low  <= 6;
+  const lowerPlayable = row.active && row.low  === 7;          // voi pelata 6:n
+  const lowerRank     = row.active && row.low  <= 6 ? rankFromVal(row.low) : '6';
+  const lowerCast     = row.low < 6;
+  const lowerComplete = lowerCast && row.low === 1;
+
+  // Ylä-pinon tila (8 vaatii 6 ensin)
+  const upperActive   = row.active && row.high >= 8;
+  const upperPlayable = row.active && row.high === 7 && row.low <= 6;
+  const upperRank     = row.active && row.high >= 8 ? rankFromVal(row.high) : '8';
+  const upperCast     = row.high > 8;
+  const upperComplete = upperCast && row.high === 13;
+
+  // 7 hehkuu: ♣7 alussa, muut 7:t kun ♣ on aktivoitu
+  const sevenIsNext = !row.active && (suit === '♣' || G.rows['♣'].active);
+
+  // Näytä ala-pino (pelattuna tai seisova)
+  const lowerPile = lowerActive ? (
+    <div style={{ position: 'relative', width: cW, height: cH, flexShrink: 0 }}>
+      {/* Pino näkyy pinnalla olevana korttina */}
+      <div style={{
+        position: 'absolute', width: cW, height: cH, borderRadius: 6,
+        background: lowerComplete ? BACKS[cardBack].bg : '#f8f2e6',
+        border: `2px solid ${lowerComplete ? BACKS[cardBack].border : tc}`,
+        left: 0, top: 0,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        fontFamily: 'Georgia,serif', fontWeight: 700, color: tc,
+      }}>
+        {!lowerComplete && (
+          <>
+            <div style={{ fontSize: 20 }}>{lowerRank}</div>
+            <div style={{ fontSize: 16 }}>{suit}</div>
+          </>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div style={{ width: cW, height: cH, flexShrink: 0, borderRadius: 6, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.gold}44`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia,serif', fontWeight: 700, color: `${C.gold}33`, opacity: 0.5, boxShadow: lowerPlayable ? `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88` : undefined }}>
+      <div style={{ fontSize: 16 }}>6</div>
+      <div style={{ fontSize: 12 }}>{suit}</div>
+    </div>
+  );
+
+  // Näytä ylä-pino (pelattuna tai seisova)
+  const upperPile = upperActive ? (
+    <div style={{ position: 'relative', width: cW, height: cH, flexShrink: 0 }}>
+      <div style={{
+        position: 'absolute', width: cW, height: cH, borderRadius: 6,
+        background: upperComplete ? BACKS[cardBack].bg : '#f8f2e6',
+        border: `2px solid ${upperComplete ? BACKS[cardBack].border : tc}`,
+        left: 0, top: 0,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        fontFamily: 'Georgia,serif', fontWeight: 700, color: tc,
+      }}>
+        {!upperComplete && (
+          <>
+            <div style={{ fontSize: 20 }}>{upperRank}</div>
+            <div style={{ fontSize: 16 }}>{suit}</div>
+          </>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div style={{ width: cW, height: cH, flexShrink: 0, borderRadius: 6, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.gold}44`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia,serif', fontWeight: 700, color: `${C.gold}33`, opacity: 0.5, boxShadow: upperPlayable ? `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88` : undefined }}>
+      <div style={{ fontSize: 16 }}>8</div>
+      <div style={{ fontSize: 12 }}>{suit}</div>
+    </div>
+  );
+
+  // Aputext: näytä pelattavat kortit väreillä
+  let helpText = '';
+  let helpElements = null;
+  if (!row.active) {
+    // Vain ♣7 voidaan pelata ensin, sitten muut 7:t
+    if (suit === '♣' || G.rows['♣'].active) {
+      helpElements = (
+        <>
+          {t('games.ristiseiska.ui.playPrompt')}{' '}
+          <span style={{ color: tc }}>7{suit}</span>
+        </>
+      );
+    }
+  } else {
+    const lowerCast = row.low < 6;
+    const upperCast = row.high > 8;
+    const playable = [];
+    // Ala-pino: seuraava on row.low - 1
+    if (row.low > 1) {
+      const nextLower = row.low - 1;
+      // 5 vaatii 8:n ensin
+      if (nextLower !== 5 || row.high >= 8) {
+        playable.push(rankFromVal(nextLower));
+      }
+    }
+    // Ylä-pino: seuraava on row.high + 1
+    if (row.high < 13) {
+      const nextUpper = row.high + 1;
+      // 8 vaatii 6:n ensin
+      if (nextUpper !== 8 || row.low <= 6) {
+        playable.push(rankFromVal(nextUpper));
+      }
+    }
+    if (playable.length > 0) {
+      helpElements = (
+        <>
+          {t('games.ristiseiska.ui.playPrompt')}{' '}
+          {playable.map((r, i) => (
+            <span key={i} style={{ color: tc }}>
+              {r}{suit}
+              {i < playable.length - 1 ? ', ' : ''}
+            </span>
+          ))}
+        </>
+      );
+    } else if (lowerComplete && upperComplete) {
+      helpText = t('games.ristiseiska.ui.pilesBeaten');
+    } else if (lowerCast && upperCast) {
+      helpText = t('games.ristiseiska.ui.pilesOpen');
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
+        {upperPile}
+        {row.active ? (
+          <div style={{
+            width: cW, height: cH, flexShrink: 0, borderRadius: 6,
+            background: '#f8f2e6',
+            border: `2px solid ${tc}`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'Georgia,serif', fontWeight: 700,
+            color: tc,
+            opacity: 1,
+          }}>
+            <div style={{ fontSize: 20 }}>7</div>
+            <div style={{ fontSize: 16 }}>{suit}</div>
+          </div>
+        ) : (
+          <div style={{
+            width: cW, height: cH, flexShrink: 0, borderRadius: 6,
+            background: 'rgba(255,255,255,0.02)',
+            border: `1px dashed ${C.gold}44`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'Georgia,serif', fontWeight: 700,
+            color: `${C.gold}33`,
+            opacity: 0.5,
+            boxShadow: sevenIsNext ? (suit === '♣'
+              ? `0 0 35px ${tc}ff, 0 0 60px ${tc}ff, inset 0 0 20px ${tc}aa`
+              : `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88`)
+              : undefined,
+          }}>
+            <div style={{ fontSize: 16 }}>7</div>
+            <div style={{ fontSize: 12 }}>{suit}</div>
+          </div>
+        )}
+        {lowerPile}
+      </div>
+      {(helpText || helpElements) && (
+        <span style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', opacity: 0.7, textAlign: 'center' }}>
+          {helpElements || helpText}
+        </span>
+      )}
+    </div>
+  );
+}
 
 // Kuinka monen kortin päässä kortti on pelattavaksi (0 = pelattavissa nyt)
 function distanceToPlay(card, rows) {
@@ -626,7 +798,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
           })}
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
+          <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
           <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
         </div>
       </div>
@@ -648,188 +820,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   // Ylä-pinon huippu = suurin pelattu arvo (8→9→10→J→Q→K)
   const CARD_H = 30;
   const CARD_W = 48;
-
-  const rankFromVal = v => {
-    if (v === 1)  return 'A';
-    if (v <= 10)  return String(v);
-    return ['J', 'Q', 'K'][v - 11];
-  };
-
-  const StackRow = ({ suit }) => {
-    const row = G.rows[suit];
-    const cW = isMobile ? 46 : 60;
-    const cH = isMobile ? 52 : 85;
-    const sc  = suitColor(suit);
-    // ♠ = #1a1a1a on näkymätön tummalla taustalla → käytetään vaalempaa mustaa
-    const tc  = suit === '♠' ? '#333333' : sc;
-
-    // Ala-pinon tila
-    const lowerActive   = row.active && row.low  <= 6;
-    const lowerPlayable = row.active && row.low  === 7;          // voi pelata 6:n
-    const lowerRank     = row.active && row.low  <= 6 ? rankFromVal(row.low) : '6';
-    const lowerCast     = row.low < 6;
-    const lowerComplete = lowerCast && row.low === 1;
-
-    // Ylä-pinon tila (8 vaatii 6 ensin)
-    const upperActive   = row.active && row.high >= 8;
-    const upperPlayable = row.active && row.high === 7 && row.low <= 6;
-    const upperRank     = row.active && row.high >= 8 ? rankFromVal(row.high) : '8';
-    const upperCast     = row.high > 8;
-    const upperComplete = upperCast && row.high === 13;
-
-    // 7 hehkuu: ♣7 alussa, muut 7:t kun ♣ on aktivoitu
-    const sevenIsNext = !row.active && (suit === '♣' || G.rows['♣'].active);
-
-    // Näytä ala-pino (pelattuna tai seisova)
-    const lowerPile = lowerActive ? (
-      <div style={{ position: 'relative', width: cW, height: cH, flexShrink: 0 }}>
-        {/* Pino näkyy pinnalla olevana korttina */}
-        <div style={{
-          position: 'absolute', width: cW, height: cH, borderRadius: 6,
-          background: lowerComplete ? BACKS[cardBack].bg : '#f8f2e6',
-          border: `2px solid ${lowerComplete ? BACKS[cardBack].border : tc}`,
-          left: 0, top: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'Georgia,serif', fontWeight: 700, color: tc,
-        }}>
-          {!lowerComplete && (
-            <>
-              <div style={{ fontSize: 20 }}>{lowerRank}</div>
-              <div style={{ fontSize: 16 }}>{suit}</div>
-            </>
-          )}
-        </div>
-      </div>
-    ) : (
-      <div style={{ width: cW, height: cH, flexShrink: 0, borderRadius: 6, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.gold}44`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia,serif', fontWeight: 700, color: `${C.gold}33`, opacity: 0.5, boxShadow: lowerPlayable ? `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88` : undefined }}>
-        <div style={{ fontSize: 16 }}>6</div>
-        <div style={{ fontSize: 12 }}>{suit}</div>
-      </div>
-    );
-
-    // Näytä ylä-pino (pelattuna tai seisova)
-    const upperPile = upperActive ? (
-      <div style={{ position: 'relative', width: cW, height: cH, flexShrink: 0 }}>
-        <div style={{
-          position: 'absolute', width: cW, height: cH, borderRadius: 6,
-          background: upperComplete ? BACKS[cardBack].bg : '#f8f2e6',
-          border: `2px solid ${upperComplete ? BACKS[cardBack].border : tc}`,
-          left: 0, top: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'Georgia,serif', fontWeight: 700, color: tc,
-        }}>
-          {!upperComplete && (
-            <>
-              <div style={{ fontSize: 20 }}>{upperRank}</div>
-              <div style={{ fontSize: 16 }}>{suit}</div>
-            </>
-          )}
-        </div>
-      </div>
-    ) : (
-      <div style={{ width: cW, height: cH, flexShrink: 0, borderRadius: 6, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.gold}44`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia,serif', fontWeight: 700, color: `${C.gold}33`, opacity: 0.5, boxShadow: upperPlayable ? `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88` : undefined }}>
-        <div style={{ fontSize: 16 }}>8</div>
-        <div style={{ fontSize: 12 }}>{suit}</div>
-      </div>
-    );
-
-    // Aputext: näytä pelattavat kortit väreillä
-    let helpText = '';
-    let helpElements = null;
-    if (!row.active) {
-      // Vain ♣7 voidaan pelata ensin, sitten muut 7:t
-      if (suit === '♣' || G.rows['♣'].active) {
-        helpElements = (
-          <>
-            {t('games.ristiseiska.ui.playPrompt')}{' '}
-            <span style={{ color: tc }}>7{suit}</span>
-          </>
-        );
-      }
-    } else {
-      const lowerCast = row.low < 6;
-      const upperCast = row.high > 8;
-      const playable = [];
-      // Ala-pino: seuraava on row.low - 1
-      if (row.low > 1) {
-        const nextLower = row.low - 1;
-        // 5 vaatii 8:n ensin
-        if (nextLower !== 5 || row.high >= 8) {
-          playable.push(rankFromVal(nextLower));
-        }
-      }
-      // Ylä-pino: seuraava on row.high + 1
-      if (row.high < 13) {
-        const nextUpper = row.high + 1;
-        // 8 vaatii 6:n ensin
-        if (nextUpper !== 8 || row.low <= 6) {
-          playable.push(rankFromVal(nextUpper));
-        }
-      }
-      if (playable.length > 0) {
-        helpElements = (
-          <>
-            {t('games.ristiseiska.ui.playPrompt')}{' '}
-            {playable.map((r, i) => (
-              <span key={i} style={{ color: tc }}>
-                {r}{suit}
-                {i < playable.length - 1 ? ', ' : ''}
-              </span>
-            ))}
-          </>
-        );
-      } else if (lowerComplete && upperComplete) {
-        helpText = t('games.ristiseiska.ui.pilesBeaten');
-      } else if (lowerCast && upperCast) {
-        helpText = t('games.ristiseiska.ui.pilesOpen');
-      }
-    }
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
-          {upperPile}
-          {row.active ? (
-            <div style={{
-              width: cW, height: cH, flexShrink: 0, borderRadius: 6,
-              background: '#f8f2e6',
-              border: `2px solid ${tc}`,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'Georgia,serif', fontWeight: 700,
-              color: tc,
-              opacity: 1,
-            }}>
-              <div style={{ fontSize: 20 }}>7</div>
-              <div style={{ fontSize: 16 }}>{suit}</div>
-            </div>
-          ) : (
-            <div style={{
-              width: cW, height: cH, flexShrink: 0, borderRadius: 6,
-              background: 'rgba(255,255,255,0.02)',
-              border: `1px dashed ${C.gold}44`,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'Georgia,serif', fontWeight: 700,
-              color: `${C.gold}33`,
-              opacity: 0.5,
-              boxShadow: sevenIsNext ? (suit === '♣'
-                ? `0 0 35px ${tc}ff, 0 0 60px ${tc}ff, inset 0 0 20px ${tc}aa`
-                : `0 0 30px ${tc}ff, 0 0 50px ${tc}cc, inset 0 0 20px ${tc}88`)
-                : undefined,
-            }}>
-              <div style={{ fontSize: 16 }}>7</div>
-              <div style={{ fontSize: 12 }}>{suit}</div>
-            </div>
-          )}
-          {lowerPile}
-        </div>
-        {(helpText || helpElements) && (
-          <span style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', opacity: 0.7, textAlign: 'center' }}>
-            {helpElements || helpText}
-          </span>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 620, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
@@ -891,7 +881,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       <PoytaPanel isMobile={isMobile} minHeight={null}
         title={<span>{t('games.ristiseiska.ui.towers')} · {t('games.ristiseiska.ui.lowerShort')} [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; {t('games.ristiseiska.ui.upperShort')} [8→K]</span>}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? 6 : 16 }}>
-          {SUITS.map(s => <StackRow key={s} suit={s} />)}
+          {SUITS.map(s => <StackRow key={s} suit={s} G={G} isMobile={isMobile} cardBack={cardBack} t={t} />)}
         </div>
       </PoytaPanel>
 

@@ -11,14 +11,7 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 const SPEC   = { J: 1, Q: 2, K: 3, A: 4 };
 const isSpec = r => r in SPEC;
@@ -384,7 +377,13 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
       const newCenter = [lostCard, ...curCenter];
       setPiles(newPiles); pilesRef.current = newPiles;
       setCenter(newCenter); centerRef.current = newCenter;
-      nextTurn(playerIdx, newPiles, newCenter, chRef.current);
+      // Sakkokortti voi muodostaa uuden parin keskelle — silloin peli jatkuu läpsäistävänä parina,
+      // ei vuoronvaihtona (muuten pari jää lukituksi eikä sitä voi enää laillisesti läpsäistä)
+      if (newCenter.length >= 2 && newCenter[0].r === newCenter[1].r) {
+        handleMatch(newPiles, newCenter, playerIdx);
+      } else {
+        nextTurn(playerIdx, newPiles, newCenter, chRef.current);
+      }
       return;
     }
     if (sndRef.current) { SFX.slap(); tm(() => SFX.winPile(), 200); }
@@ -410,6 +409,10 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
       const newCenter = [lostCard, ...centerRef.current];
       setPiles(newPiles); pilesRef.current = newPiles;
       setCenter(newCenter); centerRef.current = newCenter;
+      // Sakkokortti voi muodostaa uuden parin keskelle — sama korjaus kuin doSlapissa
+      if (newCenter.length >= 2 && newCenter[0].r === newCenter[1].r) {
+        handleMatch(newPiles, newCenter, 0);
+      }
       return;
     }
     const ms = Math.round(performance.now() - matchTimeRef.current);

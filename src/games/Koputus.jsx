@@ -15,14 +15,7 @@ const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 function initGame(n, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
@@ -71,7 +64,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
       <div style={{ display: 'flex', alignItems: 'center', gap: small ? 4 : 8, marginBottom: small ? 0 : 8, fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, flexShrink: 0 }}>
         <span style={{ fontSize: small ? 12 : 14 }}>{player.isHuman ? '👤' : '🤖'}</span>
         <span style={{ fontWeight: isActive ? 700 : 400, letterSpacing: 0.5 }}>{player.name}</span>
-        {isActive && !small && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>● vuoro</span>}
+        {isActive && !small && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>{t('games.koputus.ui.turnIndicator')}</span>}
         {showScore && player.isHuman && <span style={{ marginLeft: 'auto', color: '#a0baa8', fontSize: 12 }}>{pScore(player)} p</span>}
         {!small && <span style={{ marginLeft: showScore && player.isHuman ? 6 : 'auto', fontFamily: 'sans-serif', fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>{t('ui.shared.fieldLabel')}</span>}
       </div>
@@ -99,6 +92,17 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
         })}
       </div>
     </div>
+  );
+}
+
+// Module-scopessa ettei React remounttaa nappia (ja siten hover-tilaa/transitiota) joka renderillä.
+function Btn({ label, onClick, color, outline, small: sm }) {
+  const [h, setH] = useState(false);
+  return (
+    <button onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+      style={{ background: outline ? (h ? color + '18' : 'transparent') : `linear-gradient(135deg,${color},${color}cc)`, border: `1px solid ${outline ? (h ? color : color + '66') : color}`, borderRadius: 9, padding: sm ? '7px 14px' : '10px 20px', color: outline ? (h ? color : color + 'bb') : '#0d2118', fontSize: sm ? 11 : 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.4, transition: 'all 0.15s' }}>
+      {label}
+    </button>
   );
 }
 
@@ -425,13 +429,15 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
           stopReact.current = true; clearInterval(reactInt.current); setRO(false);
           setMsg(M.aiReact(p.name, p.cards[mi]));
           const cur = gRef.current;
+          const reactedCard = cur.players[i].cards[mi];
           const players = cur.players.map((pl, pi) => {
             if (pi !== i) return pl;
             const cards = [...pl.cards]; cards[mi] = null;
             const kn = new Set([...pl.known].filter(k => k !== mi));
             return { ...pl, cards, known: kn };
           });
-          const newG = { ...cur, players }; setG(newG); gRef.current = newG;
+          const newG = { ...cur, players, discard: reactedCard ? [...cur.discard, reactedCard] : cur.discard };
+          setG(newG); gRef.current = newG;
           tm(() => advance(newG, byIdx), 900);
         }, delay);
       } else if (Math.random() < wrongReactChance) {
@@ -456,7 +462,8 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
               const kn = new Set([...pl.known].filter(k => k !== wrongIdx));
               return { ...pl, cards, known: kn };
             });
-            const newG = { ...cur, players }; setG(newG); gRef.current = newG;
+            const newG = { ...cur, players, discard: [...cur.discard, wrongCard] };
+            setG(newG); gRef.current = newG;
             tm(() => advance(newG, byIdx), 900);
           } else {
             // Väärä arvaus — rangaistus
@@ -488,13 +495,15 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     if (g.players[0].cards[cardIdx]?.r === top.r) {
       const remainingNonNull = g.players[0].cards.filter((c, i) => c !== null && i !== cardIdx).length;
       const isLastCard = remainingNonNull === 0;
+      const reactedCard = g.players[0].cards[cardIdx];
       const players = g.players.map((p, i) => {
         if (i !== 0) return p;
         const cards = [...p.cards]; cards[cardIdx] = null;
         const kn = new Set(p.known); kn.delete(cardIdx);
         return { ...p, cards, known: kn };
       });
-      const newG = { ...g, players }; setG(newG); gRef.current = newG;
+      const newG = { ...g, players, discard: reactedCard ? [...g.discard, reactedCard] : g.discard };
+      setG(newG); gRef.current = newG;
       if (isLastCard) {
         if (soundOn) SFX.lastCardWin();
         setMsg(t('games.koputus.msg.lastCardPlayed'));
@@ -589,16 +598,6 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       }
     }, 3600);
   }
-
-  const Btn = ({ label, onClick, color, outline, small: sm }) => {
-    const [h, setH] = useState(false);
-    return (
-      <button onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
-        style={{ background: outline ? (h ? color + '18' : 'transparent') : `linear-gradient(135deg,${color},${color}cc)`, border: `1px solid ${outline ? (h ? color : color + '66') : color}`, borderRadius: 9, padding: sm ? '7px 14px' : '10px 20px', color: outline ? (h ? color : color + 'bb') : '#0d2118', fontSize: sm ? 11 : 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.4, transition: 'all 0.15s' }}>
-        {label}
-      </button>
-    );
-  };
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
 
@@ -706,7 +705,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       </div>
       {knockedBy !== null && (
         <div style={{ marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>🤜 Koputettu — viimeinen kierros!</div>
+          <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>{t('games.koputus.ui.knockedBanner')}</div>
         </div>
       )}
       {ais.length > 0 && (
@@ -815,12 +814,12 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: drawn && showDrawn ? 'rgba(255,255,255,0.022)' : 'transparent', border: `1px solid ${drawn && showDrawn ? '#2a4a32' : 'transparent'}`, borderRadius: 10, marginBottom: isMobile ? 4 : 12, minHeight: isMobile ? 36 : 50, transition: 'background 0.2s' }}>
         {drawn && showDrawn
-          ? <><span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flexShrink: 0 }}>Nostettu:</span><Card card={drawn} faceUp small /><span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{drawn.r}{drawn.s} — <span style={{ color: C.gold, fontWeight: 700 }}>{drawn.v} p</span></span></>
+          ? <><span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flexShrink: 0 }}>{t('games.koputus.ui.drawnLabel')}</span><Card card={drawn} faceUp small /><span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{drawn.r}{drawn.s} — <span style={{ color: C.gold, fontWeight: 700 }}>{drawn.v} p</span></span></>
           : <span style={{ color: 'transparent', userSelect: 'none' }}>·</span>}
       </div>
       {phase === 'spec_k_confirm' && specState?.tgtCard && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'rgba(201,168,76,0.06)', border: `1px solid ${C.gold}44`, borderRadius: 10, marginBottom: 12 }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, flexShrink: 0 }}>Vastustajan kortti:</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, flexShrink: 0 }}>{t('games.koputus.ui.opponentCardLabel')}</span>
           <Card card={specState.tgtCard} faceUp small />
           <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{specState.tgtCard.r}{specState.tgtCard.s} — <span style={{ color: C.gold, fontWeight: 700 }}>{specState.tgtCard.v} p</span></span>
         </div>

@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble, newDeck } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble, newDeck, sortHand as sortHandBy } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -13,14 +13,7 @@ import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 function renderLogMessage(text) {
   const parts = [];
@@ -110,6 +103,43 @@ function bestCaptureForCard(hc, table, builds) {
     if (canPartition(table, v)) consider(table); else consider([]);
   }
   return best;
+}
+
+// Onko kädessä kortti joka voi kaapata jotain pöydältä (koko-suojattu, vrt. bestCaptureForCard)
+function hasAnyTableCapture(hand, table) {
+  const n = table.length;
+  if (n === 0) return false;
+  if (n > 16) return hand.some(hc => canPartition(table, handVal(hc)));
+  return hand.some(hc => {
+    const hv = handVal(hc);
+    for (let mask = 1; mask < (1 << n); mask++) {
+      const sel = table.filter((_, i) => (mask >> i) & 1);
+      if (canPartition(sel, hv)) return true;
+    }
+    return false;
+  });
+}
+
+// Onko jollain candidates-korteista + pöytäyhdistelmällä rakennelma jonka pool-käsi voi täydentää
+// myöhemmin (koko-suojattu). candidates=hand ja pool=hand kysyy "onko kädessä lainkaan mahdollisuutta";
+// candidates=[hc] kysyy saman yhdelle tietylle kortille (käytetään vihjeen per-kortti-listauksessa).
+function hasAnyBuildOption(candidates, pool, table, buildCap) {
+  const n = table.length;
+  const canBuildWith = (hc, sel) => {
+    const hv = handVal(hc);
+    const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
+    return bv <= buildCap && pool.some(c => c.id !== hc.id && handVal(c) === bv);
+  };
+  if (n > 16) {
+    // Iso pöytä: vältä 2^n-läpikäynti — kokeile vain tyhjää ja koko pöytää (vrt. bestCaptureForCard)
+    return candidates.some(hc => canBuildWith(hc, []) || canBuildWith(hc, table));
+  }
+  return candidates.some(hc => {
+    for (let mask = 0; mask < (1 << n); mask++) {
+      if (canBuildWith(hc, table.filter((_, i) => (mask >> i) & 1))) return true;
+    }
+    return false;
+  });
 }
 
 // ── Mestari-AI (hard): tuntematon korttipankki ─────────────────────────────
@@ -256,13 +286,7 @@ function dealHands(g) {
   return { ...g, players, deck };
 }
 
-const SUIT_ORDER = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
-function sortHand(hand) {
-  return [...hand].sort((a, b) => {
-    const sd = SUIT_ORDER[a.s] - SUIT_ORDER[b.s];
-    return sd !== 0 ? sd : handVal(a) - handVal(b);
-  });
-}
+const sortHand = hand => sortHandBy(hand, handVal);
 
 const lblColored = c => c ? `${c.r}${c.s}` : '—';
 
@@ -472,15 +496,17 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     }
 
     // Pöytäkorttien kaappaus
-    const tableCaptureHCards = [];
-    for (const hc of hand) {
-      const hv = handVal(hc);
-      const n = table.length;
-      for (let mask = 1; mask < (1 << n); mask++) {
-        const sel = table.filter((_, i) => (mask >> i) & 1);
-        if (canPartition(sel, hv)) { tableCaptureHCards.push(hc); break; }
-      }
-    }
+    const n = table.length;
+    const tableCaptureHCards = n > 16
+      ? hand.filter(hc => canPartition(table, handVal(hc)))
+      : hand.filter(hc => {
+          const hv = handVal(hc);
+          for (let mask = 1; mask < (1 << n); mask++) {
+            const sel = table.filter((_, i) => (mask >> i) & 1);
+            if (canPartition(sel, hv)) return true;
+          }
+          return false;
+        });
 
     // Kaappaus = pöytäkortit + omat rakennelmat (deduplikoitu)
     const allCaptureHCards = [...tableCaptureHCards];
@@ -492,20 +518,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
 
     // Rakennelman luonti (ei jo muissa kategorioissa)
     const allUsed = [...allCaptureHCards, ...uniqueStealHCards];
-    const buildCreateHCards = [];
-    for (const hc of hand) {
-      if (allUsed.find(c => c.id === hc.id)) continue;
-      const hv = handVal(hc);
-      const n = table.length;
-      for (let mask = 0; mask < (1 << n); mask++) {
-        const sel = table.filter((_, i) => (mask >> i) & 1);
-        const buildValue = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-        if (buildValue > buildCap) continue;
-        if (hand.some(c => c.id !== hc.id && handVal(c) === buildValue)) {
-          buildCreateHCards.push(hc); break;
-        }
-      }
-    }
+    const buildCreateHCards = hand.filter(hc =>
+      !allUsed.find(c => c.id === hc.id) && hasAnyBuildOption([hc], hand, table, buildCap)
+    );
 
     const totalCount = allCaptureHCards.length + uniqueStealHCards.length + buildCreateHCards.length;
     if (!totalCount) return t('games.kasino.hint.noCapture');
@@ -528,8 +543,10 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     const next = (fromIdx + 1) % g2.players.length;
     const p = g2.players[next];
 
-    // Pakollinen siirto: yksi kortti kädessä ja pöytä tyhjä (vain ihmispelaajalle)
-    if (next === 0 && p.isHuman && p.hand.length === 1 && g2.table.length === 0) {
+    // Pakollinen siirto: yksi kortti kädessä ja pöytä tyhjä (vain ihmispelaajalle).
+    // Ei koske pelaajaa jolla on oma rakennelma pöydällä — sitä ei saa jättää lunastamatta (noBuildLeave).
+    const hasOwnBuildForced = g2.builds.some(b => b.ownerIdx === 0);
+    if (next === 0 && p.isHuman && p.hand.length === 1 && g2.table.length === 0 && !hasOwnBuildForced) {
       setCur(0); curRef.current = 0;
       setPhase('idle'); phaseRef.current = 'idle';
       setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
@@ -680,7 +697,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   }
 
   function doCapture(g, playerIdx, handCard, tableCards, silent = false) {
-    const isMökki = tableCards.length === g.table.length && g.table.length > 0;
+    const isMökki = tableCards.length === g.table.length && g.table.length > 0 && g.builds.length === 0;
     const allCaptured = [handCard, ...tableCards];
     const newTable = g.table.filter(c => !tableCards.find(t => t.id === c.id));
     let players = g.players.map((p, i) => i === playerIdx ? {
@@ -1466,15 +1483,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
           <button
             onClick={() => {
               if (!captureMode) {
-                const h = G.players[0].hand, t = G.table, n = t.length;
-                const hasTableCapture = h.some(hc => {
-                  const hv = handVal(hc);
-                  for (let mask = 1; mask < (1 << n); mask++) {
-                    const sel = t.filter((_, i) => (mask >> i) & 1);
-                    if (canPartition(sel, hv)) return true;
-                  }
-                  return false;
-                });
+                const h = G.players[0].hand, t = G.table;
+                const hasTableCapture = hasAnyTableCapture(h, t);
                 const hasBuildCapture = G.builds.some(b => h.some(hc => handVal(hc) === b.value));
                 if (!hasTableCapture && !hasBuildCapture) {
                   addLog(t('games.kasino.msg.noCaptureOpts'));
@@ -1492,18 +1502,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
           <button
             onClick={() => {
               if (!buildMode) {
-                const h = G.players[0].hand, t = G.table, n = t.length;
-                let ok = false;
-                outer: for (const hc of h) {
-                  const hv = handVal(hc);
-                  for (let mask = 0; mask < (1 << n); mask++) {
-                    const sel = t.filter((_, i) => (mask >> i) & 1);
-                    const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-                    if (bv > buildCap) continue;
-                    if (h.some(c => c.id !== hc.id && handVal(c) === bv)) { ok = true; break outer; }
-                  }
-                }
-                if (!ok) { addLog(t('games.kasino.msg.noBuildOpts')); return; }
+                const h = G.players[0].hand, t = G.table;
+                if (!hasAnyBuildOption(h, h, t, buildCap)) { addLog(t('games.kasino.msg.noBuildOpts')); return; }
               }
               setBuildMode(m => !m); setCaptureMode(false); setLeaveMode(false); setSelTable([]); setSelBuilds([]);
             }}
@@ -1516,27 +1516,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
           <button
             onClick={() => {
               if (!leaveMode) {
-                const h = G.players[0].hand, t = G.table, n = t.length;
-                const hasCapture = h.some(hc => {
-                  const hv = handVal(hc);
-                  for (let mask = 1; mask < (1 << n); mask++) {
-                    const sel = t.filter((_, i) => (mask >> i) & 1);
-                    if (canPartition(sel, hv)) return true;
-                  }
-                  return false;
-                }) || G.builds.some(b => h.some(hc => handVal(hc) === b.value));
-                const hasBuild = (() => {
-                  for (const hc of h) {
-                    const hv = handVal(hc);
-                    for (let mask = 0; mask < (1 << n); mask++) {
-                      const sel = t.filter((_, i) => (mask >> i) & 1);
-                      const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-                      if (bv > buildCap) continue;
-                      if (h.some(c => c.id !== hc.id && handVal(c) === bv)) return true;
-                    }
-                  }
-                  return false;
-                })();
+                const h = G.players[0].hand, t = G.table;
+                const hasCapture = hasAnyTableCapture(h, t) || G.builds.some(b => h.some(hc => handVal(hc) === b.value));
+                const hasBuild = hasAnyBuildOption(h, h, t, buildCap);
                 const voit = [];
                 if (hasCapture) voit.push(t('games.kasino.msg.canCapture'));
                 if (hasBuild)   voit.push(t('games.kasino.msg.canBuild'));

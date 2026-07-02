@@ -544,6 +544,10 @@ export const en = {
         knock: '🤜 I knock!',
         skipSwap: 'Skip — no swap',
         swapHere: '✓ Swap here',
+        turnIndicator: '● turn',
+        knockedBanner: '🤜 Knocked — last round!',
+        drawnLabel: 'Drawn:',
+        opponentCardLabel: "Opponent's card:",
       },
       rules: [
         'At the start you may peek at two cards. Learn the rest during play, or swap in a card drawn from the deck.',

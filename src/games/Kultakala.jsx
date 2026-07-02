@@ -12,14 +12,7 @@ import PakkaCount from '../shared/PakkaCount.jsx';
 import { useT, tr } from '../shared/i18n.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-function shuffledAINames(pool) {
-  const a = [...(pool || AI_NAMES)];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 
 // Värilliset kortit lokeissa
@@ -117,7 +110,7 @@ function DiceRoll({ players, onDone, soundOn }) {
       players.forEach(p => { r[p.id] = Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)); });
       setRolls(r);
     }, 120);
-    tm(() => {
+    const timeout = setTimeout(() => {
       clearInterval(interval);
       const finalRolls = {};
       players.forEach(p => { finalRolls[p.id] = Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)); });
@@ -125,7 +118,7 @@ function DiceRoll({ players, onDone, soundOn }) {
       setPhase('result');
       if (soundOn) SFX.fanfare();
     }, 2200);
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval); clearTimeout(timeout); };
   }, []);
 
   const sums = Object.entries(rolls).map(([id, dice]) => ({ id: parseInt(id), sum: dice.reduce((a, b) => a + b, 0) }));

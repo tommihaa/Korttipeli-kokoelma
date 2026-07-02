@@ -563,6 +563,10 @@ export const fi = {
         knock: '🤜 Koputan!',
         skipSwap: 'Ohita — en vaihda',
         swapHere: '✓ Vaihda tähän',
+        turnIndicator: '● vuoro',
+        knockedBanner: '🤜 Koputettu — viimeinen kierros!',
+        drawnLabel: 'Nostettu:',
+        opponentCardLabel: 'Vastustajan kortti:',
       },
       rules: [
         'Alussa saat kurkata kaksi korttia. Opi pelin aikana muutkin tai vaihda pakasta vedettyyn.',
