@@ -1,6 +1,12 @@
 // Muutosloki — norja (bokmål). Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Pause fungerer nå pålitelig i alle spill: når du setter en Botkamp på pause, stopper datamotstanderne umiddelbart og rekker ikke å gjøre et trekk mens spillet er satt på pause.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako har et nytt appikon: en vifte av kort i kortstokkens fire farger. Hvis du har lagt Jako til på enhetens startskjerm, ser ikonet og oppstartsskjermen nå renere og mer enhetlige ut.',

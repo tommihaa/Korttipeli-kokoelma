@@ -1,6 +1,12 @@
 // Muutosloki — viro. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Paus töötab nüüd kõigis mängudes usaldusväärselt: kui paned Bottide lahingu pausile, peatub tehisintellekt kohe ega jõua pausi ajal käiku teha.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jakol on uus rakenduse ikoon: kaardilehvik kaardipaki neljas värvis. Kui oled lisanud Jako oma seadme avakuvale, näevad ikoon ja käivitusekraan nüüd puhtamad ja ühtsemad välja.',

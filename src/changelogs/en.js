@@ -1,6 +1,12 @@
 // Muutosloki — englanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Pause now works reliably in every game: when you pause a Bot Battle, the AI stops immediately and can’t sneak in a move while paused.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako has a new app icon: a fan of cards in the deck’s four colours. If you’ve added Jako to your device’s home screen, the icon and the launch screen now look cleaner and more unified.',

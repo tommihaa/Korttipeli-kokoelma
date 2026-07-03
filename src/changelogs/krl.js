@@ -1,6 +1,12 @@
 // Muutosloki — karjala. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Tauko ruadau nygöi luotettavasti kaikis kizois: konzu seizauttat Bottien Toran, tekoälö seizahtuu kerras eigo ehti luadie siirduo tauvon aigah.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jakol on uuzi sovelluksen kuvake: korttiviuhku pakan nelläl väril. Ku olet ližännyh Jakon laittehes alguruuttah, kuvake da avavusruuttu nägyjäh nygöi siistimbäh da yhtenäzembäh.',

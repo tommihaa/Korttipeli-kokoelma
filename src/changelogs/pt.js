@@ -1,6 +1,12 @@
 // Muutosloki — portugali. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'A pausa agora funciona de forma fiável em todos os jogos: quando pausas uma Batalha de Bots, a IA para imediatamente e não consegue fazer uma jogada durante a pausa.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'O Jako tem um novo ícone de aplicação: um leque de cartas nas quatro cores do baralho. Se adicionaste o Jako ao ecrã inicial do teu dispositivo, o ícone e o ecrã de arranque estão agora mais limpos e harmoniosos.',

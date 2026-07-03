@@ -1,6 +1,12 @@
 // Muutosloki — italia. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'La pausa ora funziona in modo affidabile in tutti i giochi: quando metti in pausa una Battaglia dei Bot, l’IA si ferma subito e non riesce a fare una mossa durante la pausa.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako ha una nuova icona dell’app: un ventaglio di carte nei quattro colori del mazzo. Se hai aggiunto Jako alla schermata Home del tuo dispositivo, l’icona e la schermata di avvio appaiono ora più pulite e uniformi.',

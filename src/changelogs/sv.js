@@ -1,6 +1,12 @@
 // Muutosloki — ruotsi. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Paus fungerar nu pålitligt i alla spel: när du pausar en Botternas Strid stannar datorspelarna genast och hinner inte göra ett drag medan spelet är pausat.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako har en ny appikon: en solfjäder av kort i kortlekens fyra färger. Om du har lagt till Jako på enhetens hemskärm ser ikonen och startskärmen nu renare och mer enhetliga ut.',

@@ -1,6 +1,12 @@
 // Muutosloki — puola. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Pauza działa teraz niezawodnie we wszystkich grach: gdy wstrzymasz Bitwę botów, SI natychmiast się zatrzymuje i nie zdąży wykonać ruchu podczas pauzy.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako ma nową ikonę aplikacji: wachlarz kart w czterech kolorach talii. Jeśli dodałeś Jako do ekranu głównego urządzenia, ikona i ekran startowy wyglądają teraz czyściej i bardziej spójnie.',

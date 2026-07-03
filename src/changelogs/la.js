@@ -1,6 +1,12 @@
 // Muutosloki — latina. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Mora nunc in omnibus lusibus certe operatur: cum Proelium machinarum intermittis, intellegentia artificialis statim cessat nec durante mora movere potest.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako novam imaginem applicationis habet: flabellum chartarum in quattuor coloribus chartularum. Si Jako ad principalem tabulam instrumenti tui addidisti, imago et tabula initialis nunc mundiores et magis congruentes apparent.',

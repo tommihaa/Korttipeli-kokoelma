@@ -7,6 +7,12 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Tauko toimii nyt luotettavasti kaikissa peleissä: kun pysäytät bottiottelun, tekoäly pysähtyy heti eikä ehdi tehdä siirtoa tauon aikana.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jakolla on uusi sovelluskuvake: korttiviuhka pakan neljällä värillä. Jos olet lisännyt Jakon laitteesi aloitusnäytölle, kuvake ja avausruutu näyttävät nyt siistimmiltä ja yhtenäisiltä.',

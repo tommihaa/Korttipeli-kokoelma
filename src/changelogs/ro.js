@@ -1,6 +1,12 @@
 // Muutosloki — romania. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Pauza funcționează acum fiabil în toate jocurile: când pui pe pauză o Bătălie a boților, IA se oprește imediat și nu mai apucă să facă o mutare în timpul pauzei.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako are o pictogramă nouă de aplicație: un evantai de cărți în cele patru culori ale pachetului. Dacă ai adăugat Jako pe ecranul principal al dispozitivului, pictograma și ecranul de pornire arată acum mai curate și mai unitare.',

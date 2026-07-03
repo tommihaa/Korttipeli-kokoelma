@@ -1,6 +1,12 @@
 // Muutosloki — romani. Konekäännös fi.js:stä (auto-taso, testaamaton). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'O ačhipe akana kerel buti mišto ande sa le khelimata: kana ačhaves o Maripe le botengo, o AI ačhel jekhvar thaj naštik kerel khelipe kana si ačhado.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako si les nevo ikona la aplikaciaki: jekh evantaj kartengo ande štar farbi le paklesko. Te thodian o Jako pe e khereski ekrana tle telefonoski, o ikona thaj e ekrana le startoski akana sikadžon mai uže thaj mai jekhutne.',

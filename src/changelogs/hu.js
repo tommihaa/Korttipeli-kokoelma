@@ -1,6 +1,12 @@
 // Muutosloki — unkari. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'A szünet mostantól minden játékban megbízhatóan működik: amikor szünetelteted a Botok csatáját, a mesterséges intelligencia azonnal megáll, és a szünet alatt nem tud lépni.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'A Jako új alkalmazásikont kapott: kártyalegyező a pakli négy színében. Ha felvetted a Jakót az eszközöd kezdőképernyőjére, az ikon és az indítóképernyő mostantól letisztultabb és egységesebb.',

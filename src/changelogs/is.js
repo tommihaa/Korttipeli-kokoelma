@@ -1,6 +1,12 @@
 // Muutosloki — islanti. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Hlé virkar nú áreiðanlega í öllum leikjum: þegar þú setur Orrusta bota í hlé stöðvast tölvuspilararnir strax og ná ekki að leika á meðan gert er hlé.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako er með nýtt forritatákn: spilablævæng í fjórum litum stokksins. Ef þú hefur bætt Jako við heimaskjá tækisins líta táknið og ræsiskjárinn nú út fyrir að vera hreinni og samræmdari.',

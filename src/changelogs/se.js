@@ -1,6 +1,12 @@
 // Muutosloki — pohjoissaame. Konekäännös fi.js:stä (auto-taso, testaamaton). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Bottu doaibmá dál luohtehahtti buot spealuin: go bottát Bohtosiid doaru, de dihtorspealli bissána dallánaga iige ástte dahkat vuolgga bottu áigge.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jakos lea ođđa app-ikona: gártastohka fáddu njealji ivnniin. Jus leat lasihan Jako iežat reaiddu álgošearbmii, de ikona ja álggahanšearbma orro dál čielgaseappot ja ovttalágáneappot.',

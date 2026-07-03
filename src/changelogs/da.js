@@ -1,6 +1,12 @@
 // Muutosloki — tanska. Konekäännös fi.js:stä (auto-taso). Rakenteen on vastattava fi.js:ää 1:1.
 export const CHANGELOG = [
   {
+    date: '3.7.2026',
+    items: [
+      'Pause virker nu pålideligt i alle spil: når du sætter en Botternes Kamp på pause, stopper computerspillerne med det samme og når ikke at lave et træk, mens der er sat på pause.',
+    ],
+  },
+  {
     date: '28.6.2026',
     items: [
       'Jako har et nyt app-ikon: en vifte af kort i kortspillets fire farver. Hvis du har føjet Jako til enhedens startskærm, ser ikonet og startskærmen nu renere og mere ensartede ud.',
