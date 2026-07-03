@@ -9,6 +9,7 @@ import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 const shuffledAINames = pool => shuffle(pool || AI_NAMES);
@@ -66,7 +67,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   // AI memory: kortinlaskija (normal) tracks seen ranks; tosilaskija (hard) also tracks collected-card order
   const memoryRef    = useRef({ seenByRank: {}, knownBottoms: {} });
   const predMatchRef = useRef(false); // tosilaskija: true when the next flip was predicted
-  const aiTmr        = useRef(null);
   const matchTimeRef = useRef(null);
   const recentMatch  = useRef(false);
   const aiSlapTmrs   = useRef([]);
@@ -74,12 +74,9 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   const duelTmr      = useRef(null);
   const halvePending = useRef(false);
   const logRef       = useRef([]);
-  const tmrs         = useRef(new Set());
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  const allBotsRef     = useRef(false);
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm } =
+    useAIScheduler({ extraTimerRefs: [failTmr] });
   const allBotNamesRef = useRef([]);
-  const pausedRef    = useRef(false);
-  const aiDelayRef   = useRef(2000);
   const onSnapshotRef = useRef(onSnapshot);
   useEffect(() => { onSnapshotRef.current = onSnapshot; }, [onSnapshot]);
 
@@ -89,7 +86,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   useEffect(() => { curRef.current = curTurn; }, [curTurn]);
   useEffect(() => { chRef.current = challenge; }, [challenge]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(failTmr.current); aiSlapTmrs.current.forEach(clearTimeout); }, []);
 
   const addLog = useCallback(m => {
     const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };

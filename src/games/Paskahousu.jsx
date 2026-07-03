@@ -7,6 +7,7 @@ import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -293,23 +294,18 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   const [timerLeft,    setTimerLeft]     = useState(null); // yhtäkkinen kuolema -laskuri (sekunteina)
 
   const gRef    = useRef(null);
-  const aiTmr   = useRef(null);
   const swapTmr = useRef(null);
   const logRef  = useRef([]);
   const sndRef     = useRef(true);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
-  const tmrs    = useRef(new Set());
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  const allBotsRef = useRef(false);
-  const pausedRef  = useRef(false);
-  const aiDelayRef = useRef(2000);
   const suddenDeathTmr     = useRef(null);
   const suddenDeathStarted = useRef(false);
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+    useAIScheduler({ jitter: 300, extraIntervalRefs: [swapTmr, suddenDeathTmr] });
 
   useEffect(() => { gRef.current = G; },         [G]);
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearInterval(swapTmr.current); clearInterval(suddenDeathTmr.current); }, []);
 
   // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + Mestari (hard)
   useEffect(() => {
@@ -430,13 +426,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     startGame(nP, true);
   }
   function togglePause() { pausedRef.current = !pausedRef.current; setPaused(p => !p); }
-  function schedAI(fn, base) {
-    const d = allBotsRef.current ? aiDelayRef.current : base;
-    aiTmr.current = tm(() => {
-      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
-      fn();
-    }, d + Math.random() * 300);
-  }
 
   // ── applyPlay ─────────────────────────────────────────────────────────────
   function applyPlay(g, pidx, cards) {

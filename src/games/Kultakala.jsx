@@ -10,6 +10,7 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import { useT, tr } from '../shared/i18n.jsx';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 const shuffledAINames = pool => shuffle(pool || AI_NAMES);
@@ -178,24 +179,19 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   const gRef        = useRef(null);
   const phaseRef    = useRef('idle');
   const curRef      = useRef(0);
-  const aiTmr       = useRef(null);
   const logRef      = useRef([]);
   const sndRef      = useRef(true);
   const aiLevelRef  = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
-  const tmrs         = useRef(new Set());
   const lastPlayTmr  = useRef(null);
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  const allBotsRef   = useRef(false);
-  const pausedRef    = useRef(false);
-  const aiDelayRef   = useRef(2000);
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+    useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
 
 
   function triggerKohahdus(card) {

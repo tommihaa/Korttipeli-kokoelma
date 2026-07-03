@@ -9,6 +9,7 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 
 // A=14 for combat comparisons — different from shared helpers (A=1)
 const VAL = { A:14,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13 };
@@ -145,25 +146,20 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   const phaseRef = useRef('idle');
   const prevDeckRef = useRef(null);
   const tableRef = useRef([]);
-  const aiTmr = useRef(null);
   const logRef = useRef([]);
   const sndRef     = useRef(false);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const finRef = useRef([]);
-  const tmrs   = useRef(new Set());
   const lastPlayTmr = useRef(null);
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  const allBotsRef = useRef(false);
-  const pausedRef  = useRef(false);
-  const aiDelayRef = useRef(2000);
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm } =
+    useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { tableRef.current = table; }, [table]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { finRef.current = finished; }, [finished]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;

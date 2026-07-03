@@ -10,6 +10,7 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 
 // ── Ristiseiska ─────────────────────────────────────────────────
 // Järjestys per maa: 7 → 6 → 8 → ala-pino (5,4,3,2,A) + ylä-pino (9,T,J,Q,K)
@@ -394,25 +395,16 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   const [pendingResult, setPendingResult] = useState(null);
 
   const gRef       = useRef(null);
-  const aiTmr      = useRef(null);
   const lastPlayTmr = useRef(null);
   const logRef     = useRef([]);
   const sndRef     = useRef(true);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
-  const tmrs       = useRef(new Set());
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  const allBotsRef = useRef(false);
-  const pausedRef  = useRef(false);
-  const aiDelayRef = useRef(2000);
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+    useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => {
-    tmrs.current.forEach(clearTimeout);
-    clearTimeout(aiTmr.current);
-    clearTimeout(lastPlayTmr.current);
-  }, []);
 
   function addLog(m) {
     setMsg_(m);

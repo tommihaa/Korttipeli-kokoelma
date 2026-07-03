@@ -10,6 +10,7 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import HandoffScreen from '../shared/HandoffScreen.jsx';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 import PlayerSetup, { slotsToPlayers } from '../shared/PlayerSetup.jsx';
 
 // ── Seiska ─────────────────────────────────────────────────────
@@ -211,21 +212,19 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
   const [pendingResult, setPendingResult] = useState(null); // { ranking } — odottaa käyttäjän "Tulokset →" -klikkiä
 
   const gRef   = useRef(null);
-  const aiTmr  = useRef(null);
   const logRef = useRef([]);
   const sndRef = useRef(true);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const prevDeckRef  = useRef(null);
   const prevRCRef    = useRef(0);
-  const tmrs         = useRef(new Set());
   const lastPlayTmr  = useRef(null);
-  const pausedRef    = useRef(false);
   const pendingFnRef = useRef(null);
-  const aiDelayRef   = useRef(1200);
-  // UI-animaatioajastin (ei pysähdy Tauko-tilassa)
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  // AI-siirtoajastin (pysähtyy Tauko-tilassa)
+  const { aiTmr, tmrs, pausedRef, aiDelayRef, tm } =
+    useAIScheduler({ defaultDelay: 1200, extraTimerRefs: [lastPlayTmr] });
+  // AI-siirtoajastin (pysähtyy Tauko-tilassa) — Seiskan oma pending-fn-mekanismi:
+  // säilyttää vain VIIMEISIMMÄN odottavan siirron ja jatkaa sen togglePausessa
+  // (eri semantiikka kuin hookin schedAI-recursive-wait; ks. useAIScheduler).
   const aiTm = (fn, ms) => {
     const id = setTimeout(() => {
       tmrs.current.delete(id);
@@ -238,7 +237,6 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
 
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
