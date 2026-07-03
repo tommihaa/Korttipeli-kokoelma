@@ -10,6 +10,7 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 
 // ── Moska (Durak) ─────────────────────────────────────────────
 // A=14 kaikissa taisteluvertailuissa
@@ -207,26 +208,15 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
   const removedRef = useRef(new Set()); // korttien rs-avaimet ("A♠") jotka ovat poistuneet pelistä
 
   const gRef    = useRef(null);
-  const aiTmr   = useRef(null);
   const logRef  = useRef([]);
   const sndRef         = useRef(false);
   const aiLevelRef     = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const prevDeckRef    = useRef(null);
-  const tmrs           = useRef(new Set());
   const lastPlayTmr    = useRef(null);
   const showNextBtnRef = useRef(showNextBtn);
-  const allBotsRef = useRef(false);
-  const pausedRef  = useRef(false);
-  const aiDelayRef = useRef(2000);
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  function schedAI(fn, base) {
-    const d = allBotsRef.current ? aiDelayRef.current : base;
-    aiTmr.current = tm(() => {
-      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
-      fn();
-    }, d + Math.random() * 400);
-  }
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+    useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
@@ -238,7 +228,6 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       return () => clearTimeout(id);
     }
   }, [awaitingPlayerContinue]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
 
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }

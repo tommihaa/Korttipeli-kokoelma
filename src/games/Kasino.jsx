@@ -7,6 +7,7 @@ import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble, newDeck, sortHand as sortHandBy } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -358,27 +359,16 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const phaseRef = useRef('idle');
   const prevDeckRef = useRef(null);
   const curRef  = useRef(0);
-  const aiTmr   = useRef(null);
   const logRef  = useRef([]);
   const cumulBdRef    = useRef(null); // kumulatiivinen pisteytysdata joka kierros
   const showNextBtnRef = useRef(showNextBtn);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
-  const allBotsRef = useRef(false);
-  const pausedRef  = useRef(false);
-  const aiDelayRef = useRef(2000);
   const sndRef     = useRef(false);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
-  const tmrs    = useRef(new Set());
   const lastPlayTmr = useRef(null);
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  function schedAI(fn, base) {
-    const d = allBotsRef.current ? aiDelayRef.current : base;
-    aiTmr.current = tm(() => {
-      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
-      fn();
-    }, d + Math.random() * 400);
-  }
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+    useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
@@ -392,7 +382,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       return () => clearTimeout(id);
     }
   }, [pendingCapture]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearTimeout(lastPlayTmr.current); }, []);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;

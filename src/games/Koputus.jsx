@@ -10,6 +10,7 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import { useT, tr } from '../shared/i18n.jsx';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
@@ -144,23 +145,12 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   const curRef   = useRef(0);
   const stopReact = useRef(false);
   const reactInt  = useRef(null);
-  const aiTmr     = useRef(null);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
-  const tmrs      = useRef(new Set());
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  const allBotsRef = useRef(false);
-  const pausedRef  = useRef(false);
-  const aiDelayRef = useRef(2000);
   const sndRef     = useRef(initSoundOn);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  function schedAI(fn, base) {
-    const d = allBotsRef.current ? aiDelayRef.current : base;
-    aiTmr.current = tm(() => {
-      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
-      fn();
-    }, d + Math.random() * 400);
-  }
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
+    useAIScheduler({ extraIntervalRefs: [reactInt] });
 
   const setMsg = m => {
     setMsg_(m);
@@ -180,7 +170,6 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   useEffect(() => { knockRef.current = knockedBy; }, [knockedBy]);
   useEffect(() => { lrRef.current = lastRound; }, [lastRound]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearInterval(reactInt.current); }, []);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -245,7 +234,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         const si = 1 % nP;
         setCurIdx(si); curRef.current = si;
         if (newG.players[si].isHuman) setMsg(M.yourTurn);
-        else { setMsg(M.aiTurn(newG.players[si].name)); aiTmr.current = tm(() => runAI(si, gRef.current), 600); }
+        else { setMsg(M.aiTurn(newG.players[si].name)); aiTmr.current = tm(guard(() => runAI(si, gRef.current)), 600); }
       }, 1600);
     }
   }

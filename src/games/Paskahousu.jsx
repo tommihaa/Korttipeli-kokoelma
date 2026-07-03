@@ -7,6 +7,7 @@ import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
+import { useAIScheduler } from '../shared/useAIScheduler.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -293,23 +294,18 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   const [timerLeft,    setTimerLeft]     = useState(null); // yhtäkkinen kuolema -laskuri (sekunteina)
 
   const gRef    = useRef(null);
-  const aiTmr   = useRef(null);
   const swapTmr = useRef(null);
   const logRef  = useRef([]);
   const sndRef     = useRef(true);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
-  const tmrs    = useRef(new Set());
-  const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
-  const allBotsRef = useRef(false);
-  const pausedRef  = useRef(false);
-  const aiDelayRef = useRef(2000);
   const suddenDeathTmr     = useRef(null);
   const suddenDeathStarted = useRef(false);
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
+    useAIScheduler({ jitter: 300, extraIntervalRefs: [swapTmr, suddenDeathTmr] });
 
   useEffect(() => { gRef.current = G; },         [G]);
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);
-  useEffect(() => () => { tmrs.current.forEach(clearTimeout); clearTimeout(aiTmr.current); clearInterval(swapTmr.current); clearInterval(suddenDeathTmr.current); }, []);
 
   // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + Mestari (hard)
   useEffect(() => {
@@ -430,13 +426,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     startGame(nP, true);
   }
   function togglePause() { pausedRef.current = !pausedRef.current; setPaused(p => !p); }
-  function schedAI(fn, base) {
-    const d = allBotsRef.current ? aiDelayRef.current : base;
-    aiTmr.current = tm(() => {
-      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
-      fn();
-    }, d + Math.random() * 300);
-  }
 
   // ── applyPlay ─────────────────────────────────────────────────────────────
   function applyPlay(g, pidx, cards) {
@@ -539,7 +528,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         };
         setGS(g2); setSel([]);
         if (players[pidx].isHuman) startSwapCountdown(g2);
-        else aiTmr.current = tm(() => doAISwap(g2, pidx), 900);
+        else aiTmr.current = tm(guard(() => doAISwap(g2, pidx)), 900);
         return;
       }
     }
@@ -655,7 +644,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, players, pile: [], top: null, finished: g.finished, turn: advTurn, skipNext: g.skipNext, phase: 'play' };
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
   }
 
@@ -687,7 +676,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, players, draw, pile, top: newTop, skipNext: -1, turn: nextP, phase: 'play' };
     setGS(g2);
     if (nextP !== -1) {
-      if (!players[nextP]?.isHuman) aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      if (!players[nextP]?.isHuman) schedAI(() => runAI(g2), 1600);
       else addLog(M.turnOf('Hero'));
     }
   }
@@ -713,7 +702,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, phase: 'play', swapData: null, turn: advTurn };
     setGS(g2); setSel([]);
     if (advTurn !== -1 && !g.players[advTurn]?.isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(g2), 1600);
     else if (advTurn !== -1) addLog(M.turnOf('Hero'));
   }
 
@@ -761,7 +750,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, players, pile: newPile, top: newTop, turn: advTurn, skipNext, phase: 'play', swapData: null };
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
   }
 
@@ -825,7 +814,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, turn: nextP };
     setGS(g2);
     if (nextP !== -1 && !players[nextP]?.isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
   }
 
