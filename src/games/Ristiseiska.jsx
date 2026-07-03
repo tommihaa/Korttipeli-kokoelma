@@ -400,7 +400,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   const sndRef     = useRef(true);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; },        [G]);
@@ -458,7 +458,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
     addLog(M.gameStart(s.name, lblColored({ r: '7', s: '♣' })));
     setScreen('game');
     setShuffling(true);
-    if (!s.isHuman) aiTmr.current = tm(() => runAI(g), 3100);
+    if (!s.isHuman) aiTmr.current = tm(guard(() => runAI(g)), 3100);
   }
 
   function startBotBattle() {
@@ -543,7 +543,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       const pileName = t(v === 1 ? 'games.ristiseiska.pile.lower' : 'games.ristiseiska.pile.upper');
       if (!p.isHuman) {
         addLog(M.aiBonus(p.name, suitGen, pileName));
-        aiTmr.current = tm(() => runAI(g2), 900);
+        aiTmr.current = tm(guard(() => runAI(g2)), 900);
       } else {
         addLog(M.humanBonus(suitGen, pileName));
       }

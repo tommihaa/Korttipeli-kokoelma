@@ -185,7 +185,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
   const lastPlayTmr  = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -236,7 +236,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     addLog(M.gameStart);
     setScreen('game');
     setShuffling(true);
-    tm(() => maybeAI(0, g), 2500);
+    tm(guard(() => maybeAI(0, g)), 2500);
   }
 
   function startBotBattle() {
@@ -266,7 +266,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
     const p = g.players[next];
     addLog(p.isHuman ? M.yourTurn : M.aiThinking(p));
-    aiTmr.current = tm(() => maybeAI(next, g), 600);
+    aiTmr.current = tm(guard(() => maybeAI(next, g)), 600);
   }
 
   function maybeAI(idx, g) {

@@ -149,7 +149,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const sndRef     = useRef(initSoundOn);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
     useAIScheduler({ extraIntervalRefs: [reactInt] });
 
   const setMsg = m => {
@@ -234,7 +234,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         const si = 1 % nP;
         setCurIdx(si); curRef.current = si;
         if (newG.players[si].isHuman) setMsg(M.yourTurn);
-        else { setMsg(M.aiTurn(newG.players[si].name)); aiTmr.current = tm(() => runAI(si, gRef.current), 600); }
+        else { setMsg(M.aiTurn(newG.players[si].name)); aiTmr.current = tm(guard(() => runAI(si, gRef.current)), 600); }
       }, 1600);
     }
   }

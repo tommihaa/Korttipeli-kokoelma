@@ -301,7 +301,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   const suddenDeathTmr     = useRef(null);
   const suddenDeathStarted = useRef(false);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
     useAIScheduler({ jitter: 300, extraIntervalRefs: [swapTmr, suddenDeathTmr] });
 
   useEffect(() => { gRef.current = G; },         [G]);
@@ -528,7 +528,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         };
         setGS(g2); setSel([]);
         if (players[pidx].isHuman) startSwapCountdown(g2);
-        else aiTmr.current = tm(() => doAISwap(g2, pidx), 900);
+        else aiTmr.current = tm(guard(() => doAISwap(g2, pidx)), 900);
         return;
       }
     }
@@ -644,7 +644,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, players, pile: [], top: null, finished: g.finished, turn: advTurn, skipNext: g.skipNext, phase: 'play' };
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
   }
 
@@ -676,7 +676,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, players, draw, pile, top: newTop, skipNext: -1, turn: nextP, phase: 'play' };
     setGS(g2);
     if (nextP !== -1) {
-      if (!players[nextP]?.isHuman) aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      if (!players[nextP]?.isHuman) schedAI(() => runAI(g2), 1600);
       else addLog(M.turnOf('Hero'));
     }
   }
@@ -702,7 +702,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, phase: 'play', swapData: null, turn: advTurn };
     setGS(g2); setSel([]);
     if (advTurn !== -1 && !g.players[advTurn]?.isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(g2), 1600);
     else if (advTurn !== -1) addLog(M.turnOf('Hero'));
   }
 
@@ -750,7 +750,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, players, pile: newPile, top: newTop, turn: advTurn, skipNext, phase: 'play', swapData: null };
     setGS(g2);
     if (players[advTurn] && !players[advTurn].isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
   }
 
@@ -814,7 +814,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     const g2 = { ...g, turn: nextP };
     setGS(g2);
     if (nextP !== -1 && !players[nextP]?.isHuman)
-      aiTmr.current = tm(() => runAI(g2), 1600 + Math.random() * 300);
+      schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
   }
 

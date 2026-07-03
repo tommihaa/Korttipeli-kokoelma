@@ -28,14 +28,20 @@ export function useAIScheduler({
   // Vahditon UI-ajastin — ei pysähdy Tauko-tilassa. Rekisteröi id:n siivousta varten.
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
-  // AI-siirtoajastin — pysähtyy Tauko-tilassa (recursive wait) ja skaalautuu
-  // bottikamppailun (allBots) säädettävään viiveeseen.
+  // Kietoo funktion pause-vahtiin: Tauko-tilassa odottaa (recursive wait) ja
+  // ajaa fn:n vasta kun tauko vapautetaan. Käytä kun kutsuja hoitaa itse viiveen
+  // (aiTmr.current = tm(guard(fn), <oma viive>)) — säilyttää tarkan ajoituksen,
+  // toisin kuin schedAI joka laskee viiveen + jitterin itse.
+  const guard = fn => () => {
+    if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
+    fn();
+  };
+
+  // AI-siirtoajastin — pysähtyy Tauko-tilassa ja skaalautuu bottikamppailun
+  // (allBots) säädettävään viiveeseen. Laskee viiveen + jitterin itse.
   const schedAI = (fn, base) => {
     const d = allBotsRef.current ? aiDelayRef.current : base;
-    aiTmr.current = tm(() => {
-      if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
-      fn();
-    }, d + Math.random() * jitter);
+    aiTmr.current = tm(guard(fn), d + Math.random() * jitter);
   };
 
   // Pidä viimeisimmät lisärefit tallessa cleanupia varten (peli voi antaa uudet joka renderillä).
@@ -49,5 +55,5 @@ export function useAIScheduler({
     intervalRefsRef.current.forEach(r => r && clearInterval(r.current));
   }, []);
 
-  return { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI };
+  return { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard };
 }
