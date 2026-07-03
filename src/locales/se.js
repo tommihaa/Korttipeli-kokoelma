@@ -63,6 +63,7 @@ export const se = {
       feedbackForm: '⭐ Árvvoštala čoakkáldaga',
       glossaryLink: 'Sátnelistu & Mearkkat 📖',
       changelog: 'Rievdadanlogga 📋',
+      changelogTranslateHint: 'Rievdadanlogga lea dušše suomagillii — geavat neahttalogana jorgalanfunkšuvnna vai sáhtát lohkat dan iežat gillii.',
       a2hs: {
         title: 'Lasit Jako⁹ álgomuitui 📲',
         intro: 'Lasit speallu telefovnna álgomuitui dahje dihtora bargobeavdái, de dat rahppo iežas govažis dego prográmma — telefovnna holggaid haga. Oktii rahppojuvvon spealut doibmet maiddái fierpmádaga haga.',

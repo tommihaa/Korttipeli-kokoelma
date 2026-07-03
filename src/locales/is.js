@@ -64,6 +64,7 @@ export const is = {
       feedback: '✉ Senda hrós og kvartanir',
       glossaryLink: 'Orðasafn & Tákn 📖',
       changelog: 'Breytingaskrá 📋',
+      changelogTranslateHint: 'Breytingaskráin er aðeins til á finnsku — notaðu þýðingaeiginleika vafrans til að lesa hana á þínu tungumáli.',
       a2hs: {
         title: 'Setja Jako⁹ á heimaskjá 📲',
         intro: 'Settu leikinn á heimaskjá símans eða skjáborð tölvunnar — þá opnast hann af eigin tákni eins og app, án vafrastiku. Leikir sem hafa verið opnaðir einu sinni virka líka án nettengingar.',

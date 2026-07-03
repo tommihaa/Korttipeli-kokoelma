@@ -64,6 +64,7 @@ export const rom = {
       feedbackForm: '⭐ Den vrednota le kidimaske',
       glossaryLink: 'Alavari & Simbule 📖',
       changelog: 'Logo le parugimatengo 📋',
+      changelogTranslateHint: 'O lil vaš parudimata si ferdi pe finikane ćhib — ćer buti e brauzerosko parhuvibnasko funkcia te genes les ande ćiri ćhib.',
       a2hs: {
         title: 'Tho Jako⁹ ko ekrano-šerutno 📲',
         intro: 'Tho o khelipe ko ekrano-šerutno le telefonosko vaj ko skafidi le kompjuterosko, kaj te putardol pesko ikonosa sar aplikacija — bi le brauzeroske bareske. Khelimata jekh data putarde keren vi bi internetosko.',

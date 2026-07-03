@@ -65,6 +65,7 @@ export const en = {
       feedbackForm: '⭐ Rate the collection',
       glossaryLink: 'Glossary & Symbols 📖',
       changelog: 'Changelog 📋',
+      changelogTranslateHint: 'The changelog is only in Finnish — use your browser\'s Translate feature to read it in your language.',
       a2hs: {
         title: 'Add Jako⁹ to Home Screen 📲',
         intro: 'Add the game to your phone’s home screen or your computer’s desktop and it opens from its own icon like an app — without browser bars. Once-opened games also work offline.',

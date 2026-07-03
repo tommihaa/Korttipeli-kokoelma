@@ -63,6 +63,7 @@ export const la = {
       feedbackForm: '⭐ Aestima collectionem',
       glossaryLink: 'Glossarium & Signa 📖',
       changelog: 'Acta mutationum 📋',
+      changelogTranslateHint: 'Index mutationum tantum lingua Finnica exstat — utere instrumento translationis navigatri tui ut eam lingua tua legas.',
       a2hs: {
         title: 'Adde Jako⁹ ad initialem 📲',
         intro: 'Adde lusum ad initialem telephoni vel mensam computatri, ut suo ipsius signo aperiatur quasi applicatio — sine navigatri vittis. Lusus semel aperti etiam sine rete operantur.',

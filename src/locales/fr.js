@@ -64,6 +64,7 @@ export const fr = {
       feedback: '✉ Envoyer compliments et critiques',
       glossaryLink: 'Glossaire et symboles 📖',
       changelog: 'Journal des modifications 📋',
+      changelogTranslateHint: 'Le journal des modifications n\'existe qu\'en finnois — utilisez la fonction Traduire de votre navigateur pour le lire dans votre langue.',
       a2hs: {
         title: 'Ajouter Jako⁹ à l’écran d’accueil 📲',
         intro: 'Ajoute le jeu à l’écran d’accueil de ton téléphone ou au bureau de ton ordinateur : il s’ouvrira depuis sa propre icône comme une appli — sans barres du navigateur. Les jeux déjà ouverts fonctionnent aussi hors ligne.',

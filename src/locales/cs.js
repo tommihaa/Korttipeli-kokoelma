@@ -63,6 +63,7 @@ export const cs = {
       feedbackForm: '⭐ Ohodnoť sbírku',
       glossaryLink: 'Slovník & Symboly 📖',
       changelog: 'Seznam změn 📋',
+      changelogTranslateHint: 'Seznam změn je k dispozici pouze ve finštině — použij funkci Přeložit ve svém prohlížeči, abys ho mohl číst ve svém jazyce.',
       a2hs: {
         title: 'Přidat Jako⁹ na domovskou obrazovku 📲',
         intro: 'Přidej hru na domovskou obrazovku telefonu nebo na plochu počítače, aby se otvírala z vlastní ikony jako aplikace — bez lišt prohlížeče. Jednou otevřené hry fungují i bez sítě.',

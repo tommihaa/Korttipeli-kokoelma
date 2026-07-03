@@ -64,6 +64,7 @@ export const hu = {
       feedbackForm: '⭐ Értékeld a gyűjteményt',
       glossaryLink: 'Szótár & Jelek 📖',
       changelog: 'Változásnapló 📋',
+      changelogTranslateHint: 'A változásnapló csak finnül érhető el — a saját nyelveden való olvasáshoz használd a böngésződ Fordítás funkcióját.',
       a2hs: {
         title: 'Jako⁹ hozzáadása a kezdőképernyőhöz 📲',
         intro: 'Add hozzá a játékot a telefon kezdőképernyőjéhez vagy a számítógép asztalához, hogy saját ikonjáról nyíljon, mint egy alkalmazás — böngészősávok nélkül. Az egyszer megnyitott játékok hálózat nélkül is működnek.',

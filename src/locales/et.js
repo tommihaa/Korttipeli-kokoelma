@@ -64,6 +64,7 @@ export const et = {
       feedback: '✉ Saada kiitused ja kriitika',
       glossaryLink: 'Sõnastik & Tähistik 📖',
       changelog: 'Muutuste logi 📋',
+      changelogTranslateHint: 'Muudatuste logi on saadaval ainult soome keeles — kasuta oma brauseri tõlkefunktsiooni, et lugeda seda oma keeles.',
       a2hs: {
         title: 'Lisa Jako⁹ avakuvale 📲',
         intro: 'Lisa mäng telefoni avakuvale või arvuti töölauale — see avaneb oma ikoonilt nagu rakendus, ilma brauseri ribadeta. Kord avatud mängud töötavad ka võrguta.',

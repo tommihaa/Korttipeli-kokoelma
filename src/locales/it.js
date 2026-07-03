@@ -64,6 +64,7 @@ export const it = {
       feedback: '✉ Invia critiche e complimenti',
       glossaryLink: 'Glossario & Simboli 📖',
       changelog: 'Cronologia modifiche 📋',
+      changelogTranslateHint: 'Il registro delle modifiche è disponibile solo in finlandese — usa la funzione Traduci del tuo browser per leggerlo nella tua lingua.',
       a2hs: {
         title: 'Aggiungi Jako⁹ alla schermata Home 📲',
         intro: 'Aggiungi il gioco alla schermata Home del telefono o al desktop del computer: si aprirà dalla sua icona come un’app — senza barre del browser. I giochi già aperti funzionano anche offline.',

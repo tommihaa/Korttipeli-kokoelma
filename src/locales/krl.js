@@ -65,6 +65,7 @@ export const krl = {
       feedback: '✉ Työnnä risut da ruušut',
       glossaryLink: 'Šanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
+      changelogTranslateHint: 'Vajehtelulogi on vaiku suomekse — käytä brauzerin kiändö-funktiedu, ku tahtot lukie sidä omal kielel.',
       a2hs: {
         title: 'Ližiä Jako⁹ algunäytöllä 📲',
         intro: 'Ližiä kiza telefonan algunäytöllä tahi tiedokonehen työpövvällä, ka še avauduu omašta kuvakkehešta kuin sovellus — ilmain selaimen palkkija. Kerran avatut kizat toimitah i ilmain verkkuo.',

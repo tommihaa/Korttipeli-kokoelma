@@ -149,12 +149,11 @@ const MERKISTO = [
   { kategoria: 'ui',        icon: '🔮', label: 'Mestari',          selitys: 'Koneälyn korkein taso — muistaa pakan menot ja optimoi täydellisesti.' },
 ];
 
-// ── Muutosloki: ks. src/changelogs/<kieli>.js (laiskat chunkit, ladataan Info-
-// paneelista; fi on totuuden lähde ja fallback puuttuvalle kielelle) ──────────
-const CHANGELOG_LOADERS = import.meta.glob('./changelogs/*.js');
-const loadChangelog = (lang) =>
-  (CHANGELOG_LOADERS[`./changelogs/${lang}.js`] || CHANGELOG_LOADERS['./changelogs/fi.js'])()
-    .then(m => m.CHANGELOG);
+// ── Muutosloki: ks. src/changelogs/fi.js. Vain suomeksi (kääntäminen 22 kielelle
+// paisutti tiedostomäärää ja julkaisukustannusta ilman hyötyä — selain kääntää
+// tarvittaessa Käännä-toiminnollaan) ──────────────────────────────────────────
+const loadChangelog = () =>
+  import('./changelogs/fi.js').then(m => m.CHANGELOG);
 
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
@@ -771,8 +770,8 @@ export default function App() {
   const [changelogData, setChangelogData]       = useState(null); // ladataan laiskasti changelogs/<lang>.js:stä
   // Lataa muutosloki kun se avataan, ja uudelleen jos kieli vaihtuu sen ollessa auki.
   useEffect(() => {
-    if (showChangelog) loadChangelog(lang).then(setChangelogData).catch(() => {});
-  }, [showChangelog, lang]);
+    if (showChangelog) loadChangelog().then(setChangelogData).catch(() => {});
+  }, [showChangelog]);
   const [showTodo, setShowTodo]                 = useState(false);
   const [showA2hs, setShowA2hs]                 = useState(false); // "Lisää aloitusnäytölle" -ohje
   const [showPeliasetukset, setShowPeliasetukset] = useState(false);
@@ -1320,6 +1319,9 @@ export default function App() {
           </button>
           {showChangelog && changelogData && (
             <div style={{ padding: '0 14px 14px' }}>
+              <div style={{ fontSize: 10, color: C.dim, opacity: 0.75, fontStyle: 'italic', marginBottom: 10, lineHeight: 1.4 }}>
+                {t('ui.infoPanel.changelogTranslateHint')}
+              </div>
               {changelogData.map((entry, i) => (
                 <div key={i} style={{ marginBottom: 12 }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1, opacity: 0.8, marginBottom: 4, textTransform: 'uppercase' }}>{entry.date}</div>

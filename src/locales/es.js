@@ -64,6 +64,7 @@ export const es = {
       feedback: '✉ Envía críticas y elogios',
       glossaryLink: 'Glosario y Símbolos 📖',
       changelog: 'Registro de cambios 📋',
+      changelogTranslateHint: 'El registro de cambios solo está en finés — usa la función Traducir de tu navegador para leerlo en tu idioma.',
       a2hs: {
         title: 'Añadir Jako⁹ a la pantalla de inicio 📲',
         intro: 'Añade el juego a la pantalla de inicio del móvil o al escritorio del ordenador: se abrirá desde su propio icono como una app — sin barras del navegador. Los juegos ya abiertos funcionan también sin conexión.',

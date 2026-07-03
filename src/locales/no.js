@@ -64,6 +64,7 @@ export const no = {
       feedback: '✉ Send ros og ris',
       glossaryLink: 'Ordliste & Symboler 📖',
       changelog: 'Endringslogg 📋',
+      changelogTranslateHint: 'Endringsloggen finnes bare på finsk — bruk nettleserens oversettelsesfunksjon for å lese den på ditt språk.',
       a2hs: {
         title: 'Legg Jako⁹ til på startskjermen 📲',
         intro: 'Legg spillet til på telefonens startskjerm eller datamaskinens skrivebord, så åpnes det fra sitt eget ikon som en app — uten nettleserens felter. Spill som er åpnet én gang fungerer også uten nett.',

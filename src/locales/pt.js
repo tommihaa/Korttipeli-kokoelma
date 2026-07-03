@@ -64,6 +64,7 @@ export const pt = {
       feedback: '✉ Enviar elogios e críticas',
       glossaryLink: 'Glossário e Símbolos 📖',
       changelog: 'Registo de alterações 📋',
+      changelogTranslateHint: 'O registo de alterações existe apenas em finlandês — usa a função Traduzir do teu navegador para o leres no teu idioma.',
       a2hs: {
         title: 'Adicionar Jako⁹ ao ecrã principal 📲',
         intro: 'Adiciona o jogo ao ecrã principal do telemóvel ou ao ambiente de trabalho do computador: abre a partir do seu próprio ícone como uma app — sem barras do navegador. Os jogos já abertos funcionam também offline.',

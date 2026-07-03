@@ -64,6 +64,7 @@ export const de = {
       feedback: '✉ Lob und Kritik senden',
       glossaryLink: 'Glossar & Symbole 📖',
       changelog: 'Änderungsprotokoll 📋',
+      changelogTranslateHint: 'Das Änderungsprotokoll gibt es nur auf Finnisch — nutze die Übersetzungsfunktion deines Browsers, um es in deiner Sprache zu lesen.',
       a2hs: {
         title: 'Jako⁹ zum Startbildschirm hinzufügen 📲',
         intro: 'Füge das Spiel dem Startbildschirm deines Handys oder dem Desktop deines Computers hinzu — es öffnet sich dann über ein eigenes Symbol wie eine App, ohne Browserleisten. Einmal geöffnete Spiele funktionieren auch offline.',

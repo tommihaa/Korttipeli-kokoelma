@@ -12,8 +12,7 @@ description: Julkaise Jako-pelini täysimääräisesti niin että SEKÄ GitHub E
 1. **Esiehto.** `git status` — olet `main`issa ja työpuu on juuri siinä tilassa jonka haluat julkaista.
 
 2. **Changelog + TODO (käsin — build EI tee tätä).**
-   - **CHANGELOG:** `src/changelogs/fi.js` = totuuden lähde. Lisää uusin `{ date, items }` taulukon alkuun, pelaajaystävällisesti suomeksi ilman jargonia. Lue teksti huolella — typot näkyvät suoraan käyttäjälle.
-   - Käännä sama merkintä **kaikkiin muihin `src/changelogs/*.js`-tiedostoihin** — tarkista määrä ajossa `ls src/changelogs/*.js` (23 kieltä 6/2026, kieliä on lisätty ajan myötä). Rakenne 1:1 fi:n kanssa: sama `date`, sama items-määrä ja -järjestys. Pelien erisnimet pysyvät suomeksi; UI-termit kohdekielen `src/locales/<koodi>.js`:stä (Grep, älä lue koko tiedostoa). Vertaa entry-/items-määrät fi.js:ään Nodella ennen committia.
+   - **CHANGELOG:** `src/changelogs/fi.js` = ainoa tiedosto (vain suomeksi, päätös 3.7.2026 — 22 kielen käännös per julkaisu paisutti tiedostomäärää turhaan ~450 kt duplikaattidataa, selain kääntää tarvittaessa Käännä-toiminnollaan). Lisää uusin `{ date, items }` taulukon alkuun, pelaajaystävällisesti suomeksi ilman jargonia. Lue teksti huolella — typot näkyvät suoraan käyttäjälle.
    - **TODO** (`src/App.jsx`, `const TODO`): valmistunut kohta → `status: 'done'`, tai lisää rivi. Näkyvät rivit tulevat `ui.infoPanel.todoItems`-taulukoista (`src/locales/fi.js` + `en.js`) **indeksijärjestyksessä** — jos muutat rivejä, päivitä molemmat taulukot samaan järjestykseen, muuten EN näyttää väärän rivin.
    - `APP_VERSION` kasvaa buildissa automaattisesti (`__APP_VERSION__`) — älä koske.
 
