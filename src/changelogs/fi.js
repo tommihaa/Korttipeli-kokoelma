@@ -7,6 +7,13 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '4.7.2026',
+    items: [
+      'Peliohjeet, säännöt ja viestit ovat nyt selkeämpiä ja lyhyempiä sekä suomeksi että englanniksi — mutkikkaita virkkeitä on suoristettu koko sovelluksesta.',
+      'Kultakalan sääntöteksti täsmentyi: kenttäkortit oppii vain vaihtamalla niitä, ei katsomalla etukäteen.',
+    ],
+  },
+  {
     date: '3.7.2026',
     items: [
       'Tauko toimii nyt luotettavasti kaikissa peleissä: kun pysäytät bottiottelun, tekoäly pysähtyy heti eikä ehdi tehdä siirtoa tauon aikana.',
