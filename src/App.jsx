@@ -8,6 +8,8 @@ import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
 import { KANSA, NAME_GROUPS, POOL_BY_GROUP } from './shared/playerGroups.js';
 import { SANASTO, splitWithGlossary } from './shared/glossary.js';
+import { SFX, setTheme as setSfxTheme } from './shared/audio.js';
+import { SFX_CATALOG } from './shared/sfxCatalog.js';
 
 /* eslint-disable no-undef */
 const APP_VERSION = __APP_VERSION__;
@@ -157,6 +159,8 @@ const loadChangelog = () =>
 
 // ── Tulossa ───────────────────────────────────────────────────────────────────
 const TODO = [
+  { label: '"Kokeile ääniä" -esikuuntelu Asetuksissa + pikamykistys', status: 'done' },
+  { label: 'Ääniteema: Torvi & kantele (valittavissa Asetuksista, äänet päällä)', status: 'done' },
   { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'done' },
   { label: 'Kieliversiointi (12 kieltä)', status: 'done' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
@@ -726,6 +730,8 @@ export default function App() {
   useEffect(() => { savePref('sessions', sessions); }, [sessions]);
   const [showLog, setShowLog]       = useStickySetting('showLog', true);   // tapahtumaloki auki oletuksena; valinta muistetaan
   const [soundOn, setSoundOn]       = useStickySetting('soundOn', false);  // äänet pois oletuksena; valinta muistetaan
+  const [soundTheme, setSoundTheme] = useStickySetting('soundTheme', 'oletus'); // 'oletus' | 'torvi-kannel'
+  useEffect(() => { setSfxTheme(soundTheme); }, [soundTheme]); // SFX on singleton kaikille 9 pelille — ei kosketa yhtään games/*.jsx-tiedostoa
   const [twoColorDeck, setTwoColorDeckPref] = useStickySetting('twoColorDeck', false); // ♠♣ musta + ♥♦ punainen; muistetaan kuten kieli ja äänet
   useEffect(() => { setTwoColorDeck(twoColorDeck); }, [twoColorDeck]); // mutatoi SUIT_COLOR-paletit (colors.js) — re-render hoitaa loput
   const [seeAll, setSeeAll]         = useState(false);  // POIKKEUS: cheat-tila EI tallennu — nollautuu joka latauksessa (ks. storage.js)
@@ -777,6 +783,7 @@ export default function App() {
   const [showPeliasetukset, setShowPeliasetukset] = useState(false);
   const [showLisaasetukset, setShowLisaasetukset] = useState(false); // yksittäiset togglet preset-valinnan takana
   const [showKonealy, setShowKonealy]           = useState(false);
+  const [showKokeileAania, setShowKokeileAania] = useState(false);
   const [showPelaajat, setShowPelaajat]         = useState(false);
 
   // Merkitse kokoelma nähdyksi → seuraavalla kerralla ryhmä arvotaan (ks. playerGroup-init).
@@ -1098,6 +1105,32 @@ export default function App() {
                   </label>
                 ));
               })()}
+              {showLisaasetukset && soundOn && (
+                <div style={{ padding: '6px 0 0 24px' }}>
+                  <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 6 }}>{t('ui.settings.soundTheme.title')}</div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {[
+                      { key: 'oletus', label: t('ui.settings.soundTheme.default') },
+                      { key: 'torvi-kannel', label: t('ui.settings.soundTheme.hornKantele') },
+                    ].map(({ key, label }) => (
+                      <button
+                        key={key}
+                        onClick={() => setSoundTheme(key)}
+                        style={{
+                          flex: 1, minWidth: 'calc(50% - 4px)', padding: '8px 6px', borderRadius: 8, cursor: 'pointer',
+                          fontFamily: 'sans-serif', fontSize: 12,
+                          background: soundTheme === key ? `${C.gold}22` : 'transparent',
+                          border: `1px solid ${soundTheme === key ? C.gold : C.panelBorder}`,
+                          color: soundTheme === key ? C.gold : C.dim,
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1138,6 +1171,47 @@ export default function App() {
             </div>
           )}
         </div>
+
+        {soundOn && (
+          <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+            <button
+              onClick={() => setShowKokeileAania(v => !v)}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+            >
+              <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>🔊 Kokeile ääniä</span>
+              <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showKokeileAania ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+            </button>
+            {showKokeileAania && (
+              <div style={{ padding: '0 14px 14px' }}>
+                <button
+                  onClick={() => setSoundOn(false)}
+                  style={{
+                    width: '100%', padding: '8px 6px', borderRadius: 8, cursor: 'pointer', marginBottom: 8,
+                    fontFamily: 'sans-serif', fontSize: 12, fontWeight: 700,
+                    background: '#6a2f2f22', border: '1px solid #a05050', color: '#e08080',
+                  }}
+                >
+                  🔇 Hiljennä äänet
+                </button>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {SFX_CATALOG.map(([fn, label]) => (
+                    <button
+                      key={fn}
+                      onClick={() => SFX[fn]()}
+                      style={{
+                        flex: 1, minWidth: 'calc(33% - 4px)', padding: '6px 4px', borderRadius: 8, cursor: 'pointer',
+                        fontFamily: 'sans-serif', fontSize: 11,
+                        background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim,
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
           <button

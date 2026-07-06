@@ -7,6 +7,13 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '7.7.2026',
+    items: [
+      'Asetuksiin uusi "Kokeile ääniä" -osio (näkyy kun äänet ovat päällä): jokaisen pelitapahtuman äänen voi kuunnella etukäteen, ja äänet voi hiljentää yhdellä napilla suoraan samasta paikasta.',
+      'Uusi ääniteema: Torvi & kantele. Asetuksista (Lisäasetukset → Äänet) löytyy nyt vaihtoehtoinen äänimaailma, jossa korttitoiminnot kuulostavat kanteleen näppäykseltä ja isot voitot torvifanfaarilta.',
+    ],
+  },
+  {
     date: '4.7.2026',
     items: [
       'Peliohjeet, säännöt ja viestit ovat nyt selkeämpiä ja lyhyempiä sekä suomeksi että englanniksi — mutkikkaita virkkeitä on suoristettu koko sovelluksesta.',

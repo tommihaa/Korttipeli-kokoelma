@@ -52,6 +52,11 @@ export const fi = {
       showNextBtn: 'Pysäytä peli näyttämään kaappauksen tai kierroksen yksityiskohdat (Kasino, Moska)',
       showLog: 'Tapahtumaloki auki',
       sound: 'Äänet',
+      soundTheme: {
+        title: 'Ääniteema',
+        default: 'Oletus',
+        hornKantele: 'Torvi & kantele',
+      },
       twoColorDeck: 'Kaksivärinen pakka (♠ ♣ mustia, ♥ ♦ punaisia)',
       aiTitle: 'Koneälyn taso 🤖',
       ai: {

@@ -11,6 +11,11 @@ Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 ## Sääntölogiikan muokkaus
 **Ennen minkään pelin näkyvyys-, vaihto- tai muun sääntölogiikan muokkaamista lue ensin kyseisen pelin `PELI.md` ja toista sääntö minulle vahvistettavaksi** (suunnat, mitkä kortit pysyvät piilossa, kynnykset). Säännöt ovat hienovaraisia ja niitä on luettu väärin — esim. Kultakalassa pelaaja EI näe omia pöytäkorttejaan alussa — hän oppii kunkin paikan (1–5) vasta vaihtaessaan kortin siihen (vaihtoketju oikealta vasemmalle 5→4→3→2→1); tuntematon (paikka 0) ei ole vaihdettavissa ja paljastuu vain lopussa. Älä päättele sääntöä koodista tai muistista, kun dokumentti on olemassa.
 
+**Sopimusmuutos-protokolla:** jos tilanne (bugi, pelitestilöytö, ideakysymys) rikkoo PELI.md:n
+sääntökaanonia, älä oleta kumpaakaan osapuolta automaattisesti oikeaksi. Nosta eksplisiittisesti
+pohdittavaksi: pitääkö koodi korjata kaanonin mukaiseksi VAI pitääkö kaanonia muuttaa?
+Kaanonmuutos kirjataan ensin PELI.md:hen ja vahvistetaan käyttäjällä, vasta sitten koodiin.
+
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 - `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.
