@@ -517,9 +517,12 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         (c.v < minPlayed || pileClears([c], topBefore) || (c.r === '2' && (g.rules.hardTwos || c.s === '♠' || c.s === '♣')))
       );
       // Lisää käden samanarvoisia — jos vedät 8:n ja sinulla on toinen 8, voit lyödä molemmat
-      const eligibleRanks  = new Set(baseEligible.map(c => c.r));
+      // Verrataan todellista arvoa (c.v), ei numeromerkintää — ♥2/♦2 (arvo 2) ja ♠2/♣2 (arvo 15)
+      // ovat sama numero mutta eri arvo. 10/A jätetään pois: ne ovat kaatajia, pelataan aina
+      // yksi kerrallaan (yksikin jo tyhjentää kasan), ei ryhmänä kädestä.
+      const eligibleValues = new Set(baseEligible.filter(c => c.r !== '10' && c.r !== 'A').map(c => c.v));
       const newlyDrawnIds  = new Set(newlyDrawn.map(c => c.id));
-      const handExtras     = p.hand.filter(c => !newlyDrawnIds.has(c.id) && eligibleRanks.has(c.r));
+      const handExtras     = p.hand.filter(c => !newlyDrawnIds.has(c.id) && eligibleValues.has(c.v));
       const eligible       = [...baseEligible, ...handExtras];
       if (eligible.length > 0) {
         const g2 = { ...g, players, draw, pile, top: newTop, finished, turn: pidx,

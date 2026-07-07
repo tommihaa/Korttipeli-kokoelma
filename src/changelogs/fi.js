@@ -11,6 +11,7 @@ export const CHANGELOG = [
     items: [
       'Asetuksiin uusi "Kokeile ääniä" -osio (näkyy kun äänet ovat päällä): jokaisen pelitapahtuman äänen voi kuunnella etukäteen, ja äänet voi hiljentää yhdellä napilla suoraan samasta paikasta.',
       'Uusi ääniteema: Torvi & kantele. Asetuksista (Lisäasetukset → Äänet) löytyy nyt vaihtoehtoinen äänimaailma, jossa korttitoiminnot kuulostavat kanteleen näppäykseltä ja isot voitot torvifanfaarilta.',
+      'Paskahousussa korjattu bugi: vaihtotarjous saattoi ehdottaa lyömään yhdessä kaksi kakkosta joiden arvo ei ollut sama (esim. musta ja punainen kakkonen).',
     ],
   },
   {
