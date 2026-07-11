@@ -14,6 +14,12 @@ const patch = String(commitCount).padStart(3, '0');
 export default defineConfig({
   plugins: [react()],
   server: { port: 5174 },
+  // Vitest: jsdom-ympäristö (React-savutestit + i18n-parity). Ei vaikuta prod-buildiin.
+  test: {
+    environment: 'jsdom',
+    include: ['test/**/*.test.{js,jsx}'],
+    setupFiles: ['./test/setup.js'],
+  },
   // 'hidden': mapit generoidaan deploy-debuggausta varten, mutta bundlessa ei ole
   // sourceMappingURL-viittausta eikä selain/SW koske niihin.
   build: {
