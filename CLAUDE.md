@@ -165,6 +165,7 @@ Virstanpylväät:
 - Destructure imports: `import { useState } from "react"`
 
 ## Viestit (loki/viestikupla) — i18n-konventio
+- **Kattavuus:** kaikissa i18n-/lokalisointitöissä varmista uusien UI-stringien kattavuus kaikissa 23 kielessä (parity-tarkistus) ja pidä terminologia yhdenmukaisena jaetun termimoduulin kanssa (`src/shared/glossary.js`, speksi Projects-juuren `TERMIMODUULI.md`). Poikkeus: changelog vain suomeksi (ks. Deploy).
 - **Tapahtumailmoitukset kolmannessa persoonassa** kaikille pelaajille, myös ihmiselle: `${name}: ...`, `Vuorossa ${name}.`, `${name} vei voiton`. Ihmisen nimi on aina `Hero`, joten "Vuorossa Hero.", "Hero: 7♣". Ei erillistä `isHuman ? 'Sinä…' : '${name}…'` -haaraa — yksi käännösmalli per viesti.
 - **Poikkeus: säilytä toimintaohjeet/vihjeet 2. persoonassa** kun ne neuvovat ihmistä tekemään jotain (esim. Koputus/Kultakala "Nostit X. Vaihda…", Kasinon dynaaminen vihje, Ristiseiskan "…joten Passaa"). Nämä eivät ole ilmoituksia vaan ohjeita.
 
