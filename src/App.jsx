@@ -35,6 +35,9 @@ const PUOLUE_YT = 'https://www.youtube.com/playlist?list=PL-vRZZ9yf7oqRYbSCXM4xl
 const KOFI = 'https://ko-fi.com/tommih';
 // Jaettava pelin osoite (Web Share API / kopioi).
 const SHARE_URL = 'https://tommi-jako.vercel.app';
+// Sisarpelit (vain suomeksi linkitetyt — molemmat vain suomenkielisiä pelejä).
+const ITU_URL = 'https://tommi-itu.vercel.app';
+const SUPERJATSI_URL = 'https://tommi-superjatsi.vercel.app';
 // Ryhmäkohtaiset kuvaukset — tietoisesti EI käännetä, käyttäjän oma ääni, näytetään aina englanniksi.
 const GROUP_BLURB = {
   laituri: 'I learned many of these games with this gang.',
@@ -1333,6 +1336,26 @@ export default function App() {
                   Support via Ko-fi
                 </a>
               </div>
+              {/* Muut pelit — sisarpelinosto vain suomeksi (Itu/Superjatsi ovat vain suomeksi;
+                  tr() putoaisi muuten fi-fallbackiin, joten näkyvyys portitetaan tässä). */}
+              {lang === 'fi' && (
+                <div style={{ marginTop: 14 }}>
+                  <div style={{ fontFamily: 'Georgia,serif', fontSize: 12, color: C.dim, opacity: 0.8, marginBottom: 6 }}>{t('ui.infoPanel.otherGames.title')}</div>
+                  <p style={{ margin: '0 0 8px', color: C.text, fontSize: 12, lineHeight: 1.6, fontFamily: 'sans-serif' }}>{t('ui.infoPanel.otherGames.intro')}</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    <a href={ITU_URL} target="_blank" rel="noopener noreferrer" style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                      border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
+                    }}>{t('ui.infoPanel.otherGames.itu')}</a>
+                    <a href={SUPERJATSI_URL} target="_blank" rel="noopener noreferrer" style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      color: C.gold, fontSize: 12, fontFamily: 'sans-serif', textDecoration: 'none',
+                      border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '6px 12px',
+                    }}>{t('ui.infoPanel.otherGames.superjatsi')}</a>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

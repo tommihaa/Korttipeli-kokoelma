@@ -7,6 +7,12 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '16.7.2026',
+    items: [
+      'Info-näytön Esittelyyn lisättiin "Muut pelit" -osio, joka linkittää saman tekijän muihin ilmaisiin peleihin (Itu ja Superjatsi). Näkyy vain suomenkielisessä versiossa, koska nämä pelit ovat toistaiseksi vain suomeksi.',
+    ],
+  },
+  {
     date: '7.7.2026',
     items: [
       'Asetuksiin uusi "Kokeile ääniä" -osio (näkyy kun äänet ovat päällä): jokaisen pelitapahtuman äänen voi kuunnella etukäteen, ja äänet voi hiljentää yhdellä napilla suoraan samasta paikasta.',

@@ -91,6 +91,14 @@ export const fi = {
       ],
       feedback: '✉ Lähetä risut ja ruusut',
       feedbackForm: '⭐ Arvioi kokoelma',
+      // Sisarpelinosto — näytetään VAIN suomeksi (JSX-portti lang === 'fi'),
+      // koska Itu ja Superjatsi ovat vain suomeksi. Ei lisätä muihin localeihin.
+      otherGames: {
+        title: 'Muut pelit',
+        intro: 'Samalta tekijältä. Kaikki ilmaisia ja ilman mainoksia.',
+        itu: 'Itu · suomen kielen sanapeli',
+        superjatsi: 'Superjatsi · noppapeli yhdelle',
+      },
       glossaryLink: 'Sanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
       changelogTranslateHint: 'Muutosloki on vain suomeksi — käytä selaimen Käännä-toimintoa lukeaksesi sen omalla kielelläsi.',
