@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, shuffle, aiShouldFumble, truncName, newDeck, cardName } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, truncName, newDeck, cardName } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -149,7 +149,7 @@ function DiceRoll({ players, onDone, soundOn }) {
   );
 }
 
-export default function Kultakala({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Kultakala({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
@@ -183,6 +183,9 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   const sndRef      = useRef(true);
   const aiLevelRef  = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
+  const botLevelsRef = useRef(botLevels);
+  useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
   const lastPlayTmr  = useRef(null);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
@@ -334,10 +337,37 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     // Valitse huonoin tunnettu kortti vaihtokohteeksi
     const worstKnownIdx = [...p.known].sort((a, b) => p.row[b].v - p.row[a].v)[0];
     let card, newG;
-    // Aloittelija-virhe: ottaa poistopakasta kortin vaikka se on hieman huonompi
-    const kultaFumbleBonus = aiShouldFumble(aiLevelRef.current) ? 3 : 0;
-    if (top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v + kultaFumbleBonus) {
-      // Poistopakasta nostaminen: pakollinen vaihto
+    // Kyvykkyysporras (ei satunnaiskohinaa): tasot eroavat kyvyiltään.
+    //   Oppipoika: ketju jatkuu vain ilmiselvällä kortilla (A-3); ottaa
+    //              poistopakasta "melkein hyvän" liian herkästi
+    //   Kisälli:   täysi ketjuvaihto, tarkka nostopäätös
+    //   Mestari:   + täyttää tuntemattomia paikkoja proaktiivisesti poistopakan
+    //              pikkukorteilla (tuntematon on odotusarvoltaan ~7 → ≤3 siihen on voitto)
+    const level = botLevelsRef.current?.[idx] ?? aiLevelRef.current;
+    // Oppipojan deterministinen heikkous: kynnys +3 (ottaa esim. 9:n 7:n tilalle)
+    const eagerBonus = level === 'beginner' ? 3 : 0;
+    const rightmostUnknown = [4, 3, 2, 1, 0].find(i => !p.known.has(i));
+    const UNKNOWN_EV = 7; // tuntemattoman paikan odotusarvo
+    // Mestari: hyötyvertailu — kannattaako poistopakan kortti, ja mihin:
+    // huonoimman tunnetun korvaus (varma hyöty) vs. tuntemattoman täyttö (EV-hyöty).
+    const worstV = worstKnownIdx !== undefined ? p.row[worstKnownIdx].v : -Infinity;
+    const gainKnown   = top ? worstV - top.v : -Infinity;
+    const gainUnknown = (top && rightmostUnknown !== undefined) ? UNKNOWN_EV - top.v : -Infinity;
+    // Kynnys: tunnetun parannus kelpaa aina (>0), tuntemattoman täyttö vain selvällä
+    // hyödyllä (≥3) — muuten nostopakan ketjupotentiaali (EV ~2-3) on arvokkaampi.
+    // Huom: hard-vs-normal-ero on Kultakalassa mitatusti pieni (nostotuuri dominoi;
+    // nollahypoteesitesti identtisillä säännöillä antoi saman jakauman). Mestarin
+    // EV-logiikka pidetään, koska se on teoriassa oikein eikä mitatusti haittaa.
+    if (level === 'hard' && top && (gainKnown > 0 || gainUnknown >= 3)) {
+      const discard = [...g.discard]; discard.pop();
+      newG = { ...g, discard }; card = top;
+      addLog(M.aiDrawDiscard(p));
+      setG(newG); gRef.current = newG;
+      if (sndRef.current) SFX.flip();
+      if (gainKnown >= gainUnknown) tm(() => aiDoSwap(idx, gRef.current, card, worstKnownIdx), 1000);
+      else tm(() => aiChainSwap(idx, gRef.current, card, true), 1000);
+    } else if (level !== 'hard' && top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v + eagerBonus) {
+      // Poistopakasta nostaminen: pakollinen vaihto huonoimpaan tunnettuun
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;
       addLog(M.aiDrawDiscard(p));
@@ -351,110 +381,87 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
       setG(newG); gRef.current = newG;
       if (sndRef.current) SFX.flip();
       tm(() => {
-        const g2 = gRef.current, p2 = g2.players[idx];
-        const playerCount = g2.players.length;
-        // 2-pel: A-3, 3-pel: A-4, 4-pel: A-5 (kokemuspohjainen)
-        const maxSwapValue = playerCount + 1;
-
-        // **PHASE 3: Smart Position Selection**
-        // Helper function to score how good a position is for a card
-        const scorePositionForCard = (cardValue, position) => {
-          // position is 1-5 (from left to right)
-          // Low cards: prefer left (revealed early, lowers total)
-          // High cards: prefer right (hidden longer)
-          const posIndex = position - 1; // 0-4
-
-          if (cardValue <= 3) {
-            // Low card: left side better (position 1 best)
-            return 5 - position; // 4,3,2,1,0 for pos 1-5
-          } else if (cardValue >= 9) {
-            // High card: right side better (position 5 best)
-            return position - 1; // 0,1,2,3,4 for pos 1-5
-          } else {
-            // Medium card: prefer middle
-            return 2.5 - Math.abs(3 - position);
-          }
-        };
-
-        // Find best unknown position for a card (preferring score but filling left-to-right)
-        const findBestUnknownPos = (heldCard) => {
-          const unknowns = Array.from({ length: 5 }, (_, i) => i + 1).filter(pos => !p2.known.has(pos - 1));
-          if (unknowns.length === 0) return null;
-
-          let bestPos = unknowns[0];
-          let bestScore = scorePositionForCard(heldCard.v, bestPos);
-
-          for (const pos of unknowns) {
-            const score = scorePositionForCard(heldCard.v, pos);
-            if (score > bestScore) {
-              bestScore = score;
-              bestPos = pos;
-            }
-          }
-          return bestPos;
-        };
-
-        // KETJUVAIHTO: järjestys 5,4,3,2,1
-        let held = card;
-        const swaps = []; // Seuraa jokaista swappia: { pos, card }
-
-        for (let pos = 5; pos >= 1; pos--) {
-          const idx_pos = pos - 1;
-
-          // Paikka 1: älä aja ulos tunnettua pientä korttia poistopakkaan
-          if (pos === 1 && p2.known.has(0) && p2.row[0].v <= maxSwapValue) break;
-          if (pos === 1 && held.v > maxSwapValue) break;
-
-          const hasUnknownsAhead = Array.from({ length: pos - 1 }, (_, i) => i).some(i => !p2.known.has(i));
-
-          if (held.v <= maxSwapValue) {
-            // A-3/4/5 (2/3/4 pel): vaihda tuntemattomaan tai tunnettuun jos sen jälkeen tuntemattomia
-            if (!p2.known.has(idx_pos) || hasUnknownsAhead) {
-              const old = p2.row[idx_pos];
-              p2.row[idx_pos] = held;
-              p2.known.add(idx_pos);
-              swaps.push({ pos, card: held });
-              held = old;
-            } else {
-              // Kaikki tunnetaan eikä tuntemattomia jäljellä - ketju loppuu
-              break;
-            }
-          } else if (held.v <= 7) {
-            // 5-7: vaihda tuntemattomaan paikoissa 5,4,3,2 (ei paikkaan 1)
-            if (pos >= 2 && !p2.known.has(idx_pos)) {
-              const old = p2.row[idx_pos];
-              p2.row[idx_pos] = held;
-              p2.known.add(idx_pos);
-              swaps.push({ pos, card: held });
-              held = old;
-            } else {
-              // Tunnettu paikka tai paikka 1 - ketju loppuu
-              break;
-            }
-          } else {
-            // 8-K: heitä pois (ei vaihda)
-            break;
-          }
-        }
-
-        // Päivitä pelin state vaihtojen jälkeen
-        if (swaps.length > 0) {
-          const players = g2.players.map((pl, i) => i === idx ? p2 : pl);
-          const newG = { ...g2, players, discard: [...g2.discard, held] };
-          setG(newG);
-          gRef.current = newG;
-          if (sndRef.current) SFX.swap();
-
-          // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
-          const swapChain = swaps.map(s => t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })).join(' → ');
-          addLog(t('games.kultakala.msg.aiSwapChain', { name: g2.players[idx].name, chain: swapChain, card: lblColored(held) }));
-
-          tm(() => advance(newG, idx), 700);
-        } else {
-          // Ei vaihtoja - discardata kortti suoraan
-          aiDoDiscard(idx, g2, card);
-        }
+        // Oppipoika: ketju jatkuu vain ilmiselvän hyvällä kortilla (A-3);
+        // Kisälli/Mestari ketjuttavat täydellä säännöstöllä
+        aiChainSwap(idx, gRef.current, card, false, level === 'beginner' ? 3 : null);
       }, 1000);
+    }
+  }
+
+  // KETJUVAIHTO: järjestys 5,4,3,2,1. mustSwap = poistopakkanosto (pakollinen vaihto):
+  // jos ketju ei käynnisty, vaihdetaan varasijalle (huonoin tunnettu tai tuntematon).
+  // chainLimit (Oppipoika): jatka ketjua ensimmäisen vaihdon jälkeen vain jos
+  // syrjäytetty kortti on ilmiselvän hyvä (arvo ≤ raja) — aloittelija tekee
+  // ilmeisen jatkovaihdon (paljastunut ässä!) muttei suunnittele pidemmälle.
+  function aiChainSwap(idx, g2, card, mustSwap, chainLimit = null) {
+    const p2 = g2.players[idx];
+    const playerCount = g2.players.length;
+    const maxSwapValue = playerCount + 1;
+    let held = card;
+    const swaps = []; // Seuraa jokaista swappia: { pos, card }
+
+    for (let pos = 5; pos >= 1; pos--) {
+      const idx_pos = pos - 1;
+      if (chainLimit !== null && swaps.length >= 1 && held.v > chainLimit) break;
+
+      // Paikka 1: älä aja ulos tunnettua pientä korttia poistopakkaan
+      if (pos === 1 && p2.known.has(0) && p2.row[0].v <= maxSwapValue) break;
+      if (pos === 1 && held.v > maxSwapValue) break;
+
+      const hasUnknownsAhead = Array.from({ length: pos - 1 }, (_, i) => i).some(i => !p2.known.has(i));
+
+      if (held.v <= maxSwapValue) {
+        // A-3/4/5 (2/3/4 pel): vaihda tuntemattomaan tai tunnettuun jos sen jälkeen tuntemattomia
+        if (!p2.known.has(idx_pos) || hasUnknownsAhead) {
+          const old = p2.row[idx_pos];
+          p2.row[idx_pos] = held;
+          p2.known.add(idx_pos);
+          swaps.push({ pos, card: held });
+          held = old;
+        } else {
+          // Kaikki tunnetaan eikä tuntemattomia jäljellä - ketju loppuu
+          break;
+        }
+      } else if (held.v <= 7) {
+        // 5-7: vaihda tuntemattomaan paikoissa 5,4,3,2 (ei paikkaan 1)
+        if (pos >= 2 && !p2.known.has(idx_pos)) {
+          const old = p2.row[idx_pos];
+          p2.row[idx_pos] = held;
+          p2.known.add(idx_pos);
+          swaps.push({ pos, card: held });
+          held = old;
+        } else {
+          // Tunnettu paikka tai paikka 1 - ketju loppuu
+          break;
+        }
+      } else {
+        // 8-K: heitä pois (ei vaihda)
+        break;
+      }
+    }
+
+    // Päivitä pelin state vaihtojen jälkeen
+    if (swaps.length > 0) {
+      const players = g2.players.map((pl, i) => i === idx ? p2 : pl);
+      const newG = { ...g2, players, discard: [...g2.discard, held] };
+      setG(newG);
+      gRef.current = newG;
+      if (sndRef.current) SFX.swap();
+
+      // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
+      const swapChain = swaps.map(s => t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })).join(' → ');
+      addLog(t('games.kultakala.msg.aiSwapChain', { name: g2.players[idx].name, chain: swapChain, card: lblColored(held) }));
+
+      tm(() => advance(newG, idx), 700);
+    } else if (mustSwap) {
+      const unknown2 = [4, 3, 2, 1, 0].find(i => !p2.known.has(i));
+      const worstKnown2 = [...p2.known].sort((a, b) => p2.row[b].v - p2.row[a].v)[0];
+      const target = (worstKnown2 !== undefined && card.v < p2.row[worstKnown2].v)
+        ? worstKnown2 : (unknown2 ?? worstKnown2);
+      aiDoSwap(idx, g2, card, target);
+    } else {
+      // Ei vaihtoja - discardata kortti suoraan
+      aiDoDiscard(idx, g2, card);
     }
   }
 
@@ -686,10 +693,14 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 5, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '5px 8px' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: isActive ? C.gold : C.dim, minWidth: 54, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
-                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
-                  <div style={{ display: 'flex', gap: 2 }}>
+                  {/* Sama kehyslaatikko kaikille (reunus läpinäkyvä ilman korostusta),
+                      jotta korostettu, korostamaton ja tuntematon istuvat samalla tasolla */}
+                  <div style={{ borderRadius: 4, border: '2px solid transparent', padding: 1 }}>
+                    <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
+                  </div>
+                  <div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {p.row.map((c, ci) => (
-                      <div key={ci} style={{ borderRadius: 4, border: showAIKnown && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: showAIKnown && p.known.has(ci) ? `0 0 6px ${C.gold}66` : 'none', padding: showAIKnown && p.known.has(ci) ? 1 : 0 }}>
+                      <div key={ci} style={{ borderRadius: 4, border: `2px solid ${showAIKnown && p.known.has(ci) ? C.gold : 'transparent'}`, boxShadow: showAIKnown && p.known.has(ci) ? `0 0 6px ${C.gold}66` : 'none', padding: 1 }}>
                         <KaCard card={c} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
                       </div>
                     ))}
@@ -706,10 +717,14 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
-                  <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
-                  <div style={{ display: 'flex', gap: 2 }}>
+                  {/* Sama kehyslaatikko kaikille (reunus läpinäkyvä ilman korostusta),
+                      jotta korostettu, korostamaton ja tuntematon istuvat samalla tasolla */}
+                  <div style={{ borderRadius: 6, border: '2px solid transparent', padding: 2 }}>
+                    <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
+                  </div>
+                  <div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {p.row.map((c, ci) => (
-                      <div key={ci} style={{ borderRadius: 6, border: showAIKnown && p.known.has(ci) ? `2px solid ${C.gold}` : 'none', boxShadow: showAIKnown && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: showAIKnown && p.known.has(ci) ? 2 : 0 }}>
+                      <div key={ci} style={{ borderRadius: 6, border: `2px solid ${showAIKnown && p.known.has(ci) ? C.gold : 'transparent'}`, boxShadow: showAIKnown && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: 2 }}>
                         <KaCard card={c} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
                       </div>
                     ))}

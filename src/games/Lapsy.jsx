@@ -27,7 +27,7 @@ function deal(nPlayers) {
 
 import { useT } from '../shared/i18n.jsx';
 
-export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
@@ -64,6 +64,17 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   const sndRef       = useRef(false);
   const aiLevelRef   = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös.
+  // Muisti (memoryRef) on jaettu laskuri: päivitys tehdään istuinten korkeimman tason
+  // mukaan, mutta muistin KÄYTTÖ (ennakointi/ennustus) portitetaan istuinkohtaisesti.
+  const botLevelsRef = useRef(botLevels);
+  useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
+  const LVL_ORD = { beginner: 0, normal: 1, hard: 2 };
+  const topLvl = () => {
+    const bl = botLevelsRef.current;
+    if (!bl) return aiLevelRef.current;
+    return bl.reduce((m, l) => (LVL_ORD[l] ?? 0) > (LVL_ORD[m] ?? 0) ? l : m, 'beginner');
+  };
   // AI memory: kortinlaskija (normal) tracks seen ranks; tosilaskija (hard) also tracks collected-card order
   const memoryRef    = useRef({ seenByRank: {}, knownBottoms: {} });
   const predMatchRef = useRef(false); // tosilaskija: true when the next flip was predicted
@@ -240,7 +251,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     setCenter(newCenter); centerRef.current = newCenter;
 
     // AI memory update
-    const level = aiLevelRef.current;
+    const level = topLvl();
     if (level === 'normal' || level === 'hard') {
       const mem = memoryRef.current;
       mem.seenByRank[card.r] = (mem.seenByRank[card.r] || 0) + 1;
@@ -323,27 +334,33 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     addLog(M.match(center[0].r));
 
     const matchRank = center[0].r;
-    const level = aiLevelRef.current;
     const mem = memoryRef.current;
 
     // Kortinlaskija (normal + hard): anticipation from how many of this rank were seen BEFORE
     // seenByRank already includes both matching cards → subtract 2 for prior sightings
-    const prevSeen = (level === 'normal' || level === 'hard')
-      ? Math.max(0, (mem.seenByRank[matchRank] || 0) - 2)
-      : 0;
-    const anticipation = Math.min(prevSeen / 2, 1.0); // 0.0 → 0.5 → 1.0
-
+    const prevSeen = Math.max(0, (mem.seenByRank[matchRank] || 0) - 2);
     // Tosilaskija (hard): additional bonus if the exact card was predicted from known pile order
-    const predicted = level === 'hard' && predMatchRef.current;
+    const predFlag = predMatchRef.current;
     predMatchRef.current = false; // consume
 
     aiSlapTmrs.current.forEach(clearTimeout);
     aiSlapTmrs.current = piles.map((pile, i) => {
       if ((i === 0 && !allBotsRef.current) || pile.length === 0) return null;
+      const level = botLevelsRef.current?.[i] ?? aiLevelRef.current;
+      const anticipation = (level === 'normal' || level === 'hard')
+        ? Math.min(prevSeen / 2, 1.0) // 0.0 → 0.5 → 1.0
+        : 0;
+      const predicted = level === 'hard' && predFlag;
       // Per-level timing: avg = minDelay + spread/2 (before bonuses)
-      // beginner ~1550ms, normal ~1700ms, hard ~1000ms
+      // beginner ~2400ms, normal ~1700ms, hard ~1000ms
+      // Botbench-baseline 17.7.2026 paljasti epämonotonisuuden: vanha beginner
+      // (~1550ms) oli keskimäärin NOPEAMPI kuin normal (~1700ms), joten Oppipoika
+      // voitti Kisällin. Korjaus hidasti Oppipoikaa; normal/hard ennallaan, jotta
+      // ihmistä vastaan pelattava taso ei muutu. ~300 ms:n ero ei vielä riittänyt
+      // (voitot 50/50, koska osa voitoista ratkeaa haastekorteilla, ei läpsyillä),
+      // joten porras vastaa nyt hard↔normal-eroa. Todennus: docs/BOTBENCH.md.
       const { minDelay, spread } =
-        level === 'beginner' ? { minDelay: 750,  spread: 1600 } :
+        level === 'beginner' ? { minDelay: 1500, spread: 1800 } :
         level === 'normal'   ? { minDelay: 1100, spread: 1200 } :
         level === 'hard'     ? { minDelay: 500,  spread: 1000 } :
                                { minDelay: 1100, spread: 1200 };
@@ -440,7 +457,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     const newPiles = curPiles.map((p, i) => i === winnerIdx ? [...p, ...[...curCenter].reverse()] : p);
 
     // Tosilaskija: memorise the order of cards now at the bottom of the winner's pile
-    if (aiLevelRef.current === 'hard') {
+    if (topLvl() === 'hard') {
       const mem = memoryRef.current;
       // Cards go to bottom in reversed center order — same as [...curCenter].reverse()
       mem.knownBottoms[winnerIdx] = {

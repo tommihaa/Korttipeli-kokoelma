@@ -373,7 +373,7 @@ function aiWorstCard(hand, rows) {
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT, tr } from '../shared/i18n.jsx';
 
-export default function Ristiseiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Ristiseiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
@@ -400,6 +400,9 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   const sndRef     = useRef(true);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
+  const botLevelsRef = useRef(botLevels);
+  useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
@@ -585,7 +588,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       // Vakio: strategisesti huonoin — AI:n aloittelija-virhe antaa silti satunnaisen.
       const toGive = randomPantti
         ? randomCard
-        : (!giver.isHuman && aiShouldFumble(aiLevelRef.current)) ? randomCard
+        : (!giver.isHuman && aiShouldFumble(botLevelsRef.current?.[giverIdx] ?? aiLevelRef.current)) ? randomCard
         : aiWorstCard(giver.hand, g.rows);
       players = g.players.map((pl, i) => {
         if (i === giverIdx)  return { ...pl, hand: pl.hand.filter(c => c.id !== toGive.id) };
@@ -610,7 +613,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
 
-    const level = aiLevelRef.current;
+    const level = botLevelsRef.current?.[activePlayer] ?? aiLevelRef.current;
 
     if (bonusTurn !== null && bonusTurn === activePlayer) {
       const g2 = { ...gRef.current, bonusTurn: null };

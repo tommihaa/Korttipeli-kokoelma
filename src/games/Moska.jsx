@@ -174,7 +174,7 @@ function aiPickAddCard(addable, hand, ts) {
 // ── Komponentti ───────────────────────────────────────────────
 import { useT, tr } from '../shared/i18n.jsx';
 
-export default function Moska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Moska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
@@ -212,6 +212,9 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
   const sndRef         = useRef(false);
   const aiLevelRef     = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
+  const botLevelsRef = useRef(botLevels);
+  useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const prevDeckRef    = useRef(null);
   const lastPlayTmr    = useRef(null);
   const showNextBtnRef = useRef(showNextBtn);
@@ -632,7 +635,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     } else {
       // AI lisää sivusta — aggressiivisuus riippuu tasosta, korttivalinta suosii pieniä parittomia
       const def = g.players[g.defender];
-      const lvl = aiLevelRef.current;
+      const lvl = botLevelsRef.current?.[next] ?? aiLevelRef.current;
       const shouldAdd = lvl === 'beginner'
         ? g.table.length <= 1 && def.hand.length >= 5
         : lvl === 'hard'
@@ -667,7 +670,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     if (phase === 'attack') {
       const p = players[primaryAtk];
       if (p.isHuman) return;
-      const lvlA = aiLevelRef.current;
+      const lvlA = botLevelsRef.current?.[primaryAtk] ?? aiLevelRef.current;
       let cards;
       if (lvlA === 'hard') {
         cards = aiPickAttackSN(p, ts, removedRef.current);
@@ -696,7 +699,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
 
       // Kokeile siirtoa ensin (jos ei vielä kaatanut mitään) — Aloittelija ei siirrä
       const noBeats = !table.some(t => t.def);
-      const lvl = aiLevelRef.current;
+      const lvl = botLevelsRef.current?.[defender] ?? aiLevelRef.current;
       if (lvl !== 'beginner' && noBeats && g.passChain.length < players.filter(pl => pl.rank === null).length - 2) {
         const atkRanks = new Set(table.map(t => t.atk.r));
         const passCards = p.hand.filter(c => atkRanks.has(c.r) && c.s !== ts);
@@ -715,7 +718,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       let hand = [...p.hand];
       const beats = [];
       let canBeatAll = true;
-      const shouldFumbleDefense = aiShouldFumble(aiLevelRef.current);
+      const shouldFumbleDefense = aiShouldFumble(botLevelsRef.current?.[defender] ?? aiLevelRef.current);
       for (const slot of unbeaten) {
         let dc = aiPickDefense(slot.atk, hand, ts);
         if (!dc) { canBeatAll = false; break; }
@@ -728,7 +731,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
         hand = hand.filter(c => c.id !== dc.id);
       }
 
-      const isSN = aiLevelRef.current === 'hard';
+      const isSN = (botLevelsRef.current?.[defender] ?? aiLevelRef.current) === 'hard';
       if (canBeatAll) {
         aiTmr.current = tm(() => {
           let cur = gRef.current;

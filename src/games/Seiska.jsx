@@ -187,7 +187,7 @@ function initSlots(count) {
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT } from '../shared/i18n.jsx';
 
-export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
@@ -216,6 +216,9 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
   const sndRef = useRef(true);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
+  const botLevelsRef = useRef(botLevels);
+  useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const prevDeckRef  = useRef(null);
   const prevRCRef    = useRef(0);
   const lastPlayTmr  = useRef(null);
@@ -528,7 +531,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       g2 = { ...g2, aceBonus: card.s };
       if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
         if (!p.isHuman) {
-          const effectiveLevel = g2.players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current;
+          const effectiveLevel = botLevelsRef.current?.[playerIdx] ?? (g2.players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current);
           if (aiShouldFumble(effectiveLevel)) {
             g2 = { ...g2, pendingLappu: playerIdx };
           } else {
@@ -546,7 +549,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     // Lappu
     if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
       if (!p.isHuman) {
-        const effectiveLevel2 = g2.players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current;
+        const effectiveLevel2 = botLevelsRef.current?.[playerIdx] ?? (g2.players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current);
         if (aiShouldFumble(effectiveLevel2)) {
           g2 = { ...g2, pendingLappu: playerIdx };
           advanceTurn(g2, playerIdx);
@@ -661,7 +664,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
     // Katsomotilassa (kaikki botteja) käytetään aina Mestari-tasoa (hard)
-    const level  = players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current;
+    const level  = botLevelsRef.current?.[activePlayer] ?? (players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current);
     const isHard = level === 'hard';
 
     // ── Ässä-bonusvuoro ─────────────────────────────────────

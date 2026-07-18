@@ -267,7 +267,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 
 import { useT } from '../shared/i18n.jsx';
 
-export default function Paskahousu({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Paskahousu({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
@@ -299,6 +299,16 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   const sndRef     = useRef(true);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös.
+  // Yhtäkkinen kuolema on pelitason pattikatkaisija: sekatasoilla riittää YKSI
+  // Mestari-istuin (Mestarin optimipeli synnyttää patteja myös heikompaa vastaan,
+  // todennettu botbenchissä: hard vs beginner ei muuten pääty). Ilman botLevelsiä
+  // käytös on entinen: globaali taso hard.
+  const botLevelsRef = useRef(botLevels);
+  useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
+  const suddenDeathArmed = () => botLevelsRef.current
+    ? botLevelsRef.current.some(l => l === 'hard')
+    : aiLevelRef.current === 'hard';
   const suddenDeathTmr     = useRef(null);
   const suddenDeathStarted = useRef(false);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
@@ -310,7 +320,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + Mestari (hard)
   useEffect(() => {
     if (!G || G.phase === 'gameover' || suddenDeathStarted.current) return;
-    if (aiLevelRef.current !== 'hard') return;
+    if (!suddenDeathArmed()) return;
     const activeCount = G.players.filter((_, i) => !G.finished.includes(i)).length;
     if (G.draw.length === 0 && activeCount === 2) {
       suddenDeathStarted.current = true;
@@ -455,7 +465,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     if (g.draw.length > 0 && draw.length === 0) {
       setPakaAnim(true); // pakka on tyhjä
       const activeNow = g.players.length - g.finished.length;
-      if (!(aiLevelRef.current === 'hard' && activeNow === 2))
+      if (!(suddenDeathArmed() && activeNow === 2))
         addLog(t('games.paskahousu.msg.deckEmpty'));
     }
 
@@ -566,7 +576,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       if (draw.length === 0) {
         setPakaAnim(true); // pakka on tyhjä
         const activeNow = g.players.length - g.finished.length;
-        if (!(aiLevelRef.current === 'hard' && activeNow === 2))
+        if (!(suddenDeathArmed() && activeNow === 2))
           addLog(t('games.paskahousu.msg.deckEmpty'));
       }
 
@@ -791,13 +801,14 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
 
     addLog(M.turnOf(p.name));
     const activePlayers = g.players.length - g.finished.length;
-    let cards = aiCards(p.hand, top, g.pile, draw.length, aiLevelRef.current, g.allCards, g.clearedCards, activePlayers, g.rules);
+    const lvl = botLevelsRef.current?.[turn] ?? aiLevelRef.current;
+    let cards = aiCards(p.hand, top, g.pile, draw.length, lvl, g.allCards, g.clearedCards, activePlayers, g.rules);
     if (cards) {
-      if (cards.every(c => c.r !== '10' && c.r !== 'A') && aiShouldFumble(aiLevelRef.current)) {
+      if (cards.every(c => c.r !== '10' && c.r !== 'A') && aiShouldFumble(lvl)) {
         // Aloittelija-virhe: pelaa 10 tai A turhaan — erikoiskortti kun normaali kävisi
         const specials = p.hand.filter(c => (c.r === '10' || c.r === 'A') && canPlay(c, top, g.rules));
         if (specials.length > 0) cards = [specials[0]];
-      } else if (cards.length > 1 && aiShouldFumble(aiLevelRef.current)) {
+      } else if (cards.length > 1 && aiShouldFumble(lvl)) {
         // Aloittelija-virhe: pelaa vain yhden samanarvoisen kerralla
         cards = [cards[0]];
       }

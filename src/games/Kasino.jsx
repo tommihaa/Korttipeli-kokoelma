@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, aiShouldFumble, newDeck, sortHand as sortHandBy } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, newDeck, sortHand as sortHandBy } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -312,7 +312,7 @@ const M = {
 
 import { useT, tr } from '../shared/i18n.jsx';
 
-export default function Kasino({ game, onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Kasino({ game, onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
@@ -366,6 +366,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const sndRef     = useRef(false);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
+  const botLevelsRef = useRef(botLevels);
+  useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const lastPlayTmr = useRef(null);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
@@ -916,9 +919,12 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     return best;
   }
 
-  // Aloittelija-virhe: huonoin käypä kaappaus
-  function findWorstCapture(p, table) {
-    let worst = null;
+  // Oppipojan naiivi kaappaus: maksimoi korttien MÄÄRÄ, ei pistearvoa —
+  // ohittaa ässät/pistekortit jos isompi kasa on tarjolla. (Kokeiltu myös
+  // "näkee vain parit" -versiota: se oli mitatusti VAHVEMPI kuin Kisälli,
+  // joten heikkous toteutetaan pisteiden, ei kombonäön, kautta.)
+  function findNaiveCapture(p, table) {
+    let best = null;
     for (const handCard of p.hand) {
       const hv = handVal(handCard);
       const n = table.length;
@@ -926,12 +932,11 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
         const sel = table.filter((_, i) => (mask >> i) & 1);
         if (canPartition(sel, hv)) {
           const isMokki = sel.length === table.length;
-          const score = aiCardScore([handCard, ...sel], isMokki);
-          if (!worst || score < worst.score) worst = { handCard, tableCards: sel, score, isMokki };
+          if (!best || sel.length > best.tableCards.length) best = { handCard, tableCards: sel, score: aiCardScore([handCard, ...sel], isMokki), isMokki };
         }
       }
     }
-    return worst;
+    return best;
   }
 
   // Etsi paras rakennelma (ottaa huomioon pistearvo)
@@ -958,21 +963,26 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     if (!g || phaseRef.current === 'idle') return;
     const p = g.players[playerIdx];
     if (!p.hand.length) { advance(g, playerIdx); return; }
-    const level = allBotsRef.current ? 'hard' : aiLevelRef.current;
+    const level = botLevelsRef.current?.[playerIdx] ?? (allBotsRef.current ? 'hard' : aiLevelRef.current);
+    // Kyvykkyysporras (ei satunnaiskohinaa):
+    //   Oppipoika: naiivi kaappaus (korttimäärä, ei pisteet), ei rakenna, ei
+    //              varasta, ei bonuksia; jättökortti ilman vaara-arviota
+    //   Kisälli:   pistekaappaus + rakentaminen + varastus + bonukset,
+    //              heuristinen jättövaara
+    //   Mestari:   + hypergeometrinen inferenssi (rakennus-EV, jättövaara, A-suoja)
     const isBeginner = level === 'beginner';
     const isHard = level === 'hard';
-    const fumble = aiShouldFumble(level);
     const aDel = allBotsRef.current ? 400 : 1200; // animation delay
     const qDel = allBotsRef.current ? 200 : 700;  // quick action delay
 
-    // ─── 1. Kaappaa oma rakennelma (kaikki tasot, aloittelija 20% unohtaa) ───
+    // ─── 1. Kaappaa oma rakennelma (kaikki tasot) ────────────────────────────
     const ownBuilds = g.builds.filter(b => b.ownerIdx === playerIdx);
-    if (ownBuilds.length > 0 && !(isBeginner && Math.random() < 0.2)) {
+    if (ownBuilds.length > 0) {
       for (const build of ownBuilds) {
         const capturer = p.hand.find(hc => handVal(hc) === build.value);
         if (capturer) {
-          // Normaali 50%, hard/super aina: poimi myös pöytäkortit jotka summautuvat samaan arvoon
-          const seesBonus = !isBeginner && (level !== 'normal' || Math.random() < 0.5);
+          // Kisälli ja Mestari poimivat myös pöytäkortit jotka summautuvat samaan arvoon
+          const seesBonus = !isBeginner;
           const bonus = seesBonus ? findTableBonus(g.table, build.value) : [];
           const animCards = [...build.cards, ...bonus];
           const isMokkiBuild = g.builds.filter(b => b.id !== build.id).length === 0
@@ -997,8 +1007,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       for (const build of opponentBuilds) {
         const capturer = p.hand.find(hc => handVal(hc) === build.value);
         if (capturer) {
-          // Normaali 50%, hard/super aina: poimi myös pöytäkortit
-          const seesBonus = level !== 'normal' || Math.random() < 0.5;
+          // Poimi myös pöytäkortit jotka summautuvat samaan arvoon
+          const seesBonus = true;
           const bonus = seesBonus ? findTableBonus(g.table, build.value) : [];
           const animCards = [...build.cards, ...bonus];
           const isMokkiSteal = g.builds.filter(b => b.id !== build.id).length === 0
@@ -1018,10 +1028,10 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     }
 
     // ─── 3. Kaappaa pöydältä ────────────────────────────────────────────────
-    const bestCapture = findBestCapture(p, g.table, g.builds);
-    const captureToUse = (bestCapture && fumble)
-      ? (findWorstCapture(p, g.table) || bestCapture)
-      : bestCapture;
+    // Oppipoika kaappaa naiivisti (korttimäärä), muut pistearvon mukaan
+    const captureToUse = isBeginner
+      ? findNaiveCapture(p, g.table)
+      : findBestCapture(p, g.table, g.builds);
 
     // ─── 4. Harkitse rakentamista (normal+, ei omaa rakennelmaa jo) ──────────
     if (!isBeginner && ownBuilds.length === 0) {
@@ -1029,16 +1039,15 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       if (buildResult) {
         let doBuildAction = false;
         if (level === 'normal') {
-          // Normal: rakenna aina kun voi
+          // Kisälli: rakenna aina kun voi
           doBuildAction = true;
         } else {
-          // Mestari (hard): rakenna vain jos rakennusarvo > kaappauksen arvo.
-          // Varastusriski lasketaan korttipankki-inferenssistä (täydellinen tieto).
-          const captureScore = captureToUse ? captureToUse.score : 0;
+          // Mestari (hard): rakenna kuten Kisälli, mutta inferenssi estää
+          // korkean varastusriskin rakennukset. (Aiempi EV-portti "rakennus vain
+          // jos arvo > 1.5 × kaappaus" esti rakentamisen lähes aina ja HÄVISI
+          // mitatusti Kisällille — rakentaminen on Kasinossa vahva siirto.)
           const stealRisk = pAnyOpponentHas(g, playerIdx, buildResult.value);
-          const discount = (1 - stealRisk) * 0.85;
-          const effectiveBuildScore = buildResult.score * discount;
-          doBuildAction = effectiveBuildScore > captureScore * 1.5;
+          doBuildAction = stealRisk <= 0.5;
         }
         if (doBuildAction) {
           if (initShowIntention) setAiSel({ handCard: buildResult.handCard, tableCards: buildResult.tableCards });
@@ -1074,8 +1083,11 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
 
     // ─── 5. Jätä kortti pöytään ──────────────────────────────────────────────
     let toLeave;
-    if (fumble) {
-      toLeave = p.hand[Math.floor(Math.random() * p.hand.length)];
+    if (isBeginner) {
+      // Oppipoika: "pienin" kortti pöytään NUMEROARVON mukaan (A=1) ilman
+      // vaara-arviota — kohtelee ässää pikkukorttina vaikka Kasinossa se on 14,
+      // eikä suojaa pistekortteja (♠2 lähtee herkästi)
+      toLeave = [...p.hand].sort((a, b) => a.v - b.v)[0];
     } else if (isHard) {
       // Mestari (hard): minimoi probabilistinen varastusriski, suojele pistekortit
       const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c) && c.r !== 'A');
@@ -1086,7 +1098,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
         return da !== db ? da - db : tableVal(a) - tableVal(b);
       })[0];
     } else {
-      // Oppipoika/Kisälli: heuristinen varastusriski
+      // Kisälli: heuristinen varastusriski
       const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
       const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
       toLeave = [...leavePool].sort((a, b) => {

@@ -171,6 +171,7 @@ const TODO = [
   { label: 'Usein kysytyt kysymykset (UKK)', status: 'deferred' },
   { label: 'Jaa peli kaverille (linkki tai QR-koodi)', status: 'done' },
   { label: 'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle', status: 'done' },
+  { label: 'Tekoälyn vaikeustasojen hionta (uskottavammat aloittelijan virheet)', status: 'done' },
 ];
 
 // Tyhjä per-peli-tilastorakenne. places = sijoitusjakauma (1.–4.), byLevel = erittely AI-tasoittain.

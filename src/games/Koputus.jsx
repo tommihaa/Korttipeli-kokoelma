@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, shuffle, aiShouldFumble, newDeck } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, newDeck } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -107,7 +107,7 @@ function Btn({ label, onClick, color, outline, small: sm }) {
   );
 }
 
-export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
@@ -147,6 +147,9 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   const reactInt  = useRef(null);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
+  // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
+  const botLevelsRef = useRef(botLevels);
+  useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const sndRef     = useRef(initSoundOn);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
@@ -399,12 +402,11 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         if (!stopReact.current) { stopReact.current = true; setRO(false); setMsg(M.reactEnd); advance(gState, byIdx); }
       }
     }, 500);
-    const level = allBotsRef.current ? 'hard' : aiLevelRef.current;
-    const missProbability   = level === 'beginner' ? 0.5 : level === 'normal' ? 0.25 : 0.03;
-    const wrongReactChance  = level === 'beginner' ? 0.15 : 0;
-
     gState.players.forEach((p, i) => {
       if (p.isHuman) return;
+      const level = botLevelsRef.current?.[i] ?? (allBotsRef.current ? 'hard' : aiLevelRef.current);
+      const missProbability   = level === 'beginner' ? 0.5 : level === 'normal' ? 0.25 : 0.03;
+      const wrongReactChance  = level === 'beginner' ? 0.15 : 0;
       const mi = [...p.known].find(ki => p.cards[ki]?.r === card.r);
 
       // Passiivisuus: jättää reagoimatta vaikka tietää sopivan kortin
@@ -522,12 +524,21 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     if (!gState) gState = gRef.current; if (!gState) return;
     if (curRef.current !== playerIdx) return;
     const p = gState.players[playerIdx];
+    // Kyvykkyysporras (ei satunnaiskohinaa):
+    //   Oppipoika: ei huomaa poistopakkaa; arka koputtaja (kynnys 5) — botbench
+    //              osoitti että AIKAINEN koputus on etu, joten heikkous on arkuus
+    //   Kisälli:   poistopakka + vaihto huonoimpaan tunnettuun; arvio ×5, kynnys 8;
+    //              täyttää tuntemattoman vain varmalla kortilla (A/2)
+    //   Mestari:   + realistinen tuntemattoman arvio (×6) ja laajempi EV-vaihto
+    //              tuntemattomaan paikkaan (≤4; KOPUTUS.md strategia, kohta 3)
+    const level = botLevelsRef.current?.[playerIdx] ?? (allBotsRef.current ? 'hard' : aiLevelRef.current);
     if (knockRef.current === null) {
       const ks = [...p.known].reduce((s, i) => s + (p.cards[i]?.v || 0), 0);
       const uk = p.cards.filter(c => c !== null).length - p.known.size;
-      const est = ks + uk * 5;
-      // Aloittelija koputaa liian aikaisin — ylioptimistinen arvio omasta tilanteesta
-      const knockThreshold = aiShouldFumble(allBotsRef.current ? 'hard' : aiLevelRef.current) ? 14 : 8;
+      const unkEV = level === 'hard' ? 6 : 5;
+      const est = ks + uk * unkEV;
+      // Oppipoika ei uskalla koputtaa ajoissa (mitattu: aikainen koputus on etu)
+      const knockThreshold = level === 'beginner' ? 5 : 8;
       if (est <= knockThreshold) {
         setKB(playerIdx); knockRef.current = playerIdx;
         if (sndRef.current) SFX.tikki();
@@ -535,46 +546,66 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         setLR(lr); lrRef.current = lr; setMsg(M.aiKnock(p.name));
       }
     }
-    const dt = gState.discard[gState.discard.length - 1];
-    const worstKn = [...p.known].filter(i => gState.players[playerIdx].cards[i] !== null)
-      .sort((a, b) => gState.players[playerIdx].cards[b].v - gState.players[playerIdx].cards[a].v)[0];
-    const drawFromDiscard = dt && worstKn !== undefined && dt.v < p.cards[worstKn].v;
+    // Tuntemattoman paikan odotusarvo (vaihto- ja nostopäätöksiin)
+    const UNKNOWN_EV = 7;
+    // Haluaako botti poistopakan kortin? Oppipoika ei huomaa poistopakkaa lainkaan;
+    // Mestari ottaa myös pikkukortin (≤4) tuntemattomaan paikkaan (EV-hyöty ≥3).
+    const wantsDiscard = (gg) => {
+      const pp = gg.players[playerIdx];
+      const top = gg.discard[gg.discard.length - 1];
+      if (!top || level === 'beginner') return false;
+      const worst = [...pp.known].filter(i => pp.cards[i] !== null)
+        .sort((a, b) => pp.cards[b].v - pp.cards[a].v)[0];
+      if (worst !== undefined && top.v < pp.cards[worst].v) return true;
+      if (level === 'hard' && top.v <= UNKNOWN_EV - 3
+          && pp.cards.some((c, i) => c !== null && !pp.known.has(i))) return true;
+      return false;
+    };
+    const drawFromDiscard = wantsDiscard(gState);
     const thinkMs = allBotsRef.current ? Math.min(aiDelayRef.current * 0.25, 500) : 1600;
     const reactMs = allBotsRef.current ? 400 : 1200;
     tm(() => { setMsg(t(drawFromDiscard ? 'games.koputus.msg.aiDrawingDiscard' : 'games.koputus.msg.aiDrawingDeck', { name: p.name })); if (sndRef.current) SFX.flip(); }, thinkMs);
     schedAI(() => {
       const gNow = gRef.current; if (!gNow) return;
       const pNow = gNow.players[playerIdx];
-      const dtNow = gNow.discard[gNow.discard.length - 1];
-      const worstKnNow = [...pNow.known].filter(i => gNow.players[playerIdx].cards[i] !== null)
-        .sort((a, b) => gNow.players[playerIdx].cards[b].v - gNow.players[playerIdx].cards[a].v)[0];
-      const drawFromDiscardNow = dtNow && worstKnNow !== undefined && dtNow.v < pNow.cards[worstKnNow].v;
+      const drawFromDiscardNow = wantsDiscard(gNow);
       let card, deck, discard;
       if (drawFromDiscardNow) {
-        card = dtNow; deck = gNow.deck; discard = gNow.discard.slice(0, -1);
+        card = gNow.discard[gNow.discard.length - 1];
+        deck = gNow.deck; discard = gNow.discard.slice(0, -1);
       } else {
         if (!gNow.deck.length) { endGame(gNow); return; }
         card = gNow.deck[0]; deck = gNow.deck.slice(1); discard = gNow.discard;
       }
       const wo = [...pNow.known].filter(i => gNow.players[playerIdx].cards[i] !== null)
         .sort((a, b) => pNow.cards[b].v - pNow.cards[a].v)[0];
-      if (wo !== undefined && card.v < pNow.cards[wo].v) {
+      // Vaihtokohde: hyötyvertailu. Tunnetun parannus = varma hyöty; tuntemattoman
+      // täyttö (vain Mestari) = EV-hyöty, vaatii selvän edun (≥3).
+      const unknownSlot = pNow.cards.findIndex((c, i) => c !== null && !pNow.known.has(i));
+      const gainKnown   = wo !== undefined ? pNow.cards[wo].v - card.v : -Infinity;
+      const gainUnknown = (level !== 'beginner' && unknownSlot !== -1) ? UNKNOWN_EV - card.v : -Infinity;
+      // Kisälli vaatii varman kortin (A/2 → hyöty ≥5), Mestari tyytyy selvään etuun (≥3)
+      const unknownGate = level === 'hard' ? 3 : 5;
+      let target;
+      if (gainUnknown >= unknownGate && gainUnknown > gainKnown) target = unknownSlot;
+      else if (gainKnown > 0) target = wo;
+      if (target !== undefined) {
         const doSwap = () => {
-          const old = pNow.cards[wo];
+          const old = pNow.cards[target];
           const players = gNow.players.map((pl, i) => {
             if (i !== playerIdx) return pl;
-            const cards = [...pl.cards]; cards[wo] = card;
-            return { ...pl, cards, known: new Set([...pl.known, wo]) };
+            const cards = [...pl.cards]; cards[target] = card;
+            return { ...pl, cards, known: new Set([...pl.known, target]) };
           });
           const updG = { ...gNow, players, deck, discard: [...discard, old] };
           setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
           if (sndRef.current) SFX.swap();
-          flashSlot(playerIdx, wo);
+          flashSlot(playerIdx, target);
           tm(() => openReaction(updG, old, playerIdx), reactMs);
         };
         if (initShowIntention) {
           const intentionMs = Math.min(1200, Math.max(400, aiDelayRef.current * 0.3));
-          setIntention({ playerIdx, slotIdx: wo });
+          setIntention({ playerIdx, slotIdx: target });
           tm(() => { setIntention(null); doSwap(); }, intentionMs);
           return;
         }
