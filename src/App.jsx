@@ -165,7 +165,7 @@ const TODO = [
   { label: '"Kokeile ääniä" -esikuuntelu Asetuksissa + pikamykistys', status: 'done' },
   { label: 'Ääniteema: Torvi & kantele (valittavissa Asetuksista, äänet päällä)', status: 'done' },
   { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'done' },
-  { label: 'Kieliversiointi (12 kieltä)', status: 'done' },
+  { label: 'Kieliversiointi (23 kieltä)', status: 'done' },
   { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
   // UKK herää palautteen mukana — lokalisoitu fi+en, muut kielet putoavat tähän labeliin
   { label: 'Usein kysytyt kysymykset (UKK)', status: 'deferred' },
@@ -1444,18 +1444,25 @@ export default function App() {
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.todo')}</span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showTodo ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
-          {showTodo && (
+          {showTodo && (() => {
+            // Teksti lokalisoidusta taulukosta VAIN jos se on linjassa TODO-vakion kanssa
+            // (sama pituus). Muuten fallback item.label (suomi), jotta drift ei koskaan
+            // näytä väärää yliviivaus-/statustilaa. Status tulee aina TODO-vakiosta.
+            const locTodo = t('ui.infoPanel.todoItems');
+            const useLocTodo = Array.isArray(locTodo) && locTodo.length === TODO.length;
+            return (
             <div style={{ padding: '0 14px 14px' }}>
               {TODO.map((item, i) => (
                 <div key={i} style={{ display: 'flex', gap: 8, padding: '6px 0', borderBottom: `1px solid ${C.panelBorder}33`, alignItems: 'flex-start' }}>
                   <span style={{ fontSize: 13, flexShrink: 0, marginTop: 1 }}>
                     {item.status === 'open' ? '🎯' : item.status === 'done' ? '✅' : '⏸'}
                   </span>
-                  <span style={{ fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.55, color: item.status === 'done' ? C.dim : C.text, textDecoration: item.status === 'done' ? 'line-through' : 'none', opacity: item.status === 'deferred' ? 0.55 : 1 }}>{t('ui.infoPanel.todoItems')[i] ?? item.label}</span>
+                  <span style={{ fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.55, color: item.status === 'done' ? C.dim : C.text, textDecoration: item.status === 'done' ? 'line-through' : 'none', opacity: item.status === 'deferred' ? 0.55 : 1 }}>{useLocTodo ? locTodo[i] : item.label}</span>
                 </div>
               ))}
             </div>
-          )}
+            );
+          })()}
         </div>
 
       </div>

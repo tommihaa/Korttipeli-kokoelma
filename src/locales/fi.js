@@ -121,13 +121,18 @@ export const fi = {
         ],
       },
       todo: 'Tulossa 🗺',
+      // HUOM: pidä tämä täsmälleen App.jsx:n TODO-vakion järjestyksessä JA pituudessa.
+      // Render käyttää tätä vain jos length === TODO.length, muuten fallback item.label.
       todoItems: [
+        '"Kokeile ääniä" -esikuuntelu Asetuksissa + pikamykistys',
+        'Ääniteema: Torvi & kantele (valittavissa Asetuksista, äänet päällä)',
         'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)',
-        'Kieliversiointi (12 kieltä)',
+        'Kieliversiointi (23 kieltä)',
         'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)',
         'Usein kysytyt kysymykset (UKK)',
         'Jaa peli kaverille (linkki tai QR-koodi)',
-        'Sovelluksen lisääminen puhelimen aloitusnäytölle',
+        'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle',
+        'Tekoälyn vaikeustasojen hionta (uskottavammat aloittelijan virheet)',
       ],
     },
 
