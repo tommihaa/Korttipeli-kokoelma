@@ -3,6 +3,10 @@
 // Pelien erisnimet pidetään suomeksi (altName).
 export const rom = {
   ui: {
+    advice: {
+      ask: "Puč le Majstoros",
+      from: "Majstoro:",
+    },
     rules: { label: "Regule", moreTerms: "Maj but lava — Lista le lavenge" },
     turn: { yours: "To rândo —", kultakala: "le jekh karta andar o pakos vaj o gulo", koputus: "le jekh karta andar o pakos vaj o gulo", lapsy: "amboldav jekh karta ko maškar", seiska: "khel jekh karta vaj le", ristiseiska: "khel jekh mukli karta vaj nakh", paskahousu: "khel jekh karta, vaj le te našti", kasino: "astar, vazde vaj mukh jekh karta", maijaAttack: "khel karti le sa rangoske", maijaDefend: "izde le karti vaj le len", moskaAttack: "khel karti le sa vrednostoske", moskaDefend: "izde le karti vaj le len" },
     loading: 'Del pe…',
@@ -91,6 +95,8 @@ export const rom = {
         'Phučimata butivar phučline (FAQ)',
         'Ulav o khelipe amalesa (liako vaj QR-kodo)',
         'Thoipe le aplikaciako ko ekrano-šerutno le telefonosko',
+        "Butono \"Puč le Majstoros\" ande pandž khelimata (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "O Majstorosko svato pe but-fazenge khelimata (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -210,6 +216,12 @@ export const rom = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Le ${card} andar o čhudino pako. Dikhlini cikni karta mol te les.`,
+        drawDeck: "E karta andar o čhudino pako či ažutil tut. Le andar o pako.",
+        swapHere: ({ slot }) => `Paruv e karta po than ${slot}, ande kadi lanco mol.`,
+        stopSwap: "E karta si but bilačhi pe lanco. Čhude la ando čhudino pako.",
+      },
       altName: 'Golfo šove kartengo',
       desc: 'Khelipe godjako: te dikhes, paruves',
       msg: {
@@ -246,6 +258,11 @@ export const rom = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Khanči specialno. Bolde e karta lokhes.",
+        alert: ({ rank, n }) => `Av gata! O molipe ${rank} aba dikhlape ${n} var.`,
+        predicted: ({ card }) => `Ćiri kavér karta si ${card} thaj voj perel po maškarutno pako. Av gata te mares!`,
+      },
       altName: 'Slapjack',
       desc: 'Khelipe reakciako',
       msg: {
@@ -285,6 +302,13 @@ export const rom = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Khel ${card}. Anglune e cikne karti, e vudarešće karti (6 thaj 8) numa kana mora.`,
+        playSeven: ({ card }) => `Khel ${card}. Putar jekh efta ande farba kaj si tut maj but karti.`,
+        pass: "Nijekh ćiri karta či perel. Phen paso.",
+        give: ({ card }) => `De ${card}, voj si maj dur katar o khelipe.`,
+        bonusEnd: "Nijekh karta či perel po bonuso redo. Getosar o redo.",
+      },
       altName: 'Domino (karti)',
       desc: 'Pharipe, kartake zalogura thaj rabdipe',
       msg: {
@@ -341,6 +365,17 @@ export const rom = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Khel e grupa ${cards}. Maj but karti jekhvar čhuden o vast maj sigo.`
+          : `Khel ${cards}. Kade arakhes će para thaj zurale farbi pe maj palal.`,
+        playSeven: ({ card, suit }) => `Khel ${card} thaj mang e farba ${suit}, latar si tut maj but.`,
+        playAce: ({ card }) => `Khel ${card}. O as kerel le averen te len karti thaj tu les bonuso redo.`,
+        draw: "Nijekh ćiri karta či perel. Le andar o pako.",
+        endTurn: "Naj maj limata thaj khanči či perel. O redo getol pe.",
+        aceBonusPlay: ({ cards }) => `Užisar o bonuso redo: khel ${cards}.`,
+        aceBonusSkip: "Muk o bonuso redo, akana či mol.",
+      },
       altName: 'Mau-Mau',
       desc: 'UNO-sko prastajipe ži ko bi-kartengo',
       msg: {
@@ -400,6 +435,14 @@ export const rom = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Le ${targets} la ${card} kartaha. Ćiden pochti: la, asurja thaj le spečialna kartja.`,
+        captureMokki: ({ card }) => `Le sa e skafidi la ${card} kartaha. Si jekh kher thaj del jekh pochti majbut.`,
+        takeOwnBuild: ({ card }) => `Le ćiro vazdipe la ${card} kartaha, angla kaj o dušmano te čorel les.`,
+        stealBuild: ({ card }) => `Čor o vazdipe le dušmanosko la ${card} kartaha. Les lestar jekh gata liipe.`,
+        build: ({ card, value }) => `Vazde e vrednota ${value} la ${card} kartaha. Si tut aver kart te les les pe aver rig.`,
+        trail: ({ card }) => `Mek ${card} pe skafidi. Akana naj lačho liipe, thaj kadja kart si e majsigurni te mekes.`,
+      },
       altName: 'Kasino',
       desc: 'Le sa i skafidi',
       msg: {
@@ -498,6 +541,13 @@ export const rom = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Mar! Ćiri gindi suma si aba dosta cikni.",
+        drawDiscard: ({ card }) => `Le ${card} andar o čhudino pako. Dikhlini ijeftino karta si maj sigurno sar korro lipe.`,
+        drawDeck: "E karta andar o čhudino pako či ažutil tut. Le andar o pako.",
+        swapSlot: ({ slot }) => `Paruv e lini karta po than ${slot}, voj cikňarel ćiri suma maj but.`,
+        discardDrawn: "Čhude e lini karta, voj či lačharel ćiro vast.",
+      },
       altName: 'Golfo (cipe)',
       desc: 'Khelipe godjako le bidikhle čenurenca',
       msg: {
@@ -553,6 +603,12 @@ export const rom = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Khel ${cards}. Napav ande farba kaj si tut majbut telal thaj garav le trumfurja anda arakhipe.`,
+        attackMaija: ({ cards }) => `Khel ${cards} thaj mek e Maija. Voj či marel khanči, ando vast si numaj rizikó te xasares.`,
+        beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kaj marel, trumfurja numaj kana trubul.`,
+        take: "Naštik marés len lačhimasa. Le le kartja ando vast.",
+      },
       altName: 'Phuri Šej',
       desc: 'Kotorutno peripe — niripe le braninasa. Sa o peripe — mares.',
       msg: {
@@ -597,6 +653,15 @@ export const rom = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Khel ${cards}. Khel majanglal le majcikne thaj garav o 10, o as thaj o zuralo duj pe phari vrjama.`,
+        playSpecial: ({ cards }) => `Khel ${cards}. Vo užarel o gomilo, anda kodo šuru pe uži skafidi.`,
+        playQuad: ({ cards }) => `Khel ${cards} thaj pherde štar jekhutne. O gomilo naśel thaj tu džas angle.`,
+        knock: "Khanči ando vast či ušarel. Mar thaj cirde jekh korani kart anda paklo.",
+        takePile: "Khanči či ušarel thaj o paklo si šušo, anda kodo trubu te les o gomilo.",
+        swap: ({ cards }) => `Paruv ${cards} ando gomilo. Si majtelal sar so si khelado akana, anda kodo mekes le majkovle kartja.`,
+        swapSkip: "Na paruv. Le kartja ando vast si majlačhe te garaves.",
+      },
       altName: 'Palace',
       desc: 'Paše o tradicionalno paskahousu šove kartenca. 2♦ 2♥ vrednota 2 · 2♠ 2♣ zorale',
       msg: {
@@ -658,6 +723,14 @@ export const rom = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Napav le ${cards}. Šuru le majcikne kartenca bi trumfosko thaj garav le trumfurja anda arakhipe.`,
+        beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kart kaj marel, garav le baria.`,
+        take: "Naštik marés sa le kartja pe skafidi. Le len ando vast.",
+        pass: ({ cards }) => `Bičhal o napaipe angle la ${cards}, thaj korkoro našes.`,
+        add: ({ card }) => `Khel ${card} katar e rig. Le arakhitores si vi kartja te marel, anda kodo cider.`,
+        skipAdd: "Na thov akana katar e rig. Garav le kartja pe majlačhi vrjama.",
+      },
       altName: 'Durak',
       desc: 'Sa o kartengo maripe: mar, nakhav, branin thaj de godji te mares andai rig.',
       msg: {

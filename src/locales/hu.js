@@ -3,6 +3,10 @@
 // Unkarissa lukusanan jälkeen yksikkö: "2 kártya" (ei monikkoa).
 export const hu = {
   ui: {
+    advice: {
+      ask: "Kérdezd a Mestert",
+      from: "Mester:",
+    },
     rules: { label: "Szabályok", moreTerms: "További fogalmak — Szójegyzék" },
     turn: { yours: "Te jössz —", kultakala: "húzz egy lapot a pakliból vagy a dobóból", koputus: "húzz egy lapot a pakliból vagy a dobóból", lapsy: "fordíts egy lapot középre", seiska: "tegyél le egy lapot vagy húzz", ristiseiska: "tegyél le egy érvényes lapot vagy passzolj", paskahousu: "tegyél le egy lapot, vagy húzz, ha nem tudsz", kasino: "fogj, építs vagy tegyél le egy lapot", maijaAttack: "tegyél le azonos színű lapokat", maijaDefend: "üsd a lapokat vagy vedd fel őket", moskaAttack: "tegyél le azonos értékű lapokat", moskaDefend: "üsd a lapokat vagy vedd fel őket" },
     loading: 'Betöltés…',
@@ -91,6 +95,8 @@ export const hu = {
         'Gyakran ismételt kérdések (GYIK)',
         'Oszd meg a játékot baráttal (link vagy QR-kód)',
         'Az alkalmazás hozzáadása a telefon kezdőképernyőjéhez',
+        "\"Kérdezd a Mestert\" gomb öt játékban (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "A Mester tanácsa a többfázisú játékokhoz (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -210,6 +216,12 @@ export const hu = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Vedd fel a dobópakliból: ${card}. A látható kis lapot érdemes elvenni.`,
+        drawDeck: "A dobópakli lapja nem segít. Húzz a pakliból.",
+        swapHere: ({ slot }) => `Cseréld a lapot a(z) ${slot}. helyre, ebben a láncban megéri.`,
+        stopSwap: "A lap túl gyenge a lánchoz. Dobd a dobópakliba.",
+      },
       altName: 'Golf (hat lap)',
       desc: 'Memóriajáték: ha megnézed, cserélsz',
       msg: {
@@ -246,6 +258,11 @@ export const hu = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Semmi különös a láthatáron. Fordítsd fel nyugodtan a lapot.",
+        alert: ({ rank, n }) => `Készülj! A(z) ${rank} értéket már ${n} alkalommal láttuk.`,
+        predicted: ({ card }) => `A következő lapod ${card}, és egyezik a középső paklival. Készülj a csapásra!`,
+      },
       altName: 'Csapd le',
       desc: 'Reakciójáték',
       msg: {
@@ -285,6 +302,13 @@ export const hu = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Játszd ki: ${card}. Előbb a kis lapok, a kapulapok (6 és 8) csak kényszerből.`,
+        playSeven: ({ card }) => `Játszd ki: ${card}. Nyiss hetest abban a színben, amelyikből a legtöbb lapod van.`,
+        pass: "Egyik lapod sem jó. Passzolj.",
+        give: ({ card }) => `Add oda: ${card}, az van legtávolabb a kijátszhatóságtól.`,
+        bonusEnd: "Egyik lap sem jó a bónuszkörhöz. Fejezd be a kört.",
+      },
       altName: 'Hetes (Dominó)',
       desc: 'Bosszantás, lapzálogok és türelem',
       msg: {
@@ -341,6 +365,17 @@ export const hu = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Játszd ki a(z) ${cards} csoportot. Több lap egyszerre üríti leggyorsabban a kezed.`
+          : `Játszd ki: ${cards}. Így megőrzöd a párjaidat és a legerősebb színeidet későbbre.`,
+        playSeven: ({ card, suit }) => `Játszd ki: ${card}, és kérj ${suit} színt, abból van a legtöbb.`,
+        playAce: ({ card }) => `Játszd ki: ${card}. Az ász húzásra kényszeríti a többieket, te pedig bónuszkört kapsz.`,
+        draw: "Egyik lapod sem jó. Húzz a pakliból.",
+        endTurn: "A húzások elfogytak, és semmi sem jó. A kör véget ér.",
+        aceBonusPlay: ({ cards }) => `Használd ki a bónuszkört: játszd ki: ${cards}.`,
+        aceBonusSkip: "Hagyd ki a bónuszkört, most nem éri meg.",
+      },
       altName: 'Makaó',
       desc: 'UNO-szerű verseny a lap nélküliségig',
       msg: {
@@ -400,6 +435,14 @@ export const hu = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Söpörd be ${targets} a(z) ${card} lappal. Gyűjts pontot: pikkek, ászok és a speciális lapok.`,
+        captureMokki: ({ card }) => `Söpörd be az egész asztalt a(z) ${card} lappal. Ez söprés, és egy pluszpontot ér.`,
+        takeOwnBuild: ({ card }) => `Söpörd be a saját építményedet a(z) ${card} lappal, mielőtt egy ellenfél ellopná.`,
+        stealBuild: ({ card }) => `Lopd el az ellenfél építményét a(z) ${card} lappal. Egy kész begyűjtést veszel el tőle.`,
+        build: ({ card, value }) => `Építs ${value} értéket a(z) ${card} lappal. Van másik lapod, amivel a következő körben besöpröd.`,
+        trail: ({ card }) => `Hagyd az asztalon a(z) ${card} lapot. Most nincs kifizetődő begyűjtés, és ezt a lapot a legbiztonságosabb letenni.`,
+      },
       altName: 'Cassino',
       desc: 'Söpörd be az egész asztalt',
       msg: {
@@ -498,6 +541,13 @@ export const hu = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Kopogj! A becsült összeged már elég alacsony.",
+        drawDiscard: ({ card }) => `Vedd fel a dobópakliból: ${card}. A látható olcsó lap biztosabb, mint a vakhúzás.`,
+        drawDeck: "A dobópakli lapja nem segít. Húzz a pakliból.",
+        swapSlot: ({ slot }) => `Cseréld a húzott lapot a(z) ${slot}. helyre, az csökkenti legjobban az összeged.`,
+        discardDrawn: "Dobd el a húzott lapot, nem javít a kezeden.",
+      },
       altName: 'Golf (kopogós)',
       desc: 'Memóriajáték meglepetésekkel',
       msg: {
@@ -553,6 +603,12 @@ export const hu = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Játszd ki ${cards}. Abban a színben támadj, amelyikből a legtöbb alacsony lapod van, az adukat tartsd védekezésre.`,
+        attackMaija: ({ cards }) => `Játszd ki ${cards} és szabadulj meg a Maijától. Semmit sem üt, a kézben csak vesztési kockázat.`,
+        beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő is elég, adut csak kényszerből.`,
+        take: "Nem tudod őket haszonnal ütni. Vedd fel a lapokat a kezedbe.",
+      },
       altName: 'Fekete Péter',
       desc: 'Részleges ledöntés — védekező győzelem. Teljes ledöntés — támadsz.',
       msg: {
@@ -597,6 +653,15 @@ export const hu = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Játszd ki ${cards}. Előbb a legkisebbeket játszd, a 10-est, ászt és az erős kettest tartsd szűkös helyzetre.`,
+        playSpecial: ({ cards }) => `Játszd ki ${cards}. Letakarítja a kupacot, így tiszta asztalról indulsz.`,
+        playQuad: ({ cards }) => `Játszd ki ${cards} és tegyél ki négy azonosat. A kupac eltűnik, te pedig folytatod.`,
+        knock: "A kezedben semmi sem jó. Kopogj, és húzz vakon egy lapot a pakliból.",
+        takePile: "Semmi sem jó, a pakli meg üres, így fel kell venned a kupacot.",
+        swap: ({ cards }) => `Cseréld be ${cards} a kupacba. Alacsonyabb, mint az imént kijátszott, így megszabadulsz a gyengébb lapjaidtól.`,
+        swapSkip: "Ne cserélj. A kézben lévő lapjaidat jobb megtartani.",
+      },
       altName: 'Elnök',
       desc: 'Majdnem az a hagyományos paskahousu hat lappal. 2♦ 2♥ érték 2 · 2♠ 2♣ kemény',
       msg: {
@@ -658,6 +723,14 @@ export const hu = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Támadj a(z) ${cards} lappal. Kezdd a legkisebb nem adu lapokkal, az adukat tartsd meg védekezésre.`,
+        beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő lap is elég, a nagyokat tartsd meg.`,
+        take: "Nem tudod az összes asztali lapot ütni. Vedd fel őket a kezedbe.",
+        pass: ({ cards }) => `Told tovább a támadást a(z) ${cards} lappal, és magad megúszod.`,
+        add: ({ card }) => `Tegyél be oldalról ${card} lapot. A védőnek még van mivel ütnie, úgyhogy nyomd rá.`,
+        skipAdd: "Most ne tegyél be oldalról. Tartsd meg a lapjaidat jobb pillanatra.",
+      },
       altName: 'Durák',
       desc: 'Totális kártyaháború: támadj, told tovább, védj és ne feledj oldalról ütni.',
       msg: {

@@ -173,6 +173,73 @@ function aiSuit(hand) {
   return SUIT_SYMS.reduce((a, b) => cnt[a] >= cnt[b] ? a : b);
 }
 
+// Ässäbonusvuoron päätös — irrotettu runAI:sta puhtaaksi funktioksi, jotta sama
+// logiikka ajaa botit ja Heron neuvon. rand-parametri säilyttää normal-tason
+// Math.random-kutsujärjestyksen ennallaan (hard ei kutsu randia oikosulun takia).
+function aiAceBonusDecision(hand, players, activePlayer, finished, aceBonusSuit, level, rand = Math.random) {
+  const isHard = level === 'hard';
+  // Bonuskortti: ässän maa, ei 7 eikä A (kettinkiässä pysytään siistinä)
+  const bonusCard = hand.find(c => c.s === aceBonusSuit && c.r !== '7' && c.r !== 'A');
+  // Ryhmä: bonuskortti + saman arvon kortit muilla mailla (pari/kolmoset/neloset)
+  const bonusGroup = bonusCard
+    ? hand.filter(c => c.r === bonusCard.r && c.r !== '7' && c.r !== 'A')
+    : [];
+  const applyLogic = level !== 'beginner' && (level !== 'normal' || rand() < 0.5);
+  const threshold  = isHard ? 2 : 3;
+  let useBonus;
+  if (!bonusCard) {
+    useBonus = false;
+  } else if (hand.length === 1) {
+    useBonus = true; // voittava siirto — aina pelataan
+  } else if (bonusGroup.length >= 2) {
+    useBonus = true; // pari tai enemmän — aina kannattaa pelata ryhmänä
+  } else if (!applyLogic) {
+    useBonus = true;
+  } else {
+    const anyoneAtOne = players.some(
+      (pl, i) => i !== activePlayer && !finished.includes(i) && pl.hand.length === 1
+    );
+    useBonus = !anyoneAtOne && (hand.length - 1) <= threshold;
+  }
+  return { useBonus, bonusGroup };
+}
+
+// Mestarin ässänvalinta: kun useampi ässä käy, valitse se jonka maata on kädessä
+// eniten muita kortteja (bonusvuoro hyödyttää eniten).
+function pickBestAce(hand, discardTop, reqSuit) {
+  const validAces = validSingles(hand, discardTop, reqSuit).filter(c => c.r === 'A');
+  if (validAces.length <= 1) return validAces[0] || null;
+  return validAces.reduce((best, ace) => {
+    const f  = hand.filter(c => c.id !== ace.id  && c.s === ace.s  && c.r !== '7').length;
+    const fb = hand.filter(c => c.id !== best.id && c.s === best.s && c.r !== '7').length;
+    return f > fb ? ace : best;
+  });
+}
+
+// Mestarin neuvo Herolle: sama päätöslogiikka kuin hard-botilla, vain julkista tietoa.
+// Palauttaa { type, cards?, suit? } — type vastaa games.seiska.advice.* -avainta.
+export function getAdvice(g) {
+  const idx = g.activePlayer;
+  const p = g.players[idx];
+  if (!p) return null;
+  if (g.aceBonus !== null) {
+    const { useBonus, bonusGroup } = aiAceBonusDecision(p.hand, g.players, idx, g.finished, g.aceBonus, 'hard');
+    return useBonus ? { type: 'aceBonusPlay', cards: bonusGroup } : { type: 'aceBonusSkip' };
+  }
+  const opponents = g.players.filter((pl, i) => i !== idx && !g.finished.includes(i));
+  let play = aiBestPlay(p.hand, g.discardTop, g.reqSuit, opponents);
+  if (play && play.length === 1 && play[0].r === 'A') {
+    const bestAce = pickBestAce(p.hand, g.discardTop, g.reqSuit);
+    if (bestAce) play = [bestAce];
+  }
+  if (!play) return g.drawsThisTurn < 3 ? { type: 'draw' } : { type: 'endTurn' };
+  if (play.length === 1 && play[0].r === '7') {
+    return { type: 'playSeven', cards: play, suit: aiSuit(p.hand.filter(c => c.id !== play[0].id)) };
+  }
+  if (play.length === 1 && play[0].r === 'A') return { type: 'playAce', cards: play };
+  return { type: 'play', cards: play };
+}
+
 const sortHand = hand => sortHandBy(hand, c => c.v);
 
 function initSlots(count) {
@@ -186,6 +253,7 @@ function initSlots(count) {
 
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT } from '../shared/i18n.jsx';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
@@ -210,6 +278,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
   const [aiDelayMs, setAiDelayMs] = useState(1200);
   const [intention, setIntention] = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null); // { ranking } — odottaa käyttäjän "Tulokset →" -klikkiä
+  const [advice, setAdvice] = useState(null); // { text, cardIds } | null
 
   const gRef   = useRef(null);
   const logRef = useRef([]);
@@ -240,6 +309,24 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
+  useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+
+  function askAdvice() {
+    const g = gRef.current;
+    if (!g) return;
+    const a = getAdvice(g);
+    if (!a) return;
+    const params = {
+      cards: a.cards ? a.cards.map(lbl).join(', ') : undefined,
+      card: a.cards?.[0] ? lbl(a.cards[0]) : undefined,
+      n: a.cards?.length,
+      suit: a.suit,
+    };
+    setAdvice({
+      text: t('games.seiska.advice.' + a.type, params),
+      cardIds: a.cards ? a.cards.map(c => c.id) : [],
+    });
+  }
 
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
@@ -459,8 +546,15 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     const isH   = p.isHuman;
 
     if (sndRef.current) SFX.play();
-    // 7 ja A hoitavat oman lokiviestinsä — ei erillistä "pelaaja: kortti" -riviä
-    if (!fromDraw && card.r !== '7' && card.r !== 'A') addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
+    // Kirjaa jokainen lyönti kortteineen — myös 7 ja A (niiden erikoisviesti tulee
+    // lisärivinä perään). Ryhmässä nuoli osoittaa päällimmäiseksi jäävän kortin,
+    // jotta seuraavan siirron laillisuus on luettavissa Lokista.
+    if (!fromDraw) {
+      const shown = cards.length > 1
+        ? `${cards.map(lblColored).join(' ')} → ${lblColored(card)}`
+        : lblColored(card);
+      addLog(M.played(isH, p.name, shown));
+    }
     flashLastPlay(isH ? p.name : p.name, cards, isH);
 
     // Poista kädestä
@@ -541,6 +635,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
         }
       }
       addLog(M.aceBonus(isH, p.name, card.s));
+      g2 = applyAcePenalty(g2, playerIdx); // kaanon (SEISKA.md): muut nostavat aina, myös bonusvuoron yhteydessä
       setGS(g2);
       if (!p.isHuman) aiTmr.current = aiTm(() => runAI(gRef.current), aiDelayRef.current + 400);
       return;
@@ -669,34 +764,13 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
 
     // ── Ässä-bonusvuoro ─────────────────────────────────────
     if (aceBonus !== null) {
-      // Bonuskortti: ässän maa, ei 7 eikä A (kettinkiässä pysytään siistinä)
-      const bonusCard = p.hand.find(c => c.s === aceBonus && c.r !== '7' && c.r !== 'A');
-      // Ryhmä: bonuskortti + saman arvon kortit muilla mailla (pari/kolmoset/neloset)
-      const bonusGroup = bonusCard
-        ? p.hand.filter(c => c.r === bonusCard.r && c.r !== '7' && c.r !== 'A')
-        : [];
-      const applyLogic = level !== 'beginner' && (level !== 'normal' || Math.random() < 0.5);
-      const threshold  = isHard ? 2 : 3;
-      let useBonus;
-      if (!bonusCard) {
-        useBonus = false;
-      } else if (p.hand.length === 1) {
-        useBonus = true; // voittava siirto — aina pelataan
-      } else if (bonusGroup.length >= 2) {
-        useBonus = true; // pari tai enemmän — aina kannattaa pelata ryhmänä
-      } else if (!applyLogic) {
-        useBonus = true;
-      } else {
-        const anyoneAtOne = players.some(
-          (pl, i) => i !== activePlayer && !g.finished.includes(i) && pl.hand.length === 1
-        );
-        useBonus = !anyoneAtOne && (p.hand.length - 1) <= threshold;
-      }
+      const { useBonus, bonusGroup } =
+        aiAceBonusDecision(p.hand, players, activePlayer, g.finished, aceBonus, level);
       if (useBonus) {
         doPlay({ ...gRef.current, aceBonus: null }, activePlayer, bonusGroup, null);
       } else {
-        const g2 = applyAcePenalty({ ...gRef.current, aceBonus: null }, activePlayer);
-        advanceTurn(g2, activePlayer);
+        // Rangaistus jo jaettu ässän lyöntihetkellä — tässä vain suljetaan bonusvuoro.
+        advanceTurn({ ...gRef.current, aceBonus: null }, activePlayer);
       }
       return;
     }
@@ -718,15 +792,8 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       : bestPlay;
 
     if (play && play.length === 1 && play[0].r === 'A' && isHard) {
-      const validAces = validSingles(p.hand, discardTop, reqSuit).filter(c => c.r === 'A');
-      if (validAces.length > 1) {
-        const bestAce = validAces.reduce((best, ace) => {
-          const f  = p.hand.filter(c => c.id !== ace.id  && c.s === ace.s  && c.r !== '7').length;
-          const fb = p.hand.filter(c => c.id !== best.id && c.s === best.s && c.r !== '7').length;
-          return f > fb ? ace : best;
-        });
-        play = [bestAce];
-      }
+      const bestAce = pickBestAce(p.hand, discardTop, reqSuit);
+      if (bestAce) play = [bestAce];
     }
 
     if (play) {
@@ -798,11 +865,11 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     if (!g || g.aceBonus === null) return;
     const idx = g.activePlayer;
     setSel([]);
-    const g2 = applyAcePenalty({ ...g, aceBonus: null }, idx);
+    // Rangaistus jo jaettu ässän lyöntihetkellä — tässä vain suljetaan bonusvuoro.
+    const g2 = { ...g, aceBonus: null };
     const newHand = g2.players[idx].hand;
     if (newHand.length === 1 && !g2.lappuSaid.has(idx)) {
-      const g3 = { ...g2, pendingLappu: idx };
-      setGS(g3);
+      setGS({ ...g2, pendingLappu: idx });
       tm(() => advanceTurn(gRef.current, idx), 4000);
     } else {
       advanceTurn(g2, idx);
@@ -932,6 +999,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       {handoff && <HandoffScreen playerName={handoff.name} onReady={onHandoffReady} />}
 
       <TurnPrompt show={isMyTurn} action={t('ui.turn.seiska')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1102,6 +1170,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
               <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
+                advice={!isSel && canAct && !!advice?.cardIds?.includes(c.id)}
                 dim={!!dimmed}
                 onClick={canAct ? () => humanToggle(c) : undefined}
                 backStyle={BACKS[cardBack]}
@@ -1176,6 +1245,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
                 {t('ui.action.draw')} ({3 - G.drawsThisTurn} {t('ui.action.left')})
               </button>
             )}
+            <AdviceButton onClick={askAdvice} />
           </>
         )}
       </div>

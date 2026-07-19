@@ -370,8 +370,22 @@ function aiWorstCard(hand, rows) {
   })[0];
 }
 
+// Mestarin neuvo Herolle: sama päätöslogiikka kuin hard-botilla, vain julkista tietoa.
+// Palauttaa { type, card? } — type vastaa games.ristiseiska.advice.* -avainta.
+export function getAdvice(g) {
+  const hero = g.players[0];
+  if (g.givingCardTo !== null && g.givingPlayerIdx === 0) {
+    const card = aiWorstCard(hero.hand, g.rows);
+    return card ? { type: 'give', card } : null;
+  }
+  const card = aiBestCard(hero.hand, g.rows, 'hard');
+  if (!card) return g.bonusTurn === 0 ? { type: 'bonusEnd' } : { type: 'pass' };
+  return { type: card.r === '7' ? 'playSeven' : 'play', card };
+}
+
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT, tr } from '../shared/i18n.jsx';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 export default function Ristiseiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
@@ -393,6 +407,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
+  const [advice, setAdvice]               = useState(null); // { text, cardIds } | null
 
   const gRef       = useRef(null);
   const lastPlayTmr = useRef(null);
@@ -408,6 +423,18 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
 
   useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
+  useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+
+  function askAdvice() {
+    const g = gRef.current;
+    if (!g) return;
+    const a = getAdvice(g);
+    if (!a) return;
+    setAdvice({
+      text: t('games.ristiseiska.advice.' + a.type, a.card ? { card: lbl(a.card) } : undefined),
+      cardIds: a.card ? [a.card.id] : [],
+    });
+  }
 
   function addLog(m) {
     setMsg_(m);
@@ -822,6 +849,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={isMyTurn} action={t('ui.turn.ristiseiska')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -927,6 +955,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
               <Card key={c.id} card={c} small={!isMobile} xsmall={isMobile}
                 selected={isSel}
                 highlight={!!hl}
+                advice={!isSel && !!advice?.cardIds?.includes(c.id)}
                 dim={!!dimmed}
                 onClick={onClick}
                 backStyle={BACKS[cardBack]}
@@ -970,6 +999,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
             )}
           </>
         )}
+        {(isMyTurn || isGiving) && <AdviceButton onClick={askAdvice} />}
       </div>
 
       {/* Tilapalkki */}

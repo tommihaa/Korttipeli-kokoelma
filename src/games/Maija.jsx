@@ -41,9 +41,131 @@ function canBeat(attCard, defCard, trump) {
   return false;
 }
 
+// ── AI-päätöslogiikka (puhtaat funktiot) ─────────────────────────────
+// Irrotettu runAIAttack/runAIDefendista, jotta sama logiikka ajaa botit ja Heron
+// neuvon. Vain julkista tietoa (oma käsi, pöytä, poistopakka, valtti). Ei satunnaisuutta.
+
+// Hyökkäys: palauttaa pelattavan korttitaulukon (saman maan ryhmä, Maija-dumppi
+// priorisoituna, Mestarin valttihyökkäys pakan tyhjennyttyä).
+function maijaPickAttack(hand, trump, defHandSize, discard, deckEmpty, level) {
+  const maija = hand.find(isMaija);
+  const treatsMaijaAsNormal = level === 'beginner';
+  const bySuit = {};
+  hand.forEach(c => {
+    if ((treatsMaijaAsNormal || !isMaija(c)) && c.s !== trump) {
+      if (!bySuit[c.s]) bySuit[c.s] = [];
+      bySuit[c.s].push(c);
+    }
+  });
+  if (!Object.keys(bySuit).length) {
+    hand.forEach(c => { if (treatsMaijaAsNormal || !isMaija(c)) { if (!bySuit[c.s]) bySuit[c.s] = []; bySuit[c.s].push(c); } });
+  }
+  const suits = Object.values(bySuit).sort((a, b) => b.length - a.length);
+  suits.forEach(grp => grp.sort((a, b) => level === 'beginner' ? b.v - a.v : a.v - b.v));
+  let toPlay = (suits[0] || []).slice(0, Math.min((suits[0] || []).length, defHandSize));
+
+  if (deckEmpty && !maija && level === 'hard') {
+    const myTrumps = hand.filter(c => c.s === trump && !isMaija(c));
+    const trumpsDiscarded = discard.filter(c => c.s === trump).length;
+    const trumpsElsewhere = 13 - trumpsDiscarded - myTrumps.length;
+    if (myTrumps.length >= 2 && trumpsElsewhere <= 3) {
+      toPlay = [...myTrumps].sort((a, b) => a.v - b.v).slice(0, defHandSize);
+    }
+  }
+  if (maija && level !== 'beginner') {
+    const otherSpades = hand.filter(c => c.s === '♠' && !isMaija(c)).sort((a, b) => a.v - b.v);
+    toPlay = [maija, ...otherSpades].slice(0, defHandSize);
+  }
+  if (!toPlay.length) { toPlay = maija ? [maija] : [hand[0]]; }
+  return toPlay;
+}
+
+// Puolustus: palauttaa { decisions, canBeatAll }. decisions = [{ ri, card }] siinä
+// järjestyksessä kuin kaadot kannattaa tehdä (Mestari: tärkeimmät ensin). Tyhjä
+// decisions = ei pysty kaatamaan mitään. Sivuvaikutukset (SFX) jäävät kutsujalle.
+function maijaPickDefense(hand0, table, trump, deckEmpty, level) {
+  let hand = [...hand0];
+
+  const canBeatAll = (() => {
+    let tmp = [...hand];
+    for (const row of table) {
+      if (row.def) continue;
+      const best = tmp.filter(c => canBeat(row.att, c, trump)).sort((a, b) => a.v - b.v);
+      if (!best.length) return false;
+      tmp = tmp.filter(c => c.id !== best[0].id);
+    }
+    return true;
+  })();
+
+  let trumpsNeeded = 0;
+  {
+    let tmp = [...hand];
+    for (const row of table) {
+      if (row.def) continue;
+      const nonT2 = tmp.filter(c => c.s !== trump && canBeat(row.att, c, trump)).sort((a, b) => a.v - b.v);
+      if (nonT2.length) { tmp = tmp.filter(c => c.id !== nonT2[0].id); }
+      else {
+        const trp2 = tmp.filter(c => c.s === trump && canBeat(row.att, c, trump)).sort((a, b) => a.v - b.v);
+        if (trp2.length) { trumpsNeeded++; tmp = tmp.filter(c => c.id !== trp2[0].id); }
+      }
+    }
+  }
+  const cardsOnTable = table.filter(r => !r.def).length;
+  let usesTrumpToBeat = canBeatAll;
+  if (canBeatAll && trumpsNeeded > 0) {
+    if (level === 'normal') usesTrumpToBeat = deckEmpty || cardsOnTable >= 3;
+    else if (level === 'hard') usesTrumpToBeat = deckEmpty || cardsOnTable >= 2;
+  }
+
+  const rowOrder = [...table.keys()];
+  if (level === 'hard') {
+    const weight = (row) => row.def ? -1 : (isMaija(row.att) ? 100 : row.att.v);
+    rowOrder.sort((a, b) => weight(table[b]) - weight(table[a]));
+  }
+  const decisions = [];
+  for (const ri of rowOrder) {
+    const row = table[ri];
+    if (row.def) continue;
+    const nonT = hand.filter(c => c.s !== trump && canBeat(row.att, c, trump)).sort((a, b) => a.v - b.v);
+    const trp  = hand.filter(c => c.s === trump && canBeat(row.att, c, trump)).sort((a, b) => a.v - b.v);
+    let chosen;
+    if (canBeatAll && level === 'beginner') {
+      chosen = [...nonT, ...trp].sort((a, b) => a.v - b.v)[0];
+    } else {
+      chosen = usesTrumpToBeat ? (nonT[0] || trp[0]) : nonT[0];
+    }
+    if (!chosen) continue;
+    hand = hand.filter(c => c.id !== chosen.id);
+    decisions.push({ ri, card: chosen });
+  }
+  return { decisions, canBeatAll };
+}
+
+// Mestarin neuvo Herolle (pelaaja 0): hard-tason logiikka, vain julkinen tieto.
+// Palauttaa { type, cards?/card?, target? } — type vastaa games.maija.advice.* -avainta.
+export function getAdvice(g, phase, table) {
+  if (!g) return null;
+  if (phase === 'attacking' && g.attackerIdx === 0) {
+    const hand = g.players[0].hand;
+    if (!hand.length) return null;
+    const defHandSize = g.players[g.defenderIdx].hand.length;
+    const toPlay = maijaPickAttack(hand, g.trump, defHandSize, g.discard, g.deck.length === 0, 'hard');
+    if (!toPlay.length) return null;
+    return { type: toPlay.some(isMaija) ? 'attackMaija' : 'attack', cards: toPlay };
+  }
+  if (phase === 'defending' && g.defenderIdx === 0) {
+    if (!table) return null;
+    const { decisions } = maijaPickDefense(g.players[0].hand, table, g.trump, g.deck.length === 0, 'hard');
+    if (!decisions.length) return { type: 'take' };
+    const first = decisions[0];
+    return { type: 'beat', card: first.card, target: table[first.ri].att };
+  }
+  return null;
+}
+
 
 // ── Kortti ──────────────────────────────────────────────────────────
-function Card({ card, small, xsmall, highlight, dim, selected, onClick, backStyle, faceDown }) {
+function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, backStyle, faceDown }) {
   const [h, setH] = useState(false);
   const w = xsmall ? 38 : small ? 44 : 58, ht = xsmall ? 52 : small ? 60 : 80;
   const back = backStyle || BACKS.ilves;
@@ -62,8 +184,9 @@ function Card({ card, small, xsmall, highlight, dim, selected, onClick, backStyl
         onKeyDown:e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
     : { role:'img', 'aria-label':cardName(card) };
 
-  const borderCol = mjBorder ? C.maija : selected ? C.blue : highlight ? C.gold : back.border;
+  const borderCol = selected ? C.blue : advice ? C.botMode : mjBorder ? C.maija : highlight ? C.gold : back.border;
   const shadow = selected ? '0 0 14px rgba(91,168,212,0.6)' :
+                 advice ? '0 0 14px rgba(192,132,252,0.65)' :
                  highlight ? '0 0 14px rgba(201,168,76,0.6)' :
                  mjBorder ? '0 0 10px rgba(139,26,26,0.5)' :
                  h && clickable ? '0 6px 16px rgba(0,0,0,0.5)' : '0 2px 6px rgba(0,0,0,0.3)';
@@ -116,6 +239,7 @@ function initGame(nPlayers, pool, allBots = false) {
 
 // ── Pääkomponentti ──────────────────────────────────────────────────
 import { useT } from '../shared/i18n.jsx';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 export default function Maija({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
@@ -141,6 +265,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
+  const [advice, setAdvice]               = useState(null); // { text, cardIds, targetId } | null
 
   const gRef = useRef(null);
   const phaseRef = useRef('idle');
@@ -162,6 +287,25 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { tableRef.current = table; }, [table]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
+  // neuvo vanhenee tilamuutoksesta; phase ja table ovat G:n ulkopuolisia useStateja
+  useEffect(() => { setAdvice(null); }, [G, phase, table]);
+
+  function askAdvice() {
+    const g = gRef.current;
+    if (!g) return;
+    const a = getAdvice(g, phaseRef.current, tableRef.current);
+    if (!a) return;
+    const card = a.card || a.cards?.[0];
+    setAdvice({
+      text: t('games.maija.advice.' + a.type, {
+        cards: a.cards ? a.cards.map(lbl).join(', ') : undefined,
+        card:  card ? lbl(card) : undefined,
+        target: a.target ? lbl(a.target) : undefined,
+      }),
+      cardIds: a.card ? [a.card.id] : (a.cards ? a.cards.map(c => c.id) : []),
+      targetId: a.target ? a.target.id : null,
+    });
+  }
   useEffect(() => { finRef.current = finished; }, [finished]);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
@@ -354,49 +498,12 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       if (!hand.length) { resolveDefenseWin(g2, [], finRef.current); return; }
       // Kyvykkyysporras (ei satunnaiskohinaa):
       //   Oppipoika: pelaa ISOT kortit ensin (haluaa "voittaa" kierroksia) eikä
-      //              suunnittele Maijan dumppausta — muttei myöskään pelkää sitä:
-      //              Maija on sille tavallinen pata ja lähtee isot ensin -tyylillä
-      //              (täyskarttelu näytti pelitestissä hamstraukselta)
+      //              suunnittele Maijan dumppausta — muttei myöskään pelkää sitä
       //   Kisälli:   pienimmät ensin + Maija-prioriteetti
       //   Mestari:   + valttilaskenta pakan loputtua
+      // Päätöslogiikka moduulitason maijaPickAttack-funktiossa (jaettu Heron neuvon kanssa).
       const atkLevel = botLevelsRef.current?.[g2.attackerIdx] ?? aiLevelRef.current;
-      const maija = hand.find(isMaija);
-      const treatsMaijaAsNormal = atkLevel === 'beginner';
-      const bySuit = {};
-      hand.forEach(c => {
-        if ((treatsMaijaAsNormal || !isMaija(c)) && c.s !== g2.trump) {
-          if (!bySuit[c.s]) bySuit[c.s] = [];
-          bySuit[c.s].push(c);
-        }
-      });
-      if (!Object.keys(bySuit).length) {
-        hand.forEach(c => { if (treatsMaijaAsNormal || !isMaija(c)) { if (!bySuit[c.s]) bySuit[c.s] = []; bySuit[c.s].push(c); } });
-      }
-      const suits = Object.values(bySuit).sort((a,b) => b.length - a.length);
-      // Hyökkää pienimmillä korteilla ensin — säästä isot tärkeämpiin hetkiin.
-      // Oppipoika tekee päinvastoin.
-      suits.forEach(grp => grp.sort((a, b) => atkLevel === 'beginner' ? b.v - a.v : a.v - b.v));
-      let toPlay = (suits[0] || []).slice(0, Math.min((suits[0] || []).length, defHandSize));
-
-      // Pakka loppu: laske jäljellä olevat valtit — jos vähän jäljellä, hyökkää valteilla
-      const deckEmpty = g2.deck.length === 0;
-      if (deckEmpty && !maija && atkLevel === 'hard') {
-        const myTrumps = hand.filter(c => c.s === g2.trump && !isMaija(c));
-        const trumpsDiscarded = g2.discard.filter(c => c.s === g2.trump).length;
-        const trumpsElsewhere = 13 - trumpsDiscarded - myTrumps.length;
-        if (myTrumps.length >= 2 && trumpsElsewhere <= 3) {
-          // Vastustajilla vähän valttikortteja — hyökkää valteilla päästäksesi eroon niistä
-          toPlay = [...myTrumps].sort((a, b) => a.v - b.v).slice(0, defHandSize);
-        }
-      }
-
-      // Maija-prioriteetti: päästä Maijasta eroon. Sillä ei voi kaataa, ja viimeisenä
-      // patana se on pelkkä häviöriski kädessä — hyökkää padoilla Maija mukana (priorisoituna).
-      if (maija && atkLevel !== 'beginner') {
-        const otherSpades = hand.filter(c => c.s === '♠' && !isMaija(c)).sort((a, b) => a.v - b.v);
-        toPlay = [maija, ...otherSpades].slice(0, defHandSize);
-      }
-      if (!toPlay.length) { toPlay = maija ? [maija] : [hand[0]]; }
+      const toPlay = maijaPickAttack(hand, g2.trump, defHandSize, g2.discard, g2.deck.length === 0, atkLevel);
       if (initShowIntention) {
         const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
         setIntention({ playerIdx: g2.attackerIdx, cards: toPlay });
@@ -447,77 +554,15 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   function runAIDefend(g2, tbl2) {
     if (!g2 || !tbl2) return;
     const defender = g2.players[g2.defenderIdx];
-      let hand = [...defender.hand];
-
-      const canBeatAll = (() => {
-        let tmp = [...hand];
-        for (const row of tbl2) {
-          if (row.def) continue;
-          const best = tmp.filter(c => canBeat(row.att, c, g2.trump)).sort((a,b) => a.v - b.v);
-          if (!best.length) return false;
-          tmp = tmp.filter(c => c.id !== best[0].id);
-        }
-        return true;
-      })();
-
       const defLevel = botLevelsRef.current?.[g2.defenderIdx] ?? aiLevelRef.current;
-
-      // Lasketaan montako valttia tarvitaan täyskaatoon
-      let trumpsNeeded = 0;
-      {
-        let tmp = [...hand];
-        for (const row of tbl2) {
-          if (row.def) continue;
-          const nonT2 = tmp.filter(c => c.s !== g2.trump && canBeat(row.att, c, g2.trump)).sort((a,b) => a.v - b.v);
-          if (nonT2.length) { tmp = tmp.filter(c => c.id !== nonT2[0].id); }
-          else {
-            const trp2 = tmp.filter(c => c.s === g2.trump && canBeat(row.att, c, g2.trump)).sort((a,b) => a.v - b.v);
-            if (trp2.length) { trumpsNeeded++; tmp = tmp.filter(c => c.id !== trp2[0].id); }
-          }
-        }
-      }
-      // Valtti-epäröinti: kannattaako käyttää valttia kaatoon?
-      // Oppipoika ei epäröi koskaan (polttaa valtit surutta); Kisälli ja Mestari
-      // säästävät valtteja eri kynnyksin.
-      const deckNowEmpty = g2.deck.length === 0;
-      const cardsOnTable = tbl2.filter(r => !r.def).length;
-      let usesTrumpToBeat = canBeatAll;
-      if (canBeatAll && trumpsNeeded > 0) {
-        if (defLevel === 'normal') {
-          usesTrumpToBeat = deckNowEmpty || cardsOnTable >= 3;
-        } else if (defLevel === 'hard') {
-          usesTrumpToBeat = deckNowEmpty || cardsOnTable >= 2;
-        }
-      }
-
-      // Kaatojärjestys: Mestari kaataa tärkeimmät ensin (Maija, sitten korkeat) —
-      // osittaisessa puolustuksessa kaatamatta jääneet päätyvät omaan käteen.
-      // Muut tasot käsittelevät pöytäjärjestyksessä.
-      const rowOrder = [...tbl2.keys()];
-      if (defLevel === 'hard') {
-        const weight = (row) => row.def ? -1 : (isMaija(row.att) ? 100 : row.att.v);
-        rowOrder.sort((a, b) => weight(tbl2[b]) - weight(tbl2[a]));
-      }
-      const decisions = new Map();
-      for (const ri of rowOrder) {
-        const row = tbl2[ri];
-        if (row.def) continue;
-        const nonT = hand.filter(c => c.s !== g2.trump && canBeat(row.att, c, g2.trump)).sort((a,b) => a.v - b.v);
-        const trp  = hand.filter(c => c.s === g2.trump && canBeat(row.att, c, g2.trump)).sort((a,b) => a.v - b.v);
-        let chosen;
-        if (canBeatAll && defLevel === 'beginner') {
-          // Oppipoika: halvin kaataja pelkän arvon mukaan — käyttää pikkuvaltin
-          // vaikka ei-valtti riittäisi
-          chosen = [...nonT, ...trp].sort((a, b) => a.v - b.v)[0];
-        } else {
-          chosen = usesTrumpToBeat ? (nonT[0] || trp[0]) : nonT[0];
-        }
-        if (!chosen) continue;
-        hand = hand.filter(c => c.id !== chosen.id);
-        if (sndRef.current) SFX.beat();
-        decisions.set(ri, chosen);
-      }
-      const newTbl = tbl2.map((row, ri) => decisions.has(ri) ? { ...row, def: decisions.get(ri) } : row);
+      // Kaatopäätökset moduulitason maijaPickDefense-funktiossa (jaettu Heron neuvon
+      // kanssa): valttiepäröinti, Mestarin tärkeysjärjestys ja osittaiskaato mukana.
+      const { decisions } = maijaPickDefense(defender.hand, tbl2, g2.trump, g2.deck.length === 0, defLevel);
+      const decMap    = new Map(decisions.map(d => [d.ri, d.card]));
+      const chosenIds = new Set(decisions.map(d => d.card.id));
+      const hand      = defender.hand.filter(c => !chosenIds.has(c.id));
+      if (sndRef.current) decisions.forEach(() => SFX.beat());
+      const newTbl = tbl2.map((row, ri) => decMap.has(ri) ? { ...row, def: decMap.get(ri) } : row);
 
       const players = g2.players.map((p,i) => i===g2.defenderIdx ? { ...p, hand } : p);
       setTable(newTbl); tableRef.current = newTbl;
@@ -686,6 +731,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={isHumanAttacker || isHumanDefender} action={t(isHumanAttacker ? 'ui.turn.maijaAttack' : 'ui.turn.maijaDefend')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
 
       {/* Viestikupla */}
       <div style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`,
@@ -774,6 +820,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
                       dim={!!row.def}
                       selected={isTarget}
                       highlight={canBeTarget}
+                      advice={advice?.targetId === row.att.id}
                       onClick={isHumanDefender && !row.def ? () => humanSelectDefTarget(i) : undefined}
                       backStyle={BACKS[cardBack]}/>
                     {row.def
@@ -824,6 +871,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
                   small={isMobile}
                   selected={isSel}
                   highlight={!!canBeatTarget}
+                  advice={!isSel && !!advice?.cardIds?.includes(c.id)}
                   dim={wrongSuit || !!defDimmed}
                   onClick={isHumanAttacker ? () => humanToggleCard(c)
                     : (isHumanDefender && selDefTargetRow) ? () => humanBeatWithCard(c)
@@ -881,6 +929,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
             )}
           </>
         )}
+        {!allBots && (isHumanAttacker || isHumanDefender) && <AdviceButton onClick={askAdvice} />}
       </div>
 
       {/* Tilarivi */}

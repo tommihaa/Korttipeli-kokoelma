@@ -4,6 +4,10 @@
 // si traducono solo descrizioni e regole. Muutosloki on lokalisoitu: src/changelogs/it.js.
 export const it = {
   ui: {
+    advice: {
+      ask: "Chiedi al Maestro",
+      from: "Maestro:",
+    },
     rules: { label: "Regole", moreTerms: "Altri termini — Glossario" },
     turn: { yours: "Tocca a te —", kultakala: "pesca una carta dal mazzo o dagli scarti", koputus: "pesca una carta dal mazzo o dagli scarti", lapsy: "gira una carta al centro", seiska: "gioca una carta o pesca", ristiseiska: "gioca una carta valida o passa", paskahousu: "gioca una carta, o pesca se non puoi", kasino: "cattura, costruisci o scarta una carta", maijaAttack: "gioca carte dello stesso seme", maijaDefend: "batti le carte o raccoglile", moskaAttack: "gioca carte dello stesso valore", moskaDefend: "batti le carte o raccoglile" },
     loading: 'Caricamento…',
@@ -88,6 +92,8 @@ export const it = {
         'Mazzo di carte a due colori accanto a quello a quattro colori (selezionabile nelle Impostazioni)',
         'Localizzazione (12 lingue)',
         'Replay: simboli scacchistici nelle annotazioni delle mosse (! !! ? ?? !? ?!)',
+        "Pulsante \"Chiedi al Maestro\" in cinque giochi (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Consiglio del Maestro per i giochi multifase (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -207,6 +213,12 @@ export const it = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Prendi ${card} dagli scarti. Una carta bassa visibile vale la pena.`,
+        drawDeck: "La carta degli scarti non ti aiuta. Pesca dal mazzo.",
+        swapHere: ({ slot }) => `Scambia la carta nel posto ${slot}, conviene in questa catena.`,
+        stopSwap: "La carta è troppo scarsa per la catena. Buttala negli scarti.",
+      },
       altName: "Golf a sei carte",
       desc: 'Un gioco di memoria — se la guardi, la scambi',
       msg: {
@@ -243,6 +255,11 @@ export const it = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Niente di particolare in vista. Gira la carta con calma.",
+        alert: ({ rank, n }) => `Tieniti pronto! Il valore ${rank} è già stato visto ${n} volte.`,
+        predicted: ({ card }) => `La tua prossima carta è ${card} e combacia con il mazzo centrale. Preparati a schiaffeggiare!`,
+      },
       altName: "Slapjack",
       desc: 'Un gioco di reazione',
       msg: {
@@ -282,6 +299,13 @@ export const it = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Gioca ${card}. Prima le carte basse, le carte porta (6 e 8) solo se costretto.`,
+        playSeven: ({ card }) => `Gioca ${card}. Apri un sette nel seme in cui hai più carte.`,
+        pass: "Nessuna delle tue carte va bene. Passa.",
+        give: ({ card }) => `Consegna ${card}, è la più lontana dall'essere giocabile.`,
+        bonusEnd: "Nessuna carta va bene per il turno bonus. Chiudi il turno.",
+      },
       altName: "Domino (carte)",
       desc: 'Dispetti, pegni di carte e pazienza',
       msg: {
@@ -338,6 +362,17 @@ export const it = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Gioca il gruppo ${cards}. Più carte in una volta svuotano la mano più in fretta.`
+          : `Gioca ${cards}. Così conservi le coppie e i semi forti per dopo.`,
+        playSeven: ({ card, suit }) => `Gioca ${card} e richiedi ${suit}, è il seme che hai di più.`,
+        playAce: ({ card }) => `Gioca ${card}. L'asso fa pescare gli altri e tu ottieni un turno bonus.`,
+        draw: "Nessuna delle tue carte va bene. Pesca dal mazzo.",
+        endTurn: "Le pescate sono finite e niente va bene. Il turno finisce.",
+        aceBonusPlay: ({ cards }) => `Usa il turno bonus: gioca ${cards}.`,
+        aceBonusSkip: "Salta il turno bonus, ora non conviene.",
+      },
       altName: "Otto matto",
       desc: 'Una corsa in stile UNO a svuotare la mano',
       msg: {
@@ -397,6 +432,14 @@ export const it = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Cattura ${targets} con ${card}. Raccogli punti: picche, assi e le carte speciali.`,
+        captureMokki: ({ card }) => `Cattura tutto il tavolo con ${card}. È una scopa e vale un punto in più.`,
+        takeOwnBuild: ({ card }) => `Cattura la tua costruzione con ${card}, prima che un avversario la rubi.`,
+        stealBuild: ({ card }) => `Ruba la costruzione dell'avversario con ${card}. Gli togli una cattura già pronta.`,
+        build: ({ card, value }) => `Costruisci il valore ${value} con ${card}. Hai un'altra carta per catturarla al turno seguente.`,
+        trail: ({ card }) => `Lascia ${card} sul tavolo. Ora non c'è una cattura vantaggiosa, e questa carta è la più sicura da lasciare.`,
+      },
       altName: "Cassino",
       desc: 'Cattura tutto il tavolo',
       msg: {
@@ -495,6 +538,13 @@ export const it = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Bussa! La tua somma stimata è già abbastanza bassa.",
+        drawDiscard: ({ card }) => `Prendi ${card} dagli scarti. Una carta economica visibile batte una pescata alla cieca.`,
+        drawDeck: "La carta degli scarti non ti aiuta. Pesca dal mazzo.",
+        swapSlot: ({ slot }) => `Scambia la carta pescata nel posto ${slot}, abbassa di più la tua somma.`,
+        discardDrawn: "Butta la carta pescata negli scarti, non migliora la tua mano.",
+      },
       altName: "Golf (Polish Poker)",
       desc: 'Un gioco di memoria con colpi di scena a sorpresa',
       msg: {
@@ -550,6 +600,12 @@ export const it = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Gioca ${cards}. Attacca nel seme dove hai più carte basse e conserva le briscole per la difesa.`,
+        attackMaija: ({ cards }) => `Gioca ${cards} e libérati della Maija. Non batte nulla, in mano è solo un rischio di perdere.`,
+        beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la vincente più bassa, briscole solo quando sei costretto.`,
+        take: "Non puoi batterle con vantaggio. Prendi le carte in mano.",
+      },
       altName: "Vecchia zitella (variante finlandese)",
       desc: 'Difesa parziale — vittoria difensiva. Difesa totale — attacchi tu.',
       msg: {
@@ -594,6 +650,15 @@ export const it = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Gioca ${cards}. Gioca prima le più basse e conserva il 10, l'asso e il due forte per un momento difficile.`,
+        playSpecial: ({ cards }) => `Gioca ${cards}. Pulisce il mucchio, così riparti da un tavolo pulito.`,
+        playQuad: ({ cards }) => `Gioca ${cards} e completa quattro uguali. Il mucchio sparisce e tu continui.`,
+        knock: "Niente in mano va bene. Bussa e pesca una carta alla cieca dal mazzo.",
+        takePile: "Niente va bene e il mazzo è vuoto, quindi devi prendere il mucchio.",
+        swap: ({ cards }) => `Scambia ${cards} nel mucchio. È più bassa di quella appena giocata, così ti liberi delle carte più deboli.`,
+        swapSkip: "Non scambiare. Meglio tenere le carte in mano.",
+      },
       altName: "Presidente",
       desc: 'Quasi il classico Paskahousu con sei carte. 2♦ 2♥ valore 2 · 2♠ 2♣ dure',
       msg: {
@@ -655,6 +720,14 @@ export const it = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Attacca con ${cards}. Comincia con le carte più basse non di briscola e conserva le briscole per la difesa.`,
+        beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la carta vincente più bassa, tieni le alte.`,
+        take: "Non puoi battere tutte le carte sul tavolo. Prendile in mano.",
+        pass: ({ cards }) => `Passa l'attacco con ${cards}, così te la cavi tu stesso.`,
+        add: ({ card }) => `Gioca ${card} di fianco. Il difensore ha ancora carte da battere, quindi insisti.`,
+        skipAdd: "Non aggiungere di fianco ora. Conserva le carte per un momento migliore.",
+      },
       altName: "Durak",
       desc: 'Guerra di carte totale: attacca, sposta, difendi — e ricordati di colpire di fianco.',
       msg: {

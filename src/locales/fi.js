@@ -133,6 +133,9 @@ export const fi = {
         'Jaa peli kaverille (linkki tai QR-koodi)',
         'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle',
         'Tekoälyn vaikeustasojen hionta (uskottavammat aloittelijan virheet)',
+        "Kysy Mestarilta neuvoa -nappi viiteen peliin (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Mestarin neuvo monivaiheisiin peleihin (Moska, Paskahousu, Kasino, Maija)",
+        "Mestarin luento: 🧙-neuvon rinnalle selitys MIKSI Mestari suosittelee juuri tätä siirtoa",
       ],
     },
 
@@ -242,6 +245,11 @@ export const fi = {
       cards: ({ n }) => `${n} korttia`,
     },
 
+    advice: {
+      ask: 'Kysy Mestarilta',
+      from: 'Mestari:',
+    },
+
     setup: {
       remove: 'Poista pelistä',
       add: 'Lisää peliin',
@@ -255,6 +263,12 @@ export const fi = {
   games: {
     kultakala: {
       desc: 'Muistipeli, jossa kortin näkee vain vaihtamalla',
+      advice: {
+        drawDiscard: ({ card }) => `Nosta poistopakasta ${card}. Näkyvä pikkukortti kannattaa ottaa talteen.`,
+        drawDeck: 'Poistopakan kortti ei hyödytä sinua. Nosta nostopakasta.',
+        swapHere: ({ slot }) => `Vaihda kortti paikkaan ${slot}, se kannattaa tässä ketjussa.`,
+        stopSwap: 'Kortti on liian huono ketjuun. Heitä se poistopakkaan.',
+      },
       msg: {
         gameStart: 'Kortit on jaettu. Jokaisella on tuntematon kortti ja viisi kenttäkorttia. Aloita klikkaamalla nostopakkaa. Myöhemmillä kierroksilla voit nostaa myös poistopakasta.',
         deckEmpty: 'Nostopakka ehtyi, paljastetaan tuntemattomat!',
@@ -290,6 +304,11 @@ export const fi = {
     },
     lapsy: {
       desc: 'Reaktiopeli',
+      advice: {
+        flip: 'Ei erityistä tiedossa. Käännä kortti rauhassa.',
+        alert: ({ rank, n }) => `Ole valmiina! Arvoa ${rank} on nähty jo ${n} kertaa.`,
+        predicted: ({ card }) => `Seuraava korttisi on ${card} ja se täsmää keskipinoon. Valmistaudu läpsäämään!`,
+      },
       msg: {
         gameStart: 'Peli alkaa! Jokainen kääntää vuorollaan pinonsa päällimmäisen kortin.',
         winChallengeNoRival: '{winner} voitti kasan, {target}:lla ei kortteja!',
@@ -366,6 +385,13 @@ export const fi = {
         lowerShort: 'alapino',
         upperShort: 'yläpino',
       },
+      advice: {
+        play: ({ card }) => `Lyö ${card}. Pienet kortit pois alta, portit (6 ja 8) vasta pakon edessä.`,
+        playSeven: ({ card }) => `Lyö ${card}. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.`,
+        pass: 'Mikään korttisi ei käy. Passaa.',
+        give: ({ card }) => `Anna ${card}, se on kauimpana pelattavuudesta.`,
+        bonusEnd: 'Mikään korttisi ei käy bonusvuoroon. Lopeta vuoro.',
+      },
       opts: {
         pantti: 'PANTTIKORTTI',
         chosen: 'Valittu',
@@ -383,6 +409,17 @@ export const fi = {
     },
     seiska: {
       desc: 'UNO-tyyppinen kilpajuoksu kortittomuuteen',
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Lyö ryhmä ${cards}. Useampi kortti kerralla tyhjentää kättä nopeimmin.`
+          : `Lyö ${cards}. Se säästää parisi ja vahvimmat maasi myöhemmäksi.`,
+        playSeven: ({ card, suit }) => `Lyö ${card} ja vaadi maaksi ${suit}, sitä sinulla on eniten.`,
+        playAce: ({ card }) => `Lyö ${card}. Ässä nostattaa muita ja saat bonusvuoron.`,
+        draw: 'Mikään korttisi ei käy. Nosta pakasta.',
+        endTurn: 'Nostot on käytetty eikä mikään käy. Vuoro päättyy.',
+        aceBonusPlay: ({ cards }) => `Käytä bonusvuoro: lyö ${cards}.`,
+        aceBonusSkip: 'Jätä bonusvuoro käyttämättä, se ei kannata nyt.',
+      },
       msg: {
         gameStart: 'Seiska alkaa! Päällimmäinen: {card}.',
         turnOf: 'Vuorossa {name}.',
@@ -471,6 +508,14 @@ export const fi = {
         canBuild: 'rakentaa',
         and: ' ja ',
       },
+      advice: {
+        capture: ({ card, targets }) => `Kaappaa ${targets} kortilla ${card}. Kerää pisteitä: patoja, ässiä ja erikoiskortit talteen.`,
+        captureMokki: ({ card }) => `Kaappaa koko pöytä kortilla ${card}. Se on mökki ja tuo lisäpisteen.`,
+        takeOwnBuild: ({ card }) => `Kaappaa oma rakennelmasi kortilla ${card}, ennen kuin vastustaja ehtii varastaa sen.`,
+        stealBuild: ({ card }) => `Varasta vastustajan rakennelma kortilla ${card}. Se vie häneltä valmiin kaappauksen.`,
+        build: ({ card, value }) => `Rakenna arvo ${value} kortilla ${card}. Sinulla on toinen kortti jolla kaappaat sen seuraavaksi.`,
+        trail: ({ card }) => `Jätä ${card} pöytään. Nyt ei ole kannattavaa kaappausta, ja tämä kortti on turvallisin jättää.`,
+      },
       hint: {
         emptyWith: 'Pöytä tyhjä. {parts}',
         emptyLeave: 'Pöytä tyhjä, jätä kortti pöytään.',
@@ -538,6 +583,13 @@ export const fi = {
     },
     koputus: {
       desc: 'Muistipeli yllätysmomentein',
+      advice: {
+        knock: 'Koputa! Arvioitu summasi on jo tarpeeksi pieni.',
+        drawDiscard: ({ card }) => `Nosta poistopakasta ${card}. Näkyvä halpa kortti on varmempi kuin sokea nosto.`,
+        drawDeck: 'Poistopakan kortti ei hyödytä sinua. Nosta nostopakasta.',
+        swapSlot: ({ slot }) => `Vaihda nostettu kortti paikkaan ${slot}, se pienentää summaasi eniten.`,
+        discardDrawn: 'Heitä nostettu kortti poistopakkaan, se ei paranna kättäsi.',
+      },
       msg: {
         peekStart: 'Kortit on jaettu! Kurkkaa kaksi omaa kenttäkorttia ja muista ne, sillä ne pysyvät piilossa koko pelin.',
         peekOne: 'Hyvä! Kurkkaa vielä toinen kortti.',
@@ -616,6 +668,12 @@ export const fi = {
         beatWith: 'Hero kaatoi {attCard} kortilla {defCard}.',
         aiPartialBeat: '{name} kaataa {beat}/{total} ja nostaa {cards}.',
       },
+      advice: {
+        attack: ({ cards }) => `Lyö ${cards}. Hyökkää maalla, jossa on eniten matalaa, ja säästä valtit puolustukseen.`,
+        attackMaija: ({ cards }) => `Lyö ${cards} ja pääse Maijasta eroon. Sillä ei voi kaataa, joten kädessä se on pelkkä häviöriski.`,
+        beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava riittää, valtit vasta pakon edessä.`,
+        take: 'Et pysty kaatamaan kannattavasti. Ota kortit käteen.',
+      },
       ui: {
         takeRest: ({ n }) => `Ota loput (${n}) 🛡️`,
         takeAll: 'Ota kaikki 🛡️',
@@ -665,6 +723,15 @@ export const fi = {
         suddenDeathStart: '⏱ Pakka tyhjä: <b>Yhtäkkinen kuolema!</b> 2:30 laskuri käy. Vähemmän kortteja voittaa!',
         suddenDeathEnd: '⏱ Aika loppui! <b>{name}</b> voittaa ({wk}k &lt; {lk}k).',
         deckEmpty: '📦 Pakka on tyhjä, peli jatkuu käsikortein.',
+      },
+      advice: {
+        play: ({ cards }) => `Lyö ${cards}. Pelaa pienimmät ensin ja säästä 10, ässä ja kova kakkonen tiukkaan paikkaan.`,
+        playSpecial: ({ cards }) => `Lyö ${cards}. Se siivoaa kasan pois, joten saat aloittaa puhtaalta pöydältä.`,
+        playQuad: ({ cards }) => `Lyö ${cards} ja täydennä neljä samaa. Kasa katoaa ja pääset jatkamaan.`,
+        knock: 'Kädestä ei löydy sopivaa. Koputa ja nosta sokkokortti pakasta.',
+        takePile: 'Kädestä ei löydy sopivaa eikä pakassa ole kortteja. Joudut ottamaan kasan.',
+        swap: ({ cards }) => `Vaihda ${cards} kasaan. Se on pienempi kuin juuri pelattu, joten pääset heikommista korteista eroon.`,
+        swapSkip: 'Älä vaihda. Kätesi kortit ovat parempia pitää.',
       },
       opts: {
         handSize: 'KORTTEJA',
@@ -730,6 +797,14 @@ export const fi = {
         cantBeat: '{card} ei kaada {target}.',
         noPassAfterBeat: 'Ei voi siirtää, olet jo kaatanut kortteja.',
         badPassCard: '{card} ei sovi siirtoon.',
+      },
+      advice: {
+        attack: ({ cards }) => `Hyökkää kortilla ${cards}. Aloita pienimmillä ei-valteilla, säästä valtit puolustukseen.`,
+        beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava kortti riittää, isot talteen.`,
+        take: 'Et pysty kaatamaan kaikkia pöydän kortteja. Ota ne käteen.',
+        pass: ({ cards }) => `Siirrä hyökkäys eteenpäin kortilla ${cards}, niin pääset itse pälkähästä.`,
+        add: ({ card }) => `Lyö ${card} sivusta. Puolustajalla riittää kortteja kaadettavaksi, paina päälle.`,
+        skipAdd: 'Älä lyö sivusta nyt. Säästä kortit parempaan hetkeen.',
       },
       ui: {
         attack: 'Hyökkää',

@@ -11,6 +11,7 @@ import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import { useT, tr } from '../shared/i18n.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
 const shuffledAINames = pool => shuffle(pool || AI_NAMES);
@@ -49,6 +50,73 @@ function initGame(nPlayers, pool, allBots = false) {
     known: new Set(),
   }));
   return { players, deck, discard: [] };
+}
+
+// ── Bottipäätökset puhtaina funktioina ──────────────────────────
+// Irrotettu aiTurn/aiChainSwap:sta, jotta sama logiikka ajaa botit ja Heron
+// Mestari-neuvon. Käyttävät vain pelaajan omaa known-joukkoa + julkista tietoa.
+
+const UNKNOWN_EV = 7; // tuntemattoman paikan odotusarvo
+
+// Nostopäätös: mistä nostetaan ja mihin poistopakan kortti menisi.
+// { source: 'deck' } tai { source: 'discard', mode: 'swapWorst'|'chain', worstKnownIdx }
+function kkDrawDecision(p, top, level) {
+  const worstKnownIdx = [...p.known].sort((a, b) => p.row[b].v - p.row[a].v)[0];
+  const rightmostUnknown = [4, 3, 2, 1, 0].find(i => !p.known.has(i));
+  // Oppipojan deterministinen heikkous: kynnys +3 (ottaa esim. 9:n 7:n tilalle)
+  const eagerBonus = level === 'beginner' ? 3 : 0;
+  // Mestari: hyötyvertailu — huonoimman tunnetun korvaus (varma hyöty) vs.
+  // tuntemattoman täyttö (EV-hyöty ≥3, muuten nostopakan ketjupotentiaali voittaa).
+  const worstV = worstKnownIdx !== undefined ? p.row[worstKnownIdx].v : -Infinity;
+  const gainKnown   = top ? worstV - top.v : -Infinity;
+  const gainUnknown = (top && rightmostUnknown !== undefined) ? UNKNOWN_EV - top.v : -Infinity;
+  if (level === 'hard' && top && (gainKnown > 0 || gainUnknown >= 3)) {
+    return { source: 'discard', mode: gainKnown >= gainUnknown ? 'swapWorst' : 'chain', worstKnownIdx };
+  }
+  if (level !== 'hard' && top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v + eagerBonus) {
+    return { source: 'discard', mode: 'swapWorst', worstKnownIdx };
+  }
+  return { source: 'deck' };
+}
+
+// Ketjuvaihdon yksi askel: kannattaako held vaihtaa paikkaan idxPos (0-indeksi)?
+// Sama säännöstö kuin aiChainSwap-silmukassa (paikka 1:n vartijat mukana).
+function kkChainStep(p, held, idxPos, playerCount) {
+  const pos = idxPos + 1;
+  const maxSwapValue = playerCount + 1;
+  // Paikka 1: älä aja ulos tunnettua pientä korttia poistopakkaan
+  if (pos === 1 && p.known.has(0) && p.row[0].v <= maxSwapValue) return false;
+  if (pos === 1 && held.v > maxSwapValue) return false;
+  const hasUnknownsAhead = Array.from({ length: pos - 1 }, (_, i) => i).some(i => !p.known.has(i));
+  if (held.v <= maxSwapValue) {
+    // A-3/4/5 (2/3/4 pel): vaihda tuntemattomaan tai tunnettuun jos sen jälkeen tuntemattomia
+    return !p.known.has(idxPos) || hasUnknownsAhead;
+  }
+  if (held.v <= 7) {
+    // 5-7: vaihda tuntemattomaan paikoissa 5,4,3,2 (ei paikkaan 1)
+    return pos >= 2 && !p.known.has(idxPos);
+  }
+  return false; // 8-K: heitä pois
+}
+
+// Mestarin neuvo Herolle. phase 'drawing' → nostolähde; 'holding'/'swapping' →
+// jatkanko ketjua paikassa swapIdx vai lopetanko (canStop=false → pakko vaihtaa).
+// Palauttaa { type, card?, slot? } — type vastaa games.kultakala.advice.* -avainta.
+export function getAdvice(g, phase, held, swapIdx, canStop) {
+  const p = g.players[0];
+  if (!p) return null;
+  if (phase === 'drawing') {
+    const top = g.discard[g.discard.length - 1];
+    const d = kkDrawDecision(p, top, 'hard');
+    return d.source === 'discard' ? { type: 'drawDiscard', card: top } : { type: 'drawDeck' };
+  }
+  if ((phase === 'holding' || phase === 'swapping') && held && swapIdx !== null) {
+    if (kkChainStep(p, held, swapIdx, g.players.length) || !canStop) {
+      return { type: 'swapHere', slot: swapIdx };
+    }
+    return { type: 'stopSwap' };
+  }
+  return null;
 }
 
 // Paikallinen Card — tukee "unknown"-tilaa
@@ -175,6 +243,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [pendingResult, setPendingResult] = useState(null);
+  const [advice, setAdvice]               = useState(null); // { text, target? } | null
 
   const gRef        = useRef(null);
   const phaseRef    = useRef('idle');
@@ -195,6 +264,21 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
+  useEffect(() => { setAdvice(null); }, [G, phase, held, swapIdx]); // neuvo vanhenee tilamuutoksista
+
+  function askAdvice() {
+    const g = gRef.current; if (!g) return;
+    const canStopNow = drawnFromRef.current !== 'discard';
+    const a = getAdvice(g, phaseRef.current, held, swapIdx, canStopNow);
+    if (!a) return;
+    setAdvice({
+      text: t('games.kultakala.advice.' + a.type, {
+        card: a.card ? lbl(a.card) : undefined,
+        slot: a.slot !== undefined && a.slot !== null ? a.slot + 1 : undefined,
+      }),
+      target: a.type === 'drawDiscard' ? 'discard' : a.type === 'drawDeck' ? 'deck' : null,
+    });
+  }
 
 
   function triggerKohahdus(card) {
@@ -334,8 +418,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
       swapThreshold = 2; // Very conservative in close late-game
     }
 
-    // Valitse huonoin tunnettu kortti vaihtokohteeksi
-    const worstKnownIdx = [...p.known].sort((a, b) => p.row[b].v - p.row[a].v)[0];
     let card, newG;
     // Kyvykkyysporras (ei satunnaiskohinaa): tasot eroavat kyvyiltään.
     //   Oppipoika: ketju jatkuu vain ilmiselvällä kortilla (A-3); ottaa
@@ -343,37 +425,20 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     //   Kisälli:   täysi ketjuvaihto, tarkka nostopäätös
     //   Mestari:   + täyttää tuntemattomia paikkoja proaktiivisesti poistopakan
     //              pikkukorteilla (tuntematon on odotusarvoltaan ~7 → ≤3 siihen on voitto)
-    const level = botLevelsRef.current?.[idx] ?? aiLevelRef.current;
-    // Oppipojan deterministinen heikkous: kynnys +3 (ottaa esim. 9:n 7:n tilalle)
-    const eagerBonus = level === 'beginner' ? 3 : 0;
-    const rightmostUnknown = [4, 3, 2, 1, 0].find(i => !p.known.has(i));
-    const UNKNOWN_EV = 7; // tuntemattoman paikan odotusarvo
-    // Mestari: hyötyvertailu — kannattaako poistopakan kortti, ja mihin:
-    // huonoimman tunnetun korvaus (varma hyöty) vs. tuntemattoman täyttö (EV-hyöty).
-    const worstV = worstKnownIdx !== undefined ? p.row[worstKnownIdx].v : -Infinity;
-    const gainKnown   = top ? worstV - top.v : -Infinity;
-    const gainUnknown = (top && rightmostUnknown !== undefined) ? UNKNOWN_EV - top.v : -Infinity;
-    // Kynnys: tunnetun parannus kelpaa aina (>0), tuntemattoman täyttö vain selvällä
-    // hyödyllä (≥3) — muuten nostopakan ketjupotentiaali (EV ~2-3) on arvokkaampi.
+    // Päätöslogiikka: kkDrawDecision (moduulitaso; sama ajaa Heron neuvon).
     // Huom: hard-vs-normal-ero on Kultakalassa mitatusti pieni (nostotuuri dominoi;
     // nollahypoteesitesti identtisillä säännöillä antoi saman jakauman). Mestarin
     // EV-logiikka pidetään, koska se on teoriassa oikein eikä mitatusti haittaa.
-    if (level === 'hard' && top && (gainKnown > 0 || gainUnknown >= 3)) {
+    const level = botLevelsRef.current?.[idx] ?? aiLevelRef.current;
+    const decision = kkDrawDecision(p, top, level);
+    if (decision.source === 'discard') {
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;
       addLog(M.aiDrawDiscard(p));
       setG(newG); gRef.current = newG;
       if (sndRef.current) SFX.flip();
-      if (gainKnown >= gainUnknown) tm(() => aiDoSwap(idx, gRef.current, card, worstKnownIdx), 1000);
+      if (decision.mode === 'swapWorst') tm(() => aiDoSwap(idx, gRef.current, card, decision.worstKnownIdx), 1000);
       else tm(() => aiChainSwap(idx, gRef.current, card, true), 1000);
-    } else if (level !== 'hard' && top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v + eagerBonus) {
-      // Poistopakasta nostaminen: pakollinen vaihto huonoimpaan tunnettuun
-      const discard = [...g.discard]; discard.pop();
-      newG = { ...g, discard }; card = top;
-      addLog(M.aiDrawDiscard(p));
-      setG(newG); gRef.current = newG;
-      if (sndRef.current) SFX.flip();
-      tm(() => aiDoSwap(idx, gRef.current, card, worstKnownIdx), 1000);
     } else {
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
@@ -403,41 +468,13 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     for (let pos = 5; pos >= 1; pos--) {
       const idx_pos = pos - 1;
       if (chainLimit !== null && swaps.length >= 1 && held.v > chainLimit) break;
-
-      // Paikka 1: älä aja ulos tunnettua pientä korttia poistopakkaan
-      if (pos === 1 && p2.known.has(0) && p2.row[0].v <= maxSwapValue) break;
-      if (pos === 1 && held.v > maxSwapValue) break;
-
-      const hasUnknownsAhead = Array.from({ length: pos - 1 }, (_, i) => i).some(i => !p2.known.has(i));
-
-      if (held.v <= maxSwapValue) {
-        // A-3/4/5 (2/3/4 pel): vaihda tuntemattomaan tai tunnettuun jos sen jälkeen tuntemattomia
-        if (!p2.known.has(idx_pos) || hasUnknownsAhead) {
-          const old = p2.row[idx_pos];
-          p2.row[idx_pos] = held;
-          p2.known.add(idx_pos);
-          swaps.push({ pos, card: held });
-          held = old;
-        } else {
-          // Kaikki tunnetaan eikä tuntemattomia jäljellä - ketju loppuu
-          break;
-        }
-      } else if (held.v <= 7) {
-        // 5-7: vaihda tuntemattomaan paikoissa 5,4,3,2 (ei paikkaan 1)
-        if (pos >= 2 && !p2.known.has(idx_pos)) {
-          const old = p2.row[idx_pos];
-          p2.row[idx_pos] = held;
-          p2.known.add(idx_pos);
-          swaps.push({ pos, card: held });
-          held = old;
-        } else {
-          // Tunnettu paikka tai paikka 1 - ketju loppuu
-          break;
-        }
-      } else {
-        // 8-K: heitä pois (ei vaihda)
-        break;
-      }
+      // Askelen säännöstö: kkChainStep (moduulitaso; sama ajaa Heron neuvon)
+      if (!kkChainStep(p2, held, idx_pos, playerCount)) break;
+      const old = p2.row[idx_pos];
+      p2.row[idx_pos] = held;
+      p2.known.add(idx_pos);
+      swaps.push({ pos, card: held });
+      held = old;
     }
 
     // Päivitä pelin state vaihtojen jälkeen
@@ -671,6 +708,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       <TurnPrompt show={canDraw} action={t('ui.turn.kultakala')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
       {kohahdus && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, pointerEvents: 'none' }}>
           <div style={{ background: 'rgba(160,20,20,0.18)', border: '2px solid rgba(255,90,90,0.65)', borderRadius: 22, padding: '22px 36px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, boxShadow: '0 0 50px rgba(255,60,60,0.45)', animation: 'kohahdus 1.8s ease-out forwards' }}>
@@ -747,8 +785,8 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
               count={G.deck.length}
               w={pw} h={ph}
               backStyle={BACKS[cardBack]}
-              borderColor={canDraw ? C.gold : undefined}
-              glowColor={canDraw ? C.gold : undefined}
+              borderColor={advice?.target === 'deck' ? C.botMode : canDraw ? C.gold : undefined}
+              glowColor={advice?.target === 'deck' ? C.botMode : canDraw ? C.gold : undefined}
             />
           </div>
           <div style={{ marginTop: 5 }}>
@@ -763,7 +801,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
           >
             {!discardTop
               ? <div style={{ width: pw, height: ph, borderRadius: 9, border: `1.5px dashed ${canDiscard ? C.gold : C.panelBorder}`, opacity: canDiscard ? 0.8 : 0.3, boxShadow: canDiscard ? `0 0 14px rgba(201,168,76,0.4)` : 'none', transition: 'all 0.2s' }} />
-              : <div style={{ position: 'relative', width: pw, height: ph, borderRadius: 9, background: C.card, border: `2px solid ${(canDraw || canDiscard) ? C.gold : '#aaa'}`, boxShadow: (canDraw || canDiscard) ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              : <div style={{ position: 'relative', width: pw, height: ph, borderRadius: 9, background: C.card, border: `2px solid ${advice?.target === 'discard' ? C.botMode : (canDraw || canDiscard) ? C.gold : '#aaa'}`, boxShadow: advice?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : (canDraw || canDiscard) ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ textAlign: 'center', color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: isMobile ? 18 : 22 }}>{discardTop.s}</div>
@@ -832,6 +870,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
             <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
               dangerouslySetInnerHTML={{ __html: t('games.kultakala.ui.discard', { card: lblColored(held) }) }} />
           )}
+          {(canDraw || canSwapRow) && <AdviceButton onClick={askAdvice} />}
         </div>
       )}
 

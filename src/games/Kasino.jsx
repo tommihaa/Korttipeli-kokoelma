@@ -209,6 +209,95 @@ function pWeightedLeaveDanger(candidate, g, playerIdx) {
   return danger;
 }
 
+// Paras (pistearvoltaan) pöytäkaappaus. Palauttaa { handCard, tableCards, score, isMokki }
+// tai null. Moduulitasolla (jaettu runAI:n ja Heron neuvon kanssa).
+function findBestCapture(p, table, builds = []) {
+  let best = null;
+  for (const handCard of p.hand) {
+    const hv = handVal(handCard);
+    const n = table.length;
+    for (let mask = 1; mask < (1 << n); mask++) {
+      const sel = table.filter((_, i) => (mask >> i) & 1);
+      if (canPartition(sel, hv)) {
+        const isMokki = sel.length === table.length && builds.length === 0;
+        const score = aiCardScore([handCard, ...sel], isMokki);
+        if (!best || score > best.score) best = { handCard, tableCards: sel, score, isMokki };
+      }
+    }
+  }
+  return best;
+}
+
+// Paras rakennelma (pistearvon mukaan). Palauttaa { handCard, tableCards, value, capturer, score }
+// tai null. buildCap = rakennelman maksimiarvo (13 tai 16 erikoissäännöllä).
+function findAIBuild(p, table, buildCap) {
+  let best = null;
+  for (const handCard of p.hand) {
+    const hv = handVal(handCard);
+    const n = table.length;
+    for (let mask = 0; mask < (1 << n); mask++) {
+      const sel = table.filter((_, i) => (mask >> i) & 1);
+      const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
+      if (bv > buildCap) continue;
+      const capturer = p.hand.find(c => c.id !== handCard.id && handVal(c) === bv);
+      if (!capturer) continue;
+      const score = aiCardScore([handCard, ...sel, capturer]);
+      if (!best || score > best.score) best = { handCard, tableCards: sel, value: bv, capturer, score };
+    }
+  }
+  return best;
+}
+
+// Mestarin neuvo Herolle: peilaa runAI:n hard-prioriteettia (1 kaappaa oma rakennelma,
+// 2 varasta vastustajan, 3 laske paras pöytäkaappaus, 4 rakenna jos varastoriski <= 0.5,
+// 5 suorita kaappaus, 6 jätä turvallisin kortti). Vain julkista tietoa. Palauttaa
+// { type, handCard, tableCards?, buildId?, value? } — type vastaa games.kasino.advice.* -avainta.
+export function getAdvice(g, playerIdx, buildCap) {
+  if (!g) return null;
+  const p = g.players[playerIdx];
+  if (!p || !p.hand.length) return null;
+
+  const ownBuilds = g.builds.filter(b => b.ownerIdx === playerIdx);
+  for (const build of ownBuilds) {
+    const capturer = p.hand.find(hc => handVal(hc) === build.value);
+    if (capturer) {
+      return { type: 'takeOwnBuild', handCard: capturer, buildId: build.id,
+        tableCards: findTableBonus(g.table, build.value), value: build.value };
+    }
+  }
+  for (const build of g.builds.filter(b => b.ownerIdx !== playerIdx)) {
+    const capturer = p.hand.find(hc => handVal(hc) === build.value);
+    if (capturer) {
+      return { type: 'stealBuild', handCard: capturer, buildId: build.id,
+        tableCards: findTableBonus(g.table, build.value), value: build.value };
+    }
+  }
+
+  const capture = findBestCapture(p, g.table, g.builds);
+
+  if (ownBuilds.length === 0) {
+    const buildResult = findAIBuild(p, g.table, buildCap);
+    if (buildResult && pAnyOpponentHas(g, playerIdx, buildResult.value) <= 0.5) {
+      return { type: 'build', handCard: buildResult.handCard,
+        tableCards: buildResult.tableCards, value: buildResult.value };
+    }
+  }
+
+  if (capture) {
+    return { type: capture.isMokki ? 'captureMokki' : 'capture',
+      handCard: capture.handCard, tableCards: capture.tableCards };
+  }
+
+  const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c) && c.r !== 'A');
+  const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
+  const toLeave = [...leavePool].sort((a, b) => {
+    const da = pWeightedLeaveDanger(a, g, playerIdx);
+    const db = pWeightedLeaveDanger(b, g, playerIdx);
+    return da !== db ? da - db : tableVal(a) - tableVal(b);
+  })[0];
+  return { type: 'trail', handCard: toLeave };
+}
+
 // ── Multi-capture: voidaanko valitut pöytäkortit jakaa ryhmiin,
 //    joista kukin summautuu kohdearvoon?
 function canPartition(cards, target) {
@@ -311,6 +400,7 @@ const M = {
 };
 
 import { useT, tr } from '../shared/i18n.jsx';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 export default function Kasino({ game, onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
@@ -354,6 +444,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const [paused, setPaused] = useState(false);
   const [aiDelayMs, setAiDelayMs] = useState(2000);
   const [pendingResult, setPendingResult] = useState(null);
+  const [advice, setAdvice] = useState(null); // { text, handCardId, tableCardIds, buildId } | null
 
   const gRef    = useRef(null);
   const phaseRef = useRef('idle');
@@ -377,6 +468,25 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
+  useEffect(() => { setAdvice(null); }, [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+
+  function askAdvice() {
+    const g = gRef.current;
+    if (!g) return;
+    const a = getAdvice(g, 0, buildCap);
+    if (!a) return;
+    const targets = a.tableCards && a.tableCards.length ? a.tableCards.map(lbl).join('+') : undefined;
+    setAdvice({
+      text: t('games.kasino.advice.' + a.type, {
+        card: a.handCard ? lbl(a.handCard) : undefined,
+        targets,
+        value: a.value,
+      }),
+      handCardId: a.handCard ? a.handCard.id : null,
+      tableCardIds: a.tableCards ? a.tableCards.map(c => c.id) : [],
+      buildId: a.buildId ?? null,
+    });
+  }
   // Auto-advance kun showNextBtn=false tai allBots-tila ja kaappaus odottaa jatkoa
   useEffect(() => {
     if (pendingCapture && (!showNextBtnRef.current || allBotsRef.current)) {
@@ -901,24 +1011,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     addLog(M.invalidMove(lblColored(card)));
   }
 
-  // ── AI: parhaan kaappauksen haku ─────────────────────────────────────────
-  function findBestCapture(p, table, builds = []) {
-    let best = null;
-    for (const handCard of p.hand) {
-      const hv = handVal(handCard);
-      const n = table.length;
-      for (let mask = 1; mask < (1 << n); mask++) {
-        const sel = table.filter((_, i) => (mask >> i) & 1);
-        if (canPartition(sel, hv)) {
-          const isMokki = sel.length === table.length && builds.length === 0;
-          const score = aiCardScore([handCard, ...sel], isMokki);
-          if (!best || score > best.score) best = { handCard, tableCards: sel, score, isMokki };
-        }
-      }
-    }
-    return best;
-  }
-
   // Oppipojan naiivi kaappaus: maksimoi korttien MÄÄRÄ, ei pistearvoa —
   // ohittaa ässät/pistekortit jos isompi kasa on tarjolla. (Kokeiltu myös
   // "näkee vain parit" -versiota: se oli mitatusti VAHVEMPI kuin Kisälli,
@@ -934,25 +1026,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
           const isMokki = sel.length === table.length;
           if (!best || sel.length > best.tableCards.length) best = { handCard, tableCards: sel, score: aiCardScore([handCard, ...sel], isMokki), isMokki };
         }
-      }
-    }
-    return best;
-  }
-
-  // Etsi paras rakennelma (ottaa huomioon pistearvo)
-  function findAIBuild(p, table) {
-    let best = null;
-    for (const handCard of p.hand) {
-      const hv = handVal(handCard);
-      const n = table.length;
-      for (let mask = 0; mask < (1 << n); mask++) {
-        const sel = table.filter((_, i) => (mask >> i) & 1);
-        const bv = hv + sel.reduce((s, c) => s + tableVal(c), 0);
-        if (bv > buildCap) continue;
-        const capturer = p.hand.find(c => c.id !== handCard.id && handVal(c) === bv);
-        if (!capturer) continue;
-        const score = aiCardScore([handCard, ...sel, capturer]);
-        if (!best || score > best.score) best = { handCard, tableCards: sel, value: bv, capturer, score };
       }
     }
     return best;
@@ -1035,7 +1108,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
 
     // ─── 4. Harkitse rakentamista (normal+, ei omaa rakennelmaa jo) ──────────
     if (!isBeginner && ownBuilds.length === 0) {
-      const buildResult = findAIBuild(p, g.table);
+      const buildResult = findAIBuild(p, g.table, buildCap);
       if (buildResult) {
         let doBuildAction = false;
         if (level === 'normal') {
@@ -1253,6 +1326,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={isMyTurn} action={t('ui.turn.kasino')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
 
       {/* Pisteet-info */}
       {showInfo && (
@@ -1380,6 +1454,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
                   showBadges
                   small={isMobile}
                   selected={!!isSel || !!isAiPick}
+                  advice={!isSel && !isAiPick && !!advice?.tableCardIds?.includes(c.id)}
                   highlight={isMyTurn && !isSel}
                   justPlaced={c.id === jpId}
                   onClick={isMyTurn && !allBots ? () => humanToggleTable(c) : undefined}
@@ -1408,7 +1483,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
               {G.builds.map(build => {
                 const isMine = G.players[build.ownerIdx]?.isHuman;
                 const isSel = selBuilds.includes(build.id);
-                const borderColor = isSel ? C.gold : isMine ? '#4caf7d' : '#e05c3b';
+                const isAdvised = advice?.buildId === build.id;
+                const borderColor = isSel ? C.gold : isAdvised ? C.botMode : isMine ? '#4caf7d' : '#e05c3b';
                 return (
                   <div
                     key={build.id}
@@ -1462,6 +1538,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
             return (
               <Card key={c.id} card={c} small={isMobile} showBadges
                 highlight={valid}
+                advice={!!advice?.handCardId && advice.handCardId === c.id}
                 dim={isMyTurn && hasSelection && !valid}
                 onClick={isMyTurn && !allBots ? () => humanSelectHand(c) : undefined}
                 backStyle={BACKS[cardBack]}
@@ -1545,6 +1622,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
             {t('ui.action.cancelSelection')}
           </button>
         )}
+        {!allBots && isMyTurn && !pendingCapture && <AdviceButton onClick={askAdvice} />}
         {!allBots && pendingCapture && showNextBtn && (
           <button onClick={continueAfterCapture} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 9, padding: '10px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
             {t('games.kasino.ui.next')}

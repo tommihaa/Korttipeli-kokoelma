@@ -13,6 +13,7 @@ export default function Card({
   xsmall,
   large,
   highlight,
+  advice,
   dim,
   selected,
   onClick,
@@ -49,6 +50,7 @@ export default function Card({
   const borderCol = justPlaced ? C.gold
     : reactHL ? C.red
     : selected ? C.blue
+    : advice ? C.botMode
     : highlight ? C.gold
     : special === 'tikki' ? C.tikki
     : special === 'build' ? C.build
@@ -58,6 +60,7 @@ export default function Card({
   const shadow = justPlaced ? '0 0 0 3px rgba(201,168,76,0.85),0 0 18px rgba(201,168,76,0.5)'
     : reactHL ? '0 0 12px rgba(224,92,59,0.55)'
     : selected ? '0 0 16px rgba(91,168,212,0.7)'
+    : advice ? '0 0 14px rgba(192,132,252,0.65)'
     : highlight ? '0 0 14px rgba(201,168,76,0.6)'
     : pulse ? '0 0 8px rgba(91,168,212,0.35)'
     : h && clickable ? '0 6px 16px rgba(0,0,0,0.5)'

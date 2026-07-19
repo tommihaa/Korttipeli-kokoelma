@@ -5,6 +5,10 @@
 // rules are translated. Muutosloki on lokalisoitu: src/changelogs/krl.js.
 export const krl = {
   ui: {
+    advice: {
+      ask: "Kyzy Mestarilta",
+      from: "Mestari:",
+    },
     rules: { label: "Säännöt", moreTerms: "Enämbi sanoi — Sanasto" },
     turn: { yours: "Sinun vuoro —", kultakala: "ota kortti pakas libo bunkas", koputus: "ota kortti pakas libo bunkas", lapsy: "kiännä kortti keskele", seiska: "lyö kortti libo ota", ristiseiska: "lyö passibu kortti libo passua", paskahousu: "lyö kortti, libo ota gu et voi", kasino: "kerdä, raanna libo jätä kortti", maijaAttack: "lyö saman muan kortit", maijaDefend: "kuada kortit libo ota net", moskaAttack: "lyö saman vägevyön kortit", moskaDefend: "kuada kortit libo ota net" },
     loading: 'Ladauvuu…',
@@ -89,6 +93,8 @@ export const krl = {
         'Kahenvärini korttipakka nelivärisen rinnalla (valittavissa Šiännöistä)',
         'Kieliversiointi (12 kieldä)',
         'Replay: šakki-merkit šiirtomerkindöih (! !! ? ?? !? ?!)',
+        "Kyzy Mestarilta nevvuo -nyblä viideh kižah (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Mestarin nevvo monivaihizih kižoih (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -208,6 +214,12 @@ export const krl = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Nosta poistopakas ${card}. Nägyi pieni kortti kannattau ottua.`,
+        drawDeck: "Poistopakan kortti ei avvuta sinuu. Nosta nostopakas.",
+        swapHere: ({ slot }) => `Vaihta kortti sijah ${slot}, se kannattau täs čiepis.`,
+        stopSwap: "Kortti on liijan huono čieppih. Lykkiä se poistopakkah.",
+      },
       altName: "kuvven kortin golfi",
       desc: 'Muistikiza, ku kaččot ga vaihat',
       msg: {
@@ -244,6 +256,11 @@ export const krl = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Ei nimidä eriž tiijos. Kiännä kortti rauhas.",
+        alert: ({ rank, n }) => `Ole varustannuh! Arvuo ${rank} on nähty jo ${n} kerdua.`,
+        predicted: ({ card }) => `Sinun seuruav kortti on ${card} da se pädöy keskipinoh. Varustai läpsämäh!`,
+      },
       altName: "Slapjack",
       desc: 'Reaktiokiza',
       msg: {
@@ -283,6 +300,13 @@ export const krl = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Lyö ${card}. Pienet kortit iel, verräkortit (6 da 8) vaste pakon ies.`,
+        playSeven: ({ card }) => `Lyö ${card}. Avua seiččie muastih, kudamas sinul on enin kortiloi.`,
+        pass: "Ni yksi korttilois ei päi. Passuiče.",
+        give: ({ card }) => `Anna ${card}, se on loitombazennu pelattavas.`,
+        bonusEnd: "Ni yksi kortti ei päi bonusvuoroh. Lopeta vuoro.",
+      },
       altName: "Domino (kortit)",
       desc: 'Kiusantiekuo, korttipanttija da käršivällisyttä',
       msg: {
@@ -339,6 +363,17 @@ export const krl = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Lyö joukko ${cards}. Moni kortti kerralla tyhjendäy kätty terväzimäh.`
+          : `Lyö ${cards}. Se säilyttäy parat da vahvimat muastit myöhembäkse.`,
+        playSeven: ({ card, suit }) => `Lyö ${card} da vuaji muastikse ${suit}, sidä sinul on enimyölleh.`,
+        playAce: ({ card }) => `Lyö ${card}. Ässä panou toizet nostamah da sinä suat bonusvuoron.`,
+        draw: "Ni yksi korttilois ei päi. Nosta pakas.",
+        endTurn: "Nostot on käytetty eigo nimi päi. Vuoro loppuu.",
+        aceBonusPlay: ({ cards }) => `Käytä bonusvuoro: lyö ${cards}.`,
+        aceBonusSkip: "Jätä bonusvuoro välih, se ei kannata nygöi.",
+      },
       altName: "Mau-Mau",
       desc: 'UNO-tyyppini kilbajuokšu kortittomuoh',
       msg: {
@@ -398,6 +433,14 @@ export const krl = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Kuapua ${targets} kortil ${card}. Keriä pisteitä: pajat, tuzat da erikoiskortit.`,
+        captureMokki: ({ card }) => `Kuapua kogo stola kortil ${card}. Se on mökki da tuou liziä pisteh.`,
+        takeOwnBuild: ({ card }) => `Kuapua oma raknelmas kortil ${card}, enne migu vastustai varrastau sen.`,
+        stealBuild: ({ card }) => `Varrasta vastustajan raknelmu kortil ${card}. Otat hänel valmehen kuapuandan.`,
+        build: ({ card, value }) => `Luaji arvo ${value} kortil ${card}. Sinul on toine kortti kudamal kuapuat sen jälgimäzel vuorol.`,
+        trail: ({ card }) => `Jätä ${card} stolah. Nygöi ei ole hyövykästä kuapuandua, da tämä kortti on turvallizin jättiä.`,
+      },
       altName: "Cassino",
       desc: 'Kuapua koko stola',
       msg: {
@@ -496,6 +539,13 @@ export const krl = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Koputa! Sinun arvivoittu summu on jo tarbehekse pieni.",
+        drawDiscard: ({ card }) => `Nosta poistopakas ${card}. Nägyi huogei kortti on varmembi migu sogei nosto.`,
+        drawDeck: "Poistopakan kortti ei avvuta sinuu. Nosta nostopakas.",
+        swapSlot: ({ slot }) => `Vaihta nostettu kortti sijah ${slot}, se pienendäy summua enimyölleh.`,
+        discardDrawn: "Lykkiä nostettu kortti poistopakkah, se ei kohenda kätty.",
+      },
       altName: "golfi (kolkutuš)",
       desc: 'Muistikiza yllätyšmomentein',
       msg: {
@@ -551,6 +601,12 @@ export const krl = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Lyö ${cards}. Hyökkyä sih muah, kus on enin matalua, da piä valtit puolistukseh.`,
+        attackMaija: ({ cards }) => `Lyö ${cards} da piäze Maijas. Sil ei sua kuadua, kädes se on vai hävivön riski.`,
+        beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai riittäy, valtit vaste pakon ies.`,
+        take: "Et voi kuadua niidü hyövyl. Ota kortit kädeh.",
+      },
       altName: "Mussa Pekka",
       desc: 'Ozittaini kuato — torjundavoitto. Täyškuato — hyökkiät.',
       msg: {
@@ -595,6 +651,15 @@ export const krl = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Lyö ${cards}. Pelua pienimmät iel da piä 10, tuz da kova kaksine ahtahah kohtah.`,
+        playSpecial: ({ cards }) => `Lyö ${cards}. Se puhtastau kasan, ga voit algua puhtahas stolas.`,
+        playQuad: ({ cards }) => `Lyö ${cards} da täytä nellä yhtenmostu. Kasa kaduou da sinä jatkat.`,
+        knock: "Kädes ei ole sobivua. Koputa da nosta sogei kortti pakas.",
+        takePile: "Ni midä ei sovi da pakku on tyhjy, ga sinun pidäy ottua kasa.",
+        swap: ({ cards }) => `Vaihta ${cards} kasah. Se on matalembi migu vaste pelattu, ga piäzet heikombis kortilois.`,
+        swapSkip: "Elä vaihta. Käzikortit ollah parembi piädiä.",
+      },
       altName: "Palace",
       desc: 'Liki še perindöllini paskahousu kuvella kortilla. 2♦ 2♥ arvo 2 · 2♠ 2♣ kovie',
       msg: {
@@ -656,6 +721,14 @@ export const krl = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Hyökkyä kortil ${cards}. Ala pienimmis ei-valttilois da piä valtit puolistukseh.`,
+        beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai kortti riittäy, suuret piä tallel.`,
+        take: "Et voi kuadua kaikkii stolan kortiloi. Ota ne kädeh.",
+        pass: ({ cards }) => `Siirrä hyökkäy iel kortil ${cards}, ga iče piäzet pälkähäzes.`,
+        add: ({ card }) => `Lyö ${card} laijjas. Puolistajal on vie kortiloi kuadua, ga paina piäle.`,
+        skipAdd: "Elä lyö laijjas nygöi. Piä kortit parembah aigah.",
+      },
       altName: "Durak",
       desc: 'Täyši korttišota: hyökkiä, šiirrä, puolista da muista iškie kylgeh.',
       msg: {

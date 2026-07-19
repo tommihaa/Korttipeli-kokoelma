@@ -26,6 +26,25 @@ function deal(nPlayers) {
 }
 
 import { useT } from '../shared/i18n.jsx';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+
+// Mestarin neuvo Herolle: valmiustieto ennen käännöstä (Läpsyssä ei ole pelivalintaa,
+// Mestarin etu on muisti). Lukee jaettua muistia: seenByRank (kortinlaskija) ja
+// knownBottoms[0] (Heron oman pinon tunnettu pohjajärjestys — kortit jotka Hero
+// itse voitti näkyviltä, eli tiedon voisi muistaa itsekin).
+// Palauttaa { type, card?, rank?, n? } — type vastaa games.lapsy.advice.* -avainta.
+export function lapsyAdvice(memory, center, heroIdx = 0) {
+  const top = center[0];
+  if (top) {
+    const kb = memory.knownBottoms[heroIdx];
+    if (kb && kb.totalAbove === 0 && kb.cards.length > 0 && kb.cards[0].r === top.r) {
+      return { type: 'predicted', card: kb.cards[0] };
+    }
+    const n = memory.seenByRank[top.r] || 0;
+    if (n >= 2) return { type: 'alert', rank: top.r, n };
+  }
+  return { type: 'flip' };
+}
 
 export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
@@ -43,6 +62,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   const [logOpen, setLO]    = useState(showLog);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [shuffling, setShuffling] = useState(false);
+  const [advice, setAdvice]  = useState(null); // { text } | null
   const [slapResult, setSR]   = useState(null);
   const [bestMs, setBestMs]   = useState(null);
   const [failReveal, setFR]  = useState(null);
@@ -93,6 +113,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
 
   useEffect(() => { pilesRef.current = piles; }, [piles]);
   useEffect(() => { centerRef.current = center; }, [center]);
+  useEffect(() => { setAdvice(null); }, [center, curTurn, phase]); // neuvo vanhenee tilamuutoksista
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curTurn; }, [curTurn]);
   useEffect(() => { chRef.current = challenge; }, [challenge]);
@@ -250,22 +271,22 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     setPiles(newPiles); pilesRef.current = newPiles;
     setCenter(newCenter); centerRef.current = newCenter;
 
-    // AI memory update
-    const level = topLvl();
-    if (level === 'normal' || level === 'hard') {
+    // AI memory update — ylläpito on ehdoton (myös Heron Mestari-neuvo lukee tätä);
+    // botit LUKEVAT muistia edelleen vain tasonsa mukaan (handleMatch portittaa
+    // anticipationin normal/hard ja predictionin hard per istuin), joten
+    // bottikäytös ei muutu ylläpidon laajentamisesta.
+    {
       const mem = memoryRef.current;
       mem.seenByRank[card.r] = (mem.seenByRank[card.r] || 0) + 1;
-      if (level === 'hard') {
-        const kb = mem.knownBottoms[playerIdx];
-        if (kb) {
-          if (kb.totalAbove > 0) {
-            kb.totalAbove--;           // burned one unknown card from above the known section
-          } else if (kb.cards.length > 0) {
-            const predictedCard = kb.cards.shift(); // consume the predicted card
-            // If this predicted card matches the current top → we foresaw this exact match
-            if (curCenter.length > 0 && predictedCard.r === curCenter[0].r) {
-              predMatchRef.current = true;
-            }
+      const kb = mem.knownBottoms[playerIdx];
+      if (kb) {
+        if (kb.totalAbove > 0) {
+          kb.totalAbove--;           // burned one unknown card from above the known section
+        } else if (kb.cards.length > 0) {
+          const predictedCard = kb.cards.shift(); // consume the predicted card
+          // If this predicted card matches the current top → we foresaw this exact match
+          if (curCenter.length > 0 && predictedCard.r === curCenter[0].r) {
+            predMatchRef.current = true;
           }
         }
       }
@@ -439,6 +460,15 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     doFlip(0, pilesRef.current, centerRef.current);
   }
 
+  function askAdvice() {
+    const a = lapsyAdvice(memoryRef.current, centerRef.current, 0);
+    setAdvice({
+      text: t('games.lapsy.advice.' + a.type, {
+        card: a.card ? lbl(a.card) : undefined, rank: a.rank, n: a.n,
+      }),
+    });
+  }
+
   function recordEliminated(newPiles) {
     const alreadyOut = finishOrderRef.current;
     const newlyOut = newPiles
@@ -456,8 +486,9 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     tm(() => { recentMatch.current = false; }, 800);
     const newPiles = curPiles.map((p, i) => i === winnerIdx ? [...p, ...[...curCenter].reverse()] : p);
 
-    // Tosilaskija: memorise the order of cards now at the bottom of the winner's pile
-    if (topLvl() === 'hard') {
+    // Tosilaskija: memorise the order of cards now at the bottom of the winner's pile.
+    // Ylläpito ehdoton (Heron neuvo lukee tätä); botit lukevat vain hard-tasolla.
+    {
       const mem = memoryRef.current;
       // Cards go to bottom in reversed center order — same as [...curCenter].reverse()
       mem.knownBottoms[winnerIdx] = {
@@ -592,6 +623,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 520, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       <TurnPrompt show={humanTurn} action={t('ui.turn.lapsy')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>👋</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
@@ -752,7 +784,10 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
             </div>
             <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, marginTop: 5 }}>{korttia(humanPile.length)}</div>
           </div>
-          <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>{t('games.lapsy.ui.flip')}</button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+            <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>{t('games.lapsy.ui.flip')}</button>
+            {humanTurn && <AdviceButton onClick={askAdvice} />}
+          </div>
         </div>
       )}
 

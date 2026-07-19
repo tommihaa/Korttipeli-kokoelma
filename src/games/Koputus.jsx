@@ -11,6 +11,7 @@ import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import { useT, tr } from '../shared/i18n.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
@@ -58,7 +59,72 @@ const M = {
   aiWrongReact: n => tr('games.koputus.msg.aiWrongReact', { name: n }),
 };
 
-function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true, intentSlot }) {
+// ── Bottipäätökset puhtaina funktioina ──────────────────────────
+// Irrotettu runAI:sta, jotta sama logiikka ajaa botit ja Heron Mestari-neuvon.
+// Käyttävät vain pelaajan omaa known-joukkoa + julkista tietoa (ei kurkkimista).
+
+// Tuntemattoman paikan odotusarvo (vaihto- ja nostopäätöksiin)
+const UNKNOWN_EV = 7;
+
+// Koputusarvio: tunnettujen summa + tuntemattomien EV vs. kynnys
+function koKnockEstimate(player, level) {
+  const ks = [...player.known].reduce((s, i) => s + (player.cards[i]?.v || 0), 0);
+  const uk = player.cards.filter(c => c !== null).length - player.known.size;
+  const unkEV = level === 'hard' ? 6 : 5;
+  const est = ks + uk * unkEV;
+  // Oppipoika ei uskalla koputtaa ajoissa (mitattu: aikainen koputus on etu)
+  const knockThreshold = level === 'beginner' ? 5 : 8;
+  return { shouldKnock: est <= knockThreshold, est };
+}
+
+// Haluaako pelaaja poistopakan kortin? Oppipoika ei huomaa poistopakkaa lainkaan;
+// Mestari ottaa myös pikkukortin (≤4) tuntemattomaan paikkaan (EV-hyöty ≥3).
+function koWantsDiscard(g, playerIdx, level) {
+  const pp = g.players[playerIdx];
+  const top = g.discard[g.discard.length - 1];
+  if (!top || level === 'beginner') return false;
+  const worst = [...pp.known].filter(i => pp.cards[i] !== null)
+    .sort((a, b) => pp.cards[b].v - pp.cards[a].v)[0];
+  if (worst !== undefined && top.v < pp.cards[worst].v) return true;
+  if (level === 'hard' && top.v <= UNKNOWN_EV - 3
+      && pp.cards.some((c, i) => c !== null && !pp.known.has(i))) return true;
+  return false;
+}
+
+// Vaihtokohde nostetulle kortille: hyötyvertailu. Tunnetun parannus = varma hyöty;
+// tuntemattoman täyttö = EV-hyöty (Kisälli vaatii ≥5, Mestari ≥3). null = poistoon.
+function koSwapTarget(player, card, level) {
+  const wo = [...player.known].filter(i => player.cards[i] !== null)
+    .sort((a, b) => player.cards[b].v - player.cards[a].v)[0];
+  const unknownSlot = player.cards.findIndex((c, i) => c !== null && !player.known.has(i));
+  const gainKnown   = wo !== undefined ? player.cards[wo].v - card.v : -Infinity;
+  const gainUnknown = (level !== 'beginner' && unknownSlot !== -1) ? UNKNOWN_EV - card.v : -Infinity;
+  const unknownGate = level === 'hard' ? 3 : 5;
+  if (gainUnknown >= unknownGate && gainUnknown > gainKnown) return unknownSlot;
+  if (gainKnown > 0) return wo;
+  return null;
+}
+
+// Mestarin neuvo Herolle. phase 'draw' → koputus/nostolähde, 'drawn' → vaihto/poisto.
+// Palauttaa { type, card?, slot? } — type vastaa games.koputus.advice.* -avainta.
+export function getAdvice(g, phase, drawn, knocked) {
+  const p = g.players[0];
+  if (!p) return null;
+  if (phase === 'draw') {
+    if (knocked === null && koKnockEstimate(p, 'hard').shouldKnock) return { type: 'knock' };
+    if (koWantsDiscard(g, 0, 'hard')) {
+      return { type: 'drawDiscard', card: g.discard[g.discard.length - 1] };
+    }
+    return { type: 'drawDeck' };
+  }
+  if (phase === 'drawn' && drawn) {
+    const slot = koSwapTarget(p, drawn, 'hard');
+    return slot === null ? { type: 'discardDrawn' } : { type: 'swapSlot', slot };
+  }
+  return null;
+}
+
+function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true, intentSlot, adviceSlot }) {
   const t = useT();
   return (
     <div style={{ padding: small ? '4px 8px' : 14, borderRadius: 12, transition: 'border-color 0.2s', border: `1px solid ${isActive ? 'rgba(201,168,76,0.3)' : 'rgba(42,74,50,0.4)'}`, background: isActive ? 'rgba(201,168,76,0.03)' : 'transparent', display: small ? 'flex' : 'block', alignItems: small ? 'center' : undefined, gap: small ? 6 : 0 }}>
@@ -84,6 +150,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
               justPlaced={justPlaced}
               pulse={memGlow && !cl && !justPlaced}
               selected={intentSlot === i}
+              advice={adviceSlot === i}
               backStyle={backStyle}
               onClick={cl ? () => onCardClick?.(i) : undefined}
               disabled={clickableSet && !cl}
@@ -136,6 +203,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   const [aiDelayMs, setAiDelayMs] = useState(2000);
   const [intention, setIntention] = useState(null); // { playerIdx, slotIdx } | null
   const [pendingResult, setPendingResult] = useState(null);
+  const [advice, setAdvice] = useState(null); // { text, slot?, target? } | null
 
   const logRef     = useRef([]);
   const gRef       = useRef(null);
@@ -170,7 +238,22 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   };
 
   useEffect(() => { gRef.current = G; }, [G]);
+  useEffect(() => { setAdvice(null); }, [G, phase, drawn]); // neuvo vanhenee tilamuutoksista
   useEffect(() => { knockRef.current = knockedBy; }, [knockedBy]);
+
+  function askAdvice() {
+    const g = gRef.current; if (!g) return;
+    const a = getAdvice(g, phase, drawn, knockRef.current);
+    if (!a) return;
+    setAdvice({
+      text: t('games.koputus.advice.' + a.type, {
+        card: a.card ? lbl(a.card) : undefined,
+        slot: a.slot !== undefined ? a.slot + 1 : undefined,
+      }),
+      slot: a.slot,
+      target: a.type === 'drawDiscard' ? 'discard' : a.type === 'drawDeck' ? 'deck' : null,
+    });
+  }
   useEffect(() => { lrRef.current = lastRound; }, [lastRound]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => {
@@ -533,34 +616,14 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     //              tuntemattomaan paikkaan (≤4; KOPUTUS.md strategia, kohta 3)
     const level = botLevelsRef.current?.[playerIdx] ?? (allBotsRef.current ? 'hard' : aiLevelRef.current);
     if (knockRef.current === null) {
-      const ks = [...p.known].reduce((s, i) => s + (p.cards[i]?.v || 0), 0);
-      const uk = p.cards.filter(c => c !== null).length - p.known.size;
-      const unkEV = level === 'hard' ? 6 : 5;
-      const est = ks + uk * unkEV;
-      // Oppipoika ei uskalla koputtaa ajoissa (mitattu: aikainen koputus on etu)
-      const knockThreshold = level === 'beginner' ? 5 : 8;
-      if (est <= knockThreshold) {
+      if (koKnockEstimate(p, level).shouldKnock) {
         setKB(playerIdx); knockRef.current = playerIdx;
         if (sndRef.current) SFX.tikki();
         const lr = new Set(gState.players.filter((_, i) => i !== playerIdx).map(pl => pl.id));
         setLR(lr); lrRef.current = lr; setMsg(M.aiKnock(p.name));
       }
     }
-    // Tuntemattoman paikan odotusarvo (vaihto- ja nostopäätöksiin)
-    const UNKNOWN_EV = 7;
-    // Haluaako botti poistopakan kortin? Oppipoika ei huomaa poistopakkaa lainkaan;
-    // Mestari ottaa myös pikkukortin (≤4) tuntemattomaan paikkaan (EV-hyöty ≥3).
-    const wantsDiscard = (gg) => {
-      const pp = gg.players[playerIdx];
-      const top = gg.discard[gg.discard.length - 1];
-      if (!top || level === 'beginner') return false;
-      const worst = [...pp.known].filter(i => pp.cards[i] !== null)
-        .sort((a, b) => pp.cards[b].v - pp.cards[a].v)[0];
-      if (worst !== undefined && top.v < pp.cards[worst].v) return true;
-      if (level === 'hard' && top.v <= UNKNOWN_EV - 3
-          && pp.cards.some((c, i) => c !== null && !pp.known.has(i))) return true;
-      return false;
-    };
+    const wantsDiscard = (gg) => koWantsDiscard(gg, playerIdx, level);
     const drawFromDiscard = wantsDiscard(gState);
     const thinkMs = allBotsRef.current ? Math.min(aiDelayRef.current * 0.25, 500) : 1600;
     const reactMs = allBotsRef.current ? 400 : 1200;
@@ -577,18 +640,8 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
         if (!gNow.deck.length) { endGame(gNow); return; }
         card = gNow.deck[0]; deck = gNow.deck.slice(1); discard = gNow.discard;
       }
-      const wo = [...pNow.known].filter(i => gNow.players[playerIdx].cards[i] !== null)
-        .sort((a, b) => pNow.cards[b].v - pNow.cards[a].v)[0];
-      // Vaihtokohde: hyötyvertailu. Tunnetun parannus = varma hyöty; tuntemattoman
-      // täyttö (vain Mestari) = EV-hyöty, vaatii selvän edun (≥3).
-      const unknownSlot = pNow.cards.findIndex((c, i) => c !== null && !pNow.known.has(i));
-      const gainKnown   = wo !== undefined ? pNow.cards[wo].v - card.v : -Infinity;
-      const gainUnknown = (level !== 'beginner' && unknownSlot !== -1) ? UNKNOWN_EV - card.v : -Infinity;
-      // Kisälli vaatii varman kortin (A/2 → hyöty ≥5), Mestari tyytyy selvään etuun (≥3)
-      const unknownGate = level === 'hard' ? 3 : 5;
-      let target;
-      if (gainUnknown >= unknownGate && gainUnknown > gainKnown) target = unknownSlot;
-      else if (gainKnown > 0) target = wo;
+      const targetSlot = koSwapTarget(pNow, card, level);
+      const target = targetSlot === null ? undefined : targetSlot;
       if (target !== undefined) {
         const doSwap = () => {
           const old = pNow.cards[target];
@@ -719,6 +772,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : 16, maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 40, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       <TurnPrompt show={isHuman && !showDrawn} action={t('ui.turn.koputus')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 66 : 72, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 17, flexShrink: 0 }}>🤜</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: msg }}></p>
@@ -788,7 +842,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
               : <>
                 {G.deck.length > 2 && <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-5deg) translate(-4px,3px)', transformOrigin: 'bottom center', opacity: 0.55, zIndex: 0 }}>{BACKS[cardBack].render(cw, ch)}</div>}
                 {G.deck.length > 1 && <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-2.5deg) translate(-2px,1.5px)', transformOrigin: 'bottom center', opacity: 0.75, zIndex: 1 }}>{BACKS[cardBack].render(cw, ch)}</div>}
-                <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, overflow: 'hidden', background: BACKS[cardBack].bg, border: `2px solid ${isHuman && phase === 'draw' ? C.gold : BACKS[cardBack].border}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.4)', zIndex: 2 }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, overflow: 'hidden', background: BACKS[cardBack].bg, border: `2px solid ${advice?.target === 'deck' ? C.botMode : isHuman && phase === 'draw' ? C.gold : BACKS[cardBack].border}`, boxShadow: advice?.target === 'deck' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.4)', zIndex: 2 }}>
                   {BACKS[cardBack].render(cw, ch)}
                 </div>
               </>}
@@ -812,7 +866,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
             style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {!discardTop
               ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
-              : <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: '#f8f2e6', border: `2px solid ${isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              : <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: '#f8f2e6', border: `2px solid ${advice?.target === 'discard' ? C.botMode : isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: advice?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: isMobile ? 17 : 22, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: isMobile ? 20 : 26 }}>{discardTop.s}</div>
@@ -828,6 +882,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       <div style={{ marginBottom: isMobile ? 6 : 12 }}>
         <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={debugOpen || allBots} backStyle={BACKS[cardBack]}
           clickableSet={ownClickable()} onCardClick={onOwnCard} peekSet={tempPeek}
+          adviceSlot={advice?.slot}
           lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} small={isMobile} />
       </div>
       )}
@@ -854,6 +909,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 36 : 44, alignItems: 'center' }}>
         {isHuman && phase === 'drawn' && <Btn label={t('games.koputus.ui.discard')} onClick={humanDiscard} color={C.gold} />}
         {isHuman && phase === 'draw' && knockedBy === null && <Btn label={t('games.koputus.ui.knock')} onClick={humanKnock} color={C.red} outline />}
+        {isHuman && (phase === 'draw' || phase === 'drawn') && <AdviceButton onClick={askAdvice} />}
         {!allBots && phase === 'spec_q_tgt' && specState && <Btn label={t('games.koputus.ui.skipSwap')} onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
         {!allBots && phase === 'spec_k_decide' && specState && <Btn label={t('games.koputus.ui.skipSwap')} onClick={handleKSkip} color={C.dim} outline />}
         {!allBots && phase === 'spec_k_confirm' && <Btn label={t('games.koputus.ui.swapHere')} onClick={handleKSwap} color={C.gold} />}

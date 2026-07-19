@@ -4,6 +4,10 @@
 // descriptions et les règles sont traduites. Muutosloki on lokalisoitu: src/changelogs/fr.js.
 export const fr = {
   ui: {
+    advice: {
+      ask: "Demander au Maître",
+      from: "Maître :",
+    },
     rules: { label: "Règles", moreTerms: "Plus de termes — Glossaire" },
     turn: { yours: "À vous de jouer —", kultakala: "piochez une carte dans la pioche ou la défausse", koputus: "piochez une carte dans la pioche ou la défausse", lapsy: "retournez une carte au centre", seiska: "jouez une carte ou piochez", ristiseiska: "jouez une carte valide ou passez", paskahousu: "jouez une carte, ou piochez si vous ne pouvez pas", kasino: "capturez, construisez ou défaussez une carte", maijaAttack: "jouez des cartes de la même couleur", maijaDefend: "battez les cartes ou ramassez-les", moskaAttack: "jouez des cartes de même valeur", moskaDefend: "battez les cartes ou ramassez-les" },
     loading: 'Chargement…',
@@ -88,6 +92,8 @@ export const fr = {
         'Jeu de cartes bicolore en plus du quadricolore (à choisir dans les Paramètres)',
         'Localisation (12 langues)',
         'Replay : symboles d\'échecs sur les annotations de coups (! !! ? ?? !? ?!)',
+        "Bouton « Demander au Maître » dans cinq jeux (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Conseil du Maître pour les jeux à phases multiples (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -207,6 +213,12 @@ export const fr = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Prends ${card} dans la défausse. Une petite carte visible vaut la peine.`,
+        drawDeck: "La carte de la défausse ne t'aide pas. Pioche.",
+        swapHere: ({ slot }) => `Échange la carte à la place ${slot}, cela vaut le coup dans cette chaîne.`,
+        stopSwap: "La carte est trop mauvaise pour la chaîne. Jette-la dans la défausse.",
+      },
       altName: "Golf à six cartes",
       desc: 'Un jeu de mémoire — si tu regardes, tu échanges',
       msg: {
@@ -243,6 +255,11 @@ export const fr = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Rien de particulier en vue. Retourne ta carte tranquillement.",
+        alert: ({ rank, n }) => `Tiens-toi prêt ! La valeur ${rank} a déjà été vue ${n} fois.`,
+        predicted: ({ card }) => `Ta prochaine carte est ${card} et elle correspond au tas central. Prépare-toi à taper !`,
+      },
       altName: "Slapjack (la Tape)",
       desc: 'Un jeu de réflexes',
       msg: {
@@ -282,6 +299,13 @@ export const fr = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Joue ${card}. Les petites cartes d'abord, les cartes-portes (6 et 8) seulement si tu y es forcé.`,
+        playSeven: ({ card }) => `Joue ${card}. Ouvre un sept dans la couleur où tu as le plus de cartes.`,
+        pass: "Aucune de tes cartes ne convient. Passe.",
+        give: ({ card }) => `Donne ${card}, c'est la carte la plus loin d'être jouable.`,
+        bonusEnd: "Aucune carte ne convient au tour bonus. Termine le tour.",
+      },
       altName: "Domino (cartes)",
       desc: 'Espièglerie, cartes-gages et patience',
       msg: {
@@ -338,6 +362,17 @@ export const fr = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Joue le groupe ${cards}. Plusieurs cartes à la fois vident la main au plus vite.`
+          : `Joue ${cards}. Cela garde tes paires et tes couleurs fortes pour plus tard.`,
+        playSeven: ({ card, suit }) => `Joue ${card} et exige ${suit}, c'est la couleur que tu as le plus.`,
+        playAce: ({ card }) => `Joue ${card}. L'as fait piocher les autres et tu gagnes un tour bonus.`,
+        draw: "Aucune de tes cartes ne convient. Pioche.",
+        endTurn: "Les pioches sont épuisées et rien ne convient. Le tour se termine.",
+        aceBonusPlay: ({ cards }) => `Utilise le tour bonus : joue ${cards}.`,
+        aceBonusSkip: "Laisse passer le tour bonus, il ne vaut pas le coup maintenant.",
+      },
       altName: "Huit américain",
       desc: 'Une course de type UNO pour vider sa main',
       msg: {
@@ -397,6 +432,14 @@ export const fr = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Capture ${targets} avec ${card}. Amasse des points : piques, as et les cartes spéciales.`,
+        captureMokki: ({ card }) => `Capture toute la table avec ${card}. C'est une rafle et cela rapporte un point de plus.`,
+        takeOwnBuild: ({ card }) => `Capture ta propre construction avec ${card}, avant qu'un adversaire ne la vole.`,
+        stealBuild: ({ card }) => `Vole la construction de l'adversaire avec ${card}. Tu lui enlèves une capture toute prête.`,
+        build: ({ card, value }) => `Construis la valeur ${value} avec ${card}. Tu as une autre carte pour la capturer au tour suivant.`,
+        trail: ({ card }) => `Laisse ${card} sur la table. Il n'y a pas de capture avantageuse maintenant, et cette carte est la plus sûre à poser.`,
+      },
       altName: "Casino",
       desc: 'Capture toute la table',
       msg: {
@@ -495,6 +538,13 @@ export const fr = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Toque ! Ta somme estimée est déjà assez basse.",
+        drawDiscard: ({ card }) => `Prends ${card} dans la défausse. Une carte bon marché visible vaut mieux qu'une pioche à l'aveugle.`,
+        drawDeck: "La carte de la défausse ne t'aide pas. Pioche.",
+        swapSlot: ({ slot }) => `Échange la carte piochée à la place ${slot}, cela baisse ta somme au maximum.`,
+        discardDrawn: "Jette la carte piochée, elle n'améliore pas ta main.",
+      },
       altName: "Golf (Polish Poker)",
       desc: 'Un jeu de mémoire avec des rebondissements',
       msg: {
@@ -550,6 +600,12 @@ export const fr = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Joue ${cards}. Attaque dans la couleur où tu as le plus de basses cartes et garde les atouts pour la défense.`,
+        attackMaija: ({ cards }) => `Joue ${cards} et débarrasse-toi de la Maija. Elle ne bat rien, en main ce n'est qu'un risque de perdre.`,
+        beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite gagnante suffit, les atouts seulement quand tu y es forcé.`,
+        take: "Tu ne peux pas les battre avantageusement. Prends les cartes en main.",
+      },
       altName: "le Pouilleux (variante finlandaise)",
       desc: 'Coupe partielle — victoire défensive. Coupe complète — tu attaques.',
       msg: {
@@ -594,6 +650,15 @@ export const fr = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Joue ${cards}. Joue d'abord les plus petites et garde le 10, l'as et le deux fort pour un mauvais pas.`,
+        playSpecial: ({ cards }) => `Joue ${cards}. Cela nettoie le tas, tu repars donc sur une table propre.`,
+        playQuad: ({ cards }) => `Joue ${cards} et complète quatre semblables. Le tas disparaît et tu continues.`,
+        knock: "Rien en main ne convient. Frappe et pioche une carte à l'aveugle dans le talon.",
+        takePile: "Rien ne convient et le talon est vide, tu dois donc prendre le tas.",
+        swap: ({ cards }) => `Échange ${cards} dans le tas. Elle est plus basse que ce qui vient d'être joué, tu te débarrasses ainsi de tes cartes faibles.`,
+        swapSkip: "N'échange pas. Tes cartes en main valent mieux gardées.",
+      },
       altName: "le Président",
       desc: 'Presque le Paskahousu classique avec six cartes. 2♦ 2♥ valeur 2 · 2♠ 2♣ sont fortes',
       msg: {
@@ -655,6 +720,14 @@ export const fr = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Attaque avec ${cards}. Commence par tes plus petites cartes hors atout et garde les atouts pour la défense.`,
+        beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite carte gagnante suffit, garde les grosses.`,
+        take: "Tu ne peux pas battre toutes les cartes sur la table. Prends-les en main.",
+        pass: ({ cards }) => `Renvoie l'attaque avec ${cards}, et tu t'en sors toi-même.`,
+        add: ({ card }) => `Joue ${card} sur le côté. Le défenseur a encore des cartes à battre, alors insiste.`,
+        skipAdd: "N'ajoute pas sur le côté maintenant. Garde tes cartes pour un meilleur moment.",
+      },
       altName: "le Durak",
       desc: 'Guerre de cartes totale : attaque, transmets, défends — et n\'oublie pas de frapper sur le flanc.',
       msg: {

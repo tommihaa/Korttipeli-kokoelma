@@ -4,6 +4,10 @@
 // reglur eru þýddar. Muutosloki on lokalisoitu: src/changelogs/is.js.
 export const is = {
   ui: {
+    advice: {
+      ask: "Spyrja Meistarann",
+      from: "Meistarinn:",
+    },
     rules: { label: "Reglur", moreTerms: "Fleiri hugtök — Orðalisti" },
     turn: { yours: "Þín gerð —", kultakala: "dragðu spil úr stokknum eða kasthaugnum", koputus: "dragðu spil úr stokknum eða kasthaugnum", lapsy: "snúðu spili í miðjuna", seiska: "spilaðu spil eða dragðu", ristiseiska: "spilaðu leyfilegt spil eða segðu pass", paskahousu: "spilaðu spil, eða dragðu ef þú getur ekki", kasino: "fangaðu, byggðu eða leggðu spil", maijaAttack: "spilaðu spil í sama lit", maijaDefend: "sláðu spilin eða taktu þau upp", moskaAttack: "spilaðu spil með sama gildi", moskaDefend: "sláðu spilin eða taktu þau upp" },
     loading: 'Hleð…',
@@ -88,6 +92,8 @@ export const is = {
         'Tvílita spilastokkur við hlið fjórlita (valanlegt í Stillingum)',
         'Tungumálavæðing (12 tungumál)',
         'Endursýning: skáktákn á leikjamerkingum (! !! ? ?? !? ?!)',
+        "\"Spyrja Meistarann\"-hnappur í fimm leikjum (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Ráð Meistarans í fjölfasaleikina (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -207,6 +213,12 @@ export const is = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Taktu ${card} úr kastbunkanum. Sýnilegt lágt spil er þess virði að taka.`,
+        drawDeck: "Spil kastbunkans hjálpar þér ekki. Dragðu úr stokknum.",
+        swapHere: ({ slot }) => `Skiptu spilinu í sæti ${slot}, það borgar sig í þessari keðju.`,
+        stopSwap: "Spilið er of lélegt fyrir keðjuna. Kastaðu því í kastbunkann.",
+      },
       altName: "finnskur minnisleikur",
       desc: 'Minnisleikur — ef þú kíkir, þá skiptir þú',
       msg: {
@@ -243,6 +255,11 @@ export const is = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Ekkert sérstakt í vændum. Snúðu spilinu rólega.",
+        alert: ({ rank, n }) => `Vertu til! Gildið ${rank} hefur þegar sést ${n} sinnum.`,
+        predicted: ({ card }) => `Næsta spil þitt er ${card} og það passar við miðjubunkann. Búðu þig undir að skella!`,
+      },
       altName: "Slapjack",
       desc: 'Viðbragðsleikur',
       msg: {
@@ -282,6 +299,13 @@ export const is = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Spilaðu ${card}. Lág spil fyrst, hliðspilin (6 og 8) aðeins þegar þú neyðist.`,
+        playSeven: ({ card }) => `Spilaðu ${card}. Opnaðu sjöu í litnum þar sem þú átt flest spil.`,
+        pass: "Ekkert spilanna þinna passar. Segðu pass.",
+        give: ({ card }) => `Gefðu ${card}, það er lengst frá því að vera spilanlegt.`,
+        bonusEnd: "Ekkert spil passar í aukaumferðina. Ljúktu umferðinni.",
+      },
       altName: "Domino (spil)",
       desc: 'Stríðni, veðspil og þolinmæði',
       msg: {
@@ -338,6 +362,17 @@ export const is = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Spilaðu hópinn ${cards}. Fleiri spil í einu tæma höndina hraðast.`
+          : `Spilaðu ${cards}. Það geymir pörin þín og sterkustu litina þar til síðar.`,
+        playSeven: ({ card, suit }) => `Spilaðu ${card} og krefstu ${suit}, þann lit áttu mest af.`,
+        playAce: ({ card }) => `Spilaðu ${card}. Ásinn lætur hina draga og þú færð aukaumferð.`,
+        draw: "Ekkert spilanna þinna passar. Dragðu úr stokknum.",
+        endTurn: "Drættirnir eru búnir og ekkert passar. Umferðinni lýkur.",
+        aceBonusPlay: ({ cards }) => `Nýttu aukaumferðina: spilaðu ${cards}.`,
+        aceBonusSkip: "Slepptu aukaumferðinni, hún borgar sig ekki núna.",
+      },
       altName: "Olsen Olsen",
       desc: 'UNO-líkt kapphlaup að tómri hendi',
       msg: {
@@ -397,6 +432,14 @@ export const is = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Hremmdu ${targets} með ${card}. Safnaðu stigum: spaðar, ásar og sérspilin.`,
+        captureMokki: ({ card }) => `Hremmdu allt borðið með ${card}. Það er sópun og gefur aukastig.`,
+        takeOwnBuild: ({ card }) => `Hremmdu þína eigin byggingu með ${card}, áður en andstæðingur stelur henni.`,
+        stealBuild: ({ card }) => `Stelu byggingu andstæðingsins með ${card}. Þú tekur tilbúna hremmingu frá honum.`,
+        build: ({ card, value }) => `Byggðu gildið ${value} með ${card}. Þú átt annað spil til að hremma hana í næstu umferð.`,
+        trail: ({ card }) => `Skildu ${card} eftir á borðinu. Það er engin arðbær hremming núna og þetta spil er öruggast að leggja frá.`,
+      },
       altName: "Kasína",
       desc: 'Hremmdu allt borðið',
       msg: {
@@ -495,6 +538,13 @@ export const is = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Bankaðu! Áætluð summa þín er þegar nógu lág.",
+        drawDiscard: ({ card }) => `Taktu ${card} úr kastbunkanum. Sýnilegt ódýrt spil er öruggara en blindur dráttur.`,
+        drawDeck: "Spil kastbunkans hjálpar þér ekki. Dragðu úr stokknum.",
+        swapSlot: ({ slot }) => `Skiptu dregna spilinu í sæti ${slot}, það lækkar summuna þína mest.`,
+        discardDrawn: "Kastaðu dregna spilinu, það bætir ekki höndina þína.",
+      },
       altName: "Golf (spil)",
       desc: 'Minnisleikur með óvæntum uppákomum',
       msg: {
@@ -550,6 +600,12 @@ export const is = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Spilaðu ${cards}. Ráðstu í litnum þar sem þú átt mest af lágu og geymdu trompin til varnar.`,
+        attackMaija: ({ cards }) => `Spilaðu ${cards} og losaðu þig við Maija. Hún slær ekkert, á hendinni er hún bara taphætta.`,
+        beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi dugar, tromp aðeins þegar þú neyðist.`,
+        take: "Þú getur ekki slegið þau með ávinningi. Taktu spilin á höndina.",
+      },
       altName: "Svarti Pétur (finnsk útgáfa)",
       desc: 'Hluta-felling — varnarsigur. Full felling — þú sækir.',
       msg: {
@@ -594,6 +650,15 @@ export const is = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Spilaðu ${cards}. Spilaðu lægstu fyrst og geymdu 10, ás og sterka tvistinn fyrir þröngan stað.`,
+        playSpecial: ({ cards }) => `Spilaðu ${cards}. Það hreinsar bunkann, svo þú byrjar á hreinu borði.`,
+        playQuad: ({ cards }) => `Spilaðu ${cards} og fylltu fjögur eins. Bunkinn hverfur og þú heldur áfram.`,
+        knock: "Ekkert á hendinni passar. Bankaðu og dragðu blint spil úr stokknum.",
+        takePile: "Ekkert passar og stokkurinn er tómur, svo þú verður að taka bunkann.",
+        swap: ({ cards }) => `Skiptu ${cards} í bunkann. Það er lægra en það sem var nýlega spilað, svo þú losnar við veikari spilin.`,
+        swapSkip: "Ekki skipta. Betra er að halda spilunum á hendinni.",
+      },
       altName: "Palace",
       desc: 'Nánast hinn klassíski paskahousu með sex spilum. 2♦ 2♥ gildi 2 · 2♠ 2♣ eru hörð',
       msg: {
@@ -655,6 +720,14 @@ export const is = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Ráðstu með ${cards}. Byrjaðu á lægstu spilunum sem eru ekki tromp og geymdu trompin til varnar.`,
+        beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi spilið dugar, geymdu þau háu.`,
+        take: "Þú getur ekki slegið öll spilin á borðinu. Taktu þau á höndina.",
+        pass: ({ cards }) => `Sendu árásina áfram með ${cards}, þá sleppur þú sjálfur.`,
+        add: ({ card }) => `Leggðu ${card} frá hlið. Verjandinn á enn spil til að slá, svo þrýstu á.`,
+        skipAdd: "Ekki bæta við frá hlið núna. Geymdu spilin fyrir betri stund.",
+      },
       altName: "Durak",
       desc: 'Allsherjar spilastríð: sæktu, færðu, verðu — og mundu að slá frá hlið.',
       msg: {

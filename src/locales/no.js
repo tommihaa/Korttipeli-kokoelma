@@ -4,6 +4,10 @@
 // regler oversettes. Muutosloki on lokalisoitu: src/changelogs/no.js.
 export const no = {
   ui: {
+    advice: {
+      ask: "Spør Mesteren",
+      from: "Mesteren:",
+    },
     rules: { label: "Regler", moreTerms: "Flere termer — Ordliste" },
     turn: { yours: "Din tur —", kultakala: "trekk et kort fra bunken eller kasthaugen", koputus: "trekk et kort fra bunken eller kasthaugen", lapsy: "snu et kort til midten", seiska: "spill et kort eller trekk", ristiseiska: "spill et tillatt kort eller pass", paskahousu: "spill et kort, eller trekk hvis du ikke kan", kasino: "fang, bygg eller legg et kort", maijaAttack: "spill kort i samme farge", maijaDefend: "slå kortene eller ta dem opp", moskaAttack: "spill kort av samme verdi", moskaDefend: "slå kortene eller ta dem opp" },
     loading: 'Laster…',
@@ -88,6 +92,8 @@ export const no = {
         'Tofarget kortstokk ved siden av den firefargete (kan velges i Innstillinger)',
         'Språkversjonering (12 språk)',
         'Replay: sjakksymboler i trekkmarkeringer (! !! ? ?? !? ?!)',
+        "\"Spør Mesteren\"-knapp i fem spill (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Mesterens råd til flerfasespillene (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -207,6 +213,12 @@ export const no = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Ta ${card} fra kastebunken. Et synlig lavt kort er verdt å ta.`,
+        drawDeck: "Kastebunkens kort hjelper deg ikke. Trekk fra bunken.",
+        swapHere: ({ slot }) => `Bytt kortet inn på plass ${slot}, det lønner seg i denne kjeden.`,
+        stopSwap: "Kortet er for dårlig for kjeden. Kast det på kastebunken.",
+      },
       altName: "Sekskortsgolf",
       desc: 'Et huskespill — ser du, så bytter du',
       msg: {
@@ -243,6 +255,11 @@ export const no = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Ikke noe spesielt i sikte. Snu kortet ditt i ro og mak.",
+        alert: ({ rank, n }) => `Vær klar! Verdien ${rank} er allerede sett ${n} ganger.`,
+        predicted: ({ card }) => `Ditt neste kort er ${card} og det matcher midtbunken. Gjør deg klar til å klaske!`,
+      },
       altName: "Slapjack",
       desc: 'Et reaksjonsspill',
       msg: {
@@ -282,6 +299,13 @@ export const no = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Spill ${card}. Lave kort først, portkortene (6 og 8) bare når du må.`,
+        playSeven: ({ card }) => `Spill ${card}. Åpne en sjuer i fargen der du har flest kort.`,
+        pass: "Ingen av kortene dine passer. Pass.",
+        give: ({ card }) => `Gi ${card}, det er lengst unna spillbart.`,
+        bonusEnd: "Ingen kort passer bonusturen. Avslutt turen.",
+      },
       altName: "Sjuer",
       desc: 'Plageri, pantkort og tålmodighet',
       msg: {
@@ -338,6 +362,17 @@ export const no = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Spill gruppen ${cards}. Flere kort på én gang tømmer hånden raskest.`
+          : `Spill ${cards}. Det sparer parene og de sterkeste fargene dine til senere.`,
+        playSeven: ({ card, suit }) => `Spill ${card} og krev ${suit}, den fargen har du mest av.`,
+        playAce: ({ card }) => `Spill ${card}. Esset tvinger de andre til å trekke og du får en bonustur.`,
+        draw: "Ingen av kortene dine passer. Trekk fra bunken.",
+        endTurn: "Trekkene er brukt opp og ingenting passer. Turen er over.",
+        aceBonusPlay: ({ cards }) => `Bruk bonusturen: spill ${cards}.`,
+        aceBonusSkip: "Dropp bonusturen, den lønner seg ikke nå.",
+      },
       altName: "Vri-åtter",
       desc: 'Et UNO-aktig kappløp mot tom hånd',
       msg: {
@@ -397,6 +432,14 @@ export const no = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Fang ${targets} med ${card}. Samle poeng: spar, ess og spesialkortene.`,
+        captureMokki: ({ card }) => `Fang hele bordet med ${card}. Det er et møkki og gir ett ekstrapoeng.`,
+        takeOwnBuild: ({ card }) => `Fang ditt eget byggverk med ${card}, før en motstander stjeler det.`,
+        stealBuild: ({ card }) => `Stjel motstanderens byggverk med ${card}. Det tar en ferdig fangst fra ham.`,
+        build: ({ card, value }) => `Bygg verdi ${value} med ${card}. Du har et annet kort å fange det med neste tur.`,
+        trail: ({ card }) => `Legg ${card} på bordet. Ingen lønnsom fangst nå, og dette kortet er tryggest å legge fra seg.`,
+      },
       altName: "Kasino",
       desc: 'Fang hele bordet',
       msg: {
@@ -495,6 +538,13 @@ export const no = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Bank! Den anslåtte summen din er allerede lav nok.",
+        drawDiscard: ({ card }) => `Ta ${card} fra kastebunken. Et synlig billig kort slår et blindt trekk.`,
+        drawDeck: "Kastebunkens kort hjelper deg ikke. Trekk fra bunken.",
+        swapSlot: ({ slot }) => `Bytt det trukne kortet inn på plass ${slot}, det senker summen din mest.`,
+        discardDrawn: "Kast det trukne kortet, det forbedrer ikke hånden din.",
+      },
       altName: "Golf (kortspill)",
       desc: 'Et huskespill med overraskelser',
       msg: {
@@ -550,6 +600,12 @@ export const no = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Spill ${cards}. Angrip i fargen der du har mest lavt, og spar trumf til forsvaret.`,
+        attackMaija: ({ cards }) => `Spill ${cards} og bli kvitt Maija. Den kan ikke slå noe, så på hånden er den bare en taprisiko.`,
+        beat: ({ card, target }) => `Slå ${target} med ${card}. Det minste vinnende holder, trumf først når du må.`,
+        take: "Du kan ikke slå dem lønnsomt. Ta kortene på hånden.",
+      },
       altName: "Svarteper (finsk variant)",
       desc: 'Delvis slag — forsvarsseier. Fullt slag — du angriper.',
       msg: {
@@ -594,6 +650,15 @@ export const no = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Spill ${cards}. Spill de minste først og spar 10, ess og den harde toeren til en knipe.`,
+        playSpecial: ({ cards }) => `Spill ${cards}. Det rydder bunken, så du får starte fra et rent bord.`,
+        playQuad: ({ cards }) => `Spill ${cards} og fyll fire like. Bunken forsvinner og du fortsetter.`,
+        knock: "Ingenting på hånden passer. Bank og trekk et blindt kort fra bunken.",
+        takePile: "Ingenting passer og bunken er tom, så du må ta haugen.",
+        swap: ({ cards }) => `Bytt ${cards} inn i haugen. Det er lavere enn det som nettopp ble spilt, så du kvitter deg med de svakere kortene.`,
+        swapSkip: "Ikke bytt. Håndkortene dine er bedre å beholde.",
+      },
       altName: "President",
       desc: 'Nesten den klassiske paskahousu med seks kort. 2♦ 2♥ verdi 2 · 2♠ 2♣ er harde',
       msg: {
@@ -655,6 +720,14 @@ export const no = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Angrip med ${cards}. Start med de minste ikke-trumfkortene og spar trumf til forsvaret.`,
+        beat: ({ card, target }) => `Slå ${target} med ${card}. Det minste vinnende kortet holder, spar de store.`,
+        take: "Du kan ikke slå alle kortene på bordet. Ta dem på hånden.",
+        pass: ({ cards }) => `Send angrepet videre med ${cards}, så slipper du unna selv.`,
+        add: ({ card }) => `Legg ${card} fra siden. Forsvareren har fortsatt kort å slå med, så press på.`,
+        skipAdd: "Ikke legg fra siden nå. Spar kortene til et bedre øyeblikk.",
+      },
       altName: "Durak",
       desc: 'Total kortkrig: angrip, send videre, forsvar — og husk å slå fra siden.',
       msg: {

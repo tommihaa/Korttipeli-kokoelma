@@ -4,6 +4,10 @@
 // rules are translated. Muutosloki on lokalisoitu: src/changelogs/en.js.
 export const en = {
   ui: {
+    advice: {
+      ask: "Ask the Master",
+      from: "Master:",
+    },
     rules: { label: "Rules", moreTerms: "More terms: Glossary" },
     turn: { yours: "Your turn:", kultakala: "draw a card from the deck or discard pile", koputus: "draw a card from the deck or discard pile", lapsy: "flip a card to the middle", seiska: "play a card or draw", ristiseiska: "play a valid card or pass", paskahousu: "play a card, or draw if you can't", kasino: "capture, build or trail a card", maijaAttack: "play cards of the same suit", maijaDefend: "beat the cards or pick them up", moskaAttack: "play cards of the same rank", moskaDefend: "beat the cards or pick them up" },
     loading: 'Loading…',
@@ -92,6 +96,8 @@ export const en = {
         'Frequently asked questions (FAQ)',
         'Share the game with a friend (link or QR code)',
         'Add the app to your phone home screen',
+        "\"Ask the Master\" advice button in five games (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Master advice for the multi-phase games (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -211,6 +217,12 @@ export const en = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Take ${card} from the discard pile. A visible low card is worth keeping.`,
+        drawDeck: "The discard card does not help you. Draw from the deck.",
+        swapHere: ({ slot }) => `Swap the card into slot ${slot}, it is worth it in this chain.`,
+        stopSwap: "The card is too poor for the chain. Throw it on the discard pile.",
+      },
       desc: 'A memory game where you see a card only by swapping',
       altName: "Six-Card Golf",
       msg: {
@@ -247,6 +259,11 @@ export const en = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Nothing special in sight. Flip your card calmly.",
+        alert: ({ rank, n }) => `Get ready! Rank ${rank} has been seen ${n} times already.`,
+        predicted: ({ card }) => `Your next card is ${card} and it matches the center pile. Get ready to slap!`,
+      },
       desc: 'A reaction game',
       altName: "Slapjack",
       msg: {
@@ -286,6 +303,13 @@ export const en = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Play ${card}. Low cards out first, gate cards (6 and 8) only when forced.`,
+        playSeven: ({ card }) => `Play ${card}. Open a seven in the suit where you hold the most cards.`,
+        pass: "None of your cards fit. Pass.",
+        give: ({ card }) => `Give ${card}, it is the furthest from playable.`,
+        bonusEnd: "No card fits the bonus turn. End your turn.",
+      },
       desc: 'Mischief, penalty cards and patience',
       altName: "Sevens",
       msg: {
@@ -342,6 +366,17 @@ export const en = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Play the group ${cards}. Multiple cards at once empties your hand fastest.`
+          : `Play ${cards}. It saves your pairs and strongest suits for later.`,
+        playSeven: ({ card, suit }) => `Play ${card} and demand ${suit}, you hold the most of it.`,
+        playAce: ({ card }) => `Play ${card}. The ace makes the others draw and you get a bonus turn.`,
+        draw: "None of your cards fit. Draw from the deck.",
+        endTurn: "Draws are used up and nothing fits. Your turn ends.",
+        aceBonusPlay: ({ cards }) => `Use the bonus turn: play ${cards}.`,
+        aceBonusSkip: "Skip the bonus turn, it is not worth it now.",
+      },
       desc: 'A UNO-style race to empty your hand',
       altName: "Crazy Eights",
       msg: {
@@ -401,6 +436,14 @@ export const en = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Capture ${targets} with ${card}. Gather points: spades, aces and the special cards.`,
+        captureMokki: ({ card }) => `Capture the whole table with ${card}. It is a sweep and scores an extra point.`,
+        takeOwnBuild: ({ card }) => `Capture your own build with ${card}, before an opponent steals it.`,
+        stealBuild: ({ card }) => `Steal the opponent's build with ${card}. It takes a ready capture away from them.`,
+        build: ({ card, value }) => `Build value ${value} with ${card}. You hold another card to capture it with next turn.`,
+        trail: ({ card }) => `Trail ${card} to the table. There is no worthwhile capture now, and this card is the safest to leave.`,
+      },
       desc: 'Capture the whole table',
       altName: "Cassino",
       msg: {
@@ -499,6 +542,13 @@ export const en = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Knock! Your estimated total is already low enough.",
+        drawDiscard: ({ card }) => `Take ${card} from the discard pile. A visible cheap card beats a blind draw.`,
+        drawDeck: "The discard card does not help you. Draw from the deck.",
+        swapSlot: ({ slot }) => `Swap the drawn card into slot ${slot}, it lowers your total the most.`,
+        discardDrawn: "Throw the drawn card on the discard pile, it does not improve your hand.",
+      },
       desc: 'A memory game with surprise twists',
       altName: "Golf (Polish Poker)",
       msg: {
@@ -558,6 +608,12 @@ export const en = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Play ${cards}. Attack in the suit where you have the most low cards, and save trumps for defence.`,
+        attackMaija: ({ cards }) => `Play ${cards} to get rid of the Maija. It cannot beat anything, so in hand it is only a losing risk.`,
+        beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winner is enough, trumps only when forced.`,
+        take: "You cannot beat them profitably. Take the cards into your hand.",
+      },
       desc: 'Partial beat: defensive win. Full beat: you attack next.',
       altName: "a Finnish Old Maid variant",
       msg: {
@@ -602,6 +658,15 @@ export const en = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Play ${cards}. Play the smallest first and save the 10, ace and strong two for a tight spot.`,
+        playSpecial: ({ cards }) => `Play ${cards}. It clears the pile, so you get to start from a clean table.`,
+        playQuad: ({ cards }) => `Play ${cards} to complete four of a kind. The pile vanishes and you keep going.`,
+        knock: "Nothing in your hand fits. Knock and draw a blind card from the deck.",
+        takePile: "Nothing fits and the deck is empty, so you have to take the pile.",
+        swap: ({ cards }) => `Swap ${cards} into the pile. It is lower than what was just played, so you shed your weaker cards.`,
+        swapSkip: "Do not swap. Your hand cards are better kept.",
+      },
       desc: 'Almost the classic Paskahousu with six cards. 2♦ 2♥ value 2 · 2♠ 2♣ are hard',
       altName: "Palace",
       msg: {
@@ -663,6 +728,14 @@ export const en = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Attack with ${cards}. Start with your smallest non-trumps and save trumps for defence.`,
+        beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winning card is enough, keep the big ones.`,
+        take: "You cannot beat every card on the table. Take them into your hand.",
+        pass: ({ cards }) => `Pass the attack on with ${cards}, and you get off the hook yourself.`,
+        add: ({ card }) => `Play ${card} from the side. The defender still has cards to beat, so pile it on.`,
+        skipAdd: "Do not add from the side now. Save your cards for a better moment.",
+      },
       desc: 'All-out card war: attack, pass, defend, and remember to strike from the side.',
       altName: "a Finnish Durak variant",
       msg: {

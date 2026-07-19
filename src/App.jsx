@@ -172,6 +172,9 @@ const TODO = [
   { label: 'Jaa peli kaverille (linkki tai QR-koodi)', status: 'done' },
   { label: 'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle', status: 'done' },
   { label: 'Tekoälyn vaikeustasojen hionta (uskottavammat aloittelijan virheet)', status: 'done' },
+  { label: 'Kysy Mestarilta neuvoa -nappi viiteen peliin (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)', status: 'done' },
+  { label: 'Mestarin neuvo monivaiheisiin peleihin (Moska, Paskahousu, Kasino, Maija)', status: 'done' },
+  { label: 'Mestarin luento: 🧙-neuvon rinnalle selitys MIKSI Mestari suosittelee juuri tätä siirtoa', status: 'open' },
 ];
 
 // Tyhjä per-peli-tilastorakenne. places = sijoitusjakauma (1.–4.), byLevel = erittely AI-tasoittain.

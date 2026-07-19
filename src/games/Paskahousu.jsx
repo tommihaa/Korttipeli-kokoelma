@@ -263,9 +263,49 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
   return cards;
 }
 
+// Vaihtotarjouksen paras vaihdettava ryhmä: kortit joiden arvo < pienin pelattu,
+// pienimmästä ryhmästä. Palauttaa ryhmän tai null (ei kannata vaihtaa).
+function aiSwapChoice(playedCards, eligible) {
+  const minPlayed = Math.min(...playedCards.map(c => c.v));
+  const beneficial = eligible.filter(c => c.v < minPlayed);
+  if (!beneficial.length) return null;
+  const ranked = {};
+  beneficial.forEach(c => { (ranked[c.r] = ranked[c.r] || []).push(c); });
+  return Object.values(ranked).reduce((a, b) => a[0].v <= b[0].v ? a : b);
+}
+
+// Mestarin neuvo Herolle (pelaaja 0): hard-tason logiikka, vain julkinen tieto
+// (loppupelin knownOpponentHand johdetaan julkisesta tilasta). Palauttaa
+// { type, cards? } — type vastaa games.paskahousu.advice.* -avainta.
+export function getAdvice(g) {
+  if (!g) return null;
+  if (g.phase === 'swap_offer' && g.swapData?.pidx === 0) {
+    const grp = aiSwapChoice(g.swapData.playedCards, g.swapData.eligible);
+    return grp ? { type: 'swap', cards: grp } : { type: 'swapSkip' };
+  }
+  if (g.phase !== 'play' || g.turn !== 0) return null;
+  const p = g.players[0];
+  if (!p) return null;
+  const activePlayers = g.players.length - g.finished.length;
+  const cards = aiCards(p.hand, g.top, g.pile, g.draw.length, 'hard',
+    g.allCards, g.clearedCards, activePlayers, g.rules);
+  if (cards && cards.length) {
+    // Nelosdumppi: täydentää saman arvon neljäksi kasan päälle → kasa siivoutuu
+    let topCount = 0;
+    if (g.pile) for (let i = g.pile.length - 1; i >= 0 && g.pile[i].r === cards[0].r; i--) topCount++;
+    if (topCount + cards.length >= 4) return { type: 'playQuad', cards };
+    if (cards[0].r === '10' || cards[0].r === 'A') return { type: 'playSpecial', cards };
+    return { type: 'play', cards };
+  }
+  if (g.draw.length) return { type: 'knock' };
+  if (g.pile.length) return { type: 'takePile' };
+  return null;
+}
+
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
 import { useT } from '../shared/i18n.jsx';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 export default function Paskahousu({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
@@ -292,6 +332,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
   const [timerLeft,    setTimerLeft]     = useState(null); // yhtäkkinen kuolema -laskuri (sekunteina)
+  const [advice, setAdvice]              = useState(null); // { text, cardIds } | null
 
   const gRef    = useRef(null);
   const swapTmr = useRef(null);
@@ -315,6 +356,19 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     useAIScheduler({ jitter: 300, extraIntervalRefs: [swapTmr, suddenDeathTmr] });
 
   useEffect(() => { gRef.current = G; },         [G]);
+  useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+
+  function askAdvice() {
+    const g = gRef.current;
+    if (!g) return;
+    const a = getAdvice(g);
+    if (!a) return;
+    setAdvice({
+      text: t('games.paskahousu.advice.' + a.type,
+        { cards: a.cards ? a.cards.map(lbl).join(', ') : undefined }),
+      cardIds: a.cards ? a.cards.map(c => c.id) : [],
+    });
+  }
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);
 
   // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + Mestari (hard)
@@ -771,12 +825,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
     if (!g) g = gRef.current;
     if (!g || g.phase !== 'swap_offer') return;
     const { playedCards, eligible } = g.swapData;
-    const minPlayed = Math.min(...playedCards.map(c => c.v));
-    const beneficial = eligible.filter(c => c.v < minPlayed);
-    if (beneficial.length > 0) {
-      const ranked = {};
-      beneficial.forEach(c => { (ranked[c.r] = ranked[c.r] || []).push(c); });
-      const bestGroup = Object.values(ranked).reduce((a, b) => a[0].v <= b[0].v ? a : b);
+    const bestGroup = aiSwapChoice(playedCards, eligible);
+    if (bestGroup) {
       addLog(M.aiSwaps(g.players[pidx].name));
       applySwap(g, bestGroup);
     } else {
@@ -971,6 +1021,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={isMyTurn && !mustSkip} action={t('ui.turn.paskahousu')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 40 : 56, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1126,6 +1177,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
                 return (
                   <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                     selected={isSel} highlight={!isSel}
+                    advice={!isSel && !!advice?.cardIds?.includes(c.id)}
                     justPlaced={jpIds.has(c.id)}
                     onClick={() => toggleCard(c)}
                     backStyle={BACKS[cardBack]}
@@ -1134,6 +1186,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
               })}
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <AdviceButton onClick={askAdvice} />
               <button
                 onClick={() => { const toSwap = selected.length ? selected : G.swapData.eligible; setSel([]); applySwap(gRef.current, toSwap); }}
                 style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 20px', color: '#0d2118', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
@@ -1163,6 +1216,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
               <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
+                advice={!isSel && !!advice?.cardIds?.includes(c.id)}
                 dim={!!dimmed}
                 justPlaced={jpIds.has(c.id)}
                 onClick={(isMyTurn && !mustSkip && playable) ? () => toggleCard(c) : undefined}
@@ -1200,6 +1254,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
             {t('games.paskahousu.ui.takePile', { n: G.pile.length })}
           </button>
         )}
+        {isMyTurn && !mustSkip && <AdviceButton onClick={askAdvice} />}
       </div>
 
       {/* Yhtäkkinen kuolema -laskuri */}

@@ -4,6 +4,10 @@
 // descrições e regras são traduzidas. Muutosloki on lokalisoitu: src/changelogs/pt.js.
 export const pt = {
   ui: {
+    advice: {
+      ask: "Perguntar ao Mestre",
+      from: "Mestre:",
+    },
     rules: { label: "Regras", moreTerms: "Mais termos — Glossário" },
     turn: { yours: "Tua vez —", kultakala: "compra uma carta do baralho ou do descarte", koputus: "compra uma carta do baralho ou do descarte", lapsy: "vira uma carta para o centro", seiska: "joga uma carta ou compra", ristiseiska: "joga uma carta válida ou passa", paskahousu: "joga uma carta, ou compra se não puderes", kasino: "captura, constrói ou descarta uma carta", maijaAttack: "joga cartas do mesmo naipe", maijaDefend: "vence as cartas ou apanha-as", moskaAttack: "joga cartas do mesmo valor", moskaDefend: "vence as cartas ou apanha-as" },
     loading: 'A carregar…',
@@ -88,6 +92,8 @@ export const pt = {
         'Baralho de cartas a duas cores além do de quatro cores (selecionável nas Definições)',
         'Localização (12 idiomas)',
         'Replay: símbolos de xadrez nas anotações das jogadas (! !! ? ?? !? ?!)',
+        "Botão \"Perguntar ao Mestre\" em cinco jogos (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Conselho do Mestre para os jogos multifase (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -207,6 +213,12 @@ export const pt = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Tira ${card} do descarte. Uma carta baixa visível vale a pena.`,
+        drawDeck: "A carta do descarte não te ajuda. Compra do baralho.",
+        swapHere: ({ slot }) => `Troca a carta para a posição ${slot}, vale a pena nesta cadeia.`,
+        stopSwap: "A carta é fraca demais para a cadeia. Deita-a no descarte.",
+      },
       altName: "Golfe de seis cartas",
       desc: 'Jogo de memória: se espreitas, trocas',
       msg: {
@@ -243,6 +255,11 @@ export const pt = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Nada de especial à vista. Vira a carta com calma.",
+        alert: ({ rank, n }) => `Prepara-te! O valor ${rank} já foi visto ${n} vezes.`,
+        predicted: ({ card }) => `A tua próxima carta é ${card} e coincide com o monte central. Prepara-te para bater!`,
+      },
       altName: "Slapjack",
       desc: 'Jogo de reação',
       msg: {
@@ -282,6 +299,13 @@ export const pt = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Joga ${card}. Cartas baixas primeiro, as cartas-porta (6 e 8) só quando fores obrigado.`,
+        playSeven: ({ card }) => `Joga ${card}. Abre um sete no naipe em que tens mais cartas.`,
+        pass: "Nenhuma das tuas cartas serve. Passa.",
+        give: ({ card }) => `Entrega ${card}, é a que está mais longe de ser jogável.`,
+        bonusEnd: "Nenhuma carta serve para o turno bónus. Termina o turno.",
+      },
       altName: "Dominó (cartas)",
       desc: 'Provocação, cartas de penalização e paciência',
       msg: {
@@ -338,6 +362,17 @@ export const pt = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Joga o grupo ${cards}. Várias cartas de uma vez esvaziam a mão mais depressa.`
+          : `Joga ${cards}. Assim guardas os pares e os naipes fortes para depois.`,
+        playSeven: ({ card, suit }) => `Joga ${card} e exige ${suit}, é o naipe que mais tens.`,
+        playAce: ({ card }) => `Joga ${card}. O ás faz os outros comprarem e tu ganhas um turno bónus.`,
+        draw: "Nenhuma das tuas cartas serve. Compra do baralho.",
+        endTurn: "As compras esgotaram-se e nada serve. O turno termina.",
+        aceBonusPlay: ({ cards }) => `Usa o turno bónus: joga ${cards}.`,
+        aceBonusSkip: "Dispensa o turno bónus, agora não compensa.",
+      },
       altName: "Mau-Mau",
       desc: 'Corrida estilo UNO para ficar sem cartas',
       msg: {
@@ -397,6 +432,14 @@ export const pt = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Captura ${targets} com ${card}. Junta pontos: espadas, ases e as cartas especiais.`,
+        captureMokki: ({ card }) => `Captura a mesa toda com ${card}. É uma varridela e vale um ponto extra.`,
+        takeOwnBuild: ({ card }) => `Captura a tua própria construção com ${card}, antes que um adversário a roube.`,
+        stealBuild: ({ card }) => `Rouba a construção do adversário com ${card}. Tiras-lhe uma captura já pronta.`,
+        build: ({ card, value }) => `Constrói o valor ${value} com ${card}. Tens outra carta para a capturar na jogada seguinte.`,
+        trail: ({ card }) => `Deixa ${card} na mesa. Não há captura vantajosa agora, e esta carta é a mais segura para largar.`,
+      },
       altName: "Casino",
       desc: 'Captura a mesa inteira',
       msg: {
@@ -495,6 +538,13 @@ export const pt = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Bate! A tua soma estimada já é suficientemente baixa.",
+        drawDiscard: ({ card }) => `Tira ${card} do descarte. Uma carta barata visível é mais segura do que comprar às cegas.`,
+        drawDeck: "A carta do descarte não te ajuda. Compra do baralho.",
+        swapSlot: ({ slot }) => `Troca a carta comprada para a posição ${slot}, é o que mais baixa a tua soma.`,
+        discardDrawn: "Deita a carta comprada no descarte, não melhora a tua mão.",
+      },
       altName: "Golfe (cartas)",
       desc: 'Jogo de memória com reviravoltas surpresa',
       msg: {
@@ -550,6 +600,12 @@ export const pt = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Joga ${cards}. Ataca no naipe onde tens mais cartas baixas e guarda os trunfos para a defesa.`,
+        attackMaija: ({ cards }) => `Joga ${cards} e livra-te da Maija. Não vence nada, na mão é só um risco de perder.`,
+        beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a vencedora mais baixa, trunfos só quando fores obrigado.`,
+        take: "Não as consegues vencer com proveito. Recolhe as cartas para a mão.",
+      },
       altName: "Burro",
       desc: 'Batida parcial — vitória defensiva. Batida total — atacas.',
       msg: {
@@ -594,6 +650,15 @@ export const pt = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Joga ${cards}. Joga primeiro as mais baixas e guarda o 10, o ás e o dois forte para um aperto.`,
+        playSpecial: ({ cards }) => `Joga ${cards}. Limpa o monte, para começares numa mesa limpa.`,
+        playQuad: ({ cards }) => `Joga ${cards} e completa quatro iguais. O monte desaparece e continuas.`,
+        knock: "Nada na mão serve. Bate e tira uma carta às cegas do baralho.",
+        takePile: "Nada serve e o baralho está vazio, por isso tens de levar o monte.",
+        swap: ({ cards }) => `Troca ${cards} para o monte. É mais baixa do que a jogada há pouco, assim livras-te das cartas mais fracas.`,
+        swapSkip: "Não troques. As tuas cartas da mão são melhores para guardar.",
+      },
       altName: "Presidente",
       desc: 'Quase o paskahousu clássico com seis cartas. 2♦ 2♥ valor 2 · 2♠ 2♣ são duros',
       msg: {
@@ -655,6 +720,14 @@ export const pt = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Ataca com ${cards}. Começa pelas cartas mais baixas que não sejam trunfo e guarda os trunfos para a defesa.`,
+        beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a carta vencedora mais baixa, guarda as altas.`,
+        take: "Não consegues vencer todas as cartas na mesa. Recolhe-as para a mão.",
+        pass: ({ cards }) => `Passa o ataque com ${cards}, e assim livras-te tu mesmo.`,
+        add: ({ card }) => `Joga ${card} pelo lado. O defensor ainda tem cartas para vencer, por isso insiste.`,
+        skipAdd: "Não juntes pelo lado agora. Guarda as cartas para um momento melhor.",
+      },
       altName: "Durak",
       desc: 'Guerra de cartas total: ataca, passa, defende — e não te esqueças de atacar pelo flanco.',
       msg: {

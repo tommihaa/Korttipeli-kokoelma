@@ -2,6 +2,10 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const se = {
   ui: {
+    advice: {
+      ask: "Jeara Meašttiris",
+      from: "Meašttir:",
+    },
     rules: { label: "Njuolggadusat", moreTerms: "Eanet tearpmat — Sátnegirji" },
     turn: { yours: "Du vuorru —", kultakala: "gáso goartta stohkkii dahje bálkestanstohkkii", koputus: "gáso goartta stohkkii dahje bálkestanstohkkii", lapsy: "jorgal goartta gasku", seiska: "speala goartta dahje gáso", ristiseiska: "speala lobálaš goartta dahje passe", paskahousu: "speala goartta, dahje gáso jus it sáhte", kasino: "gáhte, hukse dahje guođe goartta", maijaAttack: "speala seamma šlájá goarttaid", maijaDefend: "vuoitte goarttaid dahje váldde daid", moskaAttack: "speala seamma árvosaš goarttaid", moskaDefend: "vuoitte goarttaid dahje váldde daid" },
     loading: 'Viežžamin…',
@@ -90,6 +94,8 @@ export const se = {
         'Dávjá jearahuvvon gažaldagat (DJG)',
         'Juoge speallu rádnái (liŋka dahje QR-koda)',
         'Prográmma lasiheapmi telefovnna álgomuitui',
+        "\"Jeara Meašttiris\"-boallu viđa spealus (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Meašttira ráva máŋggamuddosaš spealuide (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -209,6 +215,12 @@ export const se = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Váldde ${card} bálkestanstohkosis. Oidnosis smávva goarta gánnáha.`,
+        drawDeck: "Bálkestanstohkosa goarta ii veahket du. Váldde stohkosis.",
+        swapHere: ({ slot }) => `Lonut goartta sadjái ${slot}, dat gánnáha dán ráiddus.`,
+        stopSwap: "Goarta lea beare heittot ráidui. Bálkes dan eret.",
+      },
       altName: 'guđa goartta golfa',
       desc: 'Muitospeallu: jus geahčat, de molssodat',
       msg: {
@@ -245,6 +257,11 @@ export const se = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Ii mihkkege erenoamáš. Jorgal goartta ráfis.",
+        alert: ({ rank, n }) => `Leage gearggus! Árvu ${rank} lea juo oidnojuvvon ${n} geardde.`,
+        predicted: ({ card }) => `Du boahtte goarta lea ${card} ja dat heive guovddáš stohkosii. Ráhkkan spežžat!`,
+      },
       altName: 'Slapjack',
       desc: 'Reakšuvdnaspeallu',
       msg: {
@@ -284,6 +301,13 @@ export const se = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Speala ${card}. Vuos smávva goarttat, verráhat (6 ja 8) easkka bákkus.`,
+        playSeven: ({ card }) => `Speala ${card}. Raba čiežá das gos dus leat eanemus goarttat.`,
+        pass: "Ii oktage goarttastat heive. Passe.",
+        give: ({ card }) => `Atte ${card}, dat lea guhkimusas speallamis.`,
+        bonusEnd: "Ii oktage goarta heive liigevuorrui. Loahpat vuoru.",
+      },
       altName: 'Čiežat (Domino)',
       desc: 'Vahága dahkan, goartapántta ja gierdavašvuohta',
       msg: {
@@ -340,6 +364,17 @@ export const se = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Speala joavkku ${cards}. Máŋga goartta oktanaga gurrejit gieđa jođáneamosit.`
+          : `Speala ${cards}. Nu seastát buoremus goarttaidat maŋŋái.`,
+        playSeven: ({ card, suit }) => `Speala ${card} ja gáibit ${suit}, das dus leat eanemus goarttat.`,
+        playAce: ({ card }) => `Speala ${card}. Ássa bágge earáid váldit goarttaid ja don oaččut liigevuoru.`,
+        draw: "Ii oktage goarttastat heive. Váldde stohkosis.",
+        endTurn: "Válddut leat nohkan iige mihkkege heive. Vuorru nohká.",
+        aceBonusPlay: ({ cards }) => `Geavat liigevuoru: speala ${cards}.`,
+        aceBonusSkip: "Guođe liigevuoru, dat ii gánnát dál.",
+      },
       altName: 'Mau-Mau',
       desc: 'UNO-lágan gilvojohtin goartahisvuhtii',
       msg: {
@@ -399,6 +434,14 @@ export const se = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Fáŋge ${targets} bákttiin ${card}. Čohkke poeaŋggaid: spáđut, ásat ja sierrabáktit.`,
+        captureMokki: ({ card }) => `Fáŋge olles beavddi bákttiin ${card}. Dat lea bartta ja addá liigepoeaŋgga.`,
+        takeOwnBuild: ({ card }) => `Fáŋge iežat huksema bákttiin ${card}, ovdal go vuostebealli suoládit dan.`,
+        stealBuild: ({ card }) => `Suoládit vuostebeali huksema bákttiin ${card}. Válddát sus gárvves fáŋgema eret.`,
+        build: ({ card, value }) => `Hukse árvvu ${value} bákttiin ${card}. Dus lea nubbi báktti mainna fáŋggát dan boahtte vuorus.`,
+        trail: ({ card }) => `Guođe ${card} beavdái. Dál ii leat ávkkálaš fáŋgen, ja dát báktti lea sihkkarumos guođđit.`,
+      },
       altName: 'Kasino',
       desc: 'Fáŋge olles beavddi',
       msg: {
@@ -497,6 +540,13 @@ export const se = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Goalkkut! Du árvvoštallon submi lea juo doarvái unni.",
+        drawDiscard: ({ card }) => `Váldde ${card} bálkestanstohkosis. Oidnosis hálbbes goarta lea sihkkareabbo go čahppes váldin.`,
+        drawDeck: "Bálkestanstohkosa goarta ii veahket du. Váldde stohkosis.",
+        swapSlot: ({ slot }) => `Lonut váldojuvvon goartta sadjái ${slot}, dat unnida submi eanemusat.`,
+        discardDrawn: "Bálkes váldojuvvon goartta eret, dat ii buorit gieđa.",
+      },
       altName: 'golfa (coahkkaleapmi)',
       desc: 'Muitospeallu hirpmástuhtti momeanttaiguin',
       msg: {
@@ -552,6 +602,12 @@ export const se = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Čájet ${cards}. Fallet dan ivnnis gos leat eanemus vuollegaččat ja seaille trumfaid bealuštussii.`,
+        attackMaija: ({ cards }) => `Čájet ${cards} ja beasa Maijas eret. Dat ii vuoitte maidege, gieđas dat lea dušše vuoitáhallan riska.`,
+        beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti riekta, trumfat easkka go bággehallat.`,
+        take: "It sáhte vuoitit daid ávkkiin. Váldde báktiid gihtii.",
+      },
       altName: 'Boares Nieida',
       desc: 'Oassálaš gahččan — hilgunvuoitu. Olles gahččan — fallehat.',
       msg: {
@@ -596,6 +652,15 @@ export const se = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Čájet ${cards}. Čájet unnimusaid ovddimusat ja seaille 10, ása ja garra guokte gáržžes sadjái.`,
+        playSpecial: ({ cards }) => `Čájet ${cards}. Dat čorge dohppuma, nappo álggát čorgat bevddis.`,
+        playQuad: ({ cards }) => `Čájet ${cards} ja deavdde njeallje seammalágán. Dohppun jávká ja don joatkkát.`,
+        knock: "Ii mihkkiige gieđas heive. Cuoppo ja gease čalbmi báktti bákkos.",
+        takePile: "Ii mihkkiige heive ja bákko lea guorus, nappo fertet váldit dohppuma.",
+        swap: ({ cards }) => `Molsso ${cards} dohppumii. Dat lea vuollelis go easka čájehuvvon, nappo beasat geahnohit báktiin eret.`,
+        swapSkip: "Ale molso. Gieđabáktiid lea buoret doallat.",
+      },
       altName: 'Palace',
       desc: 'Measta dat árbevirolaš paskahousu guđain goarttain. 2♦ 2♥ árvu 2 · 2♠ 2♣ garra',
       msg: {
@@ -657,6 +722,14 @@ export const se = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Fallet bákttiin ${cards}. Álgge unnimus ii-trumfabákttiiguin ja seaille trumfaid bealuštussii.`,
+        beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti báktti riekta, seaille stuoribáid.`,
+        take: "It sáhte vuoitit buot bevddebáktiid. Váldde daid gihtii.",
+        pass: ({ cards }) => `Sádde fallehusa viidáseappot bákttiin ${cards}, de beasat ieš eret.`,
+        add: ({ card }) => `Čájet ${card} bealde. Bealuštusas leat ain báktit maid vuoitit, nappo deatte.`,
+        skipAdd: "Ale lasit bealde dál. Seaille báktiid buoret bottui.",
+      },
       altName: 'Durak',
       desc: 'Ollislaš goartasoahti: fallehat, sirdde, bealušta ja muitte čuohpat bálddas.',
       msg: {

@@ -4,6 +4,10 @@
 // nur Beschreibungen und Regeln werden übersetzt. Muutosloki on lokalisoitu: src/changelogs/de.js.
 export const de = {
   ui: {
+    advice: {
+      ask: "Meister fragen",
+      from: "Meister:",
+    },
     rules: { label: "Regeln", moreTerms: "Mehr Begriffe — Glossar" },
     turn: { yours: "Du bist dran —", kultakala: "zieh eine Karte vom Stapel oder Ablagestapel", koputus: "zieh eine Karte vom Stapel oder Ablagestapel", lapsy: "dreh eine Karte in die Mitte", seiska: "spiel eine Karte oder zieh", ristiseiska: "spiel eine gültige Karte oder passe", paskahousu: "spiel eine Karte, oder zieh, wenn du nicht kannst", kasino: "fangen, bauen oder eine Karte ablegen", maijaAttack: "spiel Karten derselben Farbe", maijaDefend: "schlag die Karten oder nimm sie auf", moskaAttack: "spiel Karten desselben Werts", moskaDefend: "schlag die Karten oder nimm sie auf" },
     loading: 'Lädt…',
@@ -88,6 +92,8 @@ export const de = {
         'Zweifarbiges Kartenspiel neben dem vierfarbigen (in den Einstellungen wählbar)',
         'Sprachversionen (12 Sprachen)',
         'Replay: Schachsymbole bei Zugnotationen (! !! ? ?? !? ?!)',
+        "\"Meister fragen\"-Knopf in fünf Spielen (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Meister-Rat für die mehrphasigen Spiele (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -207,6 +213,12 @@ export const de = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Nimm ${card} vom Ablagestapel. Eine sichtbare niedrige Karte lohnt sich.`,
+        drawDeck: "Die Ablagekarte hilft dir nicht. Ziehe vom Stapel.",
+        swapHere: ({ slot }) => `Tausche die Karte auf Platz ${slot}, das lohnt sich in dieser Kette.`,
+        stopSwap: "Die Karte ist zu schlecht für die Kette. Wirf sie auf den Ablagestapel.",
+      },
       altName: "Sechs-Karten-Golf",
       desc: 'Ein Memory-Spiel — schaust du, tauschst du',
       msg: {
@@ -243,6 +255,11 @@ export const de = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Nichts Besonderes in Sicht. Drehe deine Karte in Ruhe um.",
+        alert: ({ rank, n }) => `Sei bereit! Der Wert ${rank} wurde schon ${n} Mal gesehen.`,
+        predicted: ({ card }) => `Deine nächste Karte ist ${card} und sie passt zum Mittelstapel. Mach dich bereit zum Klatschen!`,
+      },
       altName: "Slapjack",
       desc: 'Ein Reaktionsspiel',
       msg: {
@@ -282,6 +299,13 @@ export const de = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Spiele ${card}. Niedrige Karten zuerst, Torkarten (6 und 8) nur im Notfall.`,
+        playSeven: ({ card }) => `Spiele ${card}. Eröffne eine Sieben in der Farbe, von der du am meisten hast.`,
+        pass: "Keine deiner Karten passt. Passe.",
+        give: ({ card }) => `Gib ${card}, sie ist am weitesten vom Spielbaren entfernt.`,
+        bonusEnd: "Keine Karte passt für den Bonuszug. Beende den Zug.",
+      },
       altName: "Domino (Siebener)",
       desc: 'Schabernack, Strafkarten und Geduld',
       msg: {
@@ -338,6 +362,17 @@ export const de = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Spiele die Gruppe ${cards}. Mehrere Karten auf einmal leeren die Hand am schnellsten.`
+          : `Spiele ${cards}. Das spart deine Paare und stärksten Farben für später.`,
+        playSeven: ({ card, suit }) => `Spiele ${card} und fordere ${suit}, davon hast du am meisten.`,
+        playAce: ({ card }) => `Spiele ${card}. Das Ass lässt die anderen ziehen und du bekommst einen Bonuszug.`,
+        draw: "Keine deiner Karten passt. Ziehe vom Stapel.",
+        endTurn: "Die Züge sind aufgebraucht und nichts passt. Der Zug endet.",
+        aceBonusPlay: ({ cards }) => `Nutze den Bonuszug: spiele ${cards}.`,
+        aceBonusSkip: "Lass den Bonuszug aus, er lohnt sich jetzt nicht.",
+      },
       altName: "Mau-Mau",
       desc: 'Ein UNO-artiges Wettrennen, die Hand zu leeren',
       msg: {
@@ -397,6 +432,14 @@ export const de = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Erobere ${targets} mit ${card}. Sammle Punkte: Pik, Asse und die Sonderkarten.`,
+        captureMokki: ({ card }) => `Erobere den ganzen Tisch mit ${card}. Das ist ein Fegen und bringt einen Extrapunkt.`,
+        takeOwnBuild: ({ card }) => `Erobere deinen eigenen Aufbau mit ${card}, bevor ein Gegner ihn stiehlt.`,
+        stealBuild: ({ card }) => `Stiehl den Aufbau des Gegners mit ${card}. Das nimmt ihm eine fertige Eroberung weg.`,
+        build: ({ card, value }) => `Baue Wert ${value} mit ${card}. Du hast eine weitere Karte, um ihn nächste Runde zu erobern.`,
+        trail: ({ card }) => `Lege ${card} auf den Tisch. Es gibt jetzt keine lohnende Eroberung, und diese Karte ist am sichersten abzulegen.`,
+      },
       altName: "Cassino",
       desc: 'Erobere den ganzen Tisch',
       msg: {
@@ -495,6 +538,13 @@ export const de = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Klopfe! Deine geschätzte Summe ist schon niedrig genug.",
+        drawDiscard: ({ card }) => `Nimm ${card} vom Ablagestapel. Eine sichtbare billige Karte schlägt ein blindes Ziehen.`,
+        drawDeck: "Die Ablagekarte hilft dir nicht. Ziehe vom Stapel.",
+        swapSlot: ({ slot }) => `Tausche die gezogene Karte auf Platz ${slot}, das senkt deine Summe am meisten.`,
+        discardDrawn: "Wirf die gezogene Karte ab, sie verbessert deine Hand nicht.",
+      },
       altName: "Polnischer Poker",
       desc: 'Ein Memory-Spiel mit überraschenden Wendungen',
       msg: {
@@ -550,6 +600,12 @@ export const de = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Spiele ${cards}. Greife in der Farbe an, in der du am meisten Niedriges hast, und spare Trümpfe für die Verteidigung.`,
+        attackMaija: ({ cards }) => `Spiele ${cards} und werde die Maija los. Sie schlägt nichts, auf der Hand ist sie nur ein Verlustrisiko.`,
+        beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, Trümpfe erst wenn nötig.`,
+        take: "Du kannst sie nicht vorteilhaft schlagen. Nimm die Karten auf die Hand.",
+      },
       altName: "Schwarzer Peter (finnische Variante)",
       desc: 'Teilschlag — Abwehrsieg. Vollschlag — du greifst an.',
       msg: {
@@ -594,6 +650,15 @@ export const de = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Spiele ${cards}. Spiele die kleinsten zuerst und spare 10, Ass und die harte Zwei für eine Klemme.`,
+        playSpecial: ({ cards }) => `Spiele ${cards}. Das räumt den Stapel ab, du beginnst also an einem sauberen Tisch.`,
+        playQuad: ({ cards }) => `Spiele ${cards} und vervollständige vier Gleiche. Der Stapel verschwindet und du machst weiter.`,
+        knock: "Nichts auf der Hand passt. Klopfe und ziehe eine blinde Karte vom Stapel.",
+        takePile: "Nichts passt und der Stapel ist leer, also musst du den Haufen nehmen.",
+        swap: ({ cards }) => `Tausche ${cards} in den Haufen. Sie ist niedriger als das eben Gespielte, so wirst du deine schwächeren Karten los.`,
+        swapSkip: "Tausche nicht. Deine Handkarten behältst du besser.",
+      },
       altName: "Präsident",
       desc: 'Fast das klassische Paskahousu mit sechs Karten. 2♦ 2♥ Wert 2 · 2♠ 2♣ hart',
       msg: {
@@ -655,6 +720,14 @@ export const de = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Greife mit ${cards} an. Beginne mit deinen kleinsten Nicht-Trümpfen und spare Trümpfe für die Verteidigung.`,
+        beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, behalte die großen.`,
+        take: "Du kannst nicht alle Karten auf dem Tisch schlagen. Nimm sie auf die Hand.",
+        pass: ({ cards }) => `Schiebe den Angriff mit ${cards} weiter, dann bist du selbst aus dem Schneider.`,
+        add: ({ card }) => `Lege ${card} von der Seite. Der Verteidiger hat noch Karten zum Schlagen, also leg nach.`,
+        skipAdd: "Lege jetzt nicht von der Seite. Spare deine Karten für einen besseren Moment.",
+      },
       altName: "Durak",
       desc: 'Totaler Kartenkrieg: angreifen, weitergeben, verteidigen — und vergiss nicht, von der Seite zu schlagen.',
       msg: {

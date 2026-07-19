@@ -2,6 +2,10 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const la = {
   ui: {
+    advice: {
+      ask: "Magistrum roga",
+      from: "Magister:",
+    },
     rules: { label: "Regulae", moreTerms: "Plura verba — Glossarium" },
     turn: { yours: "Tua vices —", kultakala: "carte e pila vel acervo abiecto trahe", koputus: "carte e pila vel acervo abiecto trahe", lapsy: "cartam in medium verte", seiska: "cartam pone vel trahe", ristiseiska: "cartam licitam pone vel transi", paskahousu: "cartam pone, vel trahe si non potes", kasino: "cape, aedifica vel cartam relinque", maijaAttack: "cartas eiusdem coloris pone", maijaDefend: "cartas vince vel eas tolle", moskaAttack: "cartas eiusdem valoris pone", moskaDefend: "cartas vince vel eas tolle" },
     loading: 'Oneratur…',
@@ -90,6 +94,8 @@ export const la = {
         'Quaestiones saepe rogatae (FAQ)',
         'Communica lusum cum amico (nexus vel codex QR)',
         'Additio applicationis ad initialem telephoni',
+        "Bulla \"Magistrum roga\" in quinque ludis (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Consilium Magistri ludis multiplicium graduum (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -209,6 +215,12 @@ export const la = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Sume ${card} ex acervo abiecto. Charta parva conspicua digna est.`,
+        drawDeck: "Charta abiecta te non iuvat. Trahe e fasce.",
+        swapHere: ({ slot }) => `Muta chartam in locum ${slot}, in hac catena expedit.`,
+        stopSwap: "Charta catenae nimis mala est. Abice eam in acervum.",
+      },
       altName: 'Golf sex chartarum',
       desc: 'Lusus memoriae: si spectas, mutas',
       msg: {
@@ -245,6 +257,11 @@ export const la = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Nihil singulare in conspectu. Verte chartam tranquille.",
+        alert: ({ rank, n }) => `Para te! Valor ${rank} iam ${n} vicibus visus est.`,
+        predicted: ({ card }) => `Charta tua proxima est ${card} et acervo medio congruit. Para te ad feriendum!`,
+      },
       altName: 'Slapjack',
       desc: 'Lusus reactionis',
       msg: {
@@ -284,6 +301,13 @@ export const la = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Lude ${card}. Primum parvae chartae, portae (6 et 8) tantum coactus.`,
+        playSeven: ({ card }) => `Lude ${card}. Aperi septenarium in colore cuius plurimas chartas habes.`,
+        pass: "Nulla chartarum tuarum convenit. Cede vicem.",
+        give: ({ card }) => `Da ${card}, ea longissime a ludendo abest.`,
+        bonusEnd: "Nulla charta praemio convenit. Fini vicem.",
+      },
       altName: 'Domino chartarum',
       desc: 'Vexatio, pignora chartarum et patientia',
       msg: {
@@ -340,6 +364,17 @@ export const la = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Lude gregem ${cards}. Plures chartae simul manum celerrime vacuant.`
+          : `Lude ${cards}. Sic paria et colores validissimos in posterum servas.`,
+        playSeven: ({ card, suit }) => `Lude ${card} et posce ${suit}, cuius plurimum habes.`,
+        playAce: ({ card }) => `Lude ${card}. As ceteros trahere cogit et tibi datur iterum ludendi copia.`,
+        draw: "Nulla chartarum tuarum convenit. Trahe e fasce.",
+        endTurn: "Tractus consumpti sunt nec quidquam convenit. Vicis finitur.",
+        aceBonusPlay: ({ cards }) => `Utere praemio: lude ${cards}.`,
+        aceBonusSkip: "Praemium omitte, nunc non expedit.",
+      },
       altName: 'Mau-Mau',
       desc: 'Cursus genere UNO ad nullitatem chartarum',
       msg: {
@@ -399,6 +434,14 @@ export const la = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Cape ${targets} charta ${card}. Puncta collige: picas, asses et chartas speciales.`,
+        captureMokki: ({ card }) => `Cape totam mensam charta ${card}. Casa est et punctum additum dat.`,
+        takeOwnBuild: ({ card }) => `Cape structuram tuam charta ${card}, priusquam adversarius eam furetur.`,
+        stealBuild: ({ card }) => `Furare structuram adversarii charta ${card}. Captionem paratam ei aufers.`,
+        build: ({ card, value }) => `Strue valorem ${value} charta ${card}. Alteram chartam habes qua eam proximo tractu capias.`,
+        trail: ({ card }) => `Relinque ${card} in mensa. Nulla captio utilis nunc est, et haec charta tutissime deponitur.`,
+      },
       altName: 'Cassino',
       desc: 'Cape totam mensam',
       msg: {
@@ -497,6 +540,13 @@ export const la = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Pulsa! Summa tua aestimata iam satis parva est.",
+        drawDiscard: ({ card }) => `Sume ${card} ex acervo abiecto. Charta vilis conspicua tutior est quam tractus caecus.`,
+        drawDeck: "Charta abiecta te non iuvat. Trahe e fasce.",
+        swapSlot: ({ slot }) => `Muta chartam tractam in locum ${slot}, ita summa maxime minuitur.`,
+        discardDrawn: "Abice chartam tractam, manum non meliorem facit.",
+      },
       altName: 'Golf (Pulsatio)',
       desc: 'Lusus memoriae cum momentis inopinatis',
       msg: {
@@ -552,6 +602,12 @@ export const la = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Lude ${cards}. Oppugna in colore ubi plurimas chartas humiles habes, et triumphos defensioni serva.`,
+        attackMaija: ({ cards }) => `Lude ${cards} et Maija libera te. Nihil vincit, in manu tantum periculum amissionis est.`,
+        beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima vincens sufficit, triumphi tantum coactus.`,
+        take: "Non potes eas cum lucro vincere. Sume chartas in manum.",
+      },
       altName: 'Vetula',
       desc: 'Strages partialis — victoria defensiva. Strages plena — oppugnas.',
       msg: {
@@ -596,6 +652,15 @@ export const la = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Lude ${cards}. Lude minimas primum et serva X, as et binarium fortem in angustias.`,
+        playSpecial: ({ cards }) => `Lude ${cards}. Acervum purgat, ergo a mensa munda incipis.`,
+        playQuad: ({ cards }) => `Lude ${cards} et quattuor paria comple. Acervus evanescit et pergis.`,
+        knock: "Nihil in manu convenit. Pulsa et chartam caecam e pila trahe.",
+        takePile: "Nihil convenit et pila vacua est, ergo acervum sumere debes.",
+        swap: ({ cards }) => `Muta ${cards} in acervum. Minor est quam modo lusa, ita chartas infirmiores deponis.`,
+        swapSkip: "Noli mutare. Chartas manus tuae melius servas.",
+      },
       altName: 'Praeses',
       desc: 'Fere ille traditus paskahousu sex chartis. 2♦ 2♥ valor 2 · 2♠ 2♣ dura',
       msg: {
@@ -657,6 +722,14 @@ export const la = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Oppugna charta ${cards}. Incipe minimis chartis non triumphalibus et triumphos defensioni serva.`,
+        beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima charta vincens sufficit, magnas serva.`,
+        take: "Non potes omnes chartas in mensa vincere. Sume eas in manum.",
+        pass: ({ cards }) => `Transfer impetum charta ${cards}, et ipse evades.`,
+        add: ({ card }) => `Lude ${card} a latere. Defensor adhuc chartas ad vincendum habet, ergo insta.`,
+        skipAdd: "Noli nunc a latere addere. Serva chartas in tempus melius.",
+      },
       altName: 'Durak',
       desc: 'Totalis chartarum bellum: oppugna, transfer, defende et memento a latere ferire.',
       msg: {

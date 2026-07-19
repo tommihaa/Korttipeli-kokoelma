@@ -4,6 +4,10 @@
 // kirjeldused ja reeglid. Muutosloki on lokalisoitu: src/changelogs/et.js.
 export const et = {
   ui: {
+    advice: {
+      ask: "Küsi Meistrilt",
+      from: "Meister:",
+    },
     rules: { label: "Reeglid", moreTerms: "Rohkem termineid — Sõnastik" },
     turn: { yours: "Sinu käik —", kultakala: "tõmba kaart pakist või viskepakist", koputus: "tõmba kaart pakist või viskepakist", lapsy: "pööra kaart keskele", seiska: "käi kaart või tõmba", ristiseiska: "käi lubatud kaart või passi", paskahousu: "käi kaart või tõmba, kui ei saa", kasino: "püüa, ehita või jäta kaart", maijaAttack: "käi sama masti kaarte", maijaDefend: "löö kaardid või võta need", moskaAttack: "käi sama väärtusega kaarte", moskaDefend: "löö kaardid või võta need" },
     loading: 'Laadimine…',
@@ -88,6 +92,8 @@ export const et = {
         'Kahevärviline kaardipakk neljavärvilise kõrval (valitav Seadetest)',
         'Keeleversioonid (12 keelt)',
         'Replay: malesümbolid käigumärgetes (! !! ? ?? !? ?!)',
+        "Nupp \"Küsi Meistrilt\" viies mängus (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Meistri nõuanne mitmefaasilistele mängudele (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -207,6 +213,12 @@ export const et = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Võta ${card} äraviskepakist. Nähtav väike kaart tasub võtta.`,
+        drawDeck: "Äraviskepaki kaart sind ei aita. Võta pakist.",
+        swapHere: ({ slot }) => `Vaheta kaart kohale ${slot}, selles ahelas tasub see ära.`,
+        stopSwap: "Kaart on ahela jaoks liiga kehv. Viska see äraviskepakki.",
+      },
       altName: "Kuue kaardi golf",
       desc: 'Mälumäng, kui vaatad, siis vahetad',
       msg: {
@@ -243,6 +255,11 @@ export const et = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Midagi erilist pole teada. Keera kaart rahulikult.",
+        alert: ({ rank, n }) => `Ole valmis! Väärtust ${rank} on nähtud juba ${n} korda.`,
+        predicted: ({ card }) => `Su järgmine kaart on ${card} ja see sobib keskmise hunnikuga. Valmistu laksama!`,
+      },
       altName: "Slapjack",
       desc: 'Reaktsioonimäng',
       msg: {
@@ -282,6 +299,13 @@ export const et = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Mängi ${card}. Väikesed kaardid enne, väravakaardid (6 ja 8) alles sunni korral.`,
+        playSeven: ({ card }) => `Mängi ${card}. Ava seitse mastis, kus sul on kõige rohkem kaarte.`,
+        pass: "Ükski su kaart ei sobi. Passi.",
+        give: ({ card }) => `Anna ${card}, see on mängitavusest kõige kaugemal.`,
+        bonusEnd: "Ükski kaart ei sobi boonuskäiguks. Lõpeta käik.",
+      },
       altName: "Domino (kaardimäng)",
       desc: 'Pahandused, pandikaardid ja kannatlikkus',
       msg: {
@@ -338,6 +362,17 @@ export const et = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Mängi grupp ${cards}. Mitu kaarti korraga tühjendab kätt kõige kiiremini.`
+          : `Mängi ${cards}. Nii hoiad paarid ja tugevaimad mastid hilisemaks.`,
+        playSeven: ({ card, suit }) => `Mängi ${card} ja nõua masti ${suit}, seda on sul kõige rohkem.`,
+        playAce: ({ card }) => `Mängi ${card}. Äss paneb teised kaarte võtma ja sina saad boonuskäigu.`,
+        draw: "Ükski su kaart ei sobi. Võta pakist.",
+        endTurn: "Võtmised on otsas ja miski ei sobi. Käik lõpeb.",
+        aceBonusPlay: ({ cards }) => `Kasuta boonuskäiku: mängi ${cards}.`,
+        aceBonusSkip: "Jäta boonuskäik vahele, praegu ei tasu see ära.",
+      },
       altName: "Mau-Mau",
       desc: 'UNO-tüüpi võidujooks kaartidest vabanemiseks',
       msg: {
@@ -397,6 +432,14 @@ export const et = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Haara ${targets} kaardiga ${card}. Kogu punkte: potid, ässad ja erikaardid.`,
+        captureMokki: ({ card }) => `Haara kogu laud kaardiga ${card}. See on mökki ja annab lisapunkti.`,
+        takeOwnBuild: ({ card }) => `Haara oma ehitis kaardiga ${card}, enne kui vastane selle varastab.`,
+        stealBuild: ({ card }) => `Varasta vastase ehitis kaardiga ${card}. Võtad talt valmis haaramise ära.`,
+        build: ({ card, value }) => `Ehita väärtus ${value} kaardiga ${card}. Sul on teine kaart, millega see järgmisel käigul haarata.`,
+        trail: ({ card }) => `Jäta ${card} lauale. Kasulikku haaramist praegu pole ja see kaart on kõige turvalisem maha jätta.`,
+      },
       altName: "Kasiino",
       desc: 'Haara kogu laud',
       msg: {
@@ -495,6 +538,13 @@ export const et = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Koputa! Su hinnanguline summa on juba piisavalt väike.",
+        drawDiscard: ({ card }) => `Võta ${card} äraviskepakist. Nähtav odav kaart on kindlam kui pime võtmine.`,
+        drawDeck: "Äraviskepaki kaart sind ei aita. Võta pakist.",
+        swapSlot: ({ slot }) => `Vaheta võetud kaart kohale ${slot}, see vähendab su summat kõige rohkem.`,
+        discardDrawn: "Viska võetud kaart äraviskepakki, see ei paranda su kätt.",
+      },
       altName: "Golf (kaardimäng)",
       desc: 'Mälumäng üllatusmomentidega',
       msg: {
@@ -550,6 +600,12 @@ export const et = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Mängi ${cards}. Ründa masti, kus sul on kõige rohkem madalat, ja hoia trumbid kaitseks.`,
+        attackMaija: ({ cards }) => `Mängi ${cards} ja vabane Maijast. See ei löö midagi, käes on ta ainult kaotusrisk.`,
+        beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev piisab, trumbid alles sunni korral.`,
+        take: "Sa ei suuda neid kasulikult lüüa. Võta kaardid kätte.",
+      },
       altName: "Must Peeter",
       desc: 'Osaline maharaiumine — kaitsevõit. Täismahalöök — ründad.',
       msg: {
@@ -594,6 +650,15 @@ export const et = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Mängi ${cards}. Mängi väiksemad esimesena ja hoia 10, äss ja kõva kaks kitsa koha jaoks.`,
+        playSpecial: ({ cards }) => `Mängi ${cards}. See puhastab kuhja, nii saad alustada puhtalt laualt.`,
+        playQuad: ({ cards }) => `Mängi ${cards} ja täienda neli ühesugust. Kuhi kaob ja sa jätkad.`,
+        knock: "Käes ei sobi midagi. Koputa ja tõmba pakist pime kaart.",
+        takePile: "Miski ei sobi ja pakk on tühi, nii et pead kuhja võtma.",
+        swap: ({ cards }) => `Vaheta ${cards} kuhja. See on madalam kui äsja mängitu, nii vabaned nõrgematest kaartidest.`,
+        swapSkip: "Ära vaheta. Käes olevaid kaarte tasub pigem hoida.",
+      },
       altName: "President",
       desc: 'Peaaegu see traditsiooniline paskahousu kuue kaardiga. 2♦ 2♥ väärtus 2 · 2♠ 2♣ kõvad',
       msg: {
@@ -655,6 +720,14 @@ export const et = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Ründa kaardiga ${cards}. Alusta väiksematest mittetrumpidest ja hoia trumbid kaitseks.`,
+        beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev kaart piisab, hoia suured alles.`,
+        take: "Sa ei suuda kõiki laual olevaid kaarte lüüa. Võta need kätte.",
+        pass: ({ cards }) => `Lükka rünnak edasi kaardiga ${cards}, nii pääsed ise puhtalt.`,
+        add: ({ card }) => `Mängi ${card} küljelt. Kaitsjal on veel kaarte lüüa, nii et suru peale.`,
+        skipAdd: "Ära lisa praegu küljelt. Hoia kaardid parema hetke jaoks.",
+      },
       altName: "Durakk",
       desc: 'Totaalne kaardisõda: ründa, edasta, kaitse ja pea meeles külje pealt lüüa.',
       msg: {

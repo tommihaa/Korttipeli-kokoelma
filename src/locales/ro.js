@@ -2,6 +2,10 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const ro = {
   ui: {
+    advice: {
+      ask: "Întreabă Maestrul",
+      from: "Maestrul:",
+    },
     rules: { label: "Reguli", moreTerms: "Mai mulți termeni — Glosar" },
     turn: { yours: "Este rândul tău —", kultakala: "trage o carte din pachet sau din teancul de descărcare", koputus: "trage o carte din pachet sau din teancul de descărcare", lapsy: "întoarce o carte în centru", seiska: "joacă o carte sau trage", ristiseiska: "joacă o carte validă sau pasează", paskahousu: "joacă o carte sau trage dacă nu poți", kasino: "capturează, construiește sau lasă o carte", maijaAttack: "joacă cărți de aceeași culoare", maijaDefend: "bate cărțile sau ia-le", moskaAttack: "joacă cărți de aceeași valoare", moskaDefend: "bate cărțile sau ia-le" },
     loading: 'Se încarcă…',
@@ -90,6 +94,8 @@ export const ro = {
         'Întrebări frecvente (FAQ)',
         'Distribuie jocul unui prieten (link sau cod QR)',
         'Adăugarea aplicației pe ecranul de pornire al telefonului',
+        "Buton \"Întreabă Maestrul\" în cinci jocuri (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Sfatul Maestrului pentru jocurile cu mai multe faze (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -209,6 +215,12 @@ export const ro = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Ia ${card} din teancul de aruncate. O carte mică vizibilă merită luată.`,
+        drawDeck: "Cartea din teancul de aruncate nu te ajută. Trage din pachet.",
+        swapHere: ({ slot }) => `Schimbă cartea pe locul ${slot}, merită în acest lanț.`,
+        stopSwap: "Cartea e prea slabă pentru lanț. Arunc-o în teanc.",
+      },
       altName: 'Golf (șase cărți)',
       desc: 'Joc de memorie: dacă te uiți, schimbi',
       msg: {
@@ -245,6 +257,11 @@ export const ro = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Nimic deosebit la orizont. Întoarce cartea liniștit.",
+        alert: ({ rank, n }) => `Fii gata! Valoarea ${rank} a fost văzută deja de ${n} ori.`,
+        predicted: ({ card }) => `Următoarea ta carte este ${card} și se potrivește cu teancul din mijloc. Pregătește-te să plesnești!`,
+      },
       altName: 'Slapjack',
       desc: 'Joc de reacție',
       msg: {
@@ -284,6 +301,13 @@ export const ro = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Joacă ${card}. Întâi cărțile mici, cărțile-poartă (6 și 8) doar la nevoie.`,
+        playSeven: ({ card }) => `Joacă ${card}. Deschide un șapte în culoarea în care ai cele mai multe cărți.`,
+        pass: "Nicio carte de-a ta nu se potrivește. Pasează.",
+        give: ({ card }) => `Dă ${card}, e cea mai departe de a fi jucabilă.`,
+        bonusEnd: "Nicio carte nu se potrivește turei bonus. Încheie tura.",
+      },
       altName: 'Domino (cărți)',
       desc: 'Ciudă, gajuri de cărți și răbdare',
       msg: {
@@ -340,6 +364,17 @@ export const ro = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Joacă grupul ${cards}. Mai multe cărți deodată golesc mâna cel mai repede.`
+          : `Joacă ${cards}. Așa îți păstrezi perechile și culorile tari pentru mai târziu.`,
+        playSeven: ({ card, suit }) => `Joacă ${card} și cere ${suit}, din ea ai cele mai multe.`,
+        playAce: ({ card }) => `Joacă ${card}. Asul îi pune pe ceilalți să tragă, iar tu primești o tură bonus.`,
+        draw: "Nicio carte de-a ta nu se potrivește. Trage din pachet.",
+        endTurn: "Tragerile s-au terminat și nimic nu se potrivește. Tura se încheie.",
+        aceBonusPlay: ({ cards }) => `Folosește tura bonus: joacă ${cards}.`,
+        aceBonusSkip: "Sari peste tura bonus, acum nu merită.",
+      },
       altName: 'Septică',
       desc: 'Cursă în stil UNO până la zero cărți',
       msg: {
@@ -399,6 +434,14 @@ export const ro = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Capturează ${targets} cu ${card}. Adună puncte: pică, așii și cărțile speciale.`,
+        captureMokki: ({ card }) => `Capturează toată masa cu ${card}. Este o mătură și aduce un punct în plus.`,
+        takeOwnBuild: ({ card }) => `Capturează-ți propria construcție cu ${card}, înainte ca un adversar să o fure.`,
+        stealBuild: ({ card }) => `Fură construcția adversarului cu ${card}. Îi iei o capturare gata făcută.`,
+        build: ({ card, value }) => `Construiește valoarea ${value} cu ${card}. Ai altă carte cu care o capturezi la tura următoare.`,
+        trail: ({ card }) => `Lasă ${card} pe masă. Acum nu e nicio capturare avantajoasă, iar această carte e cea mai sigură de lăsat.`,
+      },
       altName: 'Cassino',
       desc: 'Capturează toată masa',
       msg: {
@@ -497,6 +540,13 @@ export const ro = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Bate! Suma ta estimată e deja destul de mică.",
+        drawDiscard: ({ card }) => `Ia ${card} din teancul de aruncate. O carte ieftină vizibilă e mai sigură decât o tragere oarbă.`,
+        drawDeck: "Cartea din teancul de aruncate nu te ajută. Trage din pachet.",
+        swapSlot: ({ slot }) => `Schimbă cartea trasă pe locul ${slot}, îți scade suma cel mai mult.`,
+        discardDrawn: "Aruncă respectiva carte trasă, nu îți îmbunătățește mâna.",
+      },
       altName: 'Golf (Ciocănit)',
       desc: 'Joc de memorie cu momente de surpriză',
       msg: {
@@ -552,6 +602,12 @@ export const ro = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Joacă ${cards}. Atacă în culoarea unde ai cele mai multe cărți mici și păstrează atuurile pentru apărare.`,
+        attackMaija: ({ cards }) => `Joacă ${cards} și scapă de Maija. Nu bate nimic, în mână e doar un risc de pierdere.`,
+        beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică câștigătoare, atuurile doar când ești silit.`,
+        take: "Nu le poți bate cu folos. Ia cărțile în mână.",
+      },
       altName: 'Baba',
       desc: 'Doborâre parțială — victorie defensivă. Doborâre completă — ataci.',
       msg: {
@@ -596,6 +652,15 @@ export const ro = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Joacă ${cards}. Joacă întâi cele mai mici și păstrează 10, asul și doiul tare pentru o strâmtoare.`,
+        playSpecial: ({ cards }) => `Joacă ${cards}. Curăță grămada, așa că pornești de la o masă curată.`,
+        playQuad: ({ cards }) => `Joacă ${cards} și completează patru la fel. Grămada dispare și continui.`,
+        knock: "Nimic din mână nu se potrivește. Bate și trage o carte pe nevăzute din pachet.",
+        takePile: "Nimic nu se potrivește și pachetul e gol, așa că trebuie să iei grămada.",
+        swap: ({ cards }) => `Schimbă ${cards} în grămadă. Este mai mică decât ce s-a jucat, așa scapi de cărțile mai slabe.`,
+        swapSkip: "Nu schimba. Cărțile din mână e mai bine să le păstrezi.",
+      },
       altName: 'Președinte',
       desc: 'Aproape acel paskahousu tradițional cu șase cărți. 2♦ 2♥ valoare 2 · 2♠ 2♣ tari',
       msg: {
@@ -657,6 +722,14 @@ export const ro = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Atacă cu ${cards}. Începe cu cele mai mici cărți fără atu și păstrează atuurile pentru apărare.`,
+        beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică carte câștigătoare, păstrează-le pe cele mari.`,
+        take: "Nu poți bate toate cărțile de pe masă. Ia-le în mână.",
+        pass: ({ cards }) => `Pasează atacul mai departe cu ${cards}, și scapi tu însuți.`,
+        add: ({ card }) => `Joacă ${card} din lateral. Apărătorul mai are cărți de bătut, așa că insistă.`,
+        skipAdd: "Nu adăuga acum din lateral. Păstrează cărțile pentru un moment mai bun.",
+      },
       altName: 'Durak',
       desc: 'Război total de cărți: atacă, mută, apără și nu uita să lovești din lateral.',
       msg: {

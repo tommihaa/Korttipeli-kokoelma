@@ -13,6 +13,10 @@ const plural = (n, one, few, many) => {
 
 export const pl = {
   ui: {
+    advice: {
+      ask: "Zapytaj Mistrza",
+      from: "Mistrz:",
+    },
     rules: { label: "Zasady", moreTerms: "Więcej terminów — Słowniczek" },
     turn: { yours: "Twój ruch —", kultakala: "dobierz kartę z talii lub stosu odrzuconych", koputus: "dobierz kartę z talii lub stosu odrzuconych", lapsy: "odwróć kartę na środek", seiska: "zagraj kartę lub dobierz", ristiseiska: "zagraj dozwoloną kartę lub spasuj", paskahousu: "zagraj kartę lub dobierz, jeśli nie możesz", kasino: "zbierz, zbuduj lub odłóż kartę", maijaAttack: "zagraj karty w tym samym kolorze", maijaDefend: "pobij karty lub je weź", moskaAttack: "zagraj karty o tej samej wartości", moskaDefend: "pobij karty lub je weź" },
     loading: 'Ładowanie…',
@@ -97,6 +101,8 @@ export const pl = {
         'Dwukolorowa talia obok czterokolorowej (do wyboru w Ustawieniach)',
         'Lokalizacja (12 języków)',
         'Powtórka: szachowe symbole w adnotacjach ruchów (! !! ? ?? !? ?!)',
+        "Przycisk \"Zapytaj Mistrza\" w pięciu grach (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Rada Mistrza dla gier wielofazowych (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -216,6 +222,12 @@ export const pl = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Weź ${card} ze stosu odrzuconych. Widoczną niską kartę warto wziąć.`,
+        drawDeck: "Karta z odrzuconych ci nie pomoże. Dobierz z talii.",
+        swapHere: ({ slot }) => `Wymień kartę na miejsce ${slot}, w tym łańcuchu to się opłaca.`,
+        stopSwap: "Karta jest za słaba na łańcuch. Odrzuć ją na stos.",
+      },
       altName: "Golf sześciokartowy",
       desc: 'Gra pamięciowa — jak zerkniesz, to zmieniasz',
       msg: {
@@ -252,6 +264,11 @@ export const pl = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Nic szczególnego w zasięgu. Spokojnie odwróć kartę.",
+        alert: ({ rank, n }) => `Bądź w gotowości! Wartość ${rank} widziano już ${n} razy.`,
+        predicted: ({ card }) => `Twoja następna karta to ${card} i pasuje do środkowej kupki. Szykuj się do klepnięcia!`,
+      },
       altName: "Slapjack",
       desc: 'Gra na refleks',
       msg: {
@@ -291,6 +308,13 @@ export const pl = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Zagraj ${card}. Najpierw niskie karty, karty-bramki (6 i 8) tylko z konieczności.`,
+        playSeven: ({ card }) => `Zagraj ${card}. Otwórz siódemkę w kolorze, którego masz najwięcej.`,
+        pass: "Żadna z twoich kart nie pasuje. Spasuj.",
+        give: ({ card }) => `Oddaj ${card}, jest najdalej od zagrania.`,
+        bonusEnd: "Żadna karta nie pasuje do dodatkowego ruchu. Zakończ ruch.",
+      },
       altName: "Siódemki",
       desc: 'Złośliwości, karty karne i cierpliwość',
       msg: {
@@ -347,6 +371,17 @@ export const pl = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Zagraj grupę ${cards}. Kilka kart naraz najszybciej opróżnia rękę.`
+          : `Zagraj ${cards}. Tak zachowasz pary i najmocniejsze kolory na później.`,
+        playSeven: ({ card, suit }) => `Zagraj ${card} i zażądaj koloru ${suit}, tego masz najwięcej.`,
+        playAce: ({ card }) => `Zagraj ${card}. As zmusza innych do dobierania, a ty dostajesz dodatkowy ruch.`,
+        draw: "Żadna z twoich kart nie pasuje. Dobierz z talii.",
+        endTurn: "Dobrania wyczerpane i nic nie pasuje. Ruch się kończy.",
+        aceBonusPlay: ({ cards }) => `Wykorzystaj dodatkowy ruch: zagraj ${cards}.`,
+        aceBonusSkip: "Odpuść dodatkowy ruch, teraz się nie opłaca.",
+      },
       altName: "Makao",
       desc: 'Wyścig do pustej ręki w stylu UNO',
       msg: {
@@ -406,6 +441,14 @@ export const pl = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Zgarnij ${targets} kartą ${card}. Zbieraj punkty: piki, asy i karty specjalne.`,
+        captureMokki: ({ card }) => `Zgarnij cały stół kartą ${card}. To zamiatka i daje dodatkowy punkt.`,
+        takeOwnBuild: ({ card }) => `Zgarnij własną budowlę kartą ${card}, zanim przeciwnik ją ukradnie.`,
+        stealBuild: ({ card }) => `Ukradnij budowlę przeciwnika kartą ${card}. Zabierasz mu gotowe zgarnięcie.`,
+        build: ({ card, value }) => `Zbuduj wartość ${value} kartą ${card}. Masz drugą kartę, którą zgarniesz ją w następnej turze.`,
+        trail: ({ card }) => `Zostaw ${card} na stole. Nie ma teraz opłacalnego zgarnięcia, a ta karta jest najbezpieczniejsza do odłożenia.`,
+      },
       altName: "Kasyno",
       desc: 'Zgarnij cały stół',
       msg: {
@@ -504,6 +547,13 @@ export const pl = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Zapukaj! Twoja szacowana suma jest już wystarczająco niska.",
+        drawDiscard: ({ card }) => `Weź ${card} ze stosu odrzuconych. Widoczna tania karta jest pewniejsza niż dobieranie w ciemno.`,
+        drawDeck: "Karta z odrzuconych ci nie pomoże. Dobierz z talii.",
+        swapSlot: ({ slot }) => `Wymień dobraną kartę na miejsce ${slot}, to najbardziej obniży twoją sumę.`,
+        discardDrawn: "Odrzuć dobraną kartę, nie poprawia twojej ręki.",
+      },
       altName: "Golf (Polish Poker)",
       desc: 'Gra pamięciowa z elementem zaskoczenia',
       msg: {
@@ -559,6 +609,12 @@ export const pl = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Zagraj ${cards}. Atakuj w kolorze, w którym masz najwięcej niskich, a atuty zachowaj do obrony.`,
+        attackMaija: ({ cards }) => `Zagraj ${cards} i pozbądź się Maiji. Niczego nie bije, w ręce to tylko ryzyko przegranej.`,
+        beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca, atuty dopiero gdy musisz.`,
+        take: "Nie pobijesz ich z zyskiem. Weź karty do ręki.",
+      },
       altName: "Piotruś",
       desc: 'Częściowe zbicie — zwycięstwo obronne. Pełne zbicie — atakujesz.',
       msg: {
@@ -603,6 +659,15 @@ export const pl = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Zagraj ${cards}. Graj najpierw najniższe, a 10, asa i mocną dwójkę zachowaj na trudną chwilę.`,
+        playSpecial: ({ cards }) => `Zagraj ${cards}. To czyści stos, więc zaczynasz od czystego stołu.`,
+        playQuad: ({ cards }) => `Zagraj ${cards} i dopełnij cztery takie same. Stos znika, a ty grasz dalej.`,
+        knock: "Nic w ręce nie pasuje. Zapukaj i dobierz kartę w ciemno z talii.",
+        takePile: "Nic nie pasuje, a talia jest pusta, więc musisz wziąć stos.",
+        swap: ({ cards }) => `Wymień ${cards} do stosu. Jest niższa od właśnie zagranej, więc pozbywasz się słabszych kart.`,
+        swapSkip: "Nie wymieniaj. Lepiej zachować karty z ręki.",
+      },
       altName: "Świnia",
       desc: 'Niemal klasyczny paskahousu z sześcioma kartami. 2♦ 2♥ wartość 2 · 2♠ 2♣ mocne',
       msg: {
@@ -664,6 +729,14 @@ export const pl = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Atakuj kartą ${cards}. Zacznij od najniższych kart nieatutowych, a atuty zachowaj do obrony.`,
+        beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca karta, zachowaj wysokie.`,
+        take: "Nie pobijesz wszystkich kart na stole. Weź je do ręki.",
+        pass: ({ cards }) => `Przekaż atak dalej kartą ${cards}, a sam się wywiniesz.`,
+        add: ({ card }) => `Dołóż ${card} z boku. Obrońca wciąż ma czym bić, więc naciskaj.`,
+        skipAdd: "Nie dokładaj teraz z boku. Zachowaj karty na lepszą chwilę.",
+      },
       altName: "Dureń",
       desc: 'Totalna wojna kart: atakuj, przekazuj, broń się i nie zapomnij uderzyć z boku.',
       msg: {

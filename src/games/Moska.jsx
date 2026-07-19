@@ -171,8 +171,69 @@ function aiPickAddCard(addable, hand, ts) {
   return unpaired.length ? unpaired[0] : sorted[0];
 }
 
+// Puolustajan passaus: pienin sopiva ei-valttikortti jonka arvo on jo pöydässä.
+// Portitus (ei beginner, passChain-raja) tehdään kutsupaikassa; tämä valitsee vain kortin.
+function aiPickPass(table, hand, ts) {
+  const atkRanks = new Set(table.map(t => t.atk.r));
+  const passCards = hand.filter(c => atkRanks.has(c.r) && c.s !== ts);
+  return passCards.sort((a, b) => MV(a) - MV(b))[0] || null;
+}
+
+// Mestarin neuvo Herolle (pelaaja 0): sama hard-tason logiikka kuin botilla, vain
+// julkista tietoa (oma käsi, pöytä, poistuneet kortit removed). Palauttaa
+// { type, cards?/card?, target? } — type vastaa games.moska.advice.* -avainta.
+export function getAdvice(g, removed) {
+  if (!g) return null;
+  const { phase, primaryAtk, defender, players, ts, table } = g;
+
+  if (phase === 'attack' && primaryAtk === 0) {
+    const cards = aiPickAttackSN(players[0], ts, removed || new Set());
+    return cards.length ? { type: 'attack', cards } : null;
+  }
+
+  if (phase === 'defend' && defender === 0) {
+    const p = players[0];
+    const activeCount = players.filter(pl => pl.rank === null).length;
+    const noBeats = !table.some(t => t.def);
+    // Passaus ensin — samat ehdot kuin UI:n canPassNow ja hard-botin passausportti
+    const passableRanks = new Set(table.map(t => t.atk.r));
+    const allSameRank = table.length > 0 && passableRanks.size === 1;
+    const canPass = noBeats && allSameRank && !g.passChain.includes(defender)
+      && activeCount > 2 && g.passChain.length < activeCount - 2;
+    if (canPass) {
+      const passCard = aiPickPass(table, p.hand, ts);
+      if (passCard) return { type: 'pass', cards: [passCard] };
+    }
+    // Yritä kaataa kaikki (hard-botin ahne jako, pienin voittava per pöytäkortti)
+    const unbeaten = table.filter(t => !t.def);
+    let hand = [...p.hand];
+    const beats = [];
+    for (const slot of unbeaten) {
+      const dc = aiPickDefense(slot.atk, hand, ts);
+      if (!dc) return { type: 'take' };
+      beats.push({ slot, dc });
+      hand = hand.filter(c => c.id !== dc.id);
+    }
+    if (!beats.length) return null;
+    const first = beats[0];
+    return { type: 'beat', card: first.dc, target: first.slot.atk };
+  }
+
+  if (phase === 'add' && g.addQueue?.[0] === 0) {
+    const addable = getAddable(g, 0);
+    if (!addable.length) return { type: 'skipAdd' };
+    const def = players[defender];
+    // Hard-lisäyskynnys (runAI: def.hand.length >= 2 && table.length < 5)
+    if (!(def.hand.length >= 2 && table.length < 5)) return { type: 'skipAdd' };
+    return { type: 'add', card: aiPickAddCard(addable, players[0].hand, ts) };
+  }
+
+  return null;
+}
+
 // ── Komponentti ───────────────────────────────────────────────
 import { useT, tr } from '../shared/i18n.jsx';
+import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 export default function Moska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
@@ -204,6 +265,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null);
+  const [advice, setAdvice]               = useState(null); // { text, cardIds, targetId } | null
 
   const removedRef = useRef(new Set()); // korttien rs-avaimet ("A♠") jotka ovat poistuneet pelistä
 
@@ -224,6 +286,25 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
+  useEffect(() => { setAdvice(null); }, [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+
+  function askAdvice() {
+    const g = gRef.current;
+    if (!g) return;
+    const a = getAdvice(g, removedRef.current);
+    if (!a) return;
+    const card = a.card || a.cards?.[0];
+    const params = {
+      cards: a.cards ? a.cards.map(lbl).join(', ') : undefined,
+      card:  card ? lbl(card) : undefined,
+      target: a.target ? lbl(a.target) : undefined,
+    };
+    setAdvice({
+      text: t('games.moska.advice.' + a.type, params),
+      cardIds: a.card ? [a.card.id] : (a.cards ? a.cards.map(c => c.id) : []),
+      targetId: a.target ? a.target.id : null,
+    });
+  }
   // Auto-advance kun showNextBtn=false ja kierros odottaa jatkoa
   useEffect(() => {
     if (awaitingPlayerContinue && !showNextBtnRef.current) {
@@ -701,10 +782,8 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       const noBeats = !table.some(t => t.def);
       const lvl = botLevelsRef.current?.[defender] ?? aiLevelRef.current;
       if (lvl !== 'beginner' && noBeats && g.passChain.length < players.filter(pl => pl.rank === null).length - 2) {
-        const atkRanks = new Set(table.map(t => t.atk.r));
-        const passCards = p.hand.filter(c => atkRanks.has(c.r) && c.s !== ts);
         // Pienin sopiva ei-valttikortti — säästää isot kortit
-        const passCard = passCards.sort((a, b) => MV(a) - MV(b))[0];
+        const passCard = aiPickPass(table, p.hand, ts);
         if (passCard && players.filter(pl => pl.rank === null).length > 2) {
           aiTmr.current = tm(() => {
             doPass(gRef.current, [passCard]);
@@ -1033,6 +1112,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={myTurn} action={t(isMyDef ? 'ui.turn.moskaDefend' : 'ui.turn.moskaAttack')} />
+      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
 
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1134,6 +1214,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
               <div key={si} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
                 <Card card={slot.atk} small                   justPlaced={justPlacedIds.has(slot.atk.id)}
                   highlight={isMyDef && !slot.def && !isTargeted}
+                  advice={advice?.targetId === slot.atk.id}
                   selected={isTargeted}
                   dim={cantTarget}
                   onClick={isMyDef && !slot.def ? () => humanSelectTarget(slot) : undefined}
@@ -1201,6 +1282,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
             return (
               <Card key={c.id} card={c} large={!isMobile} small={isMobile}                 selected={!!(isAtkSel || isPassSel || isAddSel)}
                 highlight={!!hlght}
+                advice={!isAtkSel && !isPassSel && !isAddSel && !!advice?.cardIds?.includes(c.id)}
                 dim={!!dimmed}
                 onClick={
                   isMyAtk ? () => humanToggleAtk(c)
@@ -1288,6 +1370,8 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
             </button>
           </>
         )}
+
+        {!allBots && myTurn && !awaitingPlayerContinue && <AdviceButton onClick={askAdvice} />}
 
         {/* Seuraavaan kierrokseen -nappi */}
         {awaitingPlayerContinue && showNextBtn && (

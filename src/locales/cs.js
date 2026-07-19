@@ -2,6 +2,10 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const cs = {
   ui: {
+    advice: {
+      ask: "Zeptat se Mistra",
+      from: "Mistr:",
+    },
     rules: { label: "Pravidla", moreTerms: "Více pojmů — Slovníček" },
     turn: { yours: "Jsi na řadě —", kultakala: "lízni si kartu z balíčku nebo odhazovacího balíčku", koputus: "lízni si kartu z balíčku nebo odhazovacího balíčku", lapsy: "otoč kartu doprostřed", seiska: "zahraj kartu nebo si lízni", ristiseiska: "zahraj povolenou kartu nebo pas", paskahousu: "zahraj kartu, nebo si lízni, když nemůžeš", kasino: "seber, postav nebo odhoď kartu", maijaAttack: "zahraj karty stejné barvy", maijaDefend: "přebij karty nebo si je vezmi", moskaAttack: "zahraj karty stejné hodnoty", moskaDefend: "přebij karty nebo si je vezmi" },
     loading: 'Načítání…',
@@ -90,6 +94,8 @@ export const cs = {
         'Často kladené otázky (FAQ)',
         'Sdílej hru s kamarádem (odkaz nebo QR kód)',
         'Přidání aplikace na domovskou obrazovku telefonu',
+        "Tlačítko \"Zeptat se Mistra\" v pěti hrách (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
+        "Mistrova rada pro vícefázové hry (Moska, Paskahousu, Kasino, Maija)",
       ],
     },
 
@@ -209,6 +215,12 @@ export const cs = {
 
   games: {
     kultakala: {
+      advice: {
+        drawDiscard: ({ card }) => `Vezmi ${card} z odhazovacího balíčku. Viditelná nízká karta stojí za to.`,
+        drawDeck: "Karta z odhazovacího balíčku ti nepomůže. Lízni si z balíčku.",
+        swapHere: ({ slot }) => `Vyměň kartu na místo ${slot}, v tomhle řetězu se to vyplatí.`,
+        stopSwap: "Karta je na řetěz moc špatná. Odhoď ji.",
+      },
       altName: 'Golf na šest karet',
       desc: 'Paměťová hra: když se podíváš, vyměníš',
       msg: {
@@ -245,6 +257,11 @@ export const cs = {
       ],
     },
     lapsy: {
+      advice: {
+        flip: "Nic zvláštního na obzoru. V klidu otoč kartu.",
+        alert: ({ rank, n }) => `Buď připraven! Hodnota ${rank} už byla vidět ${n}krát.`,
+        predicted: ({ card }) => `Tvá další karta je ${card} a shoduje se s prostředním balíčkem. Připrav se plácnout!`,
+      },
       altName: 'Slapjack',
       desc: 'Reakční hra',
       msg: {
@@ -284,6 +301,13 @@ export const cs = {
       ],
     },
     ristiseiska: {
+      advice: {
+        play: ({ card }) => `Zahraj ${card}. Nejdřív nízké karty, brány (6 a 8) jen z donucení.`,
+        playSeven: ({ card }) => `Zahraj ${card}. Otevři sedmičku v barvě, které máš nejvíc.`,
+        pass: "Žádná z tvých karet nesedí. Pasuj.",
+        give: ({ card }) => `Odevzdej ${card}, je nejdál od zahrání.`,
+        bonusEnd: "Žádná karta se nehodí na bonusový tah. Ukonči tah.",
+      },
       altName: 'Sedmy (Domino)',
       desc: 'Schválnosti, zástavy karet a trpělivost',
       msg: {
@@ -340,6 +364,17 @@ export const cs = {
       ],
     },
     seiska: {
+      advice: {
+        play: ({ cards, n }) => n > 1
+          ? `Zahraj skupinu ${cards}. Více karet najednou vyprázdní ruku nejrychleji.`
+          : `Zahraj ${cards}. Uchováš si tak páry a nejsilnější barvy na později.`,
+        playSeven: ({ card, suit }) => `Zahraj ${card} a žádej ${suit}, té barvy máš nejvíc.`,
+        playAce: ({ card }) => `Zahraj ${card}. Eso donutí ostatní líznout a ty dostaneš bonusový tah.`,
+        draw: "Žádná z tvých karet nesedí. Lízni si z balíčku.",
+        endTurn: "Lízání jsou vyčerpaná a nic nesedí. Tah končí.",
+        aceBonusPlay: ({ cards }) => `Využij bonusový tah: zahraj ${cards}.`,
+        aceBonusSkip: "Bonusový tah vynech, teď se nevyplatí.",
+      },
       altName: 'Prší',
       desc: 'Závod ve stylu UNO k prázdné ruce',
       msg: {
@@ -399,6 +434,14 @@ export const cs = {
       ],
     },
     kasino: {
+      advice: {
+        capture: ({ card, targets }) => `Seber ${targets} kartou ${card}. Sbírej body: piky, esa a speciální karty.`,
+        captureMokki: ({ card }) => `Seber celý stůl kartou ${card}. Je to domeček a dá bod navíc.`,
+        takeOwnBuild: ({ card }) => `Seber vlastní stavbu kartou ${card}, dřív než ti ji soupeř ukradne.`,
+        stealBuild: ({ card }) => `Ukradni soupeřovu stavbu kartou ${card}. Vezmeš mu hotové sebrání.`,
+        build: ({ card, value }) => `Postav hodnotu ${value} kartou ${card}. Máš další kartu, kterou ji příští tah sebereš.`,
+        trail: ({ card }) => `Nech ${card} na stole. Výhodné sebrání teď není a tuhle kartu je nejbezpečnější odložit.`,
+      },
       altName: 'Cassino',
       desc: 'Seber celý stůl',
       msg: {
@@ -497,6 +540,13 @@ export const cs = {
       },
     },
     koputus: {
+      advice: {
+        knock: "Zaklepej! Tvůj odhadovaný součet už je dost nízký.",
+        drawDiscard: ({ card }) => `Vezmi ${card} z odhazovacího balíčku. Viditelná levná karta je jistější než líznutí naslepo.`,
+        drawDeck: "Karta z odhazovacího balíčku ti nepomůže. Lízni si z balíčku.",
+        swapSlot: ({ slot }) => `Vyměň líznutou kartu na místo ${slot}, nejvíc to sníží tvůj součet.`,
+        discardDrawn: "Odhoď líznutou kartu, ruku ti nevylepší.",
+      },
       altName: 'Golf (Ťukaná)',
       desc: 'Paměťová hra s prvky překvapení',
       msg: {
@@ -552,6 +602,12 @@ export const cs = {
       ],
     },
     maija: {
+      advice: {
+        attack: ({ cards }) => `Zahraj ${cards}. Útoč v barvě, kde máš nejvíc nízkých, a trumfy si nech na obranu.`,
+        attackMaija: ({ cards }) => `Zahraj ${cards} a zbav se Maiji. Nic nepřebije, v ruce je jen riziko prohry.`,
+        beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná, trumfy až když musíš.`,
+        take: "Nedokážeš je přebít se ziskem. Vezmi si karty do ruky.",
+      },
       altName: 'Černý Petr',
       desc: 'Částečné shození — obranná výhra. Plné shození — útočíš.',
       msg: {
@@ -596,6 +652,15 @@ export const cs = {
       ],
     },
     paskahousu: {
+      advice: {
+        play: ({ cards }) => `Zahraj ${cards}. Nejdřív hraj nejnižší a 10, eso a silnou dvojku si nech na svízel.`,
+        playSpecial: ({ cards }) => `Zahraj ${cards}. Vyčistí to hromádku, takže začínáš u čistého stolu.`,
+        playQuad: ({ cards }) => `Zahraj ${cards} a doplň čtyři stejné. Hromádka zmizí a ty pokračuješ.`,
+        knock: "Nic v ruce se nehodí. Zaklepej a lízni si naslepo kartu z balíčku.",
+        takePile: "Nic se nehodí a balíček je prázdný, takže musíš vzít hromádku.",
+        swap: ({ cards }) => `Vyměň ${cards} do hromádky. Je nižší než právě zahraná, tak se zbavíš slabších karet.`,
+        swapSkip: "Neměň. Karty v ruce si radši nech.",
+      },
       altName: 'Prezident',
       desc: 'Skoro ten tradiční paskahousu se šesti kartami. 2♦ 2♥ hodnota 2 · 2♠ 2♣ tvrdé',
       msg: {
@@ -657,6 +722,14 @@ export const cs = {
       ],
     },
     moska: {
+      advice: {
+        attack: ({ cards }) => `Zaútoč kartou ${cards}. Začni nejnižšími netrumfovými kartami a trumfy si nech na obranu.`,
+        beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná karta, vysoké si nech.`,
+        take: "Nedokážeš přebít všechny karty na stole. Vezmi si je do ruky.",
+        pass: ({ cards }) => `Pošli útok dál kartou ${cards}, a sám se z toho dostaneš.`,
+        add: ({ card }) => `Přidej ${card} ze strany. Obránce má stále čím bít, tak přitlač.`,
+        skipAdd: "Teď nepřidávej ze strany. Nech si karty na lepší chvíli.",
+      },
       altName: 'Durak',
       desc: 'Totální karetní válka: útoč, přesuň, braň a nezapomeň udeřit z boku.',
       msg: {
