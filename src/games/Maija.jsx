@@ -151,7 +151,11 @@ export function getAdvice(g, phase, table) {
     const defHandSize = g.players[g.defenderIdx].hand.length;
     const toPlay = maijaPickAttack(hand, g.trump, defHandSize, g.discard, g.deck.length === 0, 'hard');
     if (!toPlay.length) return null;
-    return { type: toPlay.some(isMaija) ? 'attackMaija' : 'attack', cards: toPlay };
+    if (toPlay.some(isMaija)) return { type: 'attackMaija', cards: toPlay };
+    // Valttihyökkäys (pakka tyhjä, valtteja vähissä muualla) on oma neuvonsa: silloin
+    // valtteja EI säästetä puolustukseen, joten perusneuvon lupaus ei päde.
+    const allTrumps = toPlay.every(c => c.s === g.trump);
+    return { type: allTrumps ? 'attackTrumps' : 'attack', cards: toPlay };
   }
   if (phase === 'defending' && g.defenderIdx === 0) {
     if (!table) return null;
@@ -186,7 +190,7 @@ function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, 
 
   const borderCol = selected ? C.blue : advice ? C.botMode : mjBorder ? C.maija : highlight ? C.gold : back.border;
   const shadow = selected ? '0 0 14px rgba(91,168,212,0.6)' :
-                 advice ? '0 0 14px rgba(192,132,252,0.65)' :
+                 advice ? '0 0 0 3px #c084fc, 0 0 26px 6px rgba(192,132,252,0.85)' :
                  highlight ? '0 0 14px rgba(201,168,76,0.6)' :
                  mjBorder ? '0 0 10px rgba(139,26,26,0.5)' :
                  h && clickable ? '0 6px 16px rgba(0,0,0,0.5)' : '0 2px 6px rgba(0,0,0,0.3)';
@@ -198,9 +202,10 @@ function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, 
         background:C.card, border:`2px solid ${borderCol}`,
         display:'flex', alignItems:'center', justifyContent:'center',
         cursor:clickable ? 'pointer' : 'default',
-        transform:`${h && clickable ? 'translateY(-5px) scale(1.06)' : 'none'} ${selected ? 'translateY(-8px)' : ''}`,
+        transform:`${h && clickable ? 'translateY(-5px) scale(1.06)' : advice && !selected ? 'translateY(-6px) scale(1.04)' : 'none'} ${selected ? 'translateY(-8px)' : ''}`,
         transition:'transform 0.15s,box-shadow 0.15s',
         boxShadow:shadow, opacity:dim ? 0.35 : 1,
+        animation: advice ? 'advicePulse 1.4s ease-in-out infinite' : undefined,
       }}>
       <div style={{ textAlign:'center', fontFamily:'Georgia,serif', lineHeight:1.1,
         pointerEvents:'none', color:mjBorder ? C.maija : SUIT_COLOR[card.s] }}>
@@ -865,14 +870,17 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
             const wrongSuit = isHumanAttacker && selectedCards.length > 0 && c.s !== selectedCards[0].s;
             const canBeatTarget = isHumanDefender && selDefTargetRow && canBeat(selDefTargetRow.att, c, G.trump) && !isMaija(c);
             const defDimmed = isHumanDefender && selDefTargetRow && !canBeatTarget;
+            const isAdv     = !isSel && !!advice?.cardIds?.includes(c.id);
+            // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
+            const dimmed    = advice?.cardIds?.length ? !isAdv : (wrongSuit || !!defDimmed);
             return (
               <div key={c.id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
                 <Card card={c}
                   small={isMobile}
                   selected={isSel}
                   highlight={!!canBeatTarget}
-                  advice={!isSel && !!advice?.cardIds?.includes(c.id)}
-                  dim={wrongSuit || !!defDimmed}
+                  advice={isAdv}
+                  dim={!!dimmed}
                   onClick={isHumanAttacker ? () => humanToggleCard(c)
                     : (isHumanDefender && selDefTargetRow) ? () => humanBeatWithCard(c)
                     : undefined}

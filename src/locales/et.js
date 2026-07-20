@@ -217,6 +217,7 @@ export const et = {
         drawDiscard: ({ card }) => `Võta ${card} äraviskepakist. Nähtav väike kaart tasub võtta.`,
         drawDeck: "Äraviskepaki kaart sind ei aita. Võta pakist.",
         swapHere: ({ slot }) => `Vaheta kaart kohale ${slot}, selles ahelas tasub see ära.`,
+        swapForced: ({ slot }) => `Vaheta kaart kohale ${slot}. Võtsid kaardi äraviskepakist, seega vahetus on kohustuslik.`,
         stopSwap: "Kaart on ahela jaoks liiga kehv. Viska see äraviskepakki.",
       },
       altName: "Kuue kaardi golf",
@@ -365,7 +366,8 @@ export const et = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Mängi grupp ${cards}. Mitu kaarti korraga tühjendab kätt kõige kiiremini.`
-          : `Mängi ${cards}. Nii hoiad paarid ja tugevaimad mastid hilisemaks.`,
+          : `Mängi ${cards}.`,
+        playSavePair: ({ cards }) => `Mängi ${cards}. Nii hoiad paarid.`,
         playSeven: ({ card, suit }) => `Mängi ${card} ja nõua masti ${suit}, seda on sul kõige rohkem.`,
         playAce: ({ card }) => `Mängi ${card}. Äss paneb teised kaarte võtma ja sina saad boonuskäigu.`,
         draw: "Ükski su kaart ei sobi. Võta pakist.",
@@ -435,7 +437,8 @@ export const et = {
       advice: {
         capture: ({ card, targets }) => `Haara ${targets} kaardiga ${card}. Kogu punkte: potid, ässad ja erikaardid.`,
         captureMokki: ({ card }) => `Haara kogu laud kaardiga ${card}. See on mökki ja annab lisapunkti.`,
-        takeOwnBuild: ({ card }) => `Haara oma ehitis kaardiga ${card}, enne kui vastane selle varastab.`,
+        takeOwnBuild: ({ card }) => `Haara oma ehitis kaardiga ${card}. Vastasel võib olla kaart, millega ta selle varastab.`,
+        takeOwnBuildSafe: ({ card }) => `Haara oma ehitis kaardiga ${card}. Keegi ei saa seda enam varastada, seega punktid on kindlad.`,
         stealBuild: ({ card }) => `Varasta vastase ehitis kaardiga ${card}. Võtad talt valmis haaramise ära.`,
         build: ({ card, value }) => `Ehita väärtus ${value} kaardiga ${card}. Sul on teine kaart, millega see järgmisel käigul haarata.`,
         trail: ({ card }) => `Jäta ${card} lauale. Kasulikku haaramist praegu pole ja see kaart on kõige turvalisem maha jätta.`,
@@ -542,7 +545,7 @@ export const et = {
         knock: "Koputa! Su hinnanguline summa on juba piisavalt väike.",
         drawDiscard: ({ card }) => `Võta ${card} äraviskepakist. Nähtav odav kaart on kindlam kui pime võtmine.`,
         drawDeck: "Äraviskepaki kaart sind ei aita. Võta pakist.",
-        swapSlot: ({ slot }) => `Vaheta võetud kaart kohale ${slot}, see vähendab su summat kõige rohkem.`,
+        swapSlot: "Vaheta võetud kaart esiletõstetud kaardi vastu, see vähendab su summat kõige rohkem.",
         discardDrawn: "Viska võetud kaart äraviskepakki, see ei paranda su kätt.",
       },
       altName: "Golf (kaardimäng)",
@@ -602,6 +605,7 @@ export const et = {
     maija: {
       advice: {
         attack: ({ cards }) => `Mängi ${cards}. Ründa masti, kus sul on kõige rohkem madalat, ja hoia trumbid kaitseks.`,
+        attackTrumps: ({ cards }) => `Mängi trumbid ${cards}. Nüüd ründad nendega, ära hoia neid kaitseks.`,
         attackMaija: ({ cards }) => `Mängi ${cards} ja vabane Maijast. See ei löö midagi, käes on ta ainult kaotusrisk.`,
         beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev piisab, trumbid alles sunni korral.`,
         take: "Sa ei suuda neid kasulikult lüüa. Võta kaardid kätte.",
@@ -727,6 +731,7 @@ export const et = {
         pass: ({ cards }) => `Lükka rünnak edasi kaardiga ${cards}, nii pääsed ise puhtalt.`,
         add: ({ card }) => `Mängi ${card} küljelt. Kaitsjal on veel kaarte lüüa, nii et suru peale.`,
         skipAdd: "Ära lisa praegu küljelt. Hoia kaardid parema hetke jaoks.",
+        noAdd: "Sul pole ühtegi kaarti, mida kõrvalt juurde panna. Lase käigul jätkuda.",
       },
       altName: "Durakk",
       desc: 'Totaalne kaardisõda: ründa, edasta, kaitse ja pea meeles külje pealt lüüa.',

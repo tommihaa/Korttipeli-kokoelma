@@ -220,6 +220,7 @@ export const hu = {
         drawDiscard: ({ card }) => `Vedd fel a dobópakliból: ${card}. A látható kis lapot érdemes elvenni.`,
         drawDeck: "A dobópakli lapja nem segít. Húzz a pakliból.",
         swapHere: ({ slot }) => `Cseréld a lapot a(z) ${slot}. helyre, ebben a láncban megéri.`,
+        swapForced: ({ slot }) => `Cseréld a lapot a(z) ${slot}. helyre. A dobópakliból húztál, így a csere kötelező.`,
         stopSwap: "A lap túl gyenge a lánchoz. Dobd a dobópakliba.",
       },
       altName: 'Golf (hat lap)',
@@ -368,7 +369,8 @@ export const hu = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Játszd ki a(z) ${cards} csoportot. Több lap egyszerre üríti leggyorsabban a kezed.`
-          : `Játszd ki: ${cards}. Így megőrzöd a párjaidat és a legerősebb színeidet későbbre.`,
+          : `Játszd ki: ${cards}.`,
+        playSavePair: ({ cards }) => `Játszd ki: ${cards}. Így megőrzöd a párjaidat.`,
         playSeven: ({ card, suit }) => `Játszd ki: ${card}, és kérj ${suit} színt, abból van a legtöbb.`,
         playAce: ({ card }) => `Játszd ki: ${card}. Az ász húzásra kényszeríti a többieket, te pedig bónuszkört kapsz.`,
         draw: "Egyik lapod sem jó. Húzz a pakliból.",
@@ -438,7 +440,8 @@ export const hu = {
       advice: {
         capture: ({ card, targets }) => `Söpörd be ${targets} a(z) ${card} lappal. Gyűjts pontot: pikkek, ászok és a speciális lapok.`,
         captureMokki: ({ card }) => `Söpörd be az egész asztalt a(z) ${card} lappal. Ez söprés, és egy pluszpontot ér.`,
-        takeOwnBuild: ({ card }) => `Söpörd be a saját építményedet a(z) ${card} lappal, mielőtt egy ellenfél ellopná.`,
+        takeOwnBuild: ({ card }) => `Söpörd be a saját építményedet a(z) ${card} lappal. Az ellenfélnél lehet lap, amivel ellopja.`,
+        takeOwnBuildSafe: ({ card }) => `Söpörd be a saját építményedet a(z) ${card} lappal. Már senki nem tudja ellopni, így a pontok biztosak.`,
         stealBuild: ({ card }) => `Lopd el az ellenfél építményét a(z) ${card} lappal. Egy kész begyűjtést veszel el tőle.`,
         build: ({ card, value }) => `Építs ${value} értéket a(z) ${card} lappal. Van másik lapod, amivel a következő körben besöpröd.`,
         trail: ({ card }) => `Hagyd az asztalon a(z) ${card} lapot. Most nincs kifizetődő begyűjtés, és ezt a lapot a legbiztonságosabb letenni.`,
@@ -545,7 +548,7 @@ export const hu = {
         knock: "Kopogj! A becsült összeged már elég alacsony.",
         drawDiscard: ({ card }) => `Vedd fel a dobópakliból: ${card}. A látható olcsó lap biztosabb, mint a vakhúzás.`,
         drawDeck: "A dobópakli lapja nem segít. Húzz a pakliból.",
-        swapSlot: ({ slot }) => `Cseréld a húzott lapot a(z) ${slot}. helyre, az csökkenti legjobban az összeged.`,
+        swapSlot: "Cseréld a húzott lapot a kiemelt lapra, az csökkenti legjobban az összeged.",
         discardDrawn: "Dobd el a húzott lapot, nem javít a kezeden.",
       },
       altName: 'Golf (kopogós)',
@@ -605,6 +608,7 @@ export const hu = {
     maija: {
       advice: {
         attack: ({ cards }) => `Játszd ki ${cards}. Abban a színben támadj, amelyikből a legtöbb alacsony lapod van, az adukat tartsd védekezésre.`,
+        attackTrumps: ({ cards }) => `Játszd ki az adu lapokat: ${cards}. Most ezekkel támadsz, ne tartogasd őket védekezésre.`,
         attackMaija: ({ cards }) => `Játszd ki ${cards} és szabadulj meg a Maijától. Semmit sem üt, a kézben csak vesztési kockázat.`,
         beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő is elég, adut csak kényszerből.`,
         take: "Nem tudod őket haszonnal ütni. Vedd fel a lapokat a kezedbe.",
@@ -730,6 +734,7 @@ export const hu = {
         pass: ({ cards }) => `Told tovább a támadást a(z) ${cards} lappal, és magad megúszod.`,
         add: ({ card }) => `Tegyél be oldalról ${card} lapot. A védőnek még van mivel ütnie, úgyhogy nyomd rá.`,
         skipAdd: "Most ne tegyél be oldalról. Tartsd meg a lapjaidat jobb pillanatra.",
+        noAdd: "Nincs olyan lapod, amit oldalról hozzátehetnél. Hagyd, hogy a kör folytatódjon.",
       },
       altName: 'Durák',
       desc: 'Totális kártyaháború: támadj, told tovább, védj és ne feledj oldalról ütni.',

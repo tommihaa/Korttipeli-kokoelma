@@ -217,6 +217,7 @@ export const de = {
         drawDiscard: ({ card }) => `Nimm ${card} vom Ablagestapel. Eine sichtbare niedrige Karte lohnt sich.`,
         drawDeck: "Die Ablagekarte hilft dir nicht. Ziehe vom Stapel.",
         swapHere: ({ slot }) => `Tausche die Karte auf Platz ${slot}, das lohnt sich in dieser Kette.`,
+        swapForced: ({ slot }) => `Tausche die Karte auf Platz ${slot}. Du hast vom Ablagestapel gezogen, der Tausch ist also Pflicht.`,
         stopSwap: "Die Karte ist zu schlecht für die Kette. Wirf sie auf den Ablagestapel.",
       },
       altName: "Sechs-Karten-Golf",
@@ -365,7 +366,8 @@ export const de = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Spiele die Gruppe ${cards}. Mehrere Karten auf einmal leeren die Hand am schnellsten.`
-          : `Spiele ${cards}. Das spart deine Paare und stärksten Farben für später.`,
+          : `Spiele ${cards}.`,
+        playSavePair: ({ cards }) => `Spiele ${cards}. Das spart deine Paare.`,
         playSeven: ({ card, suit }) => `Spiele ${card} und fordere ${suit}, davon hast du am meisten.`,
         playAce: ({ card }) => `Spiele ${card}. Das Ass lässt die anderen ziehen und du bekommst einen Bonuszug.`,
         draw: "Keine deiner Karten passt. Ziehe vom Stapel.",
@@ -435,7 +437,8 @@ export const de = {
       advice: {
         capture: ({ card, targets }) => `Erobere ${targets} mit ${card}. Sammle Punkte: Pik, Asse und die Sonderkarten.`,
         captureMokki: ({ card }) => `Erobere den ganzen Tisch mit ${card}. Das ist ein Fegen und bringt einen Extrapunkt.`,
-        takeOwnBuild: ({ card }) => `Erobere deinen eigenen Aufbau mit ${card}, bevor ein Gegner ihn stiehlt.`,
+        takeOwnBuild: ({ card }) => `Erobere deinen eigenen Aufbau mit ${card}. Ein Gegner könnte eine Karte haben, die ihn stiehlt.`,
+        takeOwnBuildSafe: ({ card }) => `Erobere deinen eigenen Aufbau mit ${card}. Niemand kann ihn mehr stehlen, die Punkte sind also sicher.`,
         stealBuild: ({ card }) => `Stiehl den Aufbau des Gegners mit ${card}. Das nimmt ihm eine fertige Eroberung weg.`,
         build: ({ card, value }) => `Baue Wert ${value} mit ${card}. Du hast eine weitere Karte, um ihn nächste Runde zu erobern.`,
         trail: ({ card }) => `Lege ${card} auf den Tisch. Es gibt jetzt keine lohnende Eroberung, und diese Karte ist am sichersten abzulegen.`,
@@ -542,7 +545,7 @@ export const de = {
         knock: "Klopfe! Deine geschätzte Summe ist schon niedrig genug.",
         drawDiscard: ({ card }) => `Nimm ${card} vom Ablagestapel. Eine sichtbare billige Karte schlägt ein blindes Ziehen.`,
         drawDeck: "Die Ablagekarte hilft dir nicht. Ziehe vom Stapel.",
-        swapSlot: ({ slot }) => `Tausche die gezogene Karte auf Platz ${slot}, das senkt deine Summe am meisten.`,
+        swapSlot: "Tausche die gezogene Karte gegen die hervorgehobene Karte, das senkt deine Summe am meisten.",
         discardDrawn: "Wirf die gezogene Karte ab, sie verbessert deine Hand nicht.",
       },
       altName: "Polnischer Poker",
@@ -602,6 +605,7 @@ export const de = {
     maija: {
       advice: {
         attack: ({ cards }) => `Spiele ${cards}. Greife in der Farbe an, in der du am meisten Niedriges hast, und spare Trümpfe für die Verteidigung.`,
+        attackTrumps: ({ cards }) => `Spiele die Trümpfe ${cards}. Jetzt greifst du mit ihnen an, spare sie nicht für die Verteidigung auf.`,
         attackMaija: ({ cards }) => `Spiele ${cards} und werde die Maija los. Sie schlägt nichts, auf der Hand ist sie nur ein Verlustrisiko.`,
         beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, Trümpfe erst wenn nötig.`,
         take: "Du kannst sie nicht vorteilhaft schlagen. Nimm die Karten auf die Hand.",
@@ -727,6 +731,7 @@ export const de = {
         pass: ({ cards }) => `Schiebe den Angriff mit ${cards} weiter, dann bist du selbst aus dem Schneider.`,
         add: ({ card }) => `Lege ${card} von der Seite. Der Verteidiger hat noch Karten zum Schlagen, also leg nach.`,
         skipAdd: "Lege jetzt nicht von der Seite. Spare deine Karten für einen besseren Moment.",
+        noAdd: "Du hast keine Karte, die du von der Seite nachlegen könntest. Lass den Zug weiterlaufen.",
       },
       altName: "Durak",
       desc: 'Totaler Kartenkrieg: angreifen, weitergeben, verteidigen — und vergiss nicht, von der Seite zu schlagen.',

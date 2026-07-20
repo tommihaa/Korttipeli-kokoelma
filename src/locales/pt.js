@@ -217,6 +217,7 @@ export const pt = {
         drawDiscard: ({ card }) => `Tira ${card} do descarte. Uma carta baixa visível vale a pena.`,
         drawDeck: "A carta do descarte não te ajuda. Compra do baralho.",
         swapHere: ({ slot }) => `Troca a carta para a posição ${slot}, vale a pena nesta cadeia.`,
+        swapForced: ({ slot }) => `Troca a carta para a posição ${slot}. Compraste do descarte, por isso a troca é obrigatória.`,
         stopSwap: "A carta é fraca demais para a cadeia. Deita-a no descarte.",
       },
       altName: "Golfe de seis cartas",
@@ -365,7 +366,8 @@ export const pt = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Joga o grupo ${cards}. Várias cartas de uma vez esvaziam a mão mais depressa.`
-          : `Joga ${cards}. Assim guardas os pares e os naipes fortes para depois.`,
+          : `Joga ${cards}.`,
+        playSavePair: ({ cards }) => `Joga ${cards}. Assim guardas os pares.`,
         playSeven: ({ card, suit }) => `Joga ${card} e exige ${suit}, é o naipe que mais tens.`,
         playAce: ({ card }) => `Joga ${card}. O ás faz os outros comprarem e tu ganhas um turno bónus.`,
         draw: "Nenhuma das tuas cartas serve. Compra do baralho.",
@@ -435,7 +437,8 @@ export const pt = {
       advice: {
         capture: ({ card, targets }) => `Captura ${targets} com ${card}. Junta pontos: espadas, ases e as cartas especiais.`,
         captureMokki: ({ card }) => `Captura a mesa toda com ${card}. É uma varridela e vale um ponto extra.`,
-        takeOwnBuild: ({ card }) => `Captura a tua própria construção com ${card}, antes que um adversário a roube.`,
+        takeOwnBuild: ({ card }) => `Captura a tua própria construção com ${card}. Um adversário pode ter uma carta que a rouba.`,
+        takeOwnBuildSafe: ({ card }) => `Captura a tua própria construção com ${card}. Já ninguém a pode roubar, por isso os pontos estão garantidos.`,
         stealBuild: ({ card }) => `Rouba a construção do adversário com ${card}. Tiras-lhe uma captura já pronta.`,
         build: ({ card, value }) => `Constrói o valor ${value} com ${card}. Tens outra carta para a capturar na jogada seguinte.`,
         trail: ({ card }) => `Deixa ${card} na mesa. Não há captura vantajosa agora, e esta carta é a mais segura para largar.`,
@@ -542,7 +545,7 @@ export const pt = {
         knock: "Bate! A tua soma estimada já é suficientemente baixa.",
         drawDiscard: ({ card }) => `Tira ${card} do descarte. Uma carta barata visível é mais segura do que comprar às cegas.`,
         drawDeck: "A carta do descarte não te ajuda. Compra do baralho.",
-        swapSlot: ({ slot }) => `Troca a carta comprada para a posição ${slot}, é o que mais baixa a tua soma.`,
+        swapSlot: "Troca a carta comprada pela carta destacada, é o que mais baixa a tua soma.",
         discardDrawn: "Deita a carta comprada no descarte, não melhora a tua mão.",
       },
       altName: "Golfe (cartas)",
@@ -602,6 +605,7 @@ export const pt = {
     maija: {
       advice: {
         attack: ({ cards }) => `Joga ${cards}. Ataca no naipe onde tens mais cartas baixas e guarda os trunfos para a defesa.`,
+        attackTrumps: ({ cards }) => `Joga os trunfos ${cards}. Agora atacas com eles, não os guardes para a defesa.`,
         attackMaija: ({ cards }) => `Joga ${cards} e livra-te da Maija. Não vence nada, na mão é só um risco de perder.`,
         beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a vencedora mais baixa, trunfos só quando fores obrigado.`,
         take: "Não as consegues vencer com proveito. Recolhe as cartas para a mão.",
@@ -727,6 +731,7 @@ export const pt = {
         pass: ({ cards }) => `Passa o ataque com ${cards}, e assim livras-te tu mesmo.`,
         add: ({ card }) => `Joga ${card} pelo lado. O defensor ainda tem cartas para vencer, por isso insiste.`,
         skipAdd: "Não juntes pelo lado agora. Guarda as cartas para um momento melhor.",
+        noAdd: "Não tens nenhuma carta para juntar pelo lado. Deixa o turno continuar.",
       },
       altName: "Durak",
       desc: 'Guerra de cartas total: ataca, passa, defende — e não te esqueças de atacar pelo flanco.',

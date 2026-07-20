@@ -219,6 +219,7 @@ export const cs = {
         drawDiscard: ({ card }) => `Vezmi ${card} z odhazovacího balíčku. Viditelná nízká karta stojí za to.`,
         drawDeck: "Karta z odhazovacího balíčku ti nepomůže. Lízni si z balíčku.",
         swapHere: ({ slot }) => `Vyměň kartu na místo ${slot}, v tomhle řetězu se to vyplatí.`,
+        swapForced: ({ slot }) => `Vyměň kartu na místo ${slot}. Líznul sis z odhazovacího balíčku, takže výměna je povinná.`,
         stopSwap: "Karta je na řetěz moc špatná. Odhoď ji.",
       },
       altName: 'Golf na šest karet',
@@ -367,7 +368,8 @@ export const cs = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Zahraj skupinu ${cards}. Více karet najednou vyprázdní ruku nejrychleji.`
-          : `Zahraj ${cards}. Uchováš si tak páry a nejsilnější barvy na později.`,
+          : `Zahraj ${cards}.`,
+        playSavePair: ({ cards }) => `Zahraj ${cards}. Uchováš si tak páry.`,
         playSeven: ({ card, suit }) => `Zahraj ${card} a žádej ${suit}, té barvy máš nejvíc.`,
         playAce: ({ card }) => `Zahraj ${card}. Eso donutí ostatní líznout a ty dostaneš bonusový tah.`,
         draw: "Žádná z tvých karet nesedí. Lízni si z balíčku.",
@@ -437,7 +439,8 @@ export const cs = {
       advice: {
         capture: ({ card, targets }) => `Seber ${targets} kartou ${card}. Sbírej body: piky, esa a speciální karty.`,
         captureMokki: ({ card }) => `Seber celý stůl kartou ${card}. Je to domeček a dá bod navíc.`,
-        takeOwnBuild: ({ card }) => `Seber vlastní stavbu kartou ${card}, dřív než ti ji soupeř ukradne.`,
+        takeOwnBuild: ({ card }) => `Seber vlastní stavbu kartou ${card}. Soupeř může mít kartu, kterou ti ji ukradne.`,
+        takeOwnBuildSafe: ({ card }) => `Seber vlastní stavbu kartou ${card}. Nikdo ji už nemůže ukrást, takže body jsou jisté.`,
         stealBuild: ({ card }) => `Ukradni soupeřovu stavbu kartou ${card}. Vezmeš mu hotové sebrání.`,
         build: ({ card, value }) => `Postav hodnotu ${value} kartou ${card}. Máš další kartu, kterou ji příští tah sebereš.`,
         trail: ({ card }) => `Nech ${card} na stole. Výhodné sebrání teď není a tuhle kartu je nejbezpečnější odložit.`,
@@ -544,7 +547,7 @@ export const cs = {
         knock: "Zaklepej! Tvůj odhadovaný součet už je dost nízký.",
         drawDiscard: ({ card }) => `Vezmi ${card} z odhazovacího balíčku. Viditelná levná karta je jistější než líznutí naslepo.`,
         drawDeck: "Karta z odhazovacího balíčku ti nepomůže. Lízni si z balíčku.",
-        swapSlot: ({ slot }) => `Vyměň líznutou kartu na místo ${slot}, nejvíc to sníží tvůj součet.`,
+        swapSlot: "Vyměň líznutou kartu za zvýrazněnou kartu, nejvíc to sníží tvůj součet.",
         discardDrawn: "Odhoď líznutou kartu, ruku ti nevylepší.",
       },
       altName: 'Golf (Ťukaná)',
@@ -604,6 +607,7 @@ export const cs = {
     maija: {
       advice: {
         attack: ({ cards }) => `Zahraj ${cards}. Útoč v barvě, kde máš nejvíc nízkých, a trumfy si nech na obranu.`,
+        attackTrumps: ({ cards }) => `Zahraj trumfy ${cards}. Teď s nimi útočíš, nešetři si je na obranu.`,
         attackMaija: ({ cards }) => `Zahraj ${cards} a zbav se Maiji. Nic nepřebije, v ruce je jen riziko prohry.`,
         beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná, trumfy až když musíš.`,
         take: "Nedokážeš je přebít se ziskem. Vezmi si karty do ruky.",
@@ -729,6 +733,7 @@ export const cs = {
         pass: ({ cards }) => `Pošli útok dál kartou ${cards}, a sám se z toho dostaneš.`,
         add: ({ card }) => `Přidej ${card} ze strany. Obránce má stále čím bít, tak přitlač.`,
         skipAdd: "Teď nepřidávej ze strany. Nech si karty na lepší chvíli.",
+        noAdd: "Nemáš žádnou kartu, kterou bys přidal ze strany. Nech kolo pokračovat.",
       },
       altName: 'Durak',
       desc: 'Totální karetní válka: útoč, přesuň, braň a nezapomeň udeřit z boku.',

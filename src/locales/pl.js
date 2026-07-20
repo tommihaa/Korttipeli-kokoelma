@@ -226,6 +226,7 @@ export const pl = {
         drawDiscard: ({ card }) => `Weź ${card} ze stosu odrzuconych. Widoczną niską kartę warto wziąć.`,
         drawDeck: "Karta z odrzuconych ci nie pomoże. Dobierz z talii.",
         swapHere: ({ slot }) => `Wymień kartę na miejsce ${slot}, w tym łańcuchu to się opłaca.`,
+        swapForced: ({ slot }) => `Wymień kartę na miejsce ${slot}. Dobrałeś ze stosu odrzuconych, więc wymiana jest obowiązkowa.`,
         stopSwap: "Karta jest za słaba na łańcuch. Odrzuć ją na stos.",
       },
       altName: "Golf sześciokartowy",
@@ -374,7 +375,8 @@ export const pl = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Zagraj grupę ${cards}. Kilka kart naraz najszybciej opróżnia rękę.`
-          : `Zagraj ${cards}. Tak zachowasz pary i najmocniejsze kolory na później.`,
+          : `Zagraj ${cards}.`,
+        playSavePair: ({ cards }) => `Zagraj ${cards}. Tak zachowasz pary.`,
         playSeven: ({ card, suit }) => `Zagraj ${card} i zażądaj koloru ${suit}, tego masz najwięcej.`,
         playAce: ({ card }) => `Zagraj ${card}. As zmusza innych do dobierania, a ty dostajesz dodatkowy ruch.`,
         draw: "Żadna z twoich kart nie pasuje. Dobierz z talii.",
@@ -444,7 +446,8 @@ export const pl = {
       advice: {
         capture: ({ card, targets }) => `Zgarnij ${targets} kartą ${card}. Zbieraj punkty: piki, asy i karty specjalne.`,
         captureMokki: ({ card }) => `Zgarnij cały stół kartą ${card}. To zamiatka i daje dodatkowy punkt.`,
-        takeOwnBuild: ({ card }) => `Zgarnij własną budowlę kartą ${card}, zanim przeciwnik ją ukradnie.`,
+        takeOwnBuild: ({ card }) => `Zgarnij własną budowlę kartą ${card}. Przeciwnik może mieć kartę, którą ją ukradnie.`,
+        takeOwnBuildSafe: ({ card }) => `Zgarnij własną budowlę kartą ${card}. Nikt już jej nie ukradnie, więc punkty są pewne.`,
         stealBuild: ({ card }) => `Ukradnij budowlę przeciwnika kartą ${card}. Zabierasz mu gotowe zgarnięcie.`,
         build: ({ card, value }) => `Zbuduj wartość ${value} kartą ${card}. Masz drugą kartę, którą zgarniesz ją w następnej turze.`,
         trail: ({ card }) => `Zostaw ${card} na stole. Nie ma teraz opłacalnego zgarnięcia, a ta karta jest najbezpieczniejsza do odłożenia.`,
@@ -551,7 +554,7 @@ export const pl = {
         knock: "Zapukaj! Twoja szacowana suma jest już wystarczająco niska.",
         drawDiscard: ({ card }) => `Weź ${card} ze stosu odrzuconych. Widoczna tania karta jest pewniejsza niż dobieranie w ciemno.`,
         drawDeck: "Karta z odrzuconych ci nie pomoże. Dobierz z talii.",
-        swapSlot: ({ slot }) => `Wymień dobraną kartę na miejsce ${slot}, to najbardziej obniży twoją sumę.`,
+        swapSlot: "Wymień dobraną kartę na podświetloną kartę, to najbardziej obniży twoją sumę.",
         discardDrawn: "Odrzuć dobraną kartę, nie poprawia twojej ręki.",
       },
       altName: "Golf (Polish Poker)",
@@ -611,6 +614,7 @@ export const pl = {
     maija: {
       advice: {
         attack: ({ cards }) => `Zagraj ${cards}. Atakuj w kolorze, w którym masz najwięcej niskich, a atuty zachowaj do obrony.`,
+        attackTrumps: ({ cards }) => `Zagraj atuty ${cards}. Teraz nimi atakujesz, nie oszczędzaj ich do obrony.`,
         attackMaija: ({ cards }) => `Zagraj ${cards} i pozbądź się Maiji. Niczego nie bije, w ręce to tylko ryzyko przegranej.`,
         beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca, atuty dopiero gdy musisz.`,
         take: "Nie pobijesz ich z zyskiem. Weź karty do ręki.",
@@ -736,6 +740,7 @@ export const pl = {
         pass: ({ cards }) => `Przekaż atak dalej kartą ${cards}, a sam się wywiniesz.`,
         add: ({ card }) => `Dołóż ${card} z boku. Obrońca wciąż ma czym bić, więc naciskaj.`,
         skipAdd: "Nie dokładaj teraz z boku. Zachowaj karty na lepszą chwilę.",
+        noAdd: "Nie masz żadnej karty, którą można dołożyć z boku. Niech tura toczy się dalej.",
       },
       altName: "Dureń",
       desc: 'Totalna wojna kart: atakuj, przekazuj, broń się i nie zapomnij uderzyć z boku.',

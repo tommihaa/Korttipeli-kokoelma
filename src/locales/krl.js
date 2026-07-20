@@ -218,6 +218,7 @@ export const krl = {
         drawDiscard: ({ card }) => `Nosta poistopakas ${card}. Nägyi pieni kortti kannattau ottua.`,
         drawDeck: "Poistopakan kortti ei avvuta sinuu. Nosta nostopakas.",
         swapHere: ({ slot }) => `Vaihta kortti sijah ${slot}, se kannattau täs čiepis.`,
+        swapForced: ({ slot }) => `Vaihta kortti sijah ${slot}. Nostit poistopakas, ga vaihto on pakko.`,
         stopSwap: "Kortti on liijan huono čieppih. Lykkiä se poistopakkah.",
       },
       altName: "kuvven kortin golfi",
@@ -366,7 +367,8 @@ export const krl = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Lyö joukko ${cards}. Moni kortti kerralla tyhjendäy kätty terväzimäh.`
-          : `Lyö ${cards}. Se säilyttäy parat da vahvimat muastit myöhembäkse.`,
+          : `Lyö ${cards}.`,
+        playSavePair: ({ cards }) => `Lyö ${cards}. Se säilyttäy parat.`,
         playSeven: ({ card, suit }) => `Lyö ${card} da vuaji muastikse ${suit}, sidä sinul on enimyölleh.`,
         playAce: ({ card }) => `Lyö ${card}. Ässä panou toizet nostamah da sinä suat bonusvuoron.`,
         draw: "Ni yksi korttilois ei päi. Nosta pakas.",
@@ -436,7 +438,8 @@ export const krl = {
       advice: {
         capture: ({ card, targets }) => `Kuapua ${targets} kortil ${card}. Keriä pisteitä: pajat, tuzat da erikoiskortit.`,
         captureMokki: ({ card }) => `Kuapua kogo stola kortil ${card}. Se on mökki da tuou liziä pisteh.`,
-        takeOwnBuild: ({ card }) => `Kuapua oma raknelmas kortil ${card}, enne migu vastustai varrastau sen.`,
+        takeOwnBuild: ({ card }) => `Kuapua oma raknelmas kortil ${card}. Vastustajal voi olla kortti, kudamal häi varrastau sen.`,
+        takeOwnBuildSafe: ({ card }) => `Kuapua oma raknelmas kortil ${card}. Niken ei voi enämbi varrastua sidä, ga pisteet ollah varmat.`,
         stealBuild: ({ card }) => `Varrasta vastustajan raknelmu kortil ${card}. Otat hänel valmehen kuapuandan.`,
         build: ({ card, value }) => `Luaji arvo ${value} kortil ${card}. Sinul on toine kortti kudamal kuapuat sen jälgimäzel vuorol.`,
         trail: ({ card }) => `Jätä ${card} stolah. Nygöi ei ole hyövykästä kuapuandua, da tämä kortti on turvallizin jättiä.`,
@@ -543,7 +546,7 @@ export const krl = {
         knock: "Koputa! Sinun arvivoittu summu on jo tarbehekse pieni.",
         drawDiscard: ({ card }) => `Nosta poistopakas ${card}. Nägyi huogei kortti on varmembi migu sogei nosto.`,
         drawDeck: "Poistopakan kortti ei avvuta sinuu. Nosta nostopakas.",
-        swapSlot: ({ slot }) => `Vaihta nostettu kortti sijah ${slot}, se pienendäy summua enimyölleh.`,
+        swapSlot: "Vaihta nostettu kortti korostettuh korttih, se pienendäy summua enimyölleh.",
         discardDrawn: "Lykkiä nostettu kortti poistopakkah, se ei kohenda kätty.",
       },
       altName: "golfi (kolkutuš)",
@@ -603,6 +606,7 @@ export const krl = {
     maija: {
       advice: {
         attack: ({ cards }) => `Lyö ${cards}. Hyökkyä sih muah, kus on enin matalua, da piä valtit puolistukseh.`,
+        attackTrumps: ({ cards }) => `Lyö valtit ${cards}. Nygöi niil hyökätäh, elä säilytä niidy puolustukseh.`,
         attackMaija: ({ cards }) => `Lyö ${cards} da piäze Maijas. Sil ei sua kuadua, kädes se on vai hävivön riski.`,
         beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai riittäy, valtit vaste pakon ies.`,
         take: "Et voi kuadua niidü hyövyl. Ota kortit kädeh.",
@@ -728,6 +732,7 @@ export const krl = {
         pass: ({ cards }) => `Siirrä hyökkäy iel kortil ${cards}, ga iče piäzet pälkähäzes.`,
         add: ({ card }) => `Lyö ${card} laijjas. Puolistajal on vie kortiloi kuadua, ga paina piäle.`,
         skipAdd: "Elä lyö laijjas nygöi. Piä kortit parembah aigah.",
+        noAdd: "Sinul ei ole yhty korttii, kudaman vois lyvvä sivus. Anna vuoron jatkuo.",
       },
       altName: "Durak",
       desc: 'Täyši korttišota: hyökkiä, šiirrä, puolista da muista iškie kylgeh.',

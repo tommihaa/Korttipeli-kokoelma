@@ -7,6 +7,13 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '21.7.2026',
+    items: [
+      'Mestarin neuvo erottuu nyt selvemmin: osoitettu kortti saa sykkivän purppurakehän ja nousee hieman ylös, ja muut kortit himmenevät neuvon ajaksi. Aiemmin korostus oli vaisu ja osoitettu kortti saattoi hukkua käteen. Koskee kaikkia pelejä.',
+      'Mestarin neuvo, kuusi tekstikorjausta: neuvo lupasi paikoin eri asian kuin mitä se todella suositteli. Maijassa neuvo kehotti säästämään valtit puolustukseen silloinkin kun se itse osoitti hyökkäämään niillä, joten valttihyökkäys sai oman neuvonsa. Moskassa neuvo kehotti säästämään kortteja myös silloin kun lyötäviä kortteja ei ollut lainkaan. Kultakalassa pakkovaihto esitettiin kannattavana valintana, vaikka vaihtoa ei voi pysäyttää poistopakasta noston jälkeen. Seiskassa neuvo väitti säästävänsä parisi myös silloin kun paria ei ollut; nyt perustelu näkyy vain kun pari on oikeasti pelattavissa ja jää lyömättä. Koputuksessa neuvo viittasi paikkanumeroon jota ruudulla ei näy, joten se osoittaa nyt korostettuun korttiin. Kasinossa neuvo lupasi kiireen laskematta varastamisriskiä; nyt riski lasketaan näkyvistä korteista ja neuvo kertoo erikseen, kun rakennelmaa ei voi enää viedä.',
+    ],
+  },
+  {
     date: '20.7.2026',
     items: [
       'Seiska, sääntökorjaus ässän bonusvuoroon: kun tekoäly lyö bonusvuorollaan useamman saman arvoisen kortin kerralla, se pelaa nyt bonusmaan kortin ensin eli alimmaiseksi, jolloin ryhmän viimeinen kortti jää päällimmäiseksi ja määrää seuraavan maan. Aiemmin kortit lähtivät käden järjestyksessä, jolloin maa saattoi jäädä vaihtumatta ja seuraavan pelaajan siirrot menivät toisin kuin sääntö edellyttää. Ihmispelaajalta oikea järjestys on aina vaadittu, joten tekoäly noudattaa nyt samaa sääntöä.',

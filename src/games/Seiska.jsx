@@ -94,7 +94,10 @@ function nextActive(players, from, finished) {
   return -1;
 }
 
-function aiBestPlay(hand, discardTop, reqSuit, opponents = []) {
+// Suurin pelattavissa oleva saman arvon ryhmä, tai null. Jaettu aiBestPlay'n ja
+// Mestarin neuvon kesken: neuvo tarvitsee tiedon siitä oliko paria ylipäätään
+// olemassa, jotta se ei väitä säästävänsä paria jota ei ole.
+function findBestMulti(hand, discardTop, reqSuit) {
   // Ryhmitä kortit arvon mukaan (ei 7/A — ne eivät salli ryhmälyöntiä)
   const byRank = {};
   for (const c of hand) {
@@ -109,6 +112,11 @@ function aiBestPlay(hand, discardTop, reqSuit, opponents = []) {
       if (!bestMulti || cards.length > bestMulti.length) bestMulti = cards;
     }
   }
+  return bestMulti;
+}
+
+function aiBestPlay(hand, discardTop, reqSuit, opponents = []) {
+  let bestMulti = findBestMulti(hand, discardTop, reqSuit);
   if (bestMulti) {
     // Yhdistävä kortti (matching suit) ensin — se tulee alimmaiseksi pinoon
     const suit = reqSuit || discardTop.s;
@@ -241,6 +249,11 @@ export function getAdvice(g) {
     return { type: 'playSeven', cards: play, suit: aiSuit(p.hand.filter(c => c.id !== play[0].id)) };
   }
   if (play.length === 1 && play[0].r === 'A') return { type: 'playAce', cards: play };
+  // "Säästää parisi" vain jos pari oli oikeasti pelattavissa ja jää lyömättä.
+  if (play.length === 1) {
+    const multi = findBestMulti(p.hand, g.discardTop, g.reqSuit);
+    if (multi && !multi.find(c => c.id === play[0].id)) return { type: 'playSavePair', cards: play };
+  }
   return { type: 'play', cards: play };
 }
 
@@ -1171,14 +1184,18 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
             const hl      = !isSel && (canAct
               ? (selected.length > 0 ? multi : (single || multi))
               : (single || multi));
-            const dimmed  = canAct
-              ? (!isSel && (selected.length > 0 ? !multi : (!single && !multi)))
-              : (spectatorAct && !isSel && !single && !multi);
+            const isAdv   = !isSel && canAct && !!advice?.cardIds?.includes(c.id);
+            // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
+            const dimmed  = advice?.cardIds?.length
+              ? !isAdv
+              : canAct
+                ? (!isSel && (selected.length > 0 ? !multi : (!single && !multi)))
+                : (spectatorAct && !isSel && !single && !multi);
             return (
               <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
-                advice={!isSel && canAct && !!advice?.cardIds?.includes(c.id)}
+                advice={isAdv}
                 dim={!!dimmed}
                 onClick={canAct ? () => humanToggle(c) : undefined}
                 backStyle={BACKS[cardBack]}

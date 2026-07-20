@@ -221,6 +221,7 @@ export const en = {
         drawDiscard: ({ card }) => `Take ${card} from the discard pile. A visible low card is worth keeping.`,
         drawDeck: "The discard card does not help you. Draw from the deck.",
         swapHere: ({ slot }) => `Swap the card into slot ${slot}, it is worth it in this chain.`,
+        swapForced: ({ slot }) => `Swap the card into slot ${slot}. You drew from the discard pile, so the swap is mandatory.`,
         stopSwap: "The card is too poor for the chain. Throw it on the discard pile.",
       },
       desc: 'A memory game where you see a card only by swapping',
@@ -369,7 +370,8 @@ export const en = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Play the group ${cards}. Multiple cards at once empties your hand fastest.`
-          : `Play ${cards}. It saves your pairs and strongest suits for later.`,
+          : `Play ${cards}.`,
+        playSavePair: ({ cards }) => `Play ${cards}. It saves your pairs.`,
         playSeven: ({ card, suit }) => `Play ${card} and demand ${suit}, you hold the most of it.`,
         playAce: ({ card }) => `Play ${card}. The ace makes the others draw and you get a bonus turn.`,
         draw: "None of your cards fit. Draw from the deck.",
@@ -439,7 +441,8 @@ export const en = {
       advice: {
         capture: ({ card, targets }) => `Capture ${targets} with ${card}. Gather points: spades, aces and the special cards.`,
         captureMokki: ({ card }) => `Capture the whole table with ${card}. It is a sweep and scores an extra point.`,
-        takeOwnBuild: ({ card }) => `Capture your own build with ${card}, before an opponent steals it.`,
+        takeOwnBuild: ({ card }) => `Capture your own build with ${card}. An opponent may hold a card that steals it.`,
+        takeOwnBuildSafe: ({ card }) => `Capture your own build with ${card}. Nobody can steal it any more, so the points are safe.`,
         stealBuild: ({ card }) => `Steal the opponent's build with ${card}. It takes a ready capture away from them.`,
         build: ({ card, value }) => `Build value ${value} with ${card}. You hold another card to capture it with next turn.`,
         trail: ({ card }) => `Trail ${card} to the table. There is no worthwhile capture now, and this card is the safest to leave.`,
@@ -546,7 +549,7 @@ export const en = {
         knock: "Knock! Your estimated total is already low enough.",
         drawDiscard: ({ card }) => `Take ${card} from the discard pile. A visible cheap card beats a blind draw.`,
         drawDeck: "The discard card does not help you. Draw from the deck.",
-        swapSlot: ({ slot }) => `Swap the drawn card into slot ${slot}, it lowers your total the most.`,
+        swapSlot: "Swap the drawn card for the highlighted card, it lowers your total the most.",
         discardDrawn: "Throw the drawn card on the discard pile, it does not improve your hand.",
       },
       desc: 'A memory game with surprise twists',
@@ -610,6 +613,7 @@ export const en = {
     maija: {
       advice: {
         attack: ({ cards }) => `Play ${cards}. Attack in the suit where you have the most low cards, and save trumps for defence.`,
+        attackTrumps: ({ cards }) => `Play the trumps ${cards}. Now is the time to attack with them, do not save them for defence.`,
         attackMaija: ({ cards }) => `Play ${cards} to get rid of the Maija. It cannot beat anything, so in hand it is only a losing risk.`,
         beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winner is enough, trumps only when forced.`,
         take: "You cannot beat them profitably. Take the cards into your hand.",
@@ -735,6 +739,7 @@ export const en = {
         pass: ({ cards }) => `Pass the attack on with ${cards}, and you get off the hook yourself.`,
         add: ({ card }) => `Play ${card} from the side. The defender still has cards to beat, so pile it on.`,
         skipAdd: "Do not add from the side now. Save your cards for a better moment.",
+        noAdd: "You have no card you could add from the side. Let the turn continue.",
       },
       desc: 'All-out card war: attack, pass, defend, and remember to strike from the side.',
       altName: "a Finnish Durak variant",

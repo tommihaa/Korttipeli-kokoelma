@@ -111,9 +111,9 @@ export function getAdvice(g, phase, held, swapIdx, canStop) {
     return d.source === 'discard' ? { type: 'drawDiscard', card: top } : { type: 'drawDeck' };
   }
   if ((phase === 'holding' || phase === 'swapping') && held && swapIdx !== null) {
-    if (kkChainStep(p, held, swapIdx, g.players.length) || !canStop) {
-      return { type: 'swapHere', slot: swapIdx };
-    }
+    // Ketju kannattaa vs. vaihtoa ei voi pysäyttää: eri syy, eri neuvo.
+    if (kkChainStep(p, held, swapIdx, g.players.length)) return { type: 'swapHere', slot: swapIdx };
+    if (!canStop) return { type: 'swapForced', slot: swapIdx };
     return { type: 'stopSwap' };
   }
   return null;

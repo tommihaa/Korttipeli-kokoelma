@@ -217,6 +217,7 @@ export const no = {
         drawDiscard: ({ card }) => `Ta ${card} fra kastebunken. Et synlig lavt kort er verdt å ta.`,
         drawDeck: "Kastebunkens kort hjelper deg ikke. Trekk fra bunken.",
         swapHere: ({ slot }) => `Bytt kortet inn på plass ${slot}, det lønner seg i denne kjeden.`,
+        swapForced: ({ slot }) => `Bytt kortet inn på plass ${slot}. Du trakk fra kastebunken, så byttet er tvunget.`,
         stopSwap: "Kortet er for dårlig for kjeden. Kast det på kastebunken.",
       },
       altName: "Sekskortsgolf",
@@ -365,7 +366,8 @@ export const no = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Spill gruppen ${cards}. Flere kort på én gang tømmer hånden raskest.`
-          : `Spill ${cards}. Det sparer parene og de sterkeste fargene dine til senere.`,
+          : `Spill ${cards}.`,
+        playSavePair: ({ cards }) => `Spill ${cards}. Det sparer parene dine.`,
         playSeven: ({ card, suit }) => `Spill ${card} og krev ${suit}, den fargen har du mest av.`,
         playAce: ({ card }) => `Spill ${card}. Esset tvinger de andre til å trekke og du får en bonustur.`,
         draw: "Ingen av kortene dine passer. Trekk fra bunken.",
@@ -435,7 +437,8 @@ export const no = {
       advice: {
         capture: ({ card, targets }) => `Fang ${targets} med ${card}. Samle poeng: spar, ess og spesialkortene.`,
         captureMokki: ({ card }) => `Fang hele bordet med ${card}. Det er et møkki og gir ett ekstrapoeng.`,
-        takeOwnBuild: ({ card }) => `Fang ditt eget byggverk med ${card}, før en motstander stjeler det.`,
+        takeOwnBuild: ({ card }) => `Fang ditt eget byggverk med ${card}. En motstander kan ha et kort som stjeler det.`,
+        takeOwnBuildSafe: ({ card }) => `Fang ditt eget byggverk med ${card}. Ingen kan stjele det lenger, så poengene er sikre.`,
         stealBuild: ({ card }) => `Stjel motstanderens byggverk med ${card}. Det tar en ferdig fangst fra ham.`,
         build: ({ card, value }) => `Bygg verdi ${value} med ${card}. Du har et annet kort å fange det med neste tur.`,
         trail: ({ card }) => `Legg ${card} på bordet. Ingen lønnsom fangst nå, og dette kortet er tryggest å legge fra seg.`,
@@ -542,7 +545,7 @@ export const no = {
         knock: "Bank! Den anslåtte summen din er allerede lav nok.",
         drawDiscard: ({ card }) => `Ta ${card} fra kastebunken. Et synlig billig kort slår et blindt trekk.`,
         drawDeck: "Kastebunkens kort hjelper deg ikke. Trekk fra bunken.",
-        swapSlot: ({ slot }) => `Bytt det trukne kortet inn på plass ${slot}, det senker summen din mest.`,
+        swapSlot: "Bytt det trukne kortet mot det uthevede kortet, det senker summen din mest.",
         discardDrawn: "Kast det trukne kortet, det forbedrer ikke hånden din.",
       },
       altName: "Golf (kortspill)",
@@ -602,6 +605,7 @@ export const no = {
     maija: {
       advice: {
         attack: ({ cards }) => `Spill ${cards}. Angrip i fargen der du har mest lavt, og spar trumf til forsvaret.`,
+        attackTrumps: ({ cards }) => `Spill trumfene ${cards}. Nå angriper du med dem, ikke spar dem til forsvaret.`,
         attackMaija: ({ cards }) => `Spill ${cards} og bli kvitt Maija. Den kan ikke slå noe, så på hånden er den bare en taprisiko.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det minste vinnende holder, trumf først når du må.`,
         take: "Du kan ikke slå dem lønnsomt. Ta kortene på hånden.",
@@ -727,6 +731,7 @@ export const no = {
         pass: ({ cards }) => `Send angrepet videre med ${cards}, så slipper du unna selv.`,
         add: ({ card }) => `Legg ${card} fra siden. Forsvareren har fortsatt kort å slå med, så press på.`,
         skipAdd: "Ikke legg fra siden nå. Spar kortene til et bedre øyeblikk.",
+        noAdd: "Du har ingen kort å legge til fra siden. La turen fortsette.",
       },
       altName: "Durak",
       desc: 'Total kortkrig: angrip, send videre, forsvar — og husk å slå fra siden.',

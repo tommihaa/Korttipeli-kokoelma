@@ -220,6 +220,7 @@ export const rom = {
         drawDiscard: ({ card }) => `Le ${card} andar o čhudino pako. Dikhlini cikni karta mol te les.`,
         drawDeck: "E karta andar o čhudino pako či ažutil tut. Le andar o pako.",
         swapHere: ({ slot }) => `Paruv e karta po than ${slot}, ande kadi lanco mol.`,
+        swapForced: ({ slot }) => `Paruv e karta po than ${slot}. Lilan andar o čhudino pako, anda kodo o paruvipe si musaj.`,
         stopSwap: "E karta si but bilačhi pe lanco. Čhude la ando čhudino pako.",
       },
       altName: 'Golfo šove kartengo',
@@ -368,7 +369,8 @@ export const rom = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Khel e grupa ${cards}. Maj but karti jekhvar čhuden o vast maj sigo.`
-          : `Khel ${cards}. Kade arakhes će para thaj zurale farbi pe maj palal.`,
+          : `Khel ${cards}.`,
+        playSavePair: ({ cards }) => `Khel ${cards}. Kade arakhes će para.`,
         playSeven: ({ card, suit }) => `Khel ${card} thaj mang e farba ${suit}, latar si tut maj but.`,
         playAce: ({ card }) => `Khel ${card}. O as kerel le averen te len karti thaj tu les bonuso redo.`,
         draw: "Nijekh ćiri karta či perel. Le andar o pako.",
@@ -438,7 +440,8 @@ export const rom = {
       advice: {
         capture: ({ card, targets }) => `Le ${targets} la ${card} kartaha. Ćiden pochti: la, asurja thaj le spečialna kartja.`,
         captureMokki: ({ card }) => `Le sa e skafidi la ${card} kartaha. Si jekh kher thaj del jekh pochti majbut.`,
-        takeOwnBuild: ({ card }) => `Le ćiro vazdipe la ${card} kartaha, angla kaj o dušmano te čorel les.`,
+        takeOwnBuild: ({ card }) => `Le ćiro vazdipe la ${card} kartaha. O dušmano šaj avel les karta savjaha čorel les.`,
+        takeOwnBuildSafe: ({ card }) => `Le ćiro vazdipe la ${card} kartaha. Khonik našti maj čorel les, anda kodo e punkti si sigurni.`,
         stealBuild: ({ card }) => `Čor o vazdipe le dušmanosko la ${card} kartaha. Les lestar jekh gata liipe.`,
         build: ({ card, value }) => `Vazde e vrednota ${value} la ${card} kartaha. Si tut aver kart te les les pe aver rig.`,
         trail: ({ card }) => `Mek ${card} pe skafidi. Akana naj lačho liipe, thaj kadja kart si e majsigurni te mekes.`,
@@ -545,7 +548,7 @@ export const rom = {
         knock: "Mar! Ćiri gindi suma si aba dosta cikni.",
         drawDiscard: ({ card }) => `Le ${card} andar o čhudino pako. Dikhlini ijeftino karta si maj sigurno sar korro lipe.`,
         drawDeck: "E karta andar o čhudino pako či ažutil tut. Le andar o pako.",
-        swapSlot: ({ slot }) => `Paruv e lini karta po than ${slot}, voj cikňarel ćiri suma maj but.`,
+        swapSlot: "Paruv e lini karta la sikadi kartaha, voj cikňarel ćiri suma maj but.",
         discardDrawn: "Čhude e lini karta, voj či lačharel ćiro vast.",
       },
       altName: 'Golfo (cipe)',
@@ -605,6 +608,7 @@ export const rom = {
     maija: {
       advice: {
         attack: ({ cards }) => `Khel ${cards}. Napav ande farba kaj si tut majbut telal thaj garav le trumfurja anda arakhipe.`,
+        attackTrumps: ({ cards }) => `Khel e aduja ${cards}. Akana lenca marespe, na garav len vaš o arakhadipe.`,
         attackMaija: ({ cards }) => `Khel ${cards} thaj mek e Maija. Voj či marel khanči, ando vast si numaj rizikó te xasares.`,
         beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kaj marel, trumfurja numaj kana trubul.`,
         take: "Naštik marés len lačhimasa. Le le kartja ando vast.",
@@ -730,6 +734,7 @@ export const rom = {
         pass: ({ cards }) => `Bičhal o napaipe angle la ${cards}, thaj korkoro našes.`,
         add: ({ card }) => `Khel ${card} katar e rig. Le arakhitores si vi kartja te marel, anda kodo cider.`,
         skipAdd: "Na thov akana katar e rig. Garav le kartja pe majlačhi vrjama.",
+        noAdd: "Naj tut karta savi šaj thos rigate. Muk o than te džal maj dur.",
       },
       altName: 'Durak',
       desc: 'Sa o kartengo maripe: mar, nakhav, branin thaj de godji te mares andai rig.',

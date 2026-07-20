@@ -267,6 +267,7 @@ export const fi = {
         drawDiscard: ({ card }) => `Nosta poistopakasta ${card}. Näkyvä pikkukortti kannattaa ottaa talteen.`,
         drawDeck: 'Poistopakan kortti ei hyödytä sinua. Nosta nostopakasta.',
         swapHere: ({ slot }) => `Vaihda kortti paikkaan ${slot}, se kannattaa tässä ketjussa.`,
+        swapForced: ({ slot }) => `Vaihda kortti paikkaan ${slot}. Nostit poistopakasta, joten vaihto on pakko tehdä.`,
         stopSwap: 'Kortti on liian huono ketjuun. Heitä se poistopakkaan.',
       },
       msg: {
@@ -412,7 +413,8 @@ export const fi = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Lyö ryhmä ${cards}. Useampi kortti kerralla tyhjentää kättä nopeimmin.`
-          : `Lyö ${cards}. Se säästää parisi ja vahvimmat maasi myöhemmäksi.`,
+          : `Lyö ${cards}.`,
+        playSavePair: ({ cards }) => `Lyö ${cards}. Se säästää parisi myöhempään.`,
         playSeven: ({ card, suit }) => `Lyö ${card} ja vaadi maaksi ${suit}, sitä sinulla on eniten.`,
         playAce: ({ card }) => `Lyö ${card}. Ässä nostattaa muita ja saat bonusvuoron.`,
         draw: 'Mikään korttisi ei käy. Nosta pakasta.',
@@ -511,7 +513,8 @@ export const fi = {
       advice: {
         capture: ({ card, targets }) => `Kaappaa ${targets} kortilla ${card}. Kerää pisteitä: patoja, ässiä ja erikoiskortit talteen.`,
         captureMokki: ({ card }) => `Kaappaa koko pöytä kortilla ${card}. Se on mökki ja tuo lisäpisteen.`,
-        takeOwnBuild: ({ card }) => `Kaappaa oma rakennelmasi kortilla ${card}, ennen kuin vastustaja ehtii varastaa sen.`,
+        takeOwnBuild: ({ card }) => `Kaappaa oma rakennelmasi kortilla ${card}. Vastustajalla voi olla kortti jolla hän varastaa sen.`,
+        takeOwnBuildSafe: ({ card }) => `Kaappaa oma rakennelmasi kortilla ${card}. Kukaan ei voi enää varastaa sitä, joten pisteet ovat varmat.`,
         stealBuild: ({ card }) => `Varasta vastustajan rakennelma kortilla ${card}. Se vie häneltä valmiin kaappauksen.`,
         build: ({ card, value }) => `Rakenna arvo ${value} kortilla ${card}. Sinulla on toinen kortti jolla kaappaat sen seuraavaksi.`,
         trail: ({ card }) => `Jätä ${card} pöytään. Nyt ei ole kannattavaa kaappausta, ja tämä kortti on turvallisin jättää.`,
@@ -587,7 +590,7 @@ export const fi = {
         knock: 'Koputa! Arvioitu summasi on jo tarpeeksi pieni.',
         drawDiscard: ({ card }) => `Nosta poistopakasta ${card}. Näkyvä halpa kortti on varmempi kuin sokea nosto.`,
         drawDeck: 'Poistopakan kortti ei hyödytä sinua. Nosta nostopakasta.',
-        swapSlot: ({ slot }) => `Vaihda nostettu kortti paikkaan ${slot}, se pienentää summaasi eniten.`,
+        swapSlot: 'Vaihda nostettu kortti korostettuun korttiin, se pienentää summaasi eniten.',
         discardDrawn: 'Heitä nostettu kortti poistopakkaan, se ei paranna kättäsi.',
       },
       msg: {
@@ -670,6 +673,7 @@ export const fi = {
       },
       advice: {
         attack: ({ cards }) => `Lyö ${cards}. Hyökkää maalla, jossa on eniten matalaa, ja säästä valtit puolustukseen.`,
+        attackTrumps: ({ cards }) => `Lyö valtit ${cards}. Nyt niillä hyökätään, älä jää säästämään niitä puolustukseen.`,
         attackMaija: ({ cards }) => `Lyö ${cards} ja pääse Maijasta eroon. Sillä ei voi kaataa, joten kädessä se on pelkkä häviöriski.`,
         beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava riittää, valtit vasta pakon edessä.`,
         take: 'Et pysty kaatamaan kannattavasti. Ota kortit käteen.',
@@ -805,6 +809,7 @@ export const fi = {
         pass: ({ cards }) => `Siirrä hyökkäys eteenpäin kortilla ${cards}, niin pääset itse pälkähästä.`,
         add: ({ card }) => `Lyö ${card} sivusta. Puolustajalla riittää kortteja kaadettavaksi, paina päälle.`,
         skipAdd: 'Älä lyö sivusta nyt. Säästä kortit parempaan hetkeen.',
+        noAdd: 'Sinulla ei ole yhtään korttia jonka voisi lyödä sivusta. Anna vuoron jatkua.',
       },
       ui: {
         attack: 'Hyökkää',

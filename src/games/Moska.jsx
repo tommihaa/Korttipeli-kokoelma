@@ -221,7 +221,8 @@ export function getAdvice(g, removed) {
 
   if (phase === 'add' && g.addQueue?.[0] === 0) {
     const addable = getAddable(g, 0);
-    if (!addable.length) return { type: 'skipAdd' };
+    // Ei lyötävää lainkaan ≠ päätös säästää kortteja: eri neuvo.
+    if (!addable.length) return { type: 'noAdd' };
     const def = players[defender];
     // Hard-lisäyskynnys (runAI: def.hand.length >= 2 && table.length < 5)
     if (!(def.hand.length >= 2 && table.length < 5)) return { type: 'skipAdd' };
@@ -1276,13 +1277,17 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
             const hlght = !isAtkSel && !isPassSel && !isAddSel && (
               selDefTarget ? canBeatTarget : (canDef || isMyAtk || isAddable || canPassCard)
             );
-            const dimmed = (isMyAdd && !isAddable && !isAddSel)
-              || (isMyDef && !!selDefTarget && !canBeatTarget && !isPassSel)
-              || (isMyAtk && selAtk.length > 0 && selAtk[0].r !== c.r);
+            const isAdv  = !isAtkSel && !isPassSel && !isAddSel && !!advice?.cardIds?.includes(c.id);
+            // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
+            const dimmed = advice?.cardIds?.length
+              ? !isAdv
+              : (isMyAdd && !isAddable && !isAddSel)
+                || (isMyDef && !!selDefTarget && !canBeatTarget && !isPassSel)
+                || (isMyAtk && selAtk.length > 0 && selAtk[0].r !== c.r);
             return (
               <Card key={c.id} card={c} large={!isMobile} small={isMobile}                 selected={!!(isAtkSel || isPassSel || isAddSel)}
                 highlight={!!hlght}
-                advice={!isAtkSel && !isPassSel && !isAddSel && !!advice?.cardIds?.includes(c.id)}
+                advice={isAdv}
                 dim={!!dimmed}
                 onClick={
                   isMyAtk ? () => humanToggleAtk(c)

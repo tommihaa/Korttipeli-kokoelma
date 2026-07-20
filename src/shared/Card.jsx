@@ -60,7 +60,7 @@ export default function Card({
   const shadow = justPlaced ? '0 0 0 3px rgba(201,168,76,0.85),0 0 18px rgba(201,168,76,0.5)'
     : reactHL ? '0 0 12px rgba(224,92,59,0.55)'
     : selected ? '0 0 16px rgba(91,168,212,0.7)'
-    : advice ? '0 0 14px rgba(192,132,252,0.65)'
+    : advice ? '0 0 0 3px #c084fc, 0 0 26px 6px rgba(192,132,252,0.85)'
     : highlight ? '0 0 14px rgba(201,168,76,0.6)'
     : pulse ? '0 0 8px rgba(91,168,212,0.35)'
     : h && clickable ? '0 6px 16px rgba(0,0,0,0.5)'
@@ -68,6 +68,7 @@ export default function Card({
 
   const transform = [
     selected ? 'translateY(-8px)' : '',
+    advice && !selected ? 'translateY(-6px) scale(1.04)' : '',
     h && clickable ? 'translateY(-4px) scale(1.05)' : '',
   ].filter(Boolean).join(' ') || 'none';
 
@@ -90,6 +91,7 @@ export default function Card({
         opacity: dim || disabled ? (disabled ? 0.38 : 0.35) : 1,
         animation: reactHL ? 'reactPulse 0.9s ease infinite'
           : justPlaced ? 'slotFlash 2.2s ease forwards'
+          : advice ? 'advicePulse 1.4s ease-in-out infinite'
           : undefined,
         overflow: 'hidden',
       }}

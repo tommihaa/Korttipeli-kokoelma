@@ -217,6 +217,7 @@ export const fr = {
         drawDiscard: ({ card }) => `Prends ${card} dans la défausse. Une petite carte visible vaut la peine.`,
         drawDeck: "La carte de la défausse ne t'aide pas. Pioche.",
         swapHere: ({ slot }) => `Échange la carte à la place ${slot}, cela vaut le coup dans cette chaîne.`,
+        swapForced: ({ slot }) => `Échange la carte à la place ${slot}. Tu as pioché dans la défausse, l'échange est donc obligatoire.`,
         stopSwap: "La carte est trop mauvaise pour la chaîne. Jette-la dans la défausse.",
       },
       altName: "Golf à six cartes",
@@ -365,7 +366,8 @@ export const fr = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Joue le groupe ${cards}. Plusieurs cartes à la fois vident la main au plus vite.`
-          : `Joue ${cards}. Cela garde tes paires et tes couleurs fortes pour plus tard.`,
+          : `Joue ${cards}.`,
+        playSavePair: ({ cards }) => `Joue ${cards}. Cela garde tes paires.`,
         playSeven: ({ card, suit }) => `Joue ${card} et exige ${suit}, c'est la couleur que tu as le plus.`,
         playAce: ({ card }) => `Joue ${card}. L'as fait piocher les autres et tu gagnes un tour bonus.`,
         draw: "Aucune de tes cartes ne convient. Pioche.",
@@ -435,7 +437,8 @@ export const fr = {
       advice: {
         capture: ({ card, targets }) => `Capture ${targets} avec ${card}. Amasse des points : piques, as et les cartes spéciales.`,
         captureMokki: ({ card }) => `Capture toute la table avec ${card}. C'est une rafle et cela rapporte un point de plus.`,
-        takeOwnBuild: ({ card }) => `Capture ta propre construction avec ${card}, avant qu'un adversaire ne la vole.`,
+        takeOwnBuild: ({ card }) => `Capture ta propre construction avec ${card}. Un adversaire peut avoir une carte qui la vole.`,
+        takeOwnBuildSafe: ({ card }) => `Capture ta propre construction avec ${card}. Personne ne peut plus la voler, les points sont donc assurés.`,
         stealBuild: ({ card }) => `Vole la construction de l'adversaire avec ${card}. Tu lui enlèves une capture toute prête.`,
         build: ({ card, value }) => `Construis la valeur ${value} avec ${card}. Tu as une autre carte pour la capturer au tour suivant.`,
         trail: ({ card }) => `Laisse ${card} sur la table. Il n'y a pas de capture avantageuse maintenant, et cette carte est la plus sûre à poser.`,
@@ -542,7 +545,7 @@ export const fr = {
         knock: "Toque ! Ta somme estimée est déjà assez basse.",
         drawDiscard: ({ card }) => `Prends ${card} dans la défausse. Une carte bon marché visible vaut mieux qu'une pioche à l'aveugle.`,
         drawDeck: "La carte de la défausse ne t'aide pas. Pioche.",
-        swapSlot: ({ slot }) => `Échange la carte piochée à la place ${slot}, cela baisse ta somme au maximum.`,
+        swapSlot: "Échange la carte piochée contre la carte mise en évidence, cela baisse ta somme au maximum.",
         discardDrawn: "Jette la carte piochée, elle n'améliore pas ta main.",
       },
       altName: "Golf (Polish Poker)",
@@ -602,6 +605,7 @@ export const fr = {
     maija: {
       advice: {
         attack: ({ cards }) => `Joue ${cards}. Attaque dans la couleur où tu as le plus de basses cartes et garde les atouts pour la défense.`,
+        attackTrumps: ({ cards }) => `Joue les atouts ${cards}. C'est maintenant que tu attaques avec eux, ne les garde pas pour la défense.`,
         attackMaija: ({ cards }) => `Joue ${cards} et débarrasse-toi de la Maija. Elle ne bat rien, en main ce n'est qu'un risque de perdre.`,
         beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite gagnante suffit, les atouts seulement quand tu y es forcé.`,
         take: "Tu ne peux pas les battre avantageusement. Prends les cartes en main.",
@@ -727,6 +731,7 @@ export const fr = {
         pass: ({ cards }) => `Renvoie l'attaque avec ${cards}, et tu t'en sors toi-même.`,
         add: ({ card }) => `Joue ${card} sur le côté. Le défenseur a encore des cartes à battre, alors insiste.`,
         skipAdd: "N'ajoute pas sur le côté maintenant. Garde tes cartes pour un meilleur moment.",
+        noAdd: "Tu n'as aucune carte à ajouter sur le côté. Laisse le tour continuer.",
       },
       altName: "le Durak",
       desc: 'Guerre de cartes totale : attaque, transmets, défends — et n\'oublie pas de frapper sur le flanc.',

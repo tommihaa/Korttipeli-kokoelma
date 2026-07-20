@@ -18,6 +18,11 @@
       body { background: #1f5a3f; font-family: Georgia, serif; }
       /* Näkyvä kultainen fokusrengas näppäimistökäyttäjille (ei hiirelle) */
       :focus-visible { outline: 2px solid #c9a84c; outline-offset: 2px; }
+      /* Mestarin neuvo: sykkivä purppurakorostus osoitetun kortin ympärillä */
+      @keyframes advicePulse {
+        0%, 100% { box-shadow: 0 0 0 3px #c084fc, 0 0 22px 4px rgba(192,132,252,0.75); }
+        50%      { box-shadow: 0 0 0 3px #c084fc, 0 0 34px 10px rgba(192,132,252,0.95); }
+      }
       /* Kunnioita käyttäjän liikkeenvähennysasetusta: sammuta animaatiot */
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {

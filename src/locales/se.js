@@ -219,6 +219,7 @@ export const se = {
         drawDiscard: ({ card }) => `Váldde ${card} bálkestanstohkosis. Oidnosis smávva goarta gánnáha.`,
         drawDeck: "Bálkestanstohkosa goarta ii veahket du. Váldde stohkosis.",
         swapHere: ({ slot }) => `Lonut goartta sadjái ${slot}, dat gánnáha dán ráiddus.`,
+        swapForced: ({ slot }) => `Lonut goartta sadjái ${slot}. Válddet goartta bálkestanstohkosis, danne lonuheapmi lea bákkus.`,
         stopSwap: "Goarta lea beare heittot ráidui. Bálkes dan eret.",
       },
       altName: 'guđa goartta golfa',
@@ -367,7 +368,8 @@ export const se = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Speala joavkku ${cards}. Máŋga goartta oktanaga gurrejit gieđa jođáneamosit.`
-          : `Speala ${cards}. Nu seastát buoremus goarttaidat maŋŋái.`,
+          : `Speala ${cards}.`,
+        playSavePair: ({ cards }) => `Speala ${cards}. Nu seastát páraid.`,
         playSeven: ({ card, suit }) => `Speala ${card} ja gáibit ${suit}, das dus leat eanemus goarttat.`,
         playAce: ({ card }) => `Speala ${card}. Ássa bágge earáid váldit goarttaid ja don oaččut liigevuoru.`,
         draw: "Ii oktage goarttastat heive. Váldde stohkosis.",
@@ -437,7 +439,8 @@ export const se = {
       advice: {
         capture: ({ card, targets }) => `Fáŋge ${targets} bákttiin ${card}. Čohkke poeaŋggaid: spáđut, ásat ja sierrabáktit.`,
         captureMokki: ({ card }) => `Fáŋge olles beavddi bákttiin ${card}. Dat lea bartta ja addá liigepoeaŋgga.`,
-        takeOwnBuild: ({ card }) => `Fáŋge iežat huksema bákttiin ${card}, ovdal go vuostebealli suoládit dan.`,
+        takeOwnBuild: ({ card }) => `Fáŋge iežat huksema bákttiin ${card}. Vuostebeallái sáhttá leat goarta mainna son suoládit dan.`,
+        takeOwnBuildSafe: ({ card }) => `Fáŋge iežat huksema bákttiin ${card}. Ii oktage sáhte dan šat suoládit, danne čuoggát leat sihkkarat.`,
         stealBuild: ({ card }) => `Suoládit vuostebeali huksema bákttiin ${card}. Válddát sus gárvves fáŋgema eret.`,
         build: ({ card, value }) => `Hukse árvvu ${value} bákttiin ${card}. Dus lea nubbi báktti mainna fáŋggát dan boahtte vuorus.`,
         trail: ({ card }) => `Guođe ${card} beavdái. Dál ii leat ávkkálaš fáŋgen, ja dát báktti lea sihkkarumos guođđit.`,
@@ -544,7 +547,7 @@ export const se = {
         knock: "Goalkkut! Du árvvoštallon submi lea juo doarvái unni.",
         drawDiscard: ({ card }) => `Váldde ${card} bálkestanstohkosis. Oidnosis hálbbes goarta lea sihkkareabbo go čahppes váldin.`,
         drawDeck: "Bálkestanstohkosa goarta ii veahket du. Váldde stohkosis.",
-        swapSlot: ({ slot }) => `Lonut váldojuvvon goartta sadjái ${slot}, dat unnida submi eanemusat.`,
+        swapSlot: "Lonut váldojuvvon goartta deattuhuvvon goartta sadjái, dat unnida submi eanemusat.",
         discardDrawn: "Bálkes váldojuvvon goartta eret, dat ii buorit gieđa.",
       },
       altName: 'golfa (coahkkaleapmi)',
@@ -604,6 +607,7 @@ export const se = {
     maija: {
       advice: {
         attack: ({ cards }) => `Čájet ${cards}. Fallet dan ivnnis gos leat eanemus vuollegaččat ja seaille trumfaid bealuštussii.`,
+        attackTrumps: ({ cards }) => `Speala duollagiid ${cards}. Dál falehat daiguin, ale seastte daid bealuštussii.`,
         attackMaija: ({ cards }) => `Čájet ${cards} ja beasa Maijas eret. Dat ii vuoitte maidege, gieđas dat lea dušše vuoitáhallan riska.`,
         beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti riekta, trumfat easkka go bággehallat.`,
         take: "It sáhte vuoitit daid ávkkiin. Váldde báktiid gihtii.",
@@ -729,6 +733,7 @@ export const se = {
         pass: ({ cards }) => `Sádde fallehusa viidáseappot bákttiin ${cards}, de beasat ieš eret.`,
         add: ({ card }) => `Čájet ${card} bealde. Bealuštusas leat ain báktit maid vuoitit, nappo deatte.`,
         skipAdd: "Ale lasit bealde dál. Seaille báktiid buoret bottui.",
+        noAdd: "Dus ii leat goarta maid sáhtášit lasihit. Divtte vuoru joatkit.",
       },
       altName: 'Durak',
       desc: 'Ollislaš goartasoahti: fallehat, sirdde, bealušta ja muitte čuohpat bálddas.',

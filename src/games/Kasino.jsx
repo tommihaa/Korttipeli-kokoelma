@@ -261,7 +261,10 @@ export function getAdvice(g, playerIdx, buildCap) {
   for (const build of ownBuilds) {
     const capturer = p.hand.find(hc => handVal(hc) === build.value);
     if (capturer) {
-      return { type: 'takeOwnBuild', handCard: capturer, buildId: build.id,
+      // Kiirettä ei luvata ilman laskettua riskiä: onko kenelläkään vastustajalla
+      // mahdollisesti kortti jolla rakennelman voi varastaa (julkinen tieto).
+      const stealRisk = pAnyOpponentHas(g, playerIdx, build.value);
+      return { type: stealRisk > 0 ? 'takeOwnBuild' : 'takeOwnBuildSafe', handCard: capturer, buildId: build.id,
         tableCards: findTableBonus(g.table, build.value), value: build.value };
     }
   }
@@ -1455,6 +1458,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
                   small={isMobile}
                   selected={!!isSel || !!isAiPick}
                   advice={!isSel && !isAiPick && !!advice?.tableCardIds?.includes(c.id)}
+                  dim={!!advice?.handCardId && !advice?.tableCardIds?.includes(c.id)}
                   highlight={isMyTurn && !isSel}
                   justPlaced={c.id === jpId}
                   onClick={isMyTurn && !allBots ? () => humanToggleTable(c) : undefined}
@@ -1539,7 +1543,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
               <Card key={c.id} card={c} small={isMobile} showBadges
                 highlight={valid}
                 advice={!!advice?.handCardId && advice.handCardId === c.id}
-                dim={isMyTurn && hasSelection && !valid}
+                dim={advice?.handCardId
+                  ? advice.handCardId !== c.id
+                  : isMyTurn && hasSelection && !valid}
                 onClick={isMyTurn && !allBots ? () => humanSelectHand(c) : undefined}
                 backStyle={BACKS[cardBack]}
               />

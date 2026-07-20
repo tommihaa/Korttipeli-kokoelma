@@ -219,6 +219,7 @@ export const la = {
         drawDiscard: ({ card }) => `Sume ${card} ex acervo abiecto. Charta parva conspicua digna est.`,
         drawDeck: "Charta abiecta te non iuvat. Trahe e fasce.",
         swapHere: ({ slot }) => `Muta chartam in locum ${slot}, in hac catena expedit.`,
+        swapForced: ({ slot }) => `Muta chartam in locum ${slot}. Ex acervo abiecto traxisti, ergo mutatio necessaria est.`,
         stopSwap: "Charta catenae nimis mala est. Abice eam in acervum.",
       },
       altName: 'Golf sex chartarum',
@@ -367,7 +368,8 @@ export const la = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Lude gregem ${cards}. Plures chartae simul manum celerrime vacuant.`
-          : `Lude ${cards}. Sic paria et colores validissimos in posterum servas.`,
+          : `Lude ${cards}.`,
+        playSavePair: ({ cards }) => `Lude ${cards}. Sic paria servas.`,
         playSeven: ({ card, suit }) => `Lude ${card} et posce ${suit}, cuius plurimum habes.`,
         playAce: ({ card }) => `Lude ${card}. As ceteros trahere cogit et tibi datur iterum ludendi copia.`,
         draw: "Nulla chartarum tuarum convenit. Trahe e fasce.",
@@ -437,7 +439,8 @@ export const la = {
       advice: {
         capture: ({ card, targets }) => `Cape ${targets} charta ${card}. Puncta collige: picas, asses et chartas speciales.`,
         captureMokki: ({ card }) => `Cape totam mensam charta ${card}. Casa est et punctum additum dat.`,
-        takeOwnBuild: ({ card }) => `Cape structuram tuam charta ${card}, priusquam adversarius eam furetur.`,
+        takeOwnBuild: ({ card }) => `Cape structuram tuam charta ${card}. Adversarius chartam habere potest qua eam furetur.`,
+        takeOwnBuildSafe: ({ card }) => `Cape structuram tuam charta ${card}. Nemo eam iam furari potest, ergo puncta certa sunt.`,
         stealBuild: ({ card }) => `Furare structuram adversarii charta ${card}. Captionem paratam ei aufers.`,
         build: ({ card, value }) => `Strue valorem ${value} charta ${card}. Alteram chartam habes qua eam proximo tractu capias.`,
         trail: ({ card }) => `Relinque ${card} in mensa. Nulla captio utilis nunc est, et haec charta tutissime deponitur.`,
@@ -544,7 +547,7 @@ export const la = {
         knock: "Pulsa! Summa tua aestimata iam satis parva est.",
         drawDiscard: ({ card }) => `Sume ${card} ex acervo abiecto. Charta vilis conspicua tutior est quam tractus caecus.`,
         drawDeck: "Charta abiecta te non iuvat. Trahe e fasce.",
-        swapSlot: ({ slot }) => `Muta chartam tractam in locum ${slot}, ita summa maxime minuitur.`,
+        swapSlot: "Muta chartam tractam pro charta insignita, ita summa maxime minuitur.",
         discardDrawn: "Abice chartam tractam, manum non meliorem facit.",
       },
       altName: 'Golf (Pulsatio)',
@@ -604,6 +607,7 @@ export const la = {
     maija: {
       advice: {
         attack: ({ cards }) => `Lude ${cards}. Oppugna in colore ubi plurimas chartas humiles habes, et triumphos defensioni serva.`,
+        attackTrumps: ({ cards }) => `Lude triumphos ${cards}. Nunc his oppugnas, noli eos defensioni servare.`,
         attackMaija: ({ cards }) => `Lude ${cards} et Maija libera te. Nihil vincit, in manu tantum periculum amissionis est.`,
         beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima vincens sufficit, triumphi tantum coactus.`,
         take: "Non potes eas cum lucro vincere. Sume chartas in manum.",
@@ -729,6 +733,7 @@ export const la = {
         pass: ({ cards }) => `Transfer impetum charta ${cards}, et ipse evades.`,
         add: ({ card }) => `Lude ${card} a latere. Defensor adhuc chartas ad vincendum habet, ergo insta.`,
         skipAdd: "Noli nunc a latere addere. Serva chartas in tempus melius.",
+        noAdd: "Nullam chartam habes quam a latere addas. Sine vicem procedere.",
       },
       altName: 'Durak',
       desc: 'Totalis chartarum bellum: oppugna, transfer, defende et memento a latere ferire.',

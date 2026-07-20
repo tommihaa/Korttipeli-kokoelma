@@ -219,6 +219,7 @@ export const ro = {
         drawDiscard: ({ card }) => `Ia ${card} din teancul de aruncate. O carte mică vizibilă merită luată.`,
         drawDeck: "Cartea din teancul de aruncate nu te ajută. Trage din pachet.",
         swapHere: ({ slot }) => `Schimbă cartea pe locul ${slot}, merită în acest lanț.`,
+        swapForced: ({ slot }) => `Schimbă cartea pe locul ${slot}. Ai tras din teancul de aruncate, deci schimbul este obligatoriu.`,
         stopSwap: "Cartea e prea slabă pentru lanț. Arunc-o în teanc.",
       },
       altName: 'Golf (șase cărți)',
@@ -367,7 +368,8 @@ export const ro = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Joacă grupul ${cards}. Mai multe cărți deodată golesc mâna cel mai repede.`
-          : `Joacă ${cards}. Așa îți păstrezi perechile și culorile tari pentru mai târziu.`,
+          : `Joacă ${cards}.`,
+        playSavePair: ({ cards }) => `Joacă ${cards}. Așa îți păstrezi perechile.`,
         playSeven: ({ card, suit }) => `Joacă ${card} și cere ${suit}, din ea ai cele mai multe.`,
         playAce: ({ card }) => `Joacă ${card}. Asul îi pune pe ceilalți să tragă, iar tu primești o tură bonus.`,
         draw: "Nicio carte de-a ta nu se potrivește. Trage din pachet.",
@@ -437,7 +439,8 @@ export const ro = {
       advice: {
         capture: ({ card, targets }) => `Capturează ${targets} cu ${card}. Adună puncte: pică, așii și cărțile speciale.`,
         captureMokki: ({ card }) => `Capturează toată masa cu ${card}. Este o mătură și aduce un punct în plus.`,
-        takeOwnBuild: ({ card }) => `Capturează-ți propria construcție cu ${card}, înainte ca un adversar să o fure.`,
+        takeOwnBuild: ({ card }) => `Capturează-ți propria construcție cu ${card}. Un adversar poate avea o carte cu care ți-o fură.`,
+        takeOwnBuildSafe: ({ card }) => `Capturează-ți propria construcție cu ${card}. Nimeni nu o mai poate fura, deci punctele sunt sigure.`,
         stealBuild: ({ card }) => `Fură construcția adversarului cu ${card}. Îi iei o capturare gata făcută.`,
         build: ({ card, value }) => `Construiește valoarea ${value} cu ${card}. Ai altă carte cu care o capturezi la tura următoare.`,
         trail: ({ card }) => `Lasă ${card} pe masă. Acum nu e nicio capturare avantajoasă, iar această carte e cea mai sigură de lăsat.`,
@@ -544,7 +547,7 @@ export const ro = {
         knock: "Bate! Suma ta estimată e deja destul de mică.",
         drawDiscard: ({ card }) => `Ia ${card} din teancul de aruncate. O carte ieftină vizibilă e mai sigură decât o tragere oarbă.`,
         drawDeck: "Cartea din teancul de aruncate nu te ajută. Trage din pachet.",
-        swapSlot: ({ slot }) => `Schimbă cartea trasă pe locul ${slot}, îți scade suma cel mai mult.`,
+        swapSlot: "Schimbă cartea trasă cu cartea evidențiată, îți scade suma cel mai mult.",
         discardDrawn: "Aruncă respectiva carte trasă, nu îți îmbunătățește mâna.",
       },
       altName: 'Golf (Ciocănit)',
@@ -604,6 +607,7 @@ export const ro = {
     maija: {
       advice: {
         attack: ({ cards }) => `Joacă ${cards}. Atacă în culoarea unde ai cele mai multe cărți mici și păstrează atuurile pentru apărare.`,
+        attackTrumps: ({ cards }) => `Joacă atuurile ${cards}. Acum ataci cu ele, nu le păstra pentru apărare.`,
         attackMaija: ({ cards }) => `Joacă ${cards} și scapă de Maija. Nu bate nimic, în mână e doar un risc de pierdere.`,
         beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică câștigătoare, atuurile doar când ești silit.`,
         take: "Nu le poți bate cu folos. Ia cărțile în mână.",
@@ -729,6 +733,7 @@ export const ro = {
         pass: ({ cards }) => `Pasează atacul mai departe cu ${cards}, și scapi tu însuți.`,
         add: ({ card }) => `Joacă ${card} din lateral. Apărătorul mai are cărți de bătut, așa că insistă.`,
         skipAdd: "Nu adăuga acum din lateral. Păstrează cărțile pentru un moment mai bun.",
+        noAdd: "Nu ai nicio carte pe care să o adaugi din lateral. Lasă tura să continue.",
       },
       altName: 'Durak',
       desc: 'Război total de cărți: atacă, mută, apără și nu uita să lovești din lateral.',

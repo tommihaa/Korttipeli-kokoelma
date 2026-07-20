@@ -217,6 +217,7 @@ export const sv = {
         drawDiscard: ({ card }) => `Ta ${card} från slänghögen. Ett synligt lågt kort är värt att ta.`,
         drawDeck: "Slänghögens kort hjälper dig inte. Dra från leken.",
         swapHere: ({ slot }) => `Byt in kortet på plats ${slot}, det lönar sig i den här kedjan.`,
+        swapForced: ({ slot }) => `Byt in kortet på plats ${slot}. Du drog från slänghögen, så bytet är tvunget.`,
         stopSwap: "Kortet är för dåligt för kedjan. Släng det på slänghögen.",
       },
       altName: "Sexkortsgolf",
@@ -365,7 +366,8 @@ export const sv = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Spela gruppen ${cards}. Flera kort på en gång tömmer handen snabbast.`
-          : `Spela ${cards}. Det sparar dina par och starkaste färger till senare.`,
+          : `Spela ${cards}.`,
+        playSavePair: ({ cards }) => `Spela ${cards}. Det sparar dina par.`,
         playSeven: ({ card, suit }) => `Spela ${card} och kräv ${suit}, den färgen har du mest av.`,
         playAce: ({ card }) => `Spela ${card}. Ässet tvingar de andra att dra och du får en bonustur.`,
         draw: "Inget av dina kort passar. Dra från leken.",
@@ -435,7 +437,8 @@ export const sv = {
       advice: {
         capture: ({ card, targets }) => `Fånga ${targets} med ${card}. Samla poäng: spader, ess och specialkorten.`,
         captureMokki: ({ card }) => `Fånga hela bordet med ${card}. Det är ett svep och ger en extrapoäng.`,
-        takeOwnBuild: ({ card }) => `Fånga ditt eget bygge med ${card}, innan en motståndare stjäl det.`,
+        takeOwnBuild: ({ card }) => `Fånga ditt eget bygge med ${card}. En motståndare kan ha ett kort som stjäl det.`,
+        takeOwnBuildSafe: ({ card }) => `Fånga ditt eget bygge med ${card}. Ingen kan stjäla det längre, så poängen är säkra.`,
         stealBuild: ({ card }) => `Stjäl motståndarens bygge med ${card}. Det tar en färdig fångst ifrån honom.`,
         build: ({ card, value }) => `Bygg värde ${value} med ${card}. Du har ett annat kort att fånga det med nästa tur.`,
         trail: ({ card }) => `Lägg ${card} på bordet. Ingen lönsam fångst finns nu, och det här kortet är säkrast att lämna.`,
@@ -542,7 +545,7 @@ export const sv = {
         knock: "Knacka! Din uppskattade summa är redan tillräckligt låg.",
         drawDiscard: ({ card }) => `Ta ${card} från slänghögen. Ett synligt billigt kort slår ett blint drag.`,
         drawDeck: "Slänghögens kort hjälper dig inte. Dra från leken.",
-        swapSlot: ({ slot }) => `Byt in det dragna kortet på plats ${slot}, det sänker din summa mest.`,
+        swapSlot: "Byt det dragna kortet mot det markerade kortet, det sänker din summa mest.",
         discardDrawn: "Släng det dragna kortet, det förbättrar inte din hand.",
       },
       altName: "Golf (kortspel)",
@@ -602,6 +605,7 @@ export const sv = {
     maija: {
       advice: {
         attack: ({ cards }) => `Spela ${cards}. Anfall i färgen där du har mest lågt, och spara trumf till försvaret.`,
+        attackTrumps: ({ cards }) => `Spela trumfen ${cards}. Nu attackerar du med dem, spara dem inte till försvaret.`,
         attackMaija: ({ cards }) => `Spela ${cards} och bli av med Maija. Den kan inte slå något, så på handen är den bara en förlustrisk.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det minsta vinnande räcker, trumf först när du måste.`,
         take: "Du kan inte slå dem lönsamt. Ta korten på handen.",
@@ -727,6 +731,7 @@ export const sv = {
         pass: ({ cards }) => `Skjut vidare anfallet med ${cards}, så slipper du undan själv.`,
         add: ({ card }) => `Lägg ${card} från sidan. Försvararen har fortfarande kort att slå med, så tryck på.`,
         skipAdd: "Lägg inte från sidan nu. Spara korten till ett bättre tillfälle.",
+        noAdd: "Du har inget kort att lägga till från sidan. Låt turen fortsätta.",
       },
       altName: "Durak (ryskt kortspel)",
       desc: 'Totalt kortkrig: anfall, skicka vidare, försvara — och kom ihåg att slå från sidan.',

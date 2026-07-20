@@ -1174,10 +1174,12 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {G.swapData.eligible.map(c => {
                 const isSel = !!selected.find(s => s.id === c.id);
+                const isAdv = !isSel && !!advice?.cardIds?.includes(c.id);
                 return (
                   <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                     selected={isSel} highlight={!isSel}
-                    advice={!isSel && !!advice?.cardIds?.includes(c.id)}
+                    advice={isAdv}
+                    dim={!!advice?.cardIds?.length && !isAdv}
                     justPlaced={jpIds.has(c.id)}
                     onClick={() => toggleCard(c)}
                     backStyle={BACKS[cardBack]}
@@ -1211,12 +1213,16 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
             const playable = isMyTurn && !mustSkip && canPlay(c, G.top, G.rules);
             const sameRank = selected.length > 0 && selected[0].r === c.r;
             const hl       = isMyTurn && !mustSkip && playable && !isSel && (selected.length === 0 || sameRank);
-            const dimmed   = (isMyTurn && !mustSkip && !playable && !isSel) || (isSwapPhase && !isSel);
+            const isAdv    = !isSel && !!advice?.cardIds?.includes(c.id);
+            // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
+            const dimmed   = advice?.cardIds?.length
+              ? !isAdv
+              : ((isMyTurn && !mustSkip && !playable && !isSel) || (isSwapPhase && !isSel));
             return (
               <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
-                advice={!isSel && !!advice?.cardIds?.includes(c.id)}
+                advice={isAdv}
                 dim={!!dimmed}
                 justPlaced={jpIds.has(c.id)}
                 onClick={(isMyTurn && !mustSkip && playable) ? () => toggleCard(c) : undefined}

@@ -947,7 +947,11 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
             const isSel    = selCard?.id === c.id;
             const playable = (isMyTurn || isBonusTurn) && isPlayable(c, G.rows);
             const hl       = isGiving ? !isSel : (playable && !isSel);
-            const dimmed   = isGiving ? false : ((isMyTurn || isBonusTurn) && !playable && !isSel);
+            const isAdv    = !isSel && !!advice?.cardIds?.includes(c.id);
+            // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
+            const dimmed   = advice?.cardIds?.length
+              ? !isAdv
+              : isGiving ? false : ((isMyTurn || isBonusTurn) && !playable && !isSel);
             const onClick  = isGiving
               ? () => setSel(prev => prev?.id === c.id ? null : c)
               : (isMyTurn || isBonusTurn) ? () => humanSelect(c) : undefined;
@@ -955,7 +959,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
               <Card key={c.id} card={c} small={!isMobile} xsmall={isMobile}
                 selected={isSel}
                 highlight={!!hl}
-                advice={!isSel && !!advice?.cardIds?.includes(c.id)}
+                advice={isAdv}
                 dim={!!dimmed}
                 onClick={onClick}
                 backStyle={BACKS[cardBack]}

@@ -217,6 +217,7 @@ export const it = {
         drawDiscard: ({ card }) => `Prendi ${card} dagli scarti. Una carta bassa visibile vale la pena.`,
         drawDeck: "La carta degli scarti non ti aiuta. Pesca dal mazzo.",
         swapHere: ({ slot }) => `Scambia la carta nel posto ${slot}, conviene in questa catena.`,
+        swapForced: ({ slot }) => `Scambia la carta nel posto ${slot}. Hai pescato dagli scarti, quindi lo scambio è obbligatorio.`,
         stopSwap: "La carta è troppo scarsa per la catena. Buttala negli scarti.",
       },
       altName: "Golf a sei carte",
@@ -365,7 +366,8 @@ export const it = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Gioca il gruppo ${cards}. Più carte in una volta svuotano la mano più in fretta.`
-          : `Gioca ${cards}. Così conservi le coppie e i semi forti per dopo.`,
+          : `Gioca ${cards}.`,
+        playSavePair: ({ cards }) => `Gioca ${cards}. Così conservi le coppie.`,
         playSeven: ({ card, suit }) => `Gioca ${card} e richiedi ${suit}, è il seme che hai di più.`,
         playAce: ({ card }) => `Gioca ${card}. L'asso fa pescare gli altri e tu ottieni un turno bonus.`,
         draw: "Nessuna delle tue carte va bene. Pesca dal mazzo.",
@@ -435,7 +437,8 @@ export const it = {
       advice: {
         capture: ({ card, targets }) => `Cattura ${targets} con ${card}. Raccogli punti: picche, assi e le carte speciali.`,
         captureMokki: ({ card }) => `Cattura tutto il tavolo con ${card}. È una scopa e vale un punto in più.`,
-        takeOwnBuild: ({ card }) => `Cattura la tua costruzione con ${card}, prima che un avversario la rubi.`,
+        takeOwnBuild: ({ card }) => `Cattura la tua costruzione con ${card}. Un avversario può avere una carta che te la ruba.`,
+        takeOwnBuildSafe: ({ card }) => `Cattura la tua costruzione con ${card}. Nessuno può più rubarla, quindi i punti sono sicuri.`,
         stealBuild: ({ card }) => `Ruba la costruzione dell'avversario con ${card}. Gli togli una cattura già pronta.`,
         build: ({ card, value }) => `Costruisci il valore ${value} con ${card}. Hai un'altra carta per catturarla al turno seguente.`,
         trail: ({ card }) => `Lascia ${card} sul tavolo. Ora non c'è una cattura vantaggiosa, e questa carta è la più sicura da lasciare.`,
@@ -542,7 +545,7 @@ export const it = {
         knock: "Bussa! La tua somma stimata è già abbastanza bassa.",
         drawDiscard: ({ card }) => `Prendi ${card} dagli scarti. Una carta economica visibile batte una pescata alla cieca.`,
         drawDeck: "La carta degli scarti non ti aiuta. Pesca dal mazzo.",
-        swapSlot: ({ slot }) => `Scambia la carta pescata nel posto ${slot}, abbassa di più la tua somma.`,
+        swapSlot: "Scambia la carta pescata con la carta evidenziata, abbassa di più la tua somma.",
         discardDrawn: "Butta la carta pescata negli scarti, non migliora la tua mano.",
       },
       altName: "Golf (Polish Poker)",
@@ -602,6 +605,7 @@ export const it = {
     maija: {
       advice: {
         attack: ({ cards }) => `Gioca ${cards}. Attacca nel seme dove hai più carte basse e conserva le briscole per la difesa.`,
+        attackTrumps: ({ cards }) => `Gioca le briscole ${cards}. Ora attacchi con quelle, non tenerle per la difesa.`,
         attackMaija: ({ cards }) => `Gioca ${cards} e libérati della Maija. Non batte nulla, in mano è solo un rischio di perdere.`,
         beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la vincente più bassa, briscole solo quando sei costretto.`,
         take: "Non puoi batterle con vantaggio. Prendi le carte in mano.",
@@ -727,6 +731,7 @@ export const it = {
         pass: ({ cards }) => `Passa l'attacco con ${cards}, così te la cavi tu stesso.`,
         add: ({ card }) => `Gioca ${card} di fianco. Il difensore ha ancora carte da battere, quindi insisti.`,
         skipAdd: "Non aggiungere di fianco ora. Conserva le carte per un momento migliore.",
+        noAdd: "Non hai nessuna carta da aggiungere di lato. Lascia proseguire il turno.",
       },
       altName: "Durak",
       desc: 'Guerra di carte totale: attacca, sposta, difendi — e ricordati di colpire di fianco.',

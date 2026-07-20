@@ -217,6 +217,7 @@ export const is = {
         drawDiscard: ({ card }) => `Taktu ${card} úr kastbunkanum. Sýnilegt lágt spil er þess virði að taka.`,
         drawDeck: "Spil kastbunkans hjálpar þér ekki. Dragðu úr stokknum.",
         swapHere: ({ slot }) => `Skiptu spilinu í sæti ${slot}, það borgar sig í þessari keðju.`,
+        swapForced: ({ slot }) => `Skiptu spilinu í sæti ${slot}. Þú dróst úr kastbunkanum, svo skiptin eru skylda.`,
         stopSwap: "Spilið er of lélegt fyrir keðjuna. Kastaðu því í kastbunkann.",
       },
       altName: "finnskur minnisleikur",
@@ -365,7 +366,8 @@ export const is = {
       advice: {
         play: ({ cards, n }) => n > 1
           ? `Spilaðu hópinn ${cards}. Fleiri spil í einu tæma höndina hraðast.`
-          : `Spilaðu ${cards}. Það geymir pörin þín og sterkustu litina þar til síðar.`,
+          : `Spilaðu ${cards}.`,
+        playSavePair: ({ cards }) => `Spilaðu ${cards}. Það geymir pörin þín.`,
         playSeven: ({ card, suit }) => `Spilaðu ${card} og krefstu ${suit}, þann lit áttu mest af.`,
         playAce: ({ card }) => `Spilaðu ${card}. Ásinn lætur hina draga og þú færð aukaumferð.`,
         draw: "Ekkert spilanna þinna passar. Dragðu úr stokknum.",
@@ -435,7 +437,8 @@ export const is = {
       advice: {
         capture: ({ card, targets }) => `Hremmdu ${targets} með ${card}. Safnaðu stigum: spaðar, ásar og sérspilin.`,
         captureMokki: ({ card }) => `Hremmdu allt borðið með ${card}. Það er sópun og gefur aukastig.`,
-        takeOwnBuild: ({ card }) => `Hremmdu þína eigin byggingu með ${card}, áður en andstæðingur stelur henni.`,
+        takeOwnBuild: ({ card }) => `Hremmdu þína eigin byggingu með ${card}. Andstæðingur gæti átt spil sem stelur henni.`,
+        takeOwnBuildSafe: ({ card }) => `Hremmdu þína eigin byggingu með ${card}. Enginn getur stolið henni lengur, svo stigin eru örugg.`,
         stealBuild: ({ card }) => `Stelu byggingu andstæðingsins með ${card}. Þú tekur tilbúna hremmingu frá honum.`,
         build: ({ card, value }) => `Byggðu gildið ${value} með ${card}. Þú átt annað spil til að hremma hana í næstu umferð.`,
         trail: ({ card }) => `Skildu ${card} eftir á borðinu. Það er engin arðbær hremming núna og þetta spil er öruggast að leggja frá.`,
@@ -542,7 +545,7 @@ export const is = {
         knock: "Bankaðu! Áætluð summa þín er þegar nógu lág.",
         drawDiscard: ({ card }) => `Taktu ${card} úr kastbunkanum. Sýnilegt ódýrt spil er öruggara en blindur dráttur.`,
         drawDeck: "Spil kastbunkans hjálpar þér ekki. Dragðu úr stokknum.",
-        swapSlot: ({ slot }) => `Skiptu dregna spilinu í sæti ${slot}, það lækkar summuna þína mest.`,
+        swapSlot: "Skiptu dregna spilinu út fyrir auðkennda spilið, það lækkar summuna þína mest.",
         discardDrawn: "Kastaðu dregna spilinu, það bætir ekki höndina þína.",
       },
       altName: "Golf (spil)",
@@ -602,6 +605,7 @@ export const is = {
     maija: {
       advice: {
         attack: ({ cards }) => `Spilaðu ${cards}. Ráðstu í litnum þar sem þú átt mest af lágu og geymdu trompin til varnar.`,
+        attackTrumps: ({ cards }) => `Spilaðu trompunum ${cards}. Nú ræðstu á með þeim, geymdu þau ekki í vörn.`,
         attackMaija: ({ cards }) => `Spilaðu ${cards} og losaðu þig við Maija. Hún slær ekkert, á hendinni er hún bara taphætta.`,
         beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi dugar, tromp aðeins þegar þú neyðist.`,
         take: "Þú getur ekki slegið þau með ávinningi. Taktu spilin á höndina.",
@@ -727,6 +731,7 @@ export const is = {
         pass: ({ cards }) => `Sendu árásina áfram með ${cards}, þá sleppur þú sjálfur.`,
         add: ({ card }) => `Leggðu ${card} frá hlið. Verjandinn á enn spil til að slá, svo þrýstu á.`,
         skipAdd: "Ekki bæta við frá hlið núna. Geymdu spilin fyrir betri stund.",
+        noAdd: "Þú átt ekkert spil til að leggja við frá hlið. Láttu umferðina halda áfram.",
       },
       altName: "Durak",
       desc: 'Allsherjar spilastríð: sæktu, færðu, verðu — og mundu að slá frá hlið.',
