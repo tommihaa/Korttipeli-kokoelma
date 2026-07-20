@@ -94,6 +94,16 @@ Kolme tasoa (UI-nimet: **Oppipoika / Kisälli / Mestari**):
    - **Ryhmä vaihtaa maan sellaiseksi jota on enemmän jäljellä kädessä** ← (maanvaihto-optimointi)
 4. **Muuten säästä pari** ja pelaa yksittäinen suoran maan kortti
 
+**Järjestyssääntö koskee KAIKKEA ryhmälyöntiä, myös ässän bonusvuoroa.** Kohta 2 ei ole
+`aiBestPlay`:n yksityisasia vaan pelin sääntö: yhdistävä kortti pelataan ensin, jolloin se jää
+alimmaiseksi, ja ryhmän viimeinen kortti jää päällimmäiseksi ja määrää seuraavan pelaajan maan.
+
+Ässän bonusvuorolla yhdistävä maa on **bonusmaa** (ässän maa), ei lyöntipakan päällimmäisen maa.
+Ihmispelaajalta tämä on pakotettu käyttöliittymässä (ensimmäisen valitun kortin on oltava
+bonusmaata, muuten `wrongSuit`), ja `aiAceBonusDecision` järjestää bottiryhmän samoin.
+Korjattu 20.7.2026: aiemmin bonusryhmä rakennettiin pelkällä suodatuksella käden järjestyksessä,
+jolloin bonusmaan kortti saattoi jäädä päällimmäiseksi ja ryhmälyönnin maanvaihto menetettiin.
+
 ### Yksittäiskortin valinta
 - Jos vastustajalla ≤ 2 korttia → suosi ässää (rangaistus + bonusvuoro)
 - 3–5 korttia kädessä → pelaa kortti joka jättää suurimman saman arvon ryhmän

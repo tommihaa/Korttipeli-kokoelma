@@ -7,6 +7,13 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '20.7.2026',
+    items: [
+      'Seiska, sääntökorjaus ässän bonusvuoroon: kun tekoäly lyö bonusvuorollaan useamman saman arvoisen kortin kerralla, se pelaa nyt bonusmaan kortin ensin eli alimmaiseksi, jolloin ryhmän viimeinen kortti jää päällimmäiseksi ja määrää seuraavan maan. Aiemmin kortit lähtivät käden järjestyksessä, jolloin maa saattoi jäädä vaihtumatta ja seuraavan pelaajan siirrot menivät toisin kuin sääntö edellyttää. Ihmispelaajalta oikea järjestys on aina vaadittu, joten tekoäly noudattaa nyt samaa sääntöä.',
+      'Seiska: kun tekoäly pelaa seiskan noston jälkeen, valittu maa kirjautuu taas tapahtumalokiin. Aiemmin rivi jäi näissä tilanteissa pois, jolloin lokista ei voinut lukea mihin maahan peli vaihtui.',
+    ],
+  },
+  {
     date: '19.7.2026',
     items: [
       'Uusi ominaisuus kaikissa yhdeksässä pelissä: Kysy Mestarilta neuvoa. Omalla vuorolla voi painaa 🧙-nappia, jolloin Mestari-tason tekoäly kertoo mitä se pelaisi sinun tilanteessasi: ehdotettu kortti korostuu violetilla ja lyhyt perustelu näkyy kuplassa. Nyt mukana myös monivaiheiset pelit (Moska, Paskahousu, Kasino, Maija), joissa neuvo tunnistaa vaiheen: hyökkää, kaada, siirrä, lisää, rakenna tai jätä. Kasinossa korostuvat yhtä aikaa käsikortti, pöytäkohteet ja rakennelma. Neuvo käyttää vain samaa tietoa jonka itsekin näet, joten se on reilu oppimisen apu.',

@@ -180,9 +180,13 @@ function aiAceBonusDecision(hand, players, activePlayer, finished, aceBonusSuit,
   const isHard = level === 'hard';
   // Bonuskortti: ässän maa, ei 7 eikä A (kettinkiässä pysytään siistinä)
   const bonusCard = hand.find(c => c.s === aceBonusSuit && c.r !== '7' && c.r !== 'A');
-  // Ryhmä: bonuskortti + saman arvon kortit muilla mailla (pari/kolmoset/neloset)
+  // Ryhmä: bonuskortti + saman arvon kortit muilla mailla (pari/kolmoset/neloset).
+  // Yhdistävä kortti (bonusmaa) ensin — se tulee alimmaiseksi pinoon, ja ryhmän
+  // viimeinen kortti jää päällimmäiseksi ja määrää seuraavan maan. Sama sääntö
+  // kuin tavallisessa ryhmälyönnissä (aiBestPlay) ja sama jota ihmiseltä
+  // vaaditaan (selected[0].s === aceBonus).
   const bonusGroup = bonusCard
-    ? hand.filter(c => c.r === bonusCard.r && c.r !== '7' && c.r !== 'A')
+    ? [bonusCard, ...hand.filter(c => c.r === bonusCard.r && c.r !== '7' && c.r !== 'A' && c.id !== bonusCard.id)]
     : [];
   const applyLogic = level !== 'beginner' && (level !== 'normal' || rand() < 0.5);
   const threshold  = isHard ? 2 : 3;
@@ -612,8 +616,12 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
         addLog(M.chooseSuit);
         return;
       } else {
+        // Kirjaa vaadittu maa aina. Tähän haaraan tullaan vain botilla (ihminen ilman
+        // suitChoicea ohjautuu awaiting_suit-haaraan yllä), joten kaksoiskirjausta ei
+        // synny. Aiempi !suitChoice-ehto vaiensi maarivin silloin kun botti pelasi
+        // seiskan noston jälkeen ja kutsuja oli laskenut maan valmiiksi.
         const suit = suitChoice || aiSuit(newHand);
-        if (!suitChoice) addLog(M.sevenPlayed(isH, p.name, suit));
+        addLog(M.sevenPlayed(isH, p.name, suit));
         g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
       }
     } else {

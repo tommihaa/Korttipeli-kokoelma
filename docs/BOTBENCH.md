@@ -126,7 +126,42 @@ Opit ja rajat:
    (uhka-arvio, dynaaminen kynnys, paikkavalinta) poistettu/otettu osin
    käyttöön; Kasinon findWorstCapture poistettu.
 
+## Seiska 20.7.2026 (N=150) — ässäbonuksen järjestyskorjauksen jälkeen
+
+Ajettu koska `aiAceBonusDecision` korjattiin järjestämään ässäbonuksen ryhmälyönti
+kanonisesti (bonusmaan kortti alimmaiseksi). Korjaus muuttaa pelin kulkua, joten
+mittaus oli pakko uusia. **Ei ylikirjoita 17.7. baselinea**, koska otoskoko on eri
+(N=150 vs N=30) ja rivien sekoittaminen antaisi väärän kuvan tarkkuudesta.
+
+| Peli   | hard vs beginner | hard vs normal | normal vs beginner |
+|--------|-----------------:|---------------:|-------------------:|
+| Seiska (17.7., N=30)  | 80 % | 60 % | 60 % |
+| Seiska (20.7., N=150) | **74,7 %** | **52,0 %** | **78,0 %** |
+
+N=150 → keskivirhe n. ±4 %-yks. 450 peliä, `stalled: 0`, `unmapped: 0`.
+
+**Löydös: Seiskan porras on `beginner << normal ≈ hard`, ei monotoninen.**
+Mestari ei erotu Kisällistä (52 %, kolikonheitto), ja molemmat voittavat
+Oppipojan yhtä selvästi (74,7 % vs 78,0 %, ero ~1 keskivirhe eli ei todellinen).
+
+**Tämä ei ole järjestyskorjauksen aiheuttama.** Baselinen 60 % mitattiin N=30:llä
+(±9 %-yks.), joten 60 % ja 52 % ovat tilastollisesti yhteensopivia. Yläpää oli
+todennäköisesti litteä jo 17.7., mutta otoskoko ei riittänyt näyttämään sitä.
+
+**Seuraus baselinen johtopäätökseen:** yllä oleva lause *"Terveimmät ladderit:
+Seiska, Ristiseiska, Moska"* ei päde Seiskan osalta. Seiskan yläpää kuuluu samaan
+jatkotutkintaan kuin Kasino ja Maija (löydös 3). Ristiseiskan ja Moskan luvut ovat
+yhä N=30 eli samalla varauksella; niiden "terveys" kannattaa varmistaa isommalla
+otoksella ennen kuin niitä käytetään referenssinä.
+
+**Metodivaroitus:** järjestystä muuttava korjaus muuttaa satunnaisluvun kulutuksen
+koko pelin ajaksi, joten siemennetty ajo EI ole pariverrattu A/B ennen ja jälkeen
+vaan käytännössä uusi arvonta. Pienet erot N=30:llä eivät kerro mitään.
+
 ## Käyttö jatkossa
 
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän
 tauluun. Päivitä taulu ja päivämäärä kun baseline muuttuu tarkoituksella.
+
+**Käytä N≥150 kun teet johtopäätöksiä tasoerosta.** N=30:n keskivirhe (±9 %-yks.)
+on niin suuri, että se peittää juuri sen kokoluokan eroja joita mittarilla haetaan.
