@@ -1,15 +1,13 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
 
-const MINOR_VERSION = '1.2'; // bumpataan käsin isomman milestone-uudistuksen kohdalla
-
-const commitCount = (() => {
-  try { return execSync('git rev-list --count HEAD').toString().trim(); }
-  catch { return '0'; }
-})();
-
-const patch = String(commitCount).padStart(3, '0');
+// Versio luetaan package.jsonista, EI gitistä. Aiemmin tässä oli
+// `git rev-list --count HEAD`, mutta Vercel kloonaa matalasti (shallow):
+// tuotannossa laskuri palautti ~10 ja bundleen jäi 1.2.010 vaikka lokaali
+// build antoi 1.2.201. Committoitu luku on sama joka ympäristössä.
+// Bumppaus: deploy-skill kasvattaa patchia julkaisucommitin yhteydessä.
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'));
 
 export default defineConfig({
   plugins: [react()],
@@ -36,7 +34,7 @@ export default defineConfig({
     },
   },
   define: {
-    __APP_VERSION__: JSON.stringify(`${MINOR_VERSION}.${patch}`),
+    __APP_VERSION__: JSON.stringify(pkg.version),
     __BUILD_DATE__: JSON.stringify(new Date().toLocaleDateString('fi-FI', { timeZone: 'Europe/Helsinki' })),
     __BUILD_TIME__: JSON.stringify(new Date().toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Helsinki' })),
   },

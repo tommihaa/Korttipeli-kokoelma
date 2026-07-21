@@ -9,6 +9,7 @@ export const CHANGELOG = [
   {
     date: '21.7.2026',
     items: [
+      'Info-paneelin versionumero näyttää nyt oikean version. Aiemmin tuotannossa näkyi väärä, liian pieni numero (esimerkiksi 1.2.010), koska numero laskettiin julkaisupalvelimella tavalla joka ei nähnyt kuin pienen osan projektin historiasta. Numero on nyt kiinteä osa julkaisua, joten se on sama kaikkialla. Buildin päiväys ja kellonaika ovat olleet koko ajan oikein.',
       'Mestarin neuvo erottuu nyt selvemmin: osoitettu kortti saa sykkivän purppurakehän ja nousee hieman ylös, ja muut kortit himmenevät neuvon ajaksi. Aiemmin korostus oli vaisu ja osoitettu kortti saattoi hukkua käteen. Koskee kaikkia pelejä.',
       'Seiska ja Paskahousu: näkymä ei enää nytkähdä ylöspäin kesken pelin, kun joku pääsee korteistaan eroon. Aiemmin pelaajan korttirivi kutistui tyhjäksi sillä hetkellä kun hän lopetti, jolloin kaikki sen alapuolella oleva hyppäsi ylös. Nyt rivi säilyttää korkeutensa loppuun asti.',
       'Koputus, katselutila: kortit joiden arvon botti muistaa korostuvat nyt myös silloin kun seuraat bottien keskinäistä peliä. Aiemmin korostus näkyi vain tavallisessa pelissä, koska katselutila piirsi bottien kortit eri tavalla eikä korostusasetus yltänyt sinne.',

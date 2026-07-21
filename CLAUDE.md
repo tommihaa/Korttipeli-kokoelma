@@ -63,7 +63,7 @@ At the start of every session run `npm run dev` in the background so the dev ser
 **Ennen deployta (käsin — ei automatisoitua):**
 - Lisää `CHANGELOG`-merkintä `src/changelogs/fi.js`:ään (näkyy Info → Muutosloki). **Vain suomeksi** (päätös 3.7.2026: 22 kielen käännös per julkaisu paisutti tiedostomäärää ~450 kt duplikaattidataa ja toisti saman käännöstyön joka deployssa ilman käännösmuistia; selaimen natiivi Käännä-toiminto kattaa muut kielet kiinnostuneille, samoin kuin PWA-sovelluksissa Itu/Superjatsi joissa ei ole omaa käännösmekanismia lainkaan). Julkaisu EI päivitä tätä automaattisesti.
 - Päivitä `TODO`-taulukko `src/App.jsx`:ssä (Asetukset → Tulossa), jos jokin kohta valmistui tai lisättiin.
-- `APP_VERSION` kasvaa buildissa automaattisesti (`__APP_VERSION__`) — sitä ei tarvitse koskea.
+- **Bumppaa `package.json`in `version`-kenttä** (patch +1). `vite.config.js` lukee `__APP_VERSION__`-arvon suoraan siitä. Build EI enää laske versiota gitistä: `git rev-list --count HEAD` palautti Vercelin matalassa (shallow) kloonissa ~10, joten tuotannossa näkyi 1.2.010 kun lokaali build antoi 1.2.201 (todennettu 21.7.2026).
 
 Production deploy: **`git push origin main`** — Vercelin git-integraatio deployaa tuotantoon automaattisesti (todennettu 25.6.2026). Koko protokolla: `deploy`-skill (`.claude/skills/deploy/SKILL.md`).
 Hätävara, vain jos git-integraatio irtoaa eikä push päivitä tuotantoa: `npm run deploy` (= `vercel build --prod && vercel deploy --prebuilt --prod`); kertasetup per kone `npx vercel pull --yes --environment production`.
