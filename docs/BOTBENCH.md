@@ -66,8 +66,12 @@ hard vs beginner **67 %**, hard vs normal **51 %**, normal vs beginner **47 %**.
    niin että pattikatkaisija virittyy kun vähintään yksi istuin on Mestari
    (tuotantokäytös ennallaan).
 
-Terveimmät ladderit: Seiska, Ristiseiska, Moska (+ Läpsyn hard). Ne voivat
-toimia referenssinä kun muiden pelien tasoja korjataan.
+~~Terveimmät ladderit: Seiska, Ristiseiska, Moska (+ Läpsyn hard). Ne voivat
+toimia referenssinä kun muiden pelien tasoja korjataan.~~
+
+**⚠️ KUMOTTU 21.7.2026, älä käytä näitä referenssinä.** Kaikki kolme mitattiin
+uudelleen N=400:lla: Seiskan ja Moskan yläpää on litteä ja Ristiseiskalla ei ole
+porrasta lainkaan. Ks. alempaa osiot "Seiska 21.7." ja "Moska ja Ristiseiska 21.7.".
 
 ## Kyvykkyysporras 17.7.2026 (Kultakala, Koputus, Maija, Kasino)
 
@@ -157,6 +161,82 @@ otoksella ennen kuin niitä käytetään referenssinä.
 **Metodivaroitus:** järjestystä muuttava korjaus muuttaa satunnaisluvun kulutuksen
 koko pelin ajaksi, joten siemennetty ajo EI ole pariverrattu A/B ennen ja jälkeen
 vaan käytännössä uusi arvonta. Pienet erot N=30:llä eivät kerro mitään.
+
+## Seiska 21.7.2026 — outtien laskenta tasapeliin: NOLLATULOS (muutos palautettu)
+
+`aiBestPlay`n viimeinen rivi oli `return [nonPair.length ? nonPair[0] : non7[0]]`,
+eli kun useampi laillinen yksittäiskortti läpäisi kaikki suodattimet, valinnan
+ratkaisi käden järjestys eikä pisteytys. Kokeiltu korjaus: valitse se kortti jolla
+on vähiten outteja (saman maan + saman arvon näkemättömät kortit; näkemätön = ei
+omassa kädessä eikä lyöntipakan päällimmäisenä). Sama tehtiin `leaveGroup[0]`:lle.
+
+| hard vs normal | N=150 | N=400 |
+|---|------:|------:|
+| Ennen muutosta | 52,0 % | **58,0 %** |
+| Muutoksen jälkeen | 60,0 % | **61,25 %** |
+
+Erotus samalla kierrosjoukolla +3,25 %-yks., yhdistetty keskivirhe 3,54 %-yks.,
+z = 0,92. Ei merkitsevä. Muut parit eivät liikkuneet (hard vs beginner 74,7 → 73,3,
+normal vs beginner 78,0 → 77,3). **Muutos palautettu.**
+
+Kaksi opetusta, jotka ovat arvokkaampia kuin itse tulos:
+
+1. **Tasoriippumaton parannus ei voi nostaa porrasta.** `aiBestPlay` on jaettu
+   kaikille kolmelle tasolle, ja outtien laskenta osui haaraan jota hard ja normal
+   käyttävät identtisesti. Seiskan tasoerot syntyvät muualta: `aiShouldFumble`
+   (normal 15 % virhettä), `pickBestAce` (vain hard) ja `aiAceBonusDecision`in
+   `isHard`-haara. Kun molemmat tasot paranevat yhtä paljon, keskinäinen voitto-osuus
+   pysyy määritelmällisesti ennallaan. **Tarkista ennen mittausta, onko muutos
+   tasokohtainen; jos ei ole, mittari ei voi näyttää mitään ja ajo on hukkaan
+   heitettyä aikaa.** Jos outteja haluaa käyttää porrastukseen, se pitää portittaa
+   Mestarin kyvykkyydeksi kuten 17.7. tehtiin neljälle muulle pelille.
+
+2. **Aiempi kirjaus "52 %, kolikonheitto" oli liian pieni otos.** Sama muuttumaton
+   koodi antaa N=400:lla 58,0 %. Kierrokset 0–149 tuottivat 52,0 % ja kierrokset
+   150–399 tuottivat 61,6 %, eli kaksi riippumatonta otosta samasta koodista eroavat
+   9,6 %-yks. Seiskan yläpään hajonta on siis suurempi kuin binomikeskivirhe
+   ennustaa. **N=150 ei riitä Seiskan hard–normal-parille; käytä N≥400.** Yllä oleva
+   20.7. kirjattu johtopäätös *"Mestari ei erotu Kisällistä"* on tämän valossa
+   yliampuva: 58,0 % ± 2,5 on vaatimaton mutta todellinen porras.
+
+Nollatulos on kirjattu tänne nimenomaan siksi, ettei samaa ideaa ehdoteta uudelleen.
+Käden järjestys oli tässä yhtä hyvä kuin outtien laskenta.
+
+## Moska ja Ristiseiska 21.7.2026 (N=400) — "terveet ladderit" oli otosharha
+
+Baseline nimesi Seiskan, Ristiseiskan ja Moskan terveimmiksi laddereiksi ja ehdotti
+niitä referenssiksi muiden pelien korjaamiseen. Se perustui N=30:een. Kun kaikki
+kolme mitataan N=400:lla (keskivirhe ±2,5 %-yks.), yksikään ei kelpaa referenssiksi.
+
+| Peli | pari | N=30 (17.7.) | N=400 (21.7.) |
+|------|------|-------------:|--------------:|
+| Moska | hard vs beginner | 67 % | **71,8 %** |
+| Moska | hard vs normal | 47 % | **53,5 %** |
+| Moska | normal vs beginner | 57 % | **65,8 %** |
+| Ristiseiska | hard vs beginner | 63 % | **53,3 %** |
+| Ristiseiska | hard vs normal | 57 % | **49,0 %** |
+| Ristiseiska | normal vs beginner | 53 % | **51,3 %** |
+
+**Moska: sama muoto kuin Seiskalla**, `beginner << normal ≈ hard`. Oppipoika häviää
+selvästi molemmille (71,8 % ja 65,8 %), mutta Mestari ei erotu Kisällistä (53,5 %,
+z ≈ 1,4). Yläpää on litteä.
+
+**Ristiseiskalla ei ole porrasta lainkaan.** Kaikki kolme paria ovat kolikonheittoja
+(53,3 %, 49,0 %, 51,3 %); yksikään ei eroa 50 %:sta enempää kuin ~1,3 keskivirhettä.
+Tasoerot eivät realisoidu voitoiksi ollenkaan, mikä on sama tila kuin Kasinolla ja
+Maijalla (löydös 3 ja kyvykkyysporras-osion kohta 3).
+
+**Seuraus: baselinen lause *"Terveimmät ladderit: Seiska, Ristiseiska, Moska"* on
+kumottu kaikkien kolmen osalta** (Seiska ks. 21.7. nollatulososio). Mittarilla ei ole
+tällä hetkellä yhtään peliä jonka porras olisi todennetusti monotoninen kolmen tason
+yli. Lähimpänä on Läpsy (100/87/77, N=30), mutta sekin on mittaamatta isolla otoksella.
+
+**Metodioppi, kolmas kerta samasta asiasta:** N=30 ei ainoastaan ollut epätarkka, se
+tuotti systemaattisesti liian ruusuisen kuvan. Kolmesta "terveestä" ladderista kaksi
+osoittautui litteäksi ja yksi olemattomaksi, kun otos nelinkertaistettiin. Pienen
+otoksen virhe ei jakaudu tasaisesti johtopäätöksiin: se suosii kiinnostavan näköisiä
+eroja, koska kohina näyttää signaalilta. Älä nimeä referenssipeliä otoksella joka ei
+kestä kaksinkertaistusta.
 
 ## Käyttö jatkossa
 

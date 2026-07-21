@@ -605,7 +605,7 @@ export const krl = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Lyö ${cards}. Hyökkyä sih muah, kus on enin matalua, da piä valtit puolistukseh.`,
+        attack: ({ cards }) => `Lyö ${cards}. Hyökkyä sil mualal, kudamua sinul on enin, ku puolistai pidäy kuadua äijän kerdah. Säilytä valtit puolistukseh.`,
         attackTrumps: ({ cards }) => `Lyö valtit ${cards}. Nygöi niil hyökätäh, elä säilytä niidy puolustukseh.`,
         attackMaija: ({ cards }) => `Lyö ${cards} da piäze Maijas. Sil ei sua kuadua, kädes se on vai hävivön riski.`,
         beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai riittäy, valtit vaste pakon ies.`,
@@ -726,7 +726,7 @@ export const krl = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Hyökkyä kortil ${cards}. Ala pienimmis ei-valttilois da piä valtit puolistukseh.`,
+        attack: ({ cards }) => `Hyökkyä kortil ${cards}. Vallitse arvo, kudamua on jo enin pelattu poikes, sit sivus lyyväh harvemba. Säilytä valtit puolistukseh.`,
         beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai kortti riittäy, suuret piä tallel.`,
         take: "Et voi kuadua kaikkii stolan kortiloi. Ota ne kädeh.",
         pass: ({ cards }) => `Siirrä hyökkäy iel kortil ${cards}, ga iče piäzet pälkähäzes.`,

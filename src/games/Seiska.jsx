@@ -1068,7 +1068,11 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
                       );
                     })}
                   </div>
-                ) : isDone ? null : count === 0 ? null : (
+                ) : isDone || count === 0 ? (
+                  // Paikanvaraaja korttiviuhkan tilalle: ilman tätä rivi romahtaa
+                  // tekstiriviksi kun käsi tyhjenee, ja koko näkymä nytkähtää ylöspäin.
+                  <div aria-hidden="true" style={{ width: cw, height: ch, flexShrink: 0 }} />
+                ) : (
                   <div style={{ position: 'relative', width: fanW, height: ch, flexShrink: 0 }}>
                     {Array.from({ length: count }).map((_, i) => (
                       <div key={i} style={{ position: 'absolute', left: i * ov, top: 0, width: cw, height: ch, borderRadius: 3, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, zIndex: i, boxShadow: i === count - 1 ? '0 1px 4px rgba(0,0,0,0.4)' : 'none' }} />

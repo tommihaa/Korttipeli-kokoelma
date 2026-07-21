@@ -604,7 +604,7 @@ export const es = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Juega ${cards}. Ataca en el palo donde tengas más cartas bajas y guarda los triunfos para la defensa.`,
+        attack: ({ cards }) => `Juega ${cards}. Ataca en tu palo más largo, así el defensor tiene que matar muchas cartas. Guarda los triunfos para la defensa.`,
         attackTrumps: ({ cards }) => `Juega los triunfos ${cards}. Ahora atacas con ellos, no los guardes para defender.`,
         attackMaija: ({ cards }) => `Juega ${cards} y deshazte de la Maija. No vence nada, así que en la mano solo es un riesgo de perder.`,
         beat: ({ card, target }) => `Vence ${target} con ${card}. Basta la ganadora más baja, triunfos solo cuando no haya remedio.`,
@@ -725,7 +725,7 @@ export const es = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Ataca con ${cards}. Empieza por tus cartas más bajas que no sean triunfo y guarda los triunfos para la defensa.`,
+        attack: ({ cards }) => `Ataca con ${cards}. Elige el valor del que ya han salido más cartas, así habrá menos ataques laterales. Guarda los triunfos para la defensa.`,
         beat: ({ card, target }) => `Vence ${target} con ${card}. Basta la carta ganadora más baja, guarda las altas.`,
         take: "No puedes vencer todas las cartas de la mesa. Recógelas en la mano.",
         pass: ({ cards }) => `Pasa el ataque con ${cards}, y así te libras tú mismo.`,

@@ -604,7 +604,7 @@ export const da = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Spil ${cards}. Angrib i farven, hvor du har mest lavt, og gem trumf til forsvaret.`,
+        attack: ({ cards }) => `Spil ${cards}. Angrib i din længste farve, så forsvareren skal slå mange kort. Gem trumfer til forsvaret.`,
         attackTrumps: ({ cards }) => `Spil trumferne ${cards}. Nu angriber du med dem, gem dem ikke til forsvaret.`,
         attackMaija: ({ cards }) => `Spil ${cards} og slip af med Maija. Den kan ikke slå noget, så på hånden er den kun en taberrisiko.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det mindste vindende er nok, trumf først når du er tvunget.`,
@@ -725,7 +725,7 @@ export const da = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Angrib med ${cards}. Start med dine mindste ikke-trumfkort og gem trumf til forsvaret.`,
+        attack: ({ cards }) => `Angrib med ${cards}. Vælg den værdi, der har flest kort ude af spillet, så der bliver færre sideangreb. Gem trumfer til forsvaret.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det mindste vindende kort er nok, gem de store.`,
         take: "Du kan ikke slå alle kort på bordet. Tag dem på hånden.",
         pass: ({ cards }) => `Send angrebet videre med ${cards}, så slipper du selv fri.`,

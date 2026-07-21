@@ -613,7 +613,7 @@ export const pl = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Zagraj ${cards}. Atakuj w kolorze, w którym masz najwięcej niskich, a atuty zachowaj do obrony.`,
+        attack: ({ cards }) => `Zagraj ${cards}. Atakuj swoim najdłuższym kolorem, żeby obrońca musiał przebić wiele kart. Zachowaj atuty do obrony.`,
         attackTrumps: ({ cards }) => `Zagraj atuty ${cards}. Teraz nimi atakujesz, nie oszczędzaj ich do obrony.`,
         attackMaija: ({ cards }) => `Zagraj ${cards} i pozbądź się Maiji. Niczego nie bije, w ręce to tylko ryzyko przegranej.`,
         beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca, atuty dopiero gdy musisz.`,
@@ -734,7 +734,7 @@ export const pl = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Atakuj kartą ${cards}. Zacznij od najniższych kart nieatutowych, a atuty zachowaj do obrony.`,
+        attack: ({ cards }) => `Atakuj kartą ${cards}. Wybierz figurę, której najwięcej kart już wyszło z gry, wtedy będzie mniej dorzucania. Zachowaj atuty do obrony.`,
         beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca karta, zachowaj wysokie.`,
         take: "Nie pobijesz wszystkich kart na stole. Weź je do ręki.",
         pass: ({ cards }) => `Przekaż atak dalej kartą ${cards}, a sam się wywiniesz.`,

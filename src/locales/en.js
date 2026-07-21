@@ -612,7 +612,7 @@ export const en = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Play ${cards}. Attack in the suit where you have the most low cards, and save trumps for defence.`,
+        attack: ({ cards }) => `Play ${cards}. Attack in your longest suit, so the defender has to beat many cards. Save trumps for defence.`,
         attackTrumps: ({ cards }) => `Play the trumps ${cards}. Now is the time to attack with them, do not save them for defence.`,
         attackMaija: ({ cards }) => `Play ${cards} to get rid of the Maija. It cannot beat anything, so in hand it is only a losing risk.`,
         beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winner is enough, trumps only when forced.`,
@@ -733,7 +733,7 @@ export const en = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Attack with ${cards}. Start with your smallest non-trumps and save trumps for defence.`,
+        attack: ({ cards }) => `Attack with ${cards}. Pick the rank with the most copies already out of play, so there are fewer side attacks. Save trumps for defence.`,
         beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winning card is enough, keep the big ones.`,
         take: "You cannot beat every card on the table. Take them into your hand.",
         pass: ({ cards }) => `Pass the attack on with ${cards}, and you get off the hook yourself.`,

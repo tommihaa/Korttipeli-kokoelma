@@ -604,7 +604,7 @@ export const de = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Spiele ${cards}. Greife in der Farbe an, in der du am meisten Niedriges hast, und spare Trümpfe für die Verteidigung.`,
+        attack: ({ cards }) => `Spiele ${cards}. Greife in deiner längsten Farbe an, damit die Verteidigung viele Karten schlagen muss. Spare Trümpfe für die Verteidigung.`,
         attackTrumps: ({ cards }) => `Spiele die Trümpfe ${cards}. Jetzt greifst du mit ihnen an, spare sie nicht für die Verteidigung auf.`,
         attackMaija: ({ cards }) => `Spiele ${cards} und werde die Maija los. Sie schlägt nichts, auf der Hand ist sie nur ein Verlustrisiko.`,
         beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, Trümpfe erst wenn nötig.`,
@@ -725,7 +725,7 @@ export const de = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Greife mit ${cards} an. Beginne mit deinen kleinsten Nicht-Trümpfen und spare Trümpfe für die Verteidigung.`,
+        attack: ({ cards }) => `Greife mit ${cards} an. Wähle den Wert, von dem schon die meisten Karten aus dem Spiel sind, dann gibt es weniger Seitenangriffe. Spare Trümpfe für die Verteidigung.`,
         beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, behalte die großen.`,
         take: "Du kannst nicht alle Karten auf dem Tisch schlagen. Nimm sie auf die Hand.",
         pass: ({ cards }) => `Schiebe den Angriff mit ${cards} weiter, dann bist du selbst aus dem Schneider.`,

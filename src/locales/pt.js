@@ -604,7 +604,7 @@ export const pt = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Joga ${cards}. Ataca no naipe onde tens mais cartas baixas e guarda os trunfos para a defesa.`,
+        attack: ({ cards }) => `Joga ${cards}. Ataca no teu naipe mais longo, para o defensor ter de bater muitas cartas. Guarda os trunfos para a defesa.`,
         attackTrumps: ({ cards }) => `Joga os trunfos ${cards}. Agora atacas com eles, não os guardes para a defesa.`,
         attackMaija: ({ cards }) => `Joga ${cards} e livra-te da Maija. Não vence nada, na mão é só um risco de perder.`,
         beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a vencedora mais baixa, trunfos só quando fores obrigado.`,
@@ -725,7 +725,7 @@ export const pt = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Ataca com ${cards}. Começa pelas cartas mais baixas que não sejam trunfo e guarda os trunfos para a defesa.`,
+        attack: ({ cards }) => `Ataca com ${cards}. Escolhe o valor de que já saíram mais cartas, assim haverá menos ataques laterais. Guarda os trunfos para a defesa.`,
         beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a carta vencedora mais baixa, guarda as altas.`,
         take: "Não consegues vencer todas as cartas na mesa. Recolhe-as para a mão.",
         pass: ({ cards }) => `Passa o ataque com ${cards}, e assim livras-te tu mesmo.`,

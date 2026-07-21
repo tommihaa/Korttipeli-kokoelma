@@ -604,7 +604,7 @@ export const fr = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Joue ${cards}. Attaque dans la couleur où tu as le plus de basses cartes et garde les atouts pour la défense.`,
+        attack: ({ cards }) => `Jouez ${cards}. Attaquez dans votre couleur la plus longue, pour que le défenseur doive battre beaucoup de cartes. Gardez les atouts pour la défense.`,
         attackTrumps: ({ cards }) => `Joue les atouts ${cards}. C'est maintenant que tu attaques avec eux, ne les garde pas pour la défense.`,
         attackMaija: ({ cards }) => `Joue ${cards} et débarrasse-toi de la Maija. Elle ne bat rien, en main ce n'est qu'un risque de perdre.`,
         beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite gagnante suffit, les atouts seulement quand tu y es forcé.`,
@@ -725,7 +725,7 @@ export const fr = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Attaque avec ${cards}. Commence par tes plus petites cartes hors atout et garde les atouts pour la défense.`,
+        attack: ({ cards }) => `Attaquez avec ${cards}. Choisissez la valeur dont le plus de cartes sont déjà sorties du jeu, il y aura moins d'attaques latérales. Gardez les atouts pour la défense.`,
         beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite carte gagnante suffit, garde les grosses.`,
         take: "Tu ne peux pas battre toutes les cartes sur la table. Prends-les en main.",
         pass: ({ cards }) => `Renvoie l'attaque avec ${cards}, et tu t'en sors toi-même.`,

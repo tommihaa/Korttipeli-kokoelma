@@ -606,7 +606,7 @@ export const la = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Lude ${cards}. Oppugna in colore ubi plurimas chartas humiles habes, et triumphos defensioni serva.`,
+        attack: ({ cards }) => `Lude ${cards}. Impugna in colore tuo longissimo, ut defensor multas chartas vincere debeat. Serva triumphos defensioni.`,
         attackTrumps: ({ cards }) => `Lude triumphos ${cards}. Nunc his oppugnas, noli eos defensioni servare.`,
         attackMaija: ({ cards }) => `Lude ${cards} et Maija libera te. Nihil vincit, in manu tantum periculum amissionis est.`,
         beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima vincens sufficit, triumphi tantum coactus.`,
@@ -727,7 +727,7 @@ export const la = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Oppugna charta ${cards}. Incipe minimis chartis non triumphalibus et triumphos defensioni serva.`,
+        attack: ({ cards }) => `Impugna cum ${cards}. Elige valorem cuius plurimae chartae iam e ludo exierunt, ita pauciores impetus laterales erunt. Serva triumphos defensioni.`,
         beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima charta vincens sufficit, magnas serva.`,
         take: "Non potes omnes chartas in mensa vincere. Sume eas in manum.",
         pass: ({ cards }) => `Transfer impetum charta ${cards}, et ipse evades.`,

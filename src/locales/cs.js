@@ -606,7 +606,7 @@ export const cs = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Zahraj ${cards}. Útoč v barvě, kde máš nejvíc nízkých, a trumfy si nech na obranu.`,
+        attack: ({ cards }) => `Zahraj ${cards}. Útoč ve své nejdelší barvě, aby obránce musel přebít hodně karet. Šetři trumfy na obranu.`,
         attackTrumps: ({ cards }) => `Zahraj trumfy ${cards}. Teď s nimi útočíš, nešetři si je na obranu.`,
         attackMaija: ({ cards }) => `Zahraj ${cards} a zbav se Maiji. Nic nepřebije, v ruce je jen riziko prohry.`,
         beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná, trumfy až když musíš.`,
@@ -727,7 +727,7 @@ export const cs = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Zaútoč kartou ${cards}. Začni nejnižšími netrumfovými kartami a trumfy si nech na obranu.`,
+        attack: ({ cards }) => `Útoč kartou ${cards}. Vyber hodnotu, které je už nejvíc karet ze hry venku, bude méně přihazování. Šetři trumfy na obranu.`,
         beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná karta, vysoké si nech.`,
         take: "Nedokážeš přebít všechny karty na stole. Vezmi si je do ruky.",
         pass: ({ cards }) => `Pošli útok dál kartou ${cards}, a sám se z toho dostaneš.`,

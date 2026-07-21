@@ -672,7 +672,7 @@ export const fi = {
         aiPartialBeat: '{name} kaataa {beat}/{total} ja nostaa {cards}.',
       },
       advice: {
-        attack: ({ cards }) => `Lyö ${cards}. Hyökkää maalla, jossa on eniten matalaa, ja säästä valtit puolustukseen.`,
+        attack: ({ cards }) => `Lyö ${cards}. Hyökkää sillä maalla, jota sinulla on eniten, niin puolustaja joutuu kaatamaan monta kerralla. Säästä valtit puolustukseen.`,
         attackTrumps: ({ cards }) => `Lyö valtit ${cards}. Nyt niillä hyökätään, älä jää säästämään niitä puolustukseen.`,
         attackMaija: ({ cards }) => `Lyö ${cards} ja pääse Maijasta eroon. Sillä ei voi kaataa, joten kädessä se on pelkkä häviöriski.`,
         beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava riittää, valtit vasta pakon edessä.`,
@@ -803,7 +803,7 @@ export const fi = {
         badPassCard: '{card} ei sovi siirtoon.',
       },
       advice: {
-        attack: ({ cards }) => `Hyökkää kortilla ${cards}. Aloita pienimmillä ei-valteilla, säästä valtit puolustukseen.`,
+        attack: ({ cards }) => `Hyökkää kortilla ${cards}. Valitse arvo, jota on jo eniten pelattu pois, niin sivusta lyödään harvemmin. Säästä valtit puolustukseen.`,
         beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava kortti riittää, isot talteen.`,
         take: 'Et pysty kaatamaan kaikkia pöydän kortteja. Ota ne käteen.',
         pass: ({ cards }) => `Siirrä hyökkäys eteenpäin kortilla ${cards}, niin pääset itse pälkähästä.`,

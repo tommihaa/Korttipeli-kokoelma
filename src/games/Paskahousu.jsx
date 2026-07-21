@@ -1061,7 +1061,11 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
                       />;
                     })}
                   </div>
-                ) : isDone ? null : count === 0 ? null : (
+                ) : isDone || count === 0 ? (
+                  // Paikanvaraaja korttiviuhkan tilalle: ilman tätä rivi romahtaa
+                  // tekstiriviksi kun käsi tyhjenee, ja koko näkymä nytkähtää ylöspäin.
+                  <div aria-hidden="true" style={{ width: cw, height: ch, flexShrink: 0 }} />
+                ) : (
                   <div style={{ position: 'relative', width: fanW, height: ch, flexShrink: 0 }}>
                     {Array.from({ length: count }).map((_, i) => (
                       <div key={i} style={{ position: 'absolute', left: i * ov, top: 0, width: cw, height: ch, borderRadius: 3, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, zIndex: i, boxShadow: i === count - 1 ? '0 1px 4px rgba(0,0,0,0.4)' : 'none' }} />
@@ -1073,26 +1077,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
           })}
         </div>
       )}
-
-      {/* Viimeisin lyönti -badge — kiinteä korkeus, ei nytkähtelyä */}
-      <div style={{ position: 'relative', height: 0 }}>
-        {showLastPlay && lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{
-            position: 'absolute', bottom: 4, left: 0, zIndex: 5,
-            display: 'flex', alignItems: 'center', gap: 8,
-            background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`,
-            borderRadius: 12, padding: '4px 12px',
-            animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none',
-          }}>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
-            {lastPlay.cards.map(c => (
-              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: suitColor(c.s) }}>
-                {c.r}{c.s}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
 
       {/* Pino */}
       <PoytaPanel isMobile={isMobile}
@@ -1147,6 +1131,29 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
           })()}
         </div>
       </PoytaPanel>
+
+      {/* Viimeisin lyönti -badge. Kääre on PINON JÄLKEEN, koska bottom:4
+          nollakorkuisessa kääreessä piirtää badgen kääreen yläpuolelle: paneelin
+          jälkeen se osuu Pöydän vasempaan ALAkulmaan kuten muissa peleissä.
+          Ennen tämä lohko oli paneelin yllä, jolloin badge vilahti yläkulmassa. */}
+      <div style={{ position: 'relative', height: 0 }}>
+        {showLastPlay && lastPlay && (
+          <div key={lastPlay.cards[0].id} style={{
+            position: 'absolute', bottom: 4, left: 0, zIndex: 5,
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`,
+            borderRadius: 12, padding: '4px 12px',
+            animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none',
+          }}>
+            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
+            {lastPlay.cards.map(c => (
+              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: suitColor(c.s) }}>
+                {c.r}{c.s}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Ohje */}
       {isMyTurn && !mustSkip && (

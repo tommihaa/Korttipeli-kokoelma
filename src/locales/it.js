@@ -604,7 +604,7 @@ export const it = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Gioca ${cards}. Attacca nel seme dove hai più carte basse e conserva le briscole per la difesa.`,
+        attack: ({ cards }) => `Gioca ${cards}. Attacca nel tuo seme più lungo, così il difensore deve battere molte carte. Conserva le briscole per la difesa.`,
         attackTrumps: ({ cards }) => `Gioca le briscole ${cards}. Ora attacchi con quelle, non tenerle per la difesa.`,
         attackMaija: ({ cards }) => `Gioca ${cards} e libérati della Maija. Non batte nulla, in mano è solo un rischio di perdere.`,
         beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la vincente più bassa, briscole solo quando sei costretto.`,
@@ -725,7 +725,7 @@ export const it = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Attacca con ${cards}. Comincia con le carte più basse non di briscola e conserva le briscole per la difesa.`,
+        attack: ({ cards }) => `Attacca con ${cards}. Scegli il valore di cui sono già uscite più carte, così ci saranno meno attacchi laterali. Conserva le briscole per la difesa.`,
         beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la carta vincente più bassa, tieni le alte.`,
         take: "Non puoi battere tutte le carte sul tavolo. Prendile in mano.",
         pass: ({ cards }) => `Passa l'attacco con ${cards}, così te la cavi tu stesso.`,

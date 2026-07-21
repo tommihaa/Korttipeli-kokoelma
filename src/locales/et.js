@@ -604,7 +604,7 @@ export const et = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Mängi ${cards}. Ründa masti, kus sul on kõige rohkem madalat, ja hoia trumbid kaitseks.`,
+        attack: ({ cards }) => `Mängi ${cards}. Ründa oma pikimas mastis, et kaitsja peaks palju kaarte lööma. Hoia trumbid kaitseks.`,
         attackTrumps: ({ cards }) => `Mängi trumbid ${cards}. Nüüd ründad nendega, ära hoia neid kaitseks.`,
         attackMaija: ({ cards }) => `Mängi ${cards} ja vabane Maijast. See ei löö midagi, käes on ta ainult kaotusrisk.`,
         beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev piisab, trumbid alles sunni korral.`,
@@ -725,7 +725,7 @@ export const et = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Ründa kaardiga ${cards}. Alusta väiksematest mittetrumpidest ja hoia trumbid kaitseks.`,
+        attack: ({ cards }) => `Ründa kaardiga ${cards}. Vali väärtus, millest on juba kõige rohkem kaarte mängust väljas, siis on vähem kõrvalrünnakuid. Hoia trumbid kaitseks.`,
         beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev kaart piisab, hoia suured alles.`,
         take: "Sa ei suuda kõiki laual olevaid kaarte lüüa. Võta need kätte.",
         pass: ({ cards }) => `Lükka rünnak edasi kaardiga ${cards}, nii pääsed ise puhtalt.`,

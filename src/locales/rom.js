@@ -607,7 +607,7 @@ export const rom = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Khel ${cards}. Napav ande farba kaj si tut majbut telal thaj garav le trumfurja anda arakhipe.`,
+        attack: ({ cards }) => `Khel ${cards}. Marde ande tiro maj lungo suito, kaj o zumaviditori te musaj te marel but karti. Garav le trumfuria pala zumaviba.`,
         attackTrumps: ({ cards }) => `Khel e aduja ${cards}. Akana lenca marespe, na garav len vaš o arakhadipe.`,
         attackMaija: ({ cards }) => `Khel ${cards} thaj mek e Maija. Voj či marel khanči, ando vast si numaj rizikó te xasares.`,
         beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kaj marel, trumfurja numaj kana trubul.`,
@@ -728,7 +728,7 @@ export const rom = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Napav le ${cards}. Šuru le majcikne kartenca bi trumfosko thaj garav le trumfurja anda arakhipe.`,
+        attack: ({ cards }) => `Marde le ${cards}. Alav o mol savestar avile avri maj but karti, kadja avena maj xanci marimata rigate. Garav le trumfuria pala zumaviba.`,
         beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kart kaj marel, garav le baria.`,
         take: "Naštik marés sa le kartja pe skafidi. Le len ando vast.",
         pass: ({ cards }) => `Bičhal o napaipe angle la ${cards}, thaj korkoro našes.`,

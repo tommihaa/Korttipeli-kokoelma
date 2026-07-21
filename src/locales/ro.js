@@ -606,7 +606,7 @@ export const ro = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Joacă ${cards}. Atacă în culoarea unde ai cele mai multe cărți mici și păstrează atuurile pentru apărare.`,
+        attack: ({ cards }) => `Joacă ${cards}. Atacă în culoarea ta cea mai lungă, ca apărătorul să bată multe cărți. Păstrează atuurile pentru apărare.`,
         attackTrumps: ({ cards }) => `Joacă atuurile ${cards}. Acum ataci cu ele, nu le păstra pentru apărare.`,
         attackMaija: ({ cards }) => `Joacă ${cards} și scapă de Maija. Nu bate nimic, în mână e doar un risc de pierdere.`,
         beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică câștigătoare, atuurile doar când ești silit.`,
@@ -727,7 +727,7 @@ export const ro = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Atacă cu ${cards}. Începe cu cele mai mici cărți fără atu și păstrează atuurile pentru apărare.`,
+        attack: ({ cards }) => `Atacă cu ${cards}. Alege valoarea din care au ieșit deja cele mai multe cărți, vor fi mai puține atacuri laterale. Păstrează atuurile pentru apărare.`,
         beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică carte câștigătoare, păstrează-le pe cele mari.`,
         take: "Nu poți bate toate cărțile de pe masă. Ia-le în mână.",
         pass: ({ cards }) => `Pasează atacul mai departe cu ${cards}, și scapi tu însuți.`,

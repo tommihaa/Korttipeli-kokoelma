@@ -797,7 +797,11 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
                       {ai.cards.map((c, ci) =>
                         c
                           ? <Card key={ci} card={c} small backStyle={BACKS[cardBack]} faceUp={debugOpen}
-                              selected={intention?.playerIdx === pi && intention.slotIdx === ci} />
+                              selected={intention?.playerIdx === pi && intention.slotIdx === ci}
+                              // Katselutila ei käytä PlayerGridiä, joten muistikorostus
+                              // (showAIKnown) piti kytkeä tähän erikseen; ilman tätä
+                              // katsoja ei nähnyt mitä kortteja botti tietää.
+                              pulse={showAIKnown && ai.known.has(ci)} />
                           : <div key={ci} style={{ width: isMobile ? 30 : 36, height: isMobile ? 43 : 52, borderRadius: 5, border: '1px dashed rgba(255,255,255,0.1)', opacity: 0.3, flexShrink: 0 }} />
                       )}
                     </div>

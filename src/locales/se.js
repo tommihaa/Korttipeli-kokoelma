@@ -606,7 +606,7 @@ export const se = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Čájet ${cards}. Fallet dan ivnnis gos leat eanemus vuollegaččat ja seaille trumfaid bealuštussii.`,
+        attack: ({ cards }) => `Speala ${cards}. Falle guhkimus ivnnistat, vai bealušteaddji ferte vuoitit ollu goarttaid. Vurke duolbmasiid bealuštussii.`,
         attackTrumps: ({ cards }) => `Speala duollagiid ${cards}. Dál falehat daiguin, ale seastte daid bealuštussii.`,
         attackMaija: ({ cards }) => `Čájet ${cards} ja beasa Maijas eret. Dat ii vuoitte maidege, gieđas dat lea dušše vuoitáhallan riska.`,
         beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti riekta, trumfat easkka go bággehallat.`,
@@ -727,7 +727,7 @@ export const se = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Fallet bákttiin ${cards}. Álgge unnimus ii-trumfabákttiiguin ja seaille trumfaid bealuštussii.`,
+        attack: ({ cards }) => `Falle goarttain ${cards}. Vállje árvvu mas leat juo eanemus goarttat eret spealus, de šaddet unnit lievlafallehusat. Vurke duolbmasiid bealuštussii.`,
         beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti báktti riekta, seaille stuoribáid.`,
         take: "It sáhte vuoitit buot bevddebáktiid. Váldde daid gihtii.",
         pass: ({ cards }) => `Sádde fallehusa viidáseappot bákttiin ${cards}, de beasat ieš eret.`,

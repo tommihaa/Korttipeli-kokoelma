@@ -604,7 +604,7 @@ export const is = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Spilaðu ${cards}. Ráðstu í litnum þar sem þú átt mest af lágu og geymdu trompin til varnar.`,
+        attack: ({ cards }) => `Spilaðu ${cards}. Ráðstu í lengsta lit þínum svo verjandinn þurfi að slá mörg spil. Geymdu tromp í vörnina.`,
         attackTrumps: ({ cards }) => `Spilaðu trompunum ${cards}. Nú ræðstu á með þeim, geymdu þau ekki í vörn.`,
         attackMaija: ({ cards }) => `Spilaðu ${cards} og losaðu þig við Maija. Hún slær ekkert, á hendinni er hún bara taphætta.`,
         beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi dugar, tromp aðeins þegar þú neyðist.`,
@@ -725,7 +725,7 @@ export const is = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Ráðstu með ${cards}. Byrjaðu á lægstu spilunum sem eru ekki tromp og geymdu trompin til varnar.`,
+        attack: ({ cards }) => `Ráðstu með ${cards}. Veldu gildið sem flest spil eru þegar farin úr spilinu, þá verða hliðarárásir færri. Geymdu tromp í vörnina.`,
         beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi spilið dugar, geymdu þau háu.`,
         take: "Þú getur ekki slegið öll spilin á borðinu. Taktu þau á höndina.",
         pass: ({ cards }) => `Sendu árásina áfram með ${cards}, þá sleppur þú sjálfur.`,

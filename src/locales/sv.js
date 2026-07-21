@@ -604,7 +604,7 @@ export const sv = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Spela ${cards}. Anfall i färgen där du har mest lågt, och spara trumf till försvaret.`,
+        attack: ({ cards }) => `Spela ${cards}. Anfall i din längsta färg, så måste försvararen slå många kort. Spara trumf till försvaret.`,
         attackTrumps: ({ cards }) => `Spela trumfen ${cards}. Nu attackerar du med dem, spara dem inte till försvaret.`,
         attackMaija: ({ cards }) => `Spela ${cards} och bli av med Maija. Den kan inte slå något, så på handen är den bara en förlustrisk.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det minsta vinnande räcker, trumf först när du måste.`,
@@ -725,7 +725,7 @@ export const sv = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Anfall med ${cards}. Börja med dina minsta icke-trumfkort och spara trumf till försvaret.`,
+        attack: ({ cards }) => `Anfall med ${cards}. Välj valören som har flest kort redan ute ur spelet, så blir det färre sidoanfall. Spara trumf till försvaret.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det minsta vinnande kortet räcker, spara de stora.`,
         take: "Du kan inte slå alla kort på bordet. Ta upp dem på handen.",
         pass: ({ cards }) => `Skjut vidare anfallet med ${cards}, så slipper du undan själv.`,

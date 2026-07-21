@@ -607,7 +607,7 @@ export const hu = {
     },
     maija: {
       advice: {
-        attack: ({ cards }) => `Játszd ki ${cards}. Abban a színben támadj, amelyikből a legtöbb alacsony lapod van, az adukat tartsd védekezésre.`,
+        attack: ({ cards }) => `Játszd ki: ${cards}. Támadj a leghosszabb színeddel, hogy a védőnek sok lapot kelljen ütnie. Tartogasd az adukat védekezésre.`,
         attackTrumps: ({ cards }) => `Játszd ki az adu lapokat: ${cards}. Most ezekkel támadsz, ne tartogasd őket védekezésre.`,
         attackMaija: ({ cards }) => `Játszd ki ${cards} és szabadulj meg a Maijától. Semmit sem üt, a kézben csak vesztési kockázat.`,
         beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő is elég, adut csak kényszerből.`,
@@ -728,7 +728,7 @@ export const hu = {
     },
     moska: {
       advice: {
-        attack: ({ cards }) => `Támadj a(z) ${cards} lappal. Kezdd a legkisebb nem adu lapokkal, az adukat tartsd meg védekezésre.`,
+        attack: ({ cards }) => `Támadj ezzel: ${cards}. Válaszd azt az értéket, amelyből már a legtöbb lap kikerült a játékból, így kevesebb oldaltámadás lesz. Tartogasd az adukat védekezésre.`,
         beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő lap is elég, a nagyokat tartsd meg.`,
         take: "Nem tudod az összes asztali lapot ütni. Vedd fel őket a kezedbe.",
         pass: ({ cards }) => `Told tovább a támadást a(z) ${cards} lappal, és magad megúszod.`,
