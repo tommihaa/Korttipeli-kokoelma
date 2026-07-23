@@ -34,6 +34,7 @@ export const la = {
       twoColorDeck: 'Cumulus bicolor (♠ ♣ nigra, ♥ ♦ rubra)',
       aiTitle: 'Gradus machinae 🤖',
       ai: {
+        flatNote: "In hoc ludo gradus parum valet: automata se invicem fere aeque saepe vincunt quolibet gradu.",
         beginner: { label: 'Discipulus', desc: 'errat, vinci potest' },
         normal:   { label: 'Socius',     desc: 'bene ludit, interdum errat' },
         hard:     { label: 'Magister',   desc: 'plena ratio + chartas meminit' },

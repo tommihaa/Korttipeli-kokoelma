@@ -35,6 +35,7 @@ export const rom = {
       twoColorDeck: 'Kupa duje-rangengi (♠ ♣ kale, ♥ ♦ lole)',
       aiTitle: 'O nivelo le mašinako 🤖',
       ai: {
+        flatNote: "Ande kado khelipe o nivelo na zhutil but: le boturia inkeren pe jekh avreste kadja sar sa pe sako nivelo.",
         beginner: { label: 'Sikljovno',  desc: 'kerel doša, šaj nirisardol' },
         normal:   { label: 'Amal',       desc: 'mišto khelel, varekana xasarel' },
         hard:     { label: 'Majstoro',   desc: 'sa o strategija + del godji le karti' },

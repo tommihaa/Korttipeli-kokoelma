@@ -36,6 +36,7 @@ export const it = {
       twoColorDeck: 'Mazzo bicolore (♠ ♣ neri, ♥ ♦ rossi)',
       aiTitle: 'Livello IA 🤖',
       ai: {
+        flatNote: "In questo gioco il livello incide poco: i bot si battono a vicenda più o meno con la stessa frequenza a qualsiasi livello.",
         beginner: { label: 'Apprendista', desc: 'commette errori, battibile' },
         normal:   { label: 'Artigiano',   desc: 'gioca bene, a volte sbaglia' },
         hard:     { label: 'Maestro',     desc: 'strategia completa + ricorda le carte' },

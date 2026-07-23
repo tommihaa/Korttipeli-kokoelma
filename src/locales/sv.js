@@ -36,6 +36,7 @@ export const sv = {
       twoColorDeck: 'Tvåfärgad kortlek (♠ ♣ svarta, ♥ ♦ röda)',
       aiTitle: 'AI-nivå 🤖',
       ai: {
+        flatNote: "I det här spelet spelar nivån liten roll: botarna vinner ungefär lika ofta oavsett nivå.",
         beginner: { label: 'Lärling',  desc: 'gör misstag, går att slå' },
         normal:   { label: 'Gesäll',   desc: 'spelar bra, snubblar ibland' },
         hard:     { label: 'Mästare',  desc: 'full strategi + minns korten' },

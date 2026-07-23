@@ -36,6 +36,7 @@ export const de = {
       twoColorDeck: 'Zweifarbiges Kartendeck (♠ ♣ schwarz, ♥ ♦ rot)',
       aiTitle: 'KI-Stufe 🤖',
       ai: {
+        flatNote: "In diesem Spiel macht die Stufe wenig aus: die Bots gewinnen etwa gleich oft, unabhängig von der Stufe.",
         beginner: { label: 'Lehrling',  desc: 'macht Fehler, schlagbar' },
         normal:   { label: 'Geselle',   desc: 'spielt gut, patzt manchmal' },
         hard:     { label: 'Meister',   desc: 'volle Strategie + merkt sich Karten' },

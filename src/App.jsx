@@ -161,6 +161,22 @@ const loadChangelog = () =>
   import('./changelogs/fi.js').then(m => m.CHANGELOG);
 
 // ── Tulossa ───────────────────────────────────────────────────────────────────
+// Pelit joissa botbench EI löytänyt mitattavaa eroa AI-tasojen välillä, eli
+// tasovalitsin lupaisi eron jota ei ole. Näissä Koneäly-osio kertoo sen suoraan.
+//
+// EHTO LISÄÄMISELLE: N≥400 mittaus jossa KAIKKI kolme tasoparia ovat ~50 %.
+// Älä lisää peliä pienemmän otoksen perusteella: N=30/40 yliarvioi tasoeron
+// systemaattisesti, koska kohina näyttää signaalilta (docs/BOTBENCH.md 21.7.2026,
+// jossa kolme "tervettä ladderia" romahti otoskoon nelinkertaistuessa).
+//
+// Ristiseiska 21.7.2026 (N=400): 53,3 % / 49,0 % / 51,3 %.
+// Kasino     21.7.2026 (N=400): 53,8 % / 48,9 % / 51,5 % (tasapelit puolikkaina).
+//
+// EI listalla, vaikka porras on osin rikki: Maija (N=400) — Mestari voittaa
+// Oppipojan todistetusti 57,8 % (z = 3,1), vaikka Kisälli ei erotu Oppipojasta.
+// "Taso vaikuttaa vähän" olisi siellä väärä väite. Kultakala on mittaamatta.
+const FLAT_AI_GAMES = ['ristiseiska', 'kasino'];
+
 const TODO = [
   { label: '"Kokeile ääniä" -esikuuntelu Asetuksissa + pikamykistys', status: 'done' },
   { label: 'Ääniteema: Torvi & kantele (valittavissa Asetuksista, äänet päällä)', status: 'done' },
@@ -1175,6 +1191,11 @@ export default function App() {
                   </button>
                 ))}
               </div>
+              {FLAT_AI_GAMES.includes(active) && (
+                <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, opacity: 0.75, lineHeight: 1.5 }}>
+                  {t('ui.settings.ai.flatNote')}
+                </div>
+              )}
             </div>
           )}
         </div>

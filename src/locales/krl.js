@@ -37,6 +37,7 @@ export const krl = {
       twoColorDeck: 'Kakšivärini pakka (♠ ♣ muššat, ♥ ♦ ruškiet)',
       aiTitle: 'Konehälyn taso 🤖',
       ai: {
+        flatNote: "Täs pelis taso vaikuttau vähän: botat voitetah toine toistu suurin piirtein yhtä uso tazos rippumattah.",
         beginner: { label: 'Opastuja', desc: 'luadiu virheitä, voitettavissa' },
         normal:   { label: 'Kizälli',  desc: 'kizuau hyvin, ereyndyy toiziči' },
         hard:     { label: 'Mestari',  desc: 'täyzi strategia + muistau kortit' },

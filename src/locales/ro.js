@@ -34,6 +34,7 @@ export const ro = {
       twoColorDeck: 'Pachet bicolor (♠ ♣ negre, ♥ ♦ roșii)',
       aiTitle: 'Nivelul inteligenței artificiale 🤖',
       ai: {
+        flatNote: "În acest joc nivelul contează puțin: boții se înving reciproc cam la fel de des, indiferent de nivel.",
         beginner: { label: 'Ucenic',  desc: 'face greșeli, poate fi învins' },
         normal:   { label: 'Calfă',   desc: 'joacă bine, uneori greșește' },
         hard:     { label: 'Maestru', desc: 'strategie completă + ține minte cărțile' },

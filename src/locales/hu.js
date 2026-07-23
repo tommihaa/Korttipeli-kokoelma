@@ -35,6 +35,7 @@ export const hu = {
       twoColorDeck: 'Kétszínű pakli (♠ ♣ fekete, ♥ ♦ piros)',
       aiTitle: 'Mesterséges intelligencia szintje 🤖',
       ai: {
+        flatNote: "Ebben a játékban a szint keveset számít: a botok nagyjából ugyanolyan gyakran győzik le egymást bármelyik szinten.",
         beginner: { label: 'Tanonc',  desc: 'hibázik, legyőzhető' },
         normal:   { label: 'Legény',  desc: 'jól játszik, néha hibázik' },
         hard:     { label: 'Mester',  desc: 'teljes stratégia + emlékszik a lapokra' },

@@ -36,6 +36,7 @@ export const pt = {
       twoColorDeck: 'Baralho de duas cores (♠ ♣ pretos, ♥ ♦ vermelhos)',
       aiTitle: 'Nível da IA 🤖',
       ai: {
+        flatNote: "Neste jogo o nível influi pouco: os bots vencem-se uns aos outros mais ou menos com a mesma frequência em qualquer nível.",
         beginner: { label: 'Aprendiz',  desc: 'comete erros, vencível' },
         normal:   { label: 'Oficial',   desc: 'joga bem, às vezes falha' },
         hard:     { label: 'Mestre',    desc: 'estratégia total + memoriza as cartas' },

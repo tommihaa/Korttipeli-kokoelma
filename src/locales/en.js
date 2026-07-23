@@ -36,6 +36,7 @@ export const en = {
       twoColorDeck: 'Two-color deck (♠ ♣ black, ♥ ♦ red)',
       aiTitle: 'AI level 🤖',
       ai: {
+        flatNote: "In this game the level matters little: the bots beat each other about equally often whatever the level.",
         beginner: { label: 'Apprentice', desc: 'makes mistakes, beatable' },
         normal:   { label: 'Journeyman', desc: 'plays well, slips up sometimes' },
         hard:     { label: 'Master',     desc: 'full strategy + remembers cards' },

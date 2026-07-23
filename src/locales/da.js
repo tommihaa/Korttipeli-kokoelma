@@ -36,6 +36,7 @@ export const da = {
       twoColorDeck: 'Tofarvet kortspil (♠ ♣ sorte, ♥ ♦ røde)',
       aiTitle: 'AI-niveau 🤖',
       ai: {
+        flatNote: "I dette spil betyder niveauet lidt: botterne vinder omtrent lige ofte uanset niveau.",
         beginner: { label: 'Lærling', desc: 'laver fejl, kan slås' },
         normal:   { label: 'Svend',   desc: 'spiller godt, kvajer sig nogle gange' },
         hard:     { label: 'Mester',  desc: 'fuld strategi + husker kort' },

@@ -36,6 +36,7 @@ export const et = {
       twoColorDeck: 'Kahevärviline kaardipakk (♠ ♣ mustad, ♥ ♦ punased)',
       aiTitle: 'Tehisintellekti tase 🤖',
       ai: {
+        flatNote: "Selles mängus tase eriti ei loe: botid võidavad üksteist umbes sama tihti sõltumata tasemest.",
         beginner: { label: 'Õpipoiss', desc: 'teeb vigu, võidetav' },
         normal:   { label: 'Sell',     desc: 'mängib hästi, eksib vahel' },
         hard:     { label: 'Meister',  desc: 'täielik strateegia + mäletab kaarte' },

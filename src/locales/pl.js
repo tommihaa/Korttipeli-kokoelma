@@ -45,6 +45,7 @@ export const pl = {
       twoColorDeck: 'Dwukolorowa talia (♠ ♣ czarne, ♥ ♦ czerwone)',
       aiTitle: 'Poziom SI 🤖',
       ai: {
+        flatNote: "W tej grze poziom ma małe znaczenie: boty wygrywają ze sobą mniej więcej tak samo często niezależnie od poziomu.",
         beginner: { label: 'Uczeń',     desc: 'popełnia błędy, da się pokonać' },
         normal:   { label: 'Czeladnik', desc: 'gra dobrze, czasem się myli' },
         hard:     { label: 'Mistrz',    desc: 'pełna strategia + pamięta karty' },

@@ -34,6 +34,7 @@ export const se = {
       twoColorDeck: 'Guokteivdnásaš stohka (♠ ♣ čáhppadat, ♥ ♦ rukses)',
       aiTitle: 'Mašiidnajiena dássi 🤖',
       ai: {
+        flatNote: "Dán spealus dássi ii mearkkaš ollu: bohtat vuitet guhtet guimmiideaset sullii seamma dávjá vaikko makkár dásis.",
         beginner: { label: 'Oahppi',    desc: 'meattáhuvvá, vuoitemis' },
         normal:   { label: 'Gáisli',    desc: 'speala bures, dahká meattáhusaid muhtumin' },
         hard:     { label: 'Meašttir',  desc: 'ollislaš strategiija + muitá goarttaid' },

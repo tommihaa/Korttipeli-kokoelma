@@ -36,6 +36,7 @@ export const fr = {
       twoColorDeck: 'Jeu de cartes bicolore (♠ ♣ noirs, ♥ ♦ rouges)',
       aiTitle: 'Niveau de l\'IA 🤖',
       ai: {
+        flatNote: "Dans ce jeu le niveau change peu de choses : les bots gagnent à peu près aussi souvent quel que soit le niveau.",
         beginner: { label: 'Apprenti',  desc: 'fait des erreurs, battable' },
         normal:   { label: 'Compagnon', desc: 'joue bien, se trompe parfois' },
         hard:     { label: 'Maître',    desc: 'stratégie complète + mémorise les cartes' },

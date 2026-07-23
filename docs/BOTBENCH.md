@@ -110,6 +110,9 @@ Opit ja rajat:
    hard ≈ normal. Nollahypoteesitesti (identtiset botit → sama jakauma kuin
    "erilaiset") osoitti että kärkiero hukkuu nosto-/jakotuuriin näillä
    otoksilla. Kirjattu pelin ominaisuutena, ei rikkinäisyytenä.
+   **⚠️ MAIJAN OSALTA KUMOTTU 21.7.2026 (N=400):** päinvastoin, alapää on rikki
+   ja yläpää terve (`beginner ≈ normal < hard`). Ks. osio "Maija 21.7.2026".
+   Kultakalan luvut ovat yhä tästä N=40-erästä eli varmistamatta.
 3. **Kasino on tuuripeli botti-erojen erotuskyvyn kannalta** (kaikki parit
    ~50 %). Viisi eri heikennystä/vahvennusta ei liikuttanut voittoja, vaikka
    mittari todistetusti reagoi Kasinon koodimuutoksiin (parinäkö-kokeilu
@@ -237,6 +240,113 @@ osoittautui litteäksi ja yksi olemattomaksi, kun otos nelinkertaistettiin. Pien
 otoksen virhe ei jakaudu tasaisesti johtopäätöksiin: se suosii kiinnostavan näköisiä
 eroja, koska kohina näyttää signaalilta. Älä nimeä referenssipeliä otoksella joka ei
 kestä kaksinkertaistusta.
+
+## Ristiseiska 21.7.2026 — passausmuisti Mestarille: NOLLATULOS (muutos palautettu)
+
+Ristiseiskalla ei ole kyvykkyysporrasta (ks. edellinen osio). Hypoteesi: pelin ainoa
+taitokanava on toteuttamatta. RISTISEISKA.md rivi 39 sanoo *"Passaus on sallittu vain
+jos ei käy"*, ja rivi 90 nimeää muistin olennaiseksi, mutta botti ei muistanut
+passauksia lainkaan. Passaus on pakotettu ja julkinen, joten siitä seuraa varmaa
+tietoa: passaaja ei omistanut yhtäkään sillä hetkellä pelattavissa ollutta korttia.
+
+Toteutus (vain `hard`): `lacks[i]` = korttiavaimet joita pelaaja i tunnetusti ei omista,
+kertyy passauksista, purkautuu jos hän saa kortin panttina. `aiBestCard` suosi siirtoa
+joka avaa vain kortteja jotka vastustaja tunnetusti puuttuu.
+
+| Ristiseiska N=400 | Ennen | Passausmuistilla |
+|-------------------|------:|-----------------:|
+| hard vs beginner | 213 | **213** |
+| hard vs normal | 196 | **196** |
+| normal vs beginner | 205 | **205** |
+
+Voittomäärät identtiset kaikissa pareissa. Ainoa ero koko 1200 pelin aineistossa oli
+`meanA` 2,4 → 2,40125 hard vs beginner -parissa, eli **yksi sijoitus 400 pelissä**.
+**Muutos palautettu.**
+
+**Miksi se ei voinut toimia (rakenteellinen syy):** Ristiseiskassa pelattavien korttien
+joukko on kapea, ULOSPÄIN liikkuva rintama, kussakin avatussa maassa vain `low-1` ja
+`high+1`. Passaaja paljastaa puuttuvansa sen hetken rintaman. Mutta oma siirto työntää
+rintamaa ulospäin, joten siirron avaama kortti on määritelmän mukaan sellainen joka EI
+ollut aiemmin pelattavissa, eikä se siksi voi kuulua aiemmin kirjattuun puutejoukkoon.
+Leikkaus on käytännössä aina tyhjä ja pisteytys palautti nollan.
+
+**Yleinen oppi, tämän session arvokkain:** tieto joka on ihmiselle piilossa voi olla
+botille jo laskettuna. Passaus kertoo mitä vastustajalta puuttuu, mutta puuttuva joukko
+ON pöydän näkyvä rintama, jonka jokainen laillisuutta laskeva botti tuntee joka tapauksessa.
+Muistiin tallentaminen ei lisännyt informaatiota. **Ennen kuin rakennat botille
+päättelykanavan, tarkista sisältyykö se jo siihen mitä botti laskee sääntöjen
+noudattamiseksi.** Ihmispelaajien välinen taitoero ei ole sama asia kuin bottien välinen.
+
+**Metodi jota kannattaa toistaa:** muutos portitettiin `hard`-tasolle ja pisteytys
+laski vain varmaa puutetta, jolloin tyhjä muisti antaa kaikille ehdokkaille 0 ja käytös
+on bittitarkasti entinen. Tästä seurasi ilmainen tarkistus: `normal vs beginner` ei
+osallistu muutokseen lainkaan, joten sen TÄYTYI tulla ulos samana (205/400). Se tuli.
+Rakenna tasokohtainen muutos aina niin, että jokin mitattava pari toimii
+verrokkina joka paljastaa vuodon muille tasoille.
+
+## Maija 21.7.2026 (N=400) — porras katkeaa keskeltä, EI litteä
+
+Mitattu jotta tiedetään kuuluuko Maija "taso vaikuttaa vähän" -merkinnän piiriin
+(ks. `FLAT_AI_GAMES`, src/App.jsx). **Ei kuulu.**
+
+| pari | N=40 (17.7.) | N=400 (21.7.) | z |
+|------|-------------:|--------------:|--:|
+| hard vs beginner | 63 % | **57,8 %** | 3,1 |
+| hard vs normal | 48 % | **52,9 %** | 1,2 |
+| normal vs beginner | 60 % | **51,3 %** | 0,5 |
+
+**Mestari voittaa Oppipojan todistetusti** (57,8 %, z = 3,1), joten väite "taso
+vaikuttaa vähän" olisi Maijassa VÄÄRÄ. Merkintää ei lisätty.
+
+Mutta porras on rikki eri tavalla kuin Seiskassa ja Moskassa: siellä muoto on
+`beginner << normal ≈ hard`, Maijassa **`beginner ≈ normal < hard`**. Kisälli ei
+erotu Oppipojasta lainkaan (51,3 %), eli keskitaso on nimellinen. Kyvykkyysporras-
+osion taulukko lupasi Kisällille "täysi perusstrategia + Maija-prioriteetti +
+valttiepäröinti"; ne eivät tuota mitattavaa etua Oppipojan heikkouksia vastaan.
+
+**Kolmas kerta jolloin pieni otos petti, ja nyt molempiin suuntiin.** N=40 antoi
+`normal vs beginner` = 60 %, N=400 antaa 51,3 %: kohina oli tuottanut olemattoman
+portaan. Samalla `hard vs normal` nousi 48 → 52,9 %. Aiempi kirjaus "Kultakala ja
+Maija: hard ≈ normal, porras beginneriä vastaan kunnossa (60-73 %)" on siis Maijan
+osalta väärin päin: yläpää on terveempi kuin alapää.
+
+**Kultakala on yhä mittaamatta N=400:lla** ja sen luvut ovat samasta N=40-erästä,
+joten sen "porras kunnossa" -kirjaus on yhtä epäluotettava. Älä käytä sitä
+referenssinä ennen uusintamittausta.
+
+## Kasino 21.7.2026 (N=400) — litteä vahvistettu, merkintä lisätty
+
+Kasino oli baselinesta asti epäilty tuuripeliksi botti-erojen erotuskyvyn kannalta
+(löydös 3, kaikki parit ~50 % N=30/40:llä). N=400 vahvistaa sen, eli tämä on harvinainen
+tapaus jossa pieni otos ei erehtynyt.
+
+Voitto-% tasapelit puolikkaina (Kasinossa tasapeli on sääntöjen mukaan mahdollinen,
+16 pisteen raja, joten `ties` ei ole virhe):
+
+| pari | winsA / winsB / ties | voitto-% | z |
+|------|---------------------:|---------:|--:|
+| hard vs beginner | 210 / 180 / 10 | **53,8 %** | 1,5 |
+| hard vs normal | 190 / 199 / 11 | **48,9 %** | −0,45 |
+| normal vs beginner | 202 / 190 / 8 | **51,5 %** | 0,6 |
+
+Kaikki kolme ovat ~1,5 keskivirheen sisällä 50 %:sta. **Lisätty `FLAT_AI_GAMES`-listaan**
+(src/App.jsx) eli Kasinon Koneäly-osio kertoo pelaajalle että tason vaikutus on pieni.
+
+Tämä vahvistaa myös aiemman löydöksen 3 tulkinnan: viisi eri heikennystä/vahvennusta ei
+liikuttanut Kasinon voittoja, vaikka mittarin todettiin reagoivan Kasinon koodimuutoksiin.
+Kaappauspelin lopputulos ratkeaa jakotuurilla siinä määrin, että botin taito hukkuu siihen.
+
+### Yhteenveto: mitkä pelit saavat merkinnän
+
+| Peli | N=400 mitattu | Kaikki parit ~50 % | Merkintä |
+|------|:-------------:|:------------------:|:--------:|
+| Ristiseiska | kyllä | kyllä | **on** |
+| Kasino | kyllä | kyllä | **on** |
+| Maija | kyllä | ei (hard vs beg 57,8 %, z = 3,1) | ei |
+| Seiska | kyllä | ei (beginner häviää selvästi) | ei |
+| Moska | kyllä | ei (beginner häviää selvästi) | ei |
+| Kultakala | **ei** | — | ei (mittaamatta) |
+| Koputus, Läpsy, Paskahousu | ei (N=30/40) | — | ei |
 
 ## Käyttö jatkossa
 

@@ -36,6 +36,7 @@ export const is = {
       twoColorDeck: 'Tveggja lita stokkur (♠ ♣ svört, ♥ ♦ rauð)',
       aiTitle: 'Stig tölvuvits 🤖',
       ai: {
+        flatNote: "Í þessum leik skiptir stigið litlu: vélarnar vinna hver aðra álíka oft óháð stigi.",
         beginner: { label: 'Lærlingur', desc: 'gerir mistök, hægt að vinna' },
         normal:   { label: 'Sveinn',    desc: 'spilar vel, klikkar stundum' },
         hard:     { label: 'Meistari',  desc: 'full stefna + man spilin' },

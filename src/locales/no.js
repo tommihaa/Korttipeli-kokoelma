@@ -36,6 +36,7 @@ export const no = {
       twoColorDeck: 'Tofarget kortstokk (♠ ♣ svarte, ♥ ♦ røde)',
       aiTitle: 'KI-nivå 🤖',
       ai: {
+        flatNote: "I dette spillet betyr nivået lite: botene vinner omtrent like ofte uansett nivå.",
         beginner: { label: 'Lærling',  desc: 'gjør feil, kan slås' },
         normal:   { label: 'Svenn',    desc: 'spiller godt, snubler iblant' },
         hard:     { label: 'Mester',   desc: 'full strategi + husker kort' },

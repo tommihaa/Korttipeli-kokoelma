@@ -34,6 +34,7 @@ export const cs = {
       twoColorDeck: 'Dvoubarevný balíček (♠ ♣ černé, ♥ ♦ červené)',
       aiTitle: 'Úroveň umělé inteligence 🤖',
       ai: {
+        flatNote: "V této hře úroveň znamená málo: boti nad sebou vítězí přibližně stejně často bez ohledu na úroveň.",
         beginner: { label: 'Učeň',    desc: 'dělá chyby, dá se porazit' },
         normal:   { label: 'Tovaryš', desc: 'hraje dobře, občas chybuje' },
         hard:     { label: 'Mistr',   desc: 'plná strategie + pamatuje si karty' },

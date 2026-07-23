@@ -60,6 +60,7 @@ export const fi = {
       twoColorDeck: 'Kaksivärinen pakka (♠ ♣ mustia, ♥ ♦ punaisia)',
       aiTitle: 'Koneälyn taso 🤖',
       ai: {
+        flatNote: "Tässä pelissä taso vaikuttaa vähän: botit voittavat toisensa suunnilleen yhtä usein tasosta riippumatta.",
         beginner: { label: 'Oppipoika', desc: 'tekee virheitä, voitettavissa' },
         normal:   { label: 'Kisälli',   desc: 'pelaa hyvin, mokaa joskus' },
         hard:     { label: 'Mestari',   desc: 'täysi strategia + muistaa kortit' },

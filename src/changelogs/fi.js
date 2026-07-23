@@ -9,6 +9,7 @@ export const CHANGELOG = [
   {
     date: '21.7.2026',
     items: [
+      'Ristiseiskassa ja Kasinossa Koneälyn taso -asetus kertoo nyt suoraan, että näissä peleissä tason vaikutus lopputulokseen on pieni. Mittasimme bottien keskinäisiä otteluita 400 pelin sarjoilla, eivätkä tasot erottuneet toisistaan: jokainen tasopari voitti noin puolet peleistä. Ristiseiskassa kenelläkään ei ole etulyöntiasemaa eikä tietoa toisten korteista, joten pelissä on vaikea pelata pahasti väärin; Kasinossa taas jakotuuri ratkaisee kaappauspelin siinä määrin, että taito hukkuu siihen. Muissa peleissä tasoero on mitattu todelliseksi, joten merkintä näkyy vain näissä kahdessa.',
       'Info-paneelin versionumero näyttää nyt oikean version. Aiemmin tuotannossa näkyi väärä, liian pieni numero (esimerkiksi 1.2.010), koska numero laskettiin julkaisupalvelimella tavalla joka ei nähnyt kuin pienen osan projektin historiasta. Numero on nyt kiinteä osa julkaisua, joten se on sama kaikkialla. Buildin päiväys ja kellonaika ovat olleet koko ajan oikein.',
       'Mestarin neuvo erottuu nyt selvemmin: osoitettu kortti saa sykkivän purppurakehän ja nousee hieman ylös, ja muut kortit himmenevät neuvon ajaksi. Aiemmin korostus oli vaisu ja osoitettu kortti saattoi hukkua käteen. Koskee kaikkia pelejä.',
       'Seiska ja Paskahousu: näkymä ei enää nytkähdä ylöspäin kesken pelin, kun joku pääsee korteistaan eroon. Aiemmin pelaajan korttirivi kutistui tyhjäksi sillä hetkellä kun hän lopetti, jolloin kaikki sen alapuolella oleva hyppäsi ylös. Nyt rivi säilyttää korkeutensa loppuun asti.',
