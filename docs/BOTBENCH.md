@@ -336,6 +336,36 @@ Tämä vahvistaa myös aiemman löydöksen 3 tulkinnan: viisi eri heikennystä/v
 liikuttanut Kasinon voittoja, vaikka mittarin todettiin reagoivan Kasinon koodimuutoksiin.
 Kaappauspelin lopputulos ratkeaa jakotuurilla siinä määrin, että botin taito hukkuu siihen.
 
+## Kultakala 24.7.2026 (N=400) — alaporras terve, yläporras litteä, EI merkintää
+
+Viimeinen mittaamaton peli. Mitattu jotta "porras beginneriä vastaan kunnossa
+(60-73 %)" -kirjaus (samasta N=40-erästä joka petti Maijalla) saadaan varmennettua
+tai kumottua.
+
+Voitto-% tasapelit puolikkaina:
+
+| pari | winsA / winsB / ties | voitto-% | z |
+|------|---------------------:|---------:|--:|
+| hard vs beginner | 216 / 174 / 10 | **55,25 %** | 2,1 |
+| hard vs normal | 196 / 189 / 15 | **50,9 %** | 0,35 |
+| normal vs beginner | 226 / 165 / 9 | **57,6 %** | 3,05 |
+
+**Ei litteä, merkintää ei lisätty.** `normal vs beginner` on 57,6 % (z = 3,05, p < 0,01)
+ja `hard vs beginner` 55,25 % (z = 2,1). Lisäysehto (kaikki kolme paria 50 % ±1,5 SE eli
+46,3-53,8 %) ei täyty, joten `flatNote` valehtelisi: Kisälli ja Mestari voittavat
+Oppipojan todistetusti. Keskiarvosijoitukset vahvistavat (hard 2,28 · normal 2,27 ·
+beginner 2,64).
+
+Muoto on **`beginner << normal ≈ hard`**, sama kuin Seiskalla ja Moskalla: alaporras
+terve, yläporras (`hard vs normal` 50,9 %) litteä. Kultakala liittyy siis rikkinäisen
+yläportaan peleihin, ei litteisiin.
+
+**Poikkeus N=40:n petossarjaan:** toisin kuin Maijalla (jossa pieni otos meni väärin
+päin), vanha "hard ≈ normal, porras beginneriä vastaan kunnossa" oli tässä suunnaltaan
+oikea. `hard vs normal` on aidosti litteä ja beginner-porras aidosti olemassa, vain
+sen suuruus oli yliarvioitu (60-73 % → 55-58 %). N=40 ei siis aina valehtele, mutta
+kolmesta neljästä tapauksesta se teki, joten johtopäätös vaatii yhä N≥400:n.
+
 ### Yhteenveto: mitkä pelit saavat merkinnän
 
 | Peli | N=400 mitattu | Kaikki parit ~50 % | Merkintä |
@@ -345,7 +375,7 @@ Kaappauspelin lopputulos ratkeaa jakotuurilla siinä määrin, että botin taito
 | Maija | kyllä | ei (hard vs beg 57,8 %, z = 3,1) | ei |
 | Seiska | kyllä | ei (beginner häviää selvästi) | ei |
 | Moska | kyllä | ei (beginner häviää selvästi) | ei |
-| Kultakala | **ei** | — | ei (mittaamatta) |
+| Kultakala | kyllä | ei (normal vs beg 57,6 %, z = 3,05) | ei |
 | Koputus, Läpsy, Paskahousu | ei (N=30/40) | — | ei |
 
 ## Käyttö jatkossa
