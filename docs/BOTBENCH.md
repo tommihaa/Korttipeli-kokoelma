@@ -70,8 +70,8 @@ hard vs beginner **67 %**, hard vs normal **51 %**, normal vs beginner **47 %**.
 toimia referenssinä kun muiden pelien tasoja korjataan.~~
 
 **⚠️ KUMOTTU 21.7.2026, älä käytä näitä referenssinä.** Kaikki kolme mitattiin
-uudelleen N=400:lla: Seiskan ja Moskan yläpää on litteä ja Ristiseiskalla ei ole
-porrasta lainkaan. Ks. alempaa osiot "Seiska 21.7." ja "Moska ja Ristiseiska 21.7.".
+uudelleen N=400:lla: Seiskan ja Moskan ylätasot ovat samantasoiset ja Ristiseiskalla
+ei ole porrasta lainkaan. Ks. alempaa osiot "Seiska 21.7." ja "Moska ja Ristiseiska 21.7.".
 
 ## Kyvykkyysporras 17.7.2026 (Kultakala, Koputus, Maija, Kasino)
 
@@ -152,8 +152,8 @@ Mestari ei erotu Kisällistä (52 %, kolikonheitto), ja molemmat voittavat
 Oppipojan yhtä selvästi (74,7 % vs 78,0 %, ero ~1 keskivirhe eli ei todellinen).
 
 **Tämä ei ole järjestyskorjauksen aiheuttama.** Baselinen 60 % mitattiin N=30:llä
-(±9 %-yks.), joten 60 % ja 52 % ovat tilastollisesti yhteensopivia. Yläpää oli
-todennäköisesti litteä jo 17.7., mutta otoskoko ei riittänyt näyttämään sitä.
+(±9 %-yks.), joten 60 % ja 52 % ovat tilastollisesti yhteensopivia. Ylätasot olivat
+todennäköisesti samantasoiset jo 17.7., mutta otoskoko ei riittänyt näyttämään sitä.
 
 **Seuraus baselinen johtopäätökseen:** yllä oleva lause *"Terveimmät ladderit:
 Seiska, Ristiseiska, Moska"* ei päde Seiskan osalta. Seiskan yläpää kuuluu samaan
@@ -222,7 +222,7 @@ kolme mitataan N=400:lla (keskivirhe ±2,5 %-yks.), yksikään ei kelpaa referen
 
 **Moska: sama muoto kuin Seiskalla**, `beginner << normal ≈ hard`. Oppipoika häviää
 selvästi molemmille (71,8 % ja 65,8 %), mutta Mestari ei erotu Kisällistä (53,5 %,
-z ≈ 1,4). Yläpää on litteä.
+z ≈ 1,4). Ylätasot ovat samantasoiset.
 
 **Ristiseiskalla ei ole porrasta lainkaan.** Kaikki kolme paria ovat kolikonheittoja
 (53,3 %, 49,0 %, 51,3 %); yksikään ei eroa 50 %:sta enempää kuin ~1,3 keskivirhettä.
@@ -235,8 +235,9 @@ tällä hetkellä yhtään peliä jonka porras olisi todennetusti monotoninen ko
 yli. Lähimpänä on Läpsy (100/87/77, N=30), mutta sekin on mittaamatta isolla otoksella.
 
 **Metodioppi, kolmas kerta samasta asiasta:** N=30 ei ainoastaan ollut epätarkka, se
-tuotti systemaattisesti liian ruusuisen kuvan. Kolmesta "terveestä" ladderista kaksi
-osoittautui litteäksi ja yksi olemattomaksi, kun otos nelinkertaistettiin. Pienen
+tuotti systemaattisesti liian ruusuisen kuvan. Kolmesta "terveestä" ladderista kahden
+tasot osoittautuivat samantasoisiksi ja yksi porras olemattomaksi, kun otos
+nelinkertaistettiin. Pienen
 otoksen virhe ei jakaudu tasaisesti johtopäätöksiin: se suosii kiinnostavan näköisiä
 eroja, koska kohina näyttää signaalilta. Älä nimeä referenssipeliä otoksella joka ei
 kestä kaksinkertaistusta.
@@ -284,7 +285,7 @@ osallistu muutokseen lainkaan, joten sen TÄYTYI tulla ulos samana (205/400). Se
 Rakenna tasokohtainen muutos aina niin, että jokin mitattava pari toimii
 verrokkina joka paljastaa vuodon muille tasoille.
 
-## Maija 21.7.2026 (N=400) — porras katkeaa keskeltä, EI litteä
+## Maija 21.7.2026 (N=400) — porras katkeaa keskeltä, tasot eivät samantasoiset
 
 Mitattu jotta tiedetään kuuluuko Maija "taso vaikuttaa vähän" -merkinnän piiriin
 (ks. `FLAT_AI_GAMES`, src/App.jsx). **Ei kuulu.**
@@ -314,7 +315,7 @@ osalta väärin päin: yläpää on terveempi kuin alapää.
 joten sen "porras kunnossa" -kirjaus on yhtä epäluotettava. Älä käytä sitä
 referenssinä ennen uusintamittausta.
 
-## Kasino 21.7.2026 (N=400) — litteä vahvistettu, merkintä lisätty
+## Kasino 21.7.2026 (N=400) — samantasoisuus vahvistettu, merkintä lisätty
 
 Kasino oli baselinesta asti epäilty tuuripeliksi botti-erojen erotuskyvyn kannalta
 (löydös 3, kaikki parit ~50 % N=30/40:llä). N=400 vahvistaa sen, eli tämä on harvinainen
@@ -336,7 +337,7 @@ Tämä vahvistaa myös aiemman löydöksen 3 tulkinnan: viisi eri heikennystä/v
 liikuttanut Kasinon voittoja, vaikka mittarin todettiin reagoivan Kasinon koodimuutoksiin.
 Kaappauspelin lopputulos ratkeaa jakotuurilla siinä määrin, että botin taito hukkuu siihen.
 
-## Kultakala 24.7.2026 (N=400) — alaporras terve, yläporras litteä, EI merkintää
+## Kultakala 24.7.2026 (N=400) — alaporras terve, ylätasot samantasoiset, EI merkintää
 
 Viimeinen mittaamaton peli. Mitattu jotta "porras beginneriä vastaan kunnossa
 (60-73 %)" -kirjaus (samasta N=40-erästä joka petti Maijalla) saadaan varmennettua
@@ -350,19 +351,19 @@ Voitto-% tasapelit puolikkaina:
 | hard vs normal | 196 / 189 / 15 | **50,9 %** | 0,35 |
 | normal vs beginner | 226 / 165 / 9 | **57,6 %** | 3,05 |
 
-**Ei litteä, merkintää ei lisätty.** `normal vs beginner` on 57,6 % (z = 3,05, p < 0,01)
+**Kaikki parit eivät ole samantasoiset, merkintää ei lisätty.** `normal vs beginner` on 57,6 % (z = 3,05, p < 0,01)
 ja `hard vs beginner` 55,25 % (z = 2,1). Lisäysehto (kaikki kolme paria 50 % ±1,5 SE eli
 46,3-53,8 %) ei täyty, joten `flatNote` valehtelisi: Kisälli ja Mestari voittavat
 Oppipojan todistetusti. Keskiarvosijoitukset vahvistavat (hard 2,28 · normal 2,27 ·
 beginner 2,64).
 
 Muoto on **`beginner << normal ≈ hard`**, sama kuin Seiskalla ja Moskalla: alaporras
-terve, yläporras (`hard vs normal` 50,9 %) litteä. Kultakala liittyy siis rikkinäisen
-yläportaan peleihin, ei litteisiin.
+terve, ylätasot (`hard vs normal` 50,9 %) samantasoiset. Kultakala liittyy siis
+rikkinäisen yläportaan peleihin, ei täysin samantasoisiin.
 
 **Poikkeus N=40:n petossarjaan:** toisin kuin Maijalla (jossa pieni otos meni väärin
 päin), vanha "hard ≈ normal, porras beginneriä vastaan kunnossa" oli tässä suunnaltaan
-oikea. `hard vs normal` on aidosti litteä ja beginner-porras aidosti olemassa, vain
+oikea. `hard vs normal` on aidosti samantasoinen ja beginner-porras aidosti olemassa, vain
 sen suuruus oli yliarvioitu (60-73 % → 55-58 %). N=40 ei siis aina valehtele, mutta
 kolmesta neljästä tapauksesta se teki, joten johtopäätös vaatii yhä N≥400:n.
 
