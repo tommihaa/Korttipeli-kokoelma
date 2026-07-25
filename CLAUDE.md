@@ -3,7 +3,7 @@
 ## Project
 Mobile-responsive card game app (React/JSX + Vite). Dark green (#1f5a3f) + gold (#c9a84c) aesthetic.
 Structure: `src/App.jsx` (entry), `src/games/*.jsx` (9 games), `src/shared/` (Card, FanStack, colors, helpers, audio, glossary).
-Sanasto-termit + `splitWithGlossary` ovat `src/shared/glossary.js`:ssä (Lahja-kokoelman jaettu termiskeema, speksi Projects-juuren `TERMIMODUULI.md`; sisarkopio Itussa). MERKISTO on yhä App.jsx:ssä.
+Sanasto-termit + `splitWithGlossary` ovat `src/shared/glossary.js`:ssä (Lahja-kokoelman jaettu termiskeema, speksi `Kaanon/TERMIMODUULI.md`; sisarkopio Itussa). MERKISTO on yhä App.jsx:ssä.
 Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS.md`, `LAEPSY.md`, `KULTAKALA.md`, `MAIJA.md`, `KASINO.md`, `MOSKA.md`, `SEISKA.md`, `RISTISEISKA.md`, `PASKAHOUSU.md`. Dev server: `http://localhost:5173/`.
 Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
@@ -165,7 +165,7 @@ Virstanpylväät:
 - Destructure imports: `import { useState } from "react"`
 
 ## Viestit (loki/viestikupla) — i18n-konventio
-- **Kattavuus:** kaikissa i18n-/lokalisointitöissä varmista uusien UI-stringien kattavuus kaikissa 23 kielessä (parity-tarkistus) ja pidä terminologia yhdenmukaisena jaetun termimoduulin kanssa (`src/shared/glossary.js`, speksi Projects-juuren `TERMIMODUULI.md`). Poikkeus: changelog vain suomeksi (ks. Deploy).
+- **Kattavuus:** kaikissa i18n-/lokalisointitöissä varmista uusien UI-stringien kattavuus kaikissa 23 kielessä (parity-tarkistus) ja pidä terminologia yhdenmukaisena jaetun termimoduulin kanssa (`src/shared/glossary.js`, speksi `Kaanon/TERMIMODUULI.md`). Poikkeus: changelog vain suomeksi (ks. Deploy).
 - **Tapahtumailmoitukset kolmannessa persoonassa** kaikille pelaajille, myös ihmiselle: `${name}: ...`, `Vuorossa ${name}.`, `${name} vei voiton`. Ihmisen nimi on aina `Hero`, joten "Vuorossa Hero.", "Hero: 7♣". Ei erillistä `isHuman ? 'Sinä…' : '${name}…'` -haaraa — yksi käännösmalli per viesti.
 - **Poikkeus: säilytä toimintaohjeet/vihjeet 2. persoonassa** kun ne neuvovat ihmistä tekemään jotain (esim. Koputus/Kultakala "Nostit X. Vaihda…", Kasinon dynaaminen vihje, Ristiseiskan "…joten Passaa"). Nämä eivät ole ilmoituksia vaan ohjeita.
 
