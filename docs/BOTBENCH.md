@@ -386,3 +386,61 @@ tauluun. Päivitä taulu ja päivämäärä kun baseline muuttuu tarkoituksella.
 
 **Käytä N≥150 kun teet johtopäätöksiä tasoerosta.** N=30:n keskivirhe (±9 %-yks.)
 on niin suuri, että se peittää juuri sen kokoluokan eroja joita mittarilla haetaan.
+
+**Uudelleenajo ei ole toisto.** Mittari on siemennetty, joten sama koodi ja sama N
+tuottavat bitilleen saman tuloksen. 26.7.2026 Kultakalan N=400 ajettiin uudelleen ja
+kaikki kolme paria täsmäsivät (216/174/10 · 196/189/15 · 226/165/9). Se todistaa kaksi
+asiaa: luvut on tuotettu tällä mittarilla eikä kirjoitettu käsin, eivätkä myöhemmät
+commitit ole liikuttaneet bottien käytöstä. Tilastollista lisävarmuutta se ei anna.
+Uudelleenajo on siis regressiotesti, ja lisävarmuus vaatisi eri siemenen.
+
+## Avoimet AI-työt (per 26.7.2026)
+
+Kootut `JATKOPROMPTI_tasoporras.md`:stä, joka oli committaamaton työpuutiedosto ja
+poistettiin tämän kirjauksen jälkeen. Mittausvelkaa ei enää ole: kaikki kuusi peliä
+joista on tehty johtopäätös on mitattu N=400:lla, ks. yhteenvetotaulu yllä.
+
+**Työjärjestys kaikissa alla:** baseline on jo tallessa (luvut yllä), joten muutos →
+aja N=400 → pidä jos porras nousee, peru ja kirjaa nollatulos jos ei. **Muutoksen on
+oltava tasokohtainen** (vain `hard` tai vain `beginner`), muuten se ei voi liikuttaa
+porrasta lainkaan, ks. outtien nollatulos. Rakenna niin että jokin pari toimii
+verrokkina joka paljastaa vuodon: jos muutat vain Kisälliä, `hard vs beginner` EI saa
+muuttua.
+
+### 1. Maija: Kisälli ei erotu Oppipojasta
+
+`normal vs beginner` 51,3 % (N=400). Mestari sen sijaan voittaa Oppipojan (57,8 %,
+z = 3,1). Muoto on `beginner ≈ normal < hard`, eli alapää on rikki.
+
+Kyvykkyysporras-taulukko lupaa Kisällille "täysi perusstrategia + Maija-prioriteetti +
+valttiepäröinti", eivätkä ne tuota mitattavaa etua Oppipojan heikkouksia vastaan.
+Kysymys on kumpi pää pettää: onko Oppipojan heikkous liian lievä vai Kisällin lisä
+liian pieni? Lue `maijaPickAttack` ja `maijaPickDefense` molempien tasojen silmin.
+
+### 2. Moska: Mestari ei erotu Kisällistä
+
+`hard vs normal` 53,5 % (N=400). Muoto on `beginner << normal ≈ hard`, sama kuin
+Seiskalla ja Kultakalalla: alaporras terve, yläpää samantasoinen.
+
+### 3. Ristiseiska: hyväksy nykytila vai etsi uusi kanava?
+
+Linjauskysymys, ei mittaus. Ristiseiska on merkitty samantasoiseksi ja `flatNote` näkyy
+tuotannossa, eli pelaajalle ei valehdella. Passausmuistin nollatulos osoitti että pelin
+ilmeisin taitokanava (passaus paljastaa vastustajan puutteen) ei tuota eroa, koska
+puutejoukko ON pöydän näkyvä rintama jonka botti tuntee joka tapauksessa. Aito porras
+vaatisi siis UUDEN hypoteesin, ei saman kanavan viilausta. `RISTISEISKA.md` nimeää
+porttikorttien (6/8) pihtaamisen, mutta Mestari tekee sitä jo.
+
+**Oletus: hyväksy nykytila.** Kolmatta kanavaa ei ole löytynyt lukematta peliä uudelleen,
+eikä nykytila ole pelaajalle epärehellinen.
+
+### Reunaehdot AI-työssä
+
+- **Sääntölogiikkaan ei kosketa.** Jos muutos näyttäisi vaativan sitä, lue pelin oma
+  `PELI.md` ja nosta sopimusmuutos-protokolla ENNEN koodausta (`CLAUDE.md`).
+- **Botti ja Mestarin neuvo jakavat funktion.** Jos neuvon valinta muuttuu, tarkista
+  ettei perustelu jää valehtelemaan (`selkokieli`-skill kohta 7: lue lajittelun viimeinen
+  askel JA ensimmäinen avain).
+- Uudet advice-avaimet kaikkiin 23 lokaaliin (`i18n-kieli`-skill).
+- Nämä eivät ole kiireellisiä eivätkä valehtele pelaajalle. Ne ovat todellista puutetta
+  AI-tasoissa, ja etenevät palautteen mukana.
