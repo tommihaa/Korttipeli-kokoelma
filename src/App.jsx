@@ -172,9 +172,13 @@ const loadChangelog = () =>
 // Ristiseiska 21.7.2026 (N=400): 53,3 % / 49,0 % / 51,3 %.
 // Kasino     21.7.2026 (N=400): 53,8 % / 48,9 % / 51,5 % (tasapelit puolikkaina).
 //
-// EI listalla, vaikka porras on osin rikki: Maija (N=400) — Mestari voittaa
-// Oppipojan todistetusti 57,8 % (z = 3,1), vaikka Kisälli ei erotu Oppipojasta.
-// "Taso vaikuttaa vähän" olisi siellä väärä väite. Kultakala on mittaamatta.
+// EI listalla, vaikka porras on osin rikki (ylätasot samantasoiset, alaporras terve):
+// Maija (N=400) — Mestari voittaa Oppipojan todistetusti 57,8 % (z = 3,1), vaikka
+// Kisälli ei erotu Oppipojasta. Kultakala 24.7.2026 (N=400): 55,25 % / 50,9 % /
+// 57,6 % — Kisälli voittaa Oppipojan (z = 3,05), joten ehto ei täyty.
+// "Taso vaikuttaa vähän" olisi näissä väärä väite.
+// Kaikki 9 peliä on nyt mitattu tai kirjattu mittaamattomaksi, ks. docs/BOTBENCH.md
+// osio "Yhteenveto: mitkä pelit saavat merkinnän".
 const FLAT_AI_GAMES = ['ristiseiska', 'kasino'];
 
 const TODO = [
