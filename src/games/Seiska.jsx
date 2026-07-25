@@ -1163,8 +1163,8 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
           {displayP?.isHuman ? '👤' : '🤖'} {displayP?.name}
           {displayP?.hand.length > 0
-            ? ` — ${korttia(displayP.hand.length)} ${t('ui.shared.inHand')}`
-            : ` — ${t('ui.shared.emptyHandWin')}`}
+            ? ` · ${korttia(displayP.hand.length)} ${t('ui.shared.inHand')}`
+            : ` · ${t('ui.shared.emptyHandWin')}`}
           {G.lappuSaid.has(displayP?.id) && displayP?.hand.length === 1 && <span style={{ color: C.gold, marginLeft: 8 }}>LAPPU</span>}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', minHeight: isMobile ? 90 : 216 }}>

@@ -131,27 +131,27 @@ const GAMES = [
 // ── Merkistö ─────────────────────────────────────────────────────────────────
 const MERKISTO = [
   // ─ Pelitoiminnot ─────────────────────────────────────────────────────────
-  { kategoria: 'toiminnot', icon: '🎯', label: 'Kaappaustila',     selitys: 'Valitse pöytäkortit, sitten käsikortti — kaappaa.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '🎯', label: 'Kaappaustila',     selitys: 'Valitse pöytäkortit, sitten käsikortti → kaappaa.', peli: 'Kasino' },
   { kategoria: 'toiminnot', icon: '🔨', label: 'Rakennustila',     selitys: 'Valitse pöytäkortteja + käsikortti → rakennelma, jonka kaappaat myöhemmin.', peli: 'Kasino' },
-  { kategoria: 'toiminnot', icon: '📤', label: 'Jättämistila',     selitys: 'Valitse käsikortti — se menee pöytään muiden käytettäväksi.', peli: 'Kasino' },
-  { kategoria: 'toiminnot', icon: '🏠', label: 'Mökki',            selitys: 'Kaappasit koko pöydän yhdellä siirolla — +1 lisäpiste.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '📤', label: 'Jättämistila',     selitys: 'Valitse käsikortti → se menee pöytään muiden käytettäväksi.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '🏠', label: 'Mökki',            selitys: 'Kaappasit koko pöydän yhdellä siirrolla: +1 lisäpiste.', peli: 'Kasino' },
   { kategoria: 'toiminnot', icon: '⚔',  label: 'Hyökkäys',         selitys: 'Hyökkääjä lyö kortit pöytään puolustajan kaadettavaksi.', peli: 'Moska · Maija' },
   { kategoria: 'toiminnot', icon: '🛡',  label: 'Puolustus',        selitys: 'Puolustaja torjuu hyökkäyskorteilla tai valttimaan kortilla.', peli: 'Moska · Maija' },
   // ─ Viestit ───────────────────────────────────────────────────────────────
   { kategoria: 'viestit',   icon: '⚠',  label: 'Varoitus',         selitys: 'Huomasit jättää mahdollisuuden käyttämättä, tai olet siirtymässä riskialttiiseen tilaan.' },
   { kategoria: 'viestit',   icon: '💡', label: 'Vinkki',           selitys: 'Strategiaehdotus koneälypelaajan siirrosta opetustilassa.' },
-  { kategoria: 'viestit',   icon: '●',  label: 'Vuoro',            selitys: 'Piste pisteindikaattorin ja nimen perässä — tällä pelaajalla on vuoro.' },
+  { kategoria: 'viestit',   icon: '●',  label: 'Vuoro',            selitys: 'Piste pisteindikaattorin ja nimen perässä: tällä pelaajalla on vuoro.' },
   // ─ Pelaajat ──────────────────────────────────────────────────────────────
-  { kategoria: 'pelaajat',  icon: '👤', label: 'Ihmispelaaja',     selitys: 'Hero — sinä pelaat tätä pelaajaa.' },
+  { kategoria: 'pelaajat',  icon: '👤', label: 'Ihmispelaaja',     selitys: 'Hero: sinä pelaat tätä pelaajaa.' },
   { kategoria: 'pelaajat',  icon: '🤖', label: 'Koneäly',          selitys: 'Tietokoneen ohjaama vastustaja. Nimi arvotaan valitusta ryhmästä.' },
   // ─ Käyttöliittymä ────────────────────────────────────────────────────────
   { kategoria: 'ui',        icon: '⚙',  label: 'Asetukset',        selitys: 'Avaa asetukset, peliohjeet, sanaston ja merkistön.' },
-  { kategoria: 'ui',        icon: 'ℹ',  label: 'Info',             selitys: 'Tarkempi selite — esim. pisteytyssäännöt Kasinossa.' },
+  { kategoria: 'ui',        icon: 'ℹ',  label: 'Info',             selitys: 'Tarkempi selite, esim. pisteytyssäännöt Kasinossa.' },
   { kategoria: 'ui',        icon: '🔊', label: 'Ääni päällä',      selitys: 'Korttitehosteet ja fanfaarit kuuluvat.' },
   { kategoria: 'ui',        icon: '🔇', label: 'Ääni pois',        selitys: 'Kaikki äänet mykistetty.' },
-  { kategoria: 'ui',        icon: '🔍', label: 'Avoimet kortit pois',  selitys: 'Normaali tila — näet vain omat kortit.' },
+  { kategoria: 'ui',        icon: '🔍', label: 'Avoimet kortit pois',  selitys: 'Normaali tila: näet vain omat kortit.' },
   { kategoria: 'ui',        icon: '🙈', label: 'Avoimet kortit päällä',selitys: 'Näet kaikkien pelaajien käsikortit ja piilotetut kentän kortit.' },
-  { kategoria: 'ui',        icon: '🔮', label: 'Mestari',          selitys: 'Koneälyn korkein taso — muistaa pakan menot ja optimoi täydellisesti.' },
+  { kategoria: 'ui',        icon: '🔮', label: 'Mestari',          selitys: 'Koneälyn korkein taso: muistaa pakan menot ja optimoi täydellisesti.' },
 ];
 
 // ── Muutosloki: ks. src/changelogs/fi.js. Vain suomeksi (kääntäminen 22 kielelle
@@ -270,7 +270,7 @@ function RuleRow({ text }) {
       </div>
       {defn && (
         <div style={{ marginLeft: 14, marginTop: 3, padding: '5px 10px', background: `${C.gold}12`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>{defn.emoji} {defnTerm}</span>{' — '}{renderSelitys(defnSelitys)}
+          <span style={{ color: C.gold, fontWeight: 700 }}>{defn.emoji} {defnTerm}</span>{' · '}{renderSelitys(defnSelitys)}
         </div>
       )}
     </div>

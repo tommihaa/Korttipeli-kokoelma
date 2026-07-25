@@ -893,14 +893,14 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: drawn && showDrawn ? 'rgba(255,255,255,0.022)' : 'transparent', border: `1px solid ${drawn && showDrawn ? '#2a4a32' : 'transparent'}`, borderRadius: 10, marginBottom: isMobile ? 4 : 12, minHeight: isMobile ? 36 : 50, transition: 'background 0.2s' }}>
         {drawn && showDrawn
-          ? <><span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flexShrink: 0 }}>{t('games.koputus.ui.drawnLabel')}</span><Card card={drawn} faceUp small /><span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{drawn.r}{drawn.s} — <span style={{ color: C.gold, fontWeight: 700 }}>{drawn.v} p</span></span></>
+          ? <><span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flexShrink: 0 }}>{t('games.koputus.ui.drawnLabel')}</span><Card card={drawn} faceUp small /><span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{drawn.r}{drawn.s} · <span style={{ color: C.gold, fontWeight: 700 }}>{drawn.v} p</span></span></>
           : <span style={{ color: 'transparent', userSelect: 'none' }}>·</span>}
       </div>
       {phase === 'spec_k_confirm' && specState?.tgtCard && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'rgba(201,168,76,0.06)', border: `1px solid ${C.gold}44`, borderRadius: 10, marginBottom: 12 }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, flexShrink: 0 }}>{t('games.koputus.ui.opponentCardLabel')}</span>
           <Card card={specState.tgtCard} faceUp small />
-          <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{specState.tgtCard.r}{specState.tgtCard.s} — <span style={{ color: C.gold, fontWeight: 700 }}>{specState.tgtCard.v} p</span></span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{specState.tgtCard.r}{specState.tgtCard.s} · <span style={{ color: C.gold, fontWeight: 700 }}>{specState.tgtCard.v} p</span></span>
         </div>
       )}
 

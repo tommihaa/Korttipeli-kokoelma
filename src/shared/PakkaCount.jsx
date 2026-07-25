@@ -16,7 +16,7 @@ if (typeof document !== 'undefined' && !document.getElementById(FLASH_ID)) {
 }
 
 // Yhtenäinen pakan lukumäärä kaikissa ei-jaetuissa peleissä.
-//   variant="header" → "PAKKA — 12 korttia" / "PAKKA — TYHJÄ!"  (Pöydän otsikkorivi)
+//   variant="header" → "PAKKA · 12 korttia" / "PAKKA · TYHJÄ!"  (Pöydän otsikkorivi)
 //   variant="count"  → "12 korttia" / "TYHJÄ!"                  (pinkan alapuolelle)
 //   variant="number" → "12" / "TYHJÄ!"                          (korttilaatikon sisään)
 // empty: ohittaa oletuksen (count === 0) — esim. Seiska, jossa lyöntipakka täydentää pakkaa.
@@ -29,7 +29,7 @@ export default function PakkaCount({ count, empty, flash = false, variant = 'hea
   const emptyLabel = t('ui.shared.empty');
   const cards = t('ui.shared.cards', { n: count });
   const text =
-    variant === 'header' ? (isEmpty ? `${deck} — ${emptyLabel}` : `${deck} — ${cards}`)
+    variant === 'header' ? (isEmpty ? `${deck} · ${emptyLabel}` : `${deck} · ${cards}`)
     : variant === 'number' ? (isEmpty ? emptyLabel : `${count}`)
     : (isEmpty ? emptyLabel : cards);
   return (

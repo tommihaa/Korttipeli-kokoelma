@@ -808,7 +808,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       {/* Pöytä */}
       <PoytaPanel isMobile={isMobile}
         minHeight={{ m: 170, t: 220 }}
-        title={<span>{t('ui.shared.tableLabel')} — {phase==='attacking' ? t('games.maija.ui.phaseAtk') : t('games.maija.ui.phaseDef')}</span>}
+        title={<span>{t('ui.shared.tableLabel')} · {phase==='attacking' ? t('games.maija.ui.phaseAtk') : t('games.maija.ui.phaseDef')}</span>}
         right={<PakkaCount count={G.deck.length} flash={pakaAnim} />}>
         {table.length === 0
           ? <div style={{ textAlign:'center', color:C.dim, fontFamily:'sans-serif', fontSize:12,

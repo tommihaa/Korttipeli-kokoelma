@@ -7,6 +7,13 @@
 // käännättää sen kaikkiin saman kansion kielitiedostoihin.
 export const CHANGELOG = [
   {
+    date: '25.7.2026',
+    items: [
+      'Suomenkieliset tekstit on viimeistelty läpi sovelluksen. Ajatusviiva on vaihdettu kaikkialla luontevampaan välimerkkiin: virkkeen sisällä pilkkuun, kaksoispisteeseen tai pisteeseen, ja otsikkoriveillä välipisteeseen. Näet muutoksen esimerkiksi pelinäkymän riveillä Pöytä · 3 korttia ja Pakka · 27 korttia sekä Sanaston ja Merkistön selityksissä. Sisältö ei muuttunut, vain kieliasu.',
+      'Kaksi kirjoitusvirhettä korjattu: Merkistön Mökki-selitteessä luki "yhdellä siirolla", ja Moskan pöytäotsikko sanoi "1 paria" silloinkin kun pöydällä oli vain yksi pari.',
+    ],
+  },
+  {
     date: '21.7.2026',
     items: [
       'Ristiseiskassa ja Kasinossa Koneälyn taso -asetus kertoo nyt suoraan, että näissä peleissä tason vaikutus lopputulokseen on pieni. Mittasimme bottien keskinäisiä otteluita 400 pelin sarjoilla, eivätkä tasot erottuneet toisistaan: jokainen tasopari voitti noin puolet peleistä. Ristiseiskassa kenelläkään ei ole etulyöntiasemaa eikä tietoa toisten korteista, joten pelissä on vaikea pelata pahasti väärin; Kasinossa taas jakotuuri ratkaisee kaappauspelin siinä määrin, että taito hukkuu siihen. Muissa peleissä tasoero on mitattu todelliseksi, joten merkintä näkyy vain näissä kahdessa.',

@@ -706,7 +706,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: isMobile ? 16 : 28, marginBottom: isMobile ? 8 : 16, padding: isMobile ? '6px 0' : '14px 0' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 8, letterSpacing: 1.5 }}>{t('ui.shared.pileLabel')} — {center.length} {t('ui.shared.pcs')}</div>
+          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 8, letterSpacing: 1.5 }}>{t('ui.shared.pileLabel')} · {center.length} {t('ui.shared.pcs')}</div>
           <div style={{ position: 'relative', width: 82, height: 130, margin: '0 auto' }}>
             {/* Flippaaja-animaatio */}
             {flipAnim && (

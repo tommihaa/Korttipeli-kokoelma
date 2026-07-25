@@ -1414,7 +1414,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
               {G.players.filter((_, i) => allBots || i !== 0).map(p => (
                 <div key={p.id} style={{ flex: 1, minWidth: 90, background: 'rgba(255,255,255,0.03)', border: `1px solid ${curIdx === p.id ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '8px 10px', textAlign: 'center' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curIdx === p.id ? C.gold : C.dim, marginBottom: 4 }}>
-                    🤖 {p.name} {curIdx === p.id ? '●' : ''}{!isMobile && ` — ${korttia(p.captured.length)} ${t('games.kasino.ui.captured')}`}
+                    🤖 {p.name} {curIdx === p.id ? '●' : ''}{!isMobile && ` · ${korttia(p.captured.length)} ${t('games.kasino.ui.captured')}`}
                   </div>
                   <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: debugOpen ? 'wrap' : 'nowrap', overflow: debugOpen ? 'visible' : 'hidden' }}>
                     {debugOpen
@@ -1527,7 +1527,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       {/* Ihmispelaajan käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          {allBots ? '🤖' : '👤'} {G.players[0].name} {curIdx === 0 ? '●' : ''} — {t('ui.action.cards', { n: human.captured.length })} {t('games.kasino.ui.captured')}, {human.tikkiCount} {t('games.kasino.ui.sweeps')}
+          {allBots ? '🤖' : '👤'} {G.players[0].name} {curIdx === 0 ? '●' : ''} · {t('ui.action.cards', { n: human.captured.length })} {t('games.kasino.ui.captured')}, {human.tikkiCount} {t('games.kasino.ui.sweeps')}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {orderedHand.map(c => {

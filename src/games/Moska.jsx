@@ -1181,7 +1181,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
                 <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.id === G.defender ? C.blue + '55' : p.id === G.primaryAtk ? '#e05c3b55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '7px 10px', textAlign: 'center', opacity: p.rank !== null ? 0.35 : 1 }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: p.id === G.primaryAtk ? C.red : p.id === G.defender ? C.blue : C.dim, marginBottom: 4 }}>
                     {p.id === G.primaryAtk ? '⚔' : p.id === G.defender ? '🛡' : '🤖'} {p.name}
-                    {p.rank !== null ? ` — sija ${p.rank}` : ''}
+                    {p.rank !== null ? ` · sija ${p.rank}` : ''}
                   </div>
                   <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
                     {debugOpen
@@ -1202,7 +1202,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       <PoytaPanel isMobile={isMobile}
         minHeight={{ m: 130, t: 200 }}
         border={G.table.length > 0 ? '#e05c3b33' : C.panelBorder}
-        title={<span>{t('ui.shared.tableLabel')} — {G.table.length === 0 ? t('ui.shared.emptyLower') : t('games.moska.ui.pairs', { n: G.table.length })}
+        title={<span>{t('ui.shared.tableLabel')} · {G.table.length === 0 ? t('ui.shared.emptyLower') : t('games.moska.ui.pairs', { n: G.table.length })}
           {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>{t('games.moska.ui.beaten', { n: defBeaten })}</span>}
           {unbeatenSlots.length > 0 && <span style={{ color: C.red, marginLeft: 8 }}>{t('games.moska.ui.unbeaten', { n: unbeatenSlots.length })}</span>}
         </span>}
@@ -1263,7 +1263,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${myTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: myTurn ? C.gold : C.dim, marginBottom: 8 }}>
           {allBots ? '🤖' : '👤'} {human.name} {G.primaryAtk === 0 ? '⚔' : G.defender === 0 ? '🛡' : ''}
-          {human.rank !== null ? <span style={{ color: C.gold, marginLeft: 6 }}>{t('ui.result.place', { n: human.rank })}</span> : ` — ${t('ui.action.cards', { n: human.hand.length })} ${t('ui.shared.inHand')}`}
+          {human.rank !== null ? <span style={{ color: C.gold, marginLeft: 6 }}>{t('ui.result.place', { n: human.rank })}</span> : ` · ${t('ui.action.cards', { n: human.hand.length })} ${t('ui.shared.inHand')}`}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {

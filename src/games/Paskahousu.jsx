@@ -1083,7 +1083,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         border={G.top ? C.gold + '33' : C.panelBorder}
         minHeight={{ m: 90, t: 130 }}
         animation={kasaAnim === 'quad' ? 'kasaQuad 2s ease forwards' : kasaAnim === 'clear' ? 'kasaClear 1.4s ease forwards' : kasaAnim === 'take' ? 'kasaTake 0.85s ease forwards' : undefined}
-        title={<span style={{ color: C.dim }}>{t('ui.shared.pileLabel')} — {G.pile.length === 0 ? t('ui.shared.emptyLower') : korttia(G.pile.length)}</span>}
+        title={<span style={{ color: C.dim }}>{t('ui.shared.pileLabel')} · {G.pile.length === 0 ? t('ui.shared.emptyLower') : korttia(G.pile.length)}</span>}
         right={<PakkaCount count={G.draw.length} flash={pakaAnim} />}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {G.top
@@ -1211,7 +1211,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
         )}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : G.phase === 'swap_offer' && G.swapData?.pidx === 0 ? C.gold + '22' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero — {korttia(human.hand.length)} {t('ui.shared.inHand')}
+          👤 Hero · {korttia(human.hand.length)} {t('ui.shared.inHand')}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {

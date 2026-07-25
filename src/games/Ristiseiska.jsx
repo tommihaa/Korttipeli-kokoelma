@@ -940,7 +940,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
       {/* Oma käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn || isGiving ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 14px', marginBottom: isMobile ? 6 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn || isGiving ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero{human.hand.length === 0 ? ` — ${t('ui.shared.emptyHandWin')}` : ''}
+          👤 Hero{human.hand.length === 0 ? ` · ${t('ui.shared.emptyHandWin')}` : ''}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {
