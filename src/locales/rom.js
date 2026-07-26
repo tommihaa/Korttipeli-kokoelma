@@ -781,7 +781,9 @@ export const rom = {
         defFail: '❌ O braninipe či kerdas!',
         defBeatAll: '🛡️ {name} peradas sa!',
         atkOk: '⚔️ O maripe kerdas! {name} lijas le karti.',
-        pairs: '{n} parura',
+        // Yksi muoto tahallaan: romanin yksikkömuotoa ei ole varmennettu natiivilla,
+        // joten aiempi muoto säilytetään molemmilla luvuilla.
+        pairs: ({ n }) => `${n} parura`,
         beaten: '✓ {n} perade',
         unbeaten: '! {n} naperade',
         hintAttack: 'Alosar le jekh-zoralipаske maripe-karti thaj ce Mar.',

@@ -778,7 +778,8 @@ export const da = {
         defFail: '❌ Forsvaret mislykkedes!',
         defBeatAll: '🛡️ {name} slog dem alle!',
         atkOk: '⚔️ Angrebet lykkedes! {name} tog kortene.',
-        pairs: '{n} par',
+        // par er uændret i flertal (ét par, to par), derfor én enkelt form
+        pairs: ({ n }) => `${n} par`,
         beaten: '✓ {n} slået',
         unbeaten: '! {n} uovervundet',
         hintAttack: 'Vælg angrebskort af samme værdi og klik Angrib.',

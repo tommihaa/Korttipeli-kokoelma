@@ -1,5 +1,14 @@
 // ── Čeština / tšekki (käännös fi.js:stä; TESTAAMATON, ei natiivitarkistusta) ────
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
+
+// Tšekin lukusanasääntö: 1 pár, 2 páry, 5 párů. Toisin kuin venäjässä ja puolassa,
+// tässä ei käytetä kymmenjäännöstä: 21 on párů eikä pár.
+const plural = (n, one, few, many) => {
+  if (n === 1) return one;
+  if (n >= 2 && n <= 4) return few;
+  return many;
+};
+
 export const cs = {
   ui: {
     advice: {
@@ -780,7 +789,7 @@ export const cs = {
         defFail: '❌ Obrana se nepodařila!',
         defBeatAll: '🛡️ {name} shodil vše!',
         atkOk: '⚔️ Útok se podařil! {name} vzal karty.',
-        pairs: '{n} párů',
+        pairs: ({ n }) => `${n} ${plural(n, 'pár', 'páry', 'párů')}`,
         beaten: '✓ {n} shozeno',
         unbeaten: '! {n} neshozeno',
         hintAttack: 'Vyber útočné karty stejné hodnoty a klepni na Útoč.',

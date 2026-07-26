@@ -786,7 +786,7 @@ export const en = {
         defFail: '❌ Defence failed!',
         defBeatAll: '🛡️ {name} beat them all!',
         atkOk: '⚔️ Attack succeeded! {name} took the cards.',
-        pairs: '{n} pairs',
+        pairs: ({ n }) => n === 1 ? '1 pair' : `${n} pairs`,
         beaten: '✓ {n} beaten',
         unbeaten: '! {n} unbeaten',
         hintAttack: 'Pick attack cards of equal rank and click Attack.',

@@ -780,7 +780,7 @@ export const la = {
         defFail: '❌ Defensio defecit!',
         defBeatAll: '🛡️ {name} stravit omnia!',
         atkOk: '⚔️ Oppugnatio successit! {name} sumpsit chartas.',
-        pairs: '{n} paria',
+        pairs: ({ n }) => n === 1 ? '1 par' : `${n} paria`,
         beaten: '✓ {n} strata',
         unbeaten: '! {n} non strata',
         hintAttack: 'Elige chartas oppugnationis eiusdem valoris et pulsa Oppugna.',

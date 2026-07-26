@@ -778,7 +778,8 @@ export const sv = {
         defFail: '❌ Försvaret misslyckades!',
         defBeatAll: '🛡️ {name} slog alla!',
         atkOk: '⚔️ Anfallet lyckades! {name} tog korten.',
-        pairs: '{n} par',
+        // par är oförändrat i plural (ett par, två par), därför en enda form
+        pairs: ({ n }) => `${n} par`,
         beaten: '✓ {n} slagna',
         unbeaten: '! {n} oslagna',
         hintAttack: 'Välj anfallskort av samma valör och klicka på Anfall.',

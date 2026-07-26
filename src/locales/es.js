@@ -778,7 +778,7 @@ export const es = {
         defFail: '❌ ¡Defensa fallida!',
         defBeatAll: '🛡️ ¡{name} las venció todas!',
         atkOk: '⚔️ ¡Ataque logrado! {name} cogió las cartas.',
-        pairs: '{n} pares',
+        pairs: ({ n }) => n === 1 ? '1 par' : `${n} pares`,
         beaten: '✓ {n} vencidas',
         unbeaten: '! {n} sin vencer',
         hintAttack: 'Elige cartas de ataque del mismo valor y haz clic en Atacar.',

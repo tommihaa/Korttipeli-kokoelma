@@ -778,7 +778,7 @@ export const it = {
         defFail: '❌ Difesa fallita!',
         defBeatAll: '🛡️ {name} le ha battute tutte!',
         atkOk: '⚔️ Attacco riuscito! {name} ha preso le carte.',
-        pairs: '{n} coppie',
+        pairs: ({ n }) => n === 1 ? '1 coppia' : `${n} coppie`,
         beaten: '✓ {n} battute',
         unbeaten: '! {n} non battute',
         hintAttack: 'Scegli le carte d\'attacco dello stesso valore e clicca Attacca.',

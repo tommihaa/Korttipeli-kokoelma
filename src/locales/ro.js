@@ -780,7 +780,7 @@ export const ro = {
         defFail: '❌ Apărarea nu a reușit!',
         defBeatAll: '🛡️ {name} a doborât tot!',
         atkOk: '⚔️ Atacul a reușit! {name} a luat cărțile.',
-        pairs: '{n} perechi',
+        pairs: ({ n }) => n === 1 ? '1 pereche' : `${n} perechi`,
         beaten: '✓ {n} doborâte',
         unbeaten: '! {n} nedoborâte',
         hintAttack: 'Alege cărți de atac de aceeași valoare și apasă Atacă.',

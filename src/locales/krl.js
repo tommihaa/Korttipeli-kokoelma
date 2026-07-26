@@ -779,7 +779,7 @@ export const krl = {
         defFail: '❌ Puolistuš ei ozakkaš!',
         defBeatAll: '🛡️ {name} kuato kaikki!',
         atkOk: '⚔️ Hyökkäyš ozakkaš! {name} otti kortit.',
-        pairs: '{n} parie',
+        pairs: ({ n }) => n === 1 ? '1 pari' : `${n} parie`,
         beaten: '✓ {n} kuattu',
         unbeaten: '! {n} lyömättä',
         hintAttack: 'Valiče šaman-arvoizet hyökkäyškortit da paina Hyökkiä.',

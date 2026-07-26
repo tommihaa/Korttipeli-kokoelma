@@ -781,7 +781,8 @@ export const hu = {
         defFail: '❌ A védekezés nem sikerült!',
         defBeatAll: '🛡️ {name} mindent ledöntött!',
         atkOk: '⚔️ A támadás sikerült! {name} felvette a lapokat.',
-        pairs: '{n} pár',
+        // a magyarban a számnév után egyes szám áll (1 pár, 5 pár), ezért egyetlen alak
+        pairs: ({ n }) => `${n} pár`,
         beaten: '✓ {n} ledöntve',
         unbeaten: '! {n} ledöntetlen',
         hintAttack: 'Válassz azonos értékű támadó lapokat és nyomd meg a Támadj.',

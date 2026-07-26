@@ -778,7 +778,7 @@ export const et = {
         defFail: '❌ Kaitse ebaõnnestus!',
         defBeatAll: '🛡️ {name} lõi kõik maha!',
         atkOk: '⚔️ Rünnak õnnestus! {name} võttis kaardid.',
-        pairs: '{n} paari',
+        pairs: ({ n }) => n === 1 ? '1 paar' : `${n} paari`,
         beaten: '✓ {n} maha löödud',
         unbeaten: '! {n} löömata',
         hintAttack: 'Vali sama väärtusega ründekaardid ja klõpsa Ründa.',

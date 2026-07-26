@@ -780,7 +780,9 @@ export const se = {
         defFail: '❌ Bealuštus ii lihkostuvvan!',
         defBeatAll: '🛡️ {name} gahčai buot!',
         atkOk: '⚔️ Fallehus lihkostuvai! {name} válddii goarttaid.',
-        pairs: '{n} bárra',
+        // Yksi muoto tahallaan: pohjoissaamen lukusanarakenteen taivutusta ei ole
+        // varmennettu natiivilla, joten aiempi muoto säilytetään molemmilla luvuilla.
+        pairs: ({ n }) => `${n} bárra`,
         beaten: '✓ {n} gahččojuvvon',
         unbeaten: '! {n} gahččakeahttá',
         hintAttack: 'Válje seamma-árvosaš fallehangoarttaid ja coahkkal Fallehat.',

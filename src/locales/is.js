@@ -778,7 +778,7 @@ export const is = {
         defFail: '❌ Vörn mistókst!',
         defBeatAll: '🛡️ {name} felldi allt!',
         atkOk: '⚔️ Sókn tókst! {name} tók spilin.',
-        pairs: '{n} pör',
+        pairs: ({ n }) => n === 1 ? '1 par' : `${n} pör`,
         beaten: '✓ {n} fellt',
         unbeaten: '! {n} ófellt',
         hintAttack: 'Veldu sóknarspil af sama gildi og smelltu á Sækja.',
