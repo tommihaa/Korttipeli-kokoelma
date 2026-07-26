@@ -407,6 +407,32 @@ porrasta lainkaan, ks. outtien nollatulos. Rakenna niin että jokin pari toimii
 verrokkina joka paljastaa vuodon: jos muutat vain Kisälliä, `hard vs beginner` EI saa
 muuttua.
 
+**Kalibrointi vai uusi kanava? Kolme kohtaa eivät ole samaa lajia** (erottelu kirjattu
+26.7.2026). Ero ratkaisee milloin kohta on ajankohtainen, joten se on syytä lukea ennen
+kuin valitsee mistä aloittaa:
+
+| Kohta | Laji | Milloin ajankohtainen |
+|---|---|---|
+| Maija | **kalibrointi**, kanava on olemassa | heti, ei odota mitään |
+| Moska | ei diagnosoitu, luultavasti uusi kanava | kun syy on selvitetty |
+| Ristiseiska | **uusi kanava**, vanha todettu umpikujaksi | vasta kun kanava löytyy |
+
+**Kalibrointi** tarkoittaa että taitoelementti on jo koodissa ja kysymys on sen määrästä
+tai siitä kumpi porras on väärässä kohdassa. **Uusi kanava** tarkoittaa että pelistä on
+löydettävä taitoelementti jota botti ei vielä käytä lainkaan; sitä ei voi aikatauluttaa,
+koska se on keksintö eikä työsuoritus.
+
+Erottelu on helppo hukata, koska kaikki kolme näyttävät mittarissa samalta (pari joka ei
+erotu). **Muoto kertoo lajin:** Maijassa rikki on alapää (`beginner ≈ normal < hard`),
+eli Mestari erottuu ja kanava siis toimii, vain porras on väärässä kohdassa. Moskassa ja
+Ristiseiskassa rikki on yläpää, ja yläpään umpeutuminen tarkoittaa että pelin tunnetut
+taitokanavat ovat loppuun käytetyt. Ristiseiskassa tämä on jo todistettu passausmuistin
+nollatuloksella, Moskassa vasta epäilty.
+
+Käytännön seuraus: Maija on ainoa joka kannattaa aloittaa suoraan, koska sillä on nimetty
+koodikohde. Se voi jopa ratketa pelkästään Oppipoikaa heikentämällä, jolloin uutta
+taitoelementtiä ei tarvita lainkaan.
+
 ### 1. Maija: Kisälli ei erotu Oppipojasta
 
 `normal vs beginner` 51,3 % (N=400). Mestari sen sijaan voittaa Oppipojan (57,8 %,
