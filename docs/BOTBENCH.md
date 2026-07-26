@@ -84,7 +84,7 @@ Kohina poistettu näistä neljästä kokonaan.
 |-----------|------------------------|---------|----------------------|
 | Kultakala | ketju jatkuu vain A-3:lla; ottaa poistopakasta "melkein hyvän" (+3) | täysi ketjuvaihto | EV-vertailu: huonoin tunnettu vs. tuntematon (EV 7), kynnys ≥3 |
 | Koputus   | ei huomaa poistopakkaa; arka koputtaja (kynnys 5) | poistopakka; koputus 8; tuntemattoman täyttö vain A/2 | tuntemattoman EV-täyttö ≤4; realistisempi arvio (×6); poistopakasta EV-nosto |
-| Maija     | isot kortit ensin; kohtelee Maijaa tavallisena patana (ei dumppausta, ei karttelua); polttaa valtit | pienimmät ensin + Maija-prioriteetti + valttiepäröinti | + valttilaskenta pakan loputtua + kaatoprioriteetti (Maija/korkeat ensin) |
+| Maija     | **lyö vain yhden kortin kerrallaan** (26.7.2026); isot kortit ensin; kohtelee Maijaa tavallisena patana (ei dumppausta, ei karttelua); polttaa valtit | **monikorttihyökkäys (koko maa)** + pienimmät ensin + Maija-prioriteetti + valttiepäröinti | + valttilaskenta pakan loputtua + kaatoprioriteetti (Maija/korkeat ensin) |
 | Kasino    | määräkaappaus (ei pisteitä); ei rakenna/varasta/bonuksia; jättää "pienimmän" numeroarvon mukaan (ässä!) | pistekaappaus + rakentaminen aina + varastus + bonukset | + inferenssi: jättövaara, A-suoja, rakennuksen varastusriskiportti |
 
 Mittaustulokset muutosten jälkeen (N=40/pari):
@@ -367,13 +367,65 @@ oikea. `hard vs normal` on aidosti samantasoinen ja beginner-porras aidosti olem
 sen suuruus oli yliarvioitu (60-73 % → 55-58 %). N=40 ei siis aina valehtele, mutta
 kolmesta neljästä tapauksesta se teki, joten johtopäätös vaatii yhä N≥400:n.
 
+## Maija 26.7.2026 (N=400) — alapää korjattu: monikorttihyökkäys on Kisällin kyky
+
+Ensimmäinen kohta joka ratkesi "Avoimet AI-työt" -listalta. Muutos on yhden rivin
+mittainen (`maijaPickAttack`, `maxCards`): **Oppipoika lyö yhden kortin kerrallaan,
+Kisälli ja Mestari koko maan.**
+
+| pari | ennen | jälkeen | muutos | z |
+|------|------:|--------:|-------:|--:|
+| hard vs beginner | 57,8 % | **74,0 %** | +16,2 | 9,6 |
+| hard vs normal | 52,9 % | **52,9 %** | ±0,0 | 1,2 |
+| normal vs beginner | 51,3 % | **68,0 %** | +16,8 | 7,2 |
+
+**Verrokki täsmää bitilleen.** `hard vs normal` ei muuttunut pyöristyksen tarkkuudella
+vaan raakaluvuiltaan: 211/188, yksi patti, keskisijat 2,4506/2,5496 molemmissa ajoissa.
+Tämä on vahvin mahdollinen todiste siitä että muutos osui vain Oppipoikaan. Tasokohtaisen
+muutoksen vaatimus (ks. työjärjestys) ei ole muodollisuus: juuri tämä identtisyys erottaa
+korjatun portaan vuotaneesta.
+
+### Miksi vika oli juuri tässä
+
+Kaikki kolme tasoa löivät koko maan kerralla, eli **Oppipoika sai pelin vahvimman
+shedding-työkalun ilmaiseksi.** Kisällille luvatut kolme lisää eivät korvanneet sitä,
+koska kukin niistä oli joko tyhjä tai Oppipojan itsensä toistama:
+
+| Kisällin lisä | Miksi ei tuottanut porrasta |
+|---|---|
+| pienimmät ensin (vs. isot ensin) | ei valitse kortteja pakkavaiheessa lainkaan, vain rivijärjestyksen |
+| Maija-prioriteetti | Oppipoika lajittelee isot ensin, ja Maija on arvo 12, joten se nousee patakäden kärkeen omin avuin |
+| valttiepäröinti puolustuksessa | aito mutta kapea: koskee vain tilannetta jossa kaikki voidaan kaataa |
+
+Lajittelun tyhjyys on laskettavissa. Käsi täydennetään aina viiteen, joten
+`slice(0, defHandSize)` ei voi katkaista ryhmää kun puolustajalla on viisi korttia.
+Mallinnus 200 000 kädellä: pisin ei-valttimaa on 1 kortti 13,3 %, 2 korttia 58,8 %,
+3 korttia 24,4 %, 4+ korttia 3,5 %. Katkaisu alkaa vaikuttaa vasta kun puolustajan käsi
+on kutistunut kahteen (27,9 %) tai yhteen (86,7 %), eli loppupelissä.
+
+**Yleistettävä oppi: älä oleta että tasokohtainen ehto vaikuttaa siellä minne se on
+kirjoitettu.** Rivin 64 lajittelu näyttää koodissa tasoerolta ja on sitä syntaktisesti,
+mutta sen tulos kulkee `slice`in läpi joka useimmiten ottaa kaikki kortit. Ero oli
+olemassa, se ei vain päässyt vaikuttamaan mihinkään. Tarkista mihin ehdon tulos päätyy,
+älä vain sitä että ehto on olemassa.
+
+### Muoto vaihtoi paikkaa, ei kadonnut
+
+Uusi muoto on **`beginner << normal ≈ hard`**, eli Maija siirtyi Seiskan, Moskan ja
+Kultakalan seuraan: alaporras terve, yläpää samantasoinen. `hard vs normal` on yhä
+52,9 % (z = 1,2), mikä ei ole merkitsevä.
+
+Tämä ei ole korjauksen sivuvaikutus vaan sen paljastama. Yläpää oli 52,9 % jo ennen
+muutosta; se näytti terveeltä vain siksi että alapää oli sitä huonompi. **Kalibrointi
+poisti alapään vian ja siirsi Maijan uuden kanavan odottajiin** (ks. luokittelu alla).
+
 ### Yhteenveto: mitkä pelit saavat merkinnän
 
 | Peli | N=400 mitattu | Kaikki parit ~50 % | Merkintä |
 |------|:-------------:|:------------------:|:--------:|
 | Ristiseiska | kyllä | kyllä | **on** |
 | Kasino | kyllä | kyllä | **on** |
-| Maija | kyllä | ei (hard vs beg 57,8 %, z = 3,1) | ei |
+| Maija | kyllä | ei (hard vs beg 74,0 %, z = 9,6) | ei |
 | Seiska | kyllä | ei (beginner häviää selvästi) | ei |
 | Moska | kyllä | ei (beginner häviää selvästi) | ei |
 | Kultakala | kyllä | ei (normal vs beg 57,6 %, z = 3,05) | ei |
@@ -413,9 +465,15 @@ kuin valitsee mistä aloittaa:
 
 | Kohta | Laji | Milloin ajankohtainen |
 |---|---|---|
-| Maija | **kalibrointi**, kanava on olemassa | heti, ei odota mitään |
+| ~~Maija (alapää)~~ | ~~kalibrointi~~ | ✅ ratkaistu 26.7.2026, ks. osio yllä |
+| Maija (yläpää) | uusi kanava | vasta kun kanava löytyy |
 | Moska | ei diagnosoitu, luultavasti uusi kanava | kun syy on selvitetty |
 | Ristiseiska | **uusi kanava**, vanha todettu umpikujaksi | vasta kun kanava löytyy |
+
+**Luokittelu koeteltiin heti ja piti.** Maija ennustettiin kalibroinniksi ja ratkesi
+yhden rivin muutoksella ilman uutta taitoelementtiä, täsmälleen kuten laji lupasi.
+Samalla se osoitti että laji on kohdan ominaisuus, ei pelin: alapään ratkettua Maijan
+yläpää jäi jäljelle ja se on nyt uuden kanavan odottaja.
 
 **Kalibrointi** tarkoittaa että taitoelementti on jo koodissa ja kysymys on sen määrästä
 tai siitä kumpi porras on väärässä kohdassa. **Uusi kanava** tarkoittaa että pelistä on
@@ -433,15 +491,16 @@ Käytännön seuraus: Maija on ainoa joka kannattaa aloittaa suoraan, koska sill
 koodikohde. Se voi jopa ratketa pelkästään Oppipoikaa heikentämällä, jolloin uutta
 taitoelementtiä ei tarvita lainkaan.
 
-### 1. Maija: Kisälli ei erotu Oppipojasta
+### 1. Maija: Kisälli ei erotu Oppipojasta ✅ RATKAISTU 26.7.2026
 
-`normal vs beginner` 51,3 % (N=400). Mestari sen sijaan voittaa Oppipojan (57,8 %,
-z = 3,1). Muoto on `beginner ≈ normal < hard`, eli alapää on rikki.
+Ennuste piti: ratkesi Oppipoikaa heikentämällä, ilman uutta taitoelementtiä.
+`normal vs beginner` 51,3 % → **68,0 %** (z = 7,2), `hard vs beginner` 57,8 % → **74,0 %**
+(z = 9,6), verrokki `hard vs normal` muuttumaton bitilleen. Syy oli että kaikki tasot
+löivät koko maan kerralla; monikorttihyökkäys on nyt Kisällin kyky. Koko kirjaus omassa
+osiossaan "Maija 26.7.2026" yllä.
 
-Kyvykkyysporras-taulukko lupaa Kisällille "täysi perusstrategia + Maija-prioriteetti +
-valttiepäröinti", eivätkä ne tuota mitattavaa etua Oppipojan heikkouksia vastaan.
-Kysymys on kumpi pää pettää: onko Oppipojan heikkous liian lievä vai Kisällin lisä
-liian pieni? Lue `maijaPickAttack` ja `maijaPickDefense` molempien tasojen silmin.
+**Jäljelle jäi Maijan yläpää:** `hard vs normal` on yhä 52,9 % (z = 1,2). Se on eri lajin
+kohta, uuden kanavan odottaja, eikä jatku tästä samalla työtavalla.
 
 ### 2. Moska: Mestari ei erotu Kisällistä
 

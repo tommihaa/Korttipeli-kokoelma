@@ -62,7 +62,11 @@ function maijaPickAttack(hand, trump, defHandSize, discard, deckEmpty, level) {
   }
   const suits = Object.values(bySuit).sort((a, b) => b.length - a.length);
   suits.forEach(grp => grp.sort((a, b) => level === 'beginner' ? b.v - a.v : a.v - b.v));
-  let toPlay = (suits[0] || []).slice(0, Math.min((suits[0] || []).length, defHandSize));
+  // Monikorttihyökkäys on Kisällin kyky: Oppipoika lyö yhden kortin kerrallaan.
+  // Ennen 26.7.2026 kaikki tasot löivät koko maan, jolloin Oppipoika sai pelin
+  // vahvimman shedding-työkalun ilmaiseksi eikä Kisällille jäänyt erottavaa.
+  const maxCards = level === 'beginner' ? 1 : defHandSize;
+  let toPlay = (suits[0] || []).slice(0, Math.min((suits[0] || []).length, maxCards));
 
   if (deckEmpty && !maija && level === 'hard') {
     const myTrumps = hand.filter(c => c.s === trump && !isMaija(c));
@@ -502,9 +506,10 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       const defHandSize = g2.players[g2.defenderIdx].hand.length;
       if (!hand.length) { resolveDefenseWin(g2, [], finRef.current); return; }
       // Kyvykkyysporras (ei satunnaiskohinaa):
-      //   Oppipoika: pelaa ISOT kortit ensin (haluaa "voittaa" kierroksia) eikä
-      //              suunnittele Maijan dumppausta — muttei myöskään pelkää sitä
-      //   Kisälli:   pienimmät ensin + Maija-prioriteetti
+      //   Oppipoika: lyö VAIN YHDEN kortin kerrallaan; pelaa ISOT kortit ensin
+      //              (haluaa "voittaa" kierroksia) eikä suunnittele Maijan
+      //              dumppausta — muttei myöskään pelkää sitä
+      //   Kisälli:   monikorttihyökkäys (koko maa) + pienimmät ensin + Maija-prioriteetti
       //   Mestari:   + valttilaskenta pakan loputtua
       // Päätöslogiikka moduulitason maijaPickAttack-funktiossa (jaettu Heron neuvon kanssa).
       const atkLevel = botLevelsRef.current?.[g2.attackerIdx] ?? aiLevelRef.current;
