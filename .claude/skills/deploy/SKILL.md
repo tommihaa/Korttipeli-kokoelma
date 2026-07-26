@@ -25,7 +25,16 @@ description: Julkaise Jako-pelini täysimääräisesti niin että SEKÄ GitHub E
 
 6. **Varmista tuotanto — odota ensin ~30–60 s.** Git-build + CDN-propagaatio; välitön tarkistus näyttää vanhan bundlen → väärä "ei mennyt perille" -tulkinta. Deterministinen todennus: hae live-sivulta `assets/index-*.js` ja vertaa vaiheen 3 `dist`-buildiin.
 
-   **Älä luota pelkkään hash-täsmäykseen: se voi erota vaikka sisältö on identtinen.** 25.7.2026 (v1.2.204) tuotanto oli `index-DFwtBpHJ.js` ja lokaali `index-DPa7DxOi.js`, mutta tiedostot olivat yhtä pitkät ja erosivat vain 171 merkkiä, kaikki lapsichunkkien nimissä (`assets/Koputus-*.js` ym.) joita Vercelin build hashaa eri tavalla. Sisältö oli sama. Oikea todennus on siis **lataa tuotantobundle ja tarkista siitä (a) versio `To="1.2.NNN"` ja (b) tämän julkaisun muuttamat merkkijonot**; hash-täsmäys on vahvistus jos se osuu, ei epäonnistuminen jos ei osu. Käytä Pythonia UTF-8:lla, älä Bash-greppiä: Windowsin konsoli mankeloi ä/ö:t ja monitavuiset merkkiluokat (`[—–]`) antavat vääriä osumia. **Tarkista samalla versionumero tuotantobundlesta** (`To="1.2.NNN"`) ja että se vastaa package.jsonia: hash-täsmäys yksin ei olisi paljastanut 21.7.2026 löytynyttä versiobugia. Vaihtoehto: `npx vercel ls jako-pelini` → uusin `● Ready` ja syntyi pushistasi. Molemmat tuotantodomainit päivittyvät: https://tommi-jako.vercel.app (ensisijainen) + https://tommi-jako52.vercel.app.
+   **Älä luota pelkkään hash-täsmäykseen: se voi erota vaikka sisältö on identtinen.** 25.7.2026 (v1.2.204) tuotanto oli `index-DFwtBpHJ.js` ja lokaali `index-DPa7DxOi.js`, mutta tiedostot olivat yhtä pitkät ja erosivat vain 171 merkkiä, kaikki lapsichunkkien nimissä (`assets/Koputus-*.js` ym.) joita Vercelin build hashaa eri tavalla. Sisältö oli sama. Oikea todennus on siis **lataa tuotantobundle ja tarkista siitä (a) versio `To="1.2.NNN"` ja (b) tämän julkaisun muuttamat merkkijonot**; hash-täsmäys on vahvistus jos se osuu, ei epäonnistuminen jos ei osu. Käytä Pythonia UTF-8:lla, älä Bash-greppiä: Windowsin konsoli mankeloi ä/ö:t ja monitavuiset merkkiluokat (`[—–]`) antavat vääriä osumia. **Tarkista samalla versionumero tuotantobundlesta** (`To="1.2.NNN"`) ja että se vastaa package.jsonia: hash-täsmäys yksin ei olisi paljastanut 21.7.2026 löytynyttä versiobugia. **`curl` EI saa tuotantosivua, se saa 403:n.** Vercelin botintorjunta vastaa `curl`ille sivulla
+`Vercel Security Checkpoint` (HTTP 403, ~34 kt), eikä selainmainen User-Agent auta: kyse on
+tarkistussivusta eikä otsakkeesta. Todettu 26.7.2026, kun odotussilmukka ehdolle "curl näkee
+uuden bundlen" jäi pyörimään ehtoon joka ei voi täyttyä. **Älä siis rakenna odotusta curlin
+varaan.** Toimivat reitit: (a) selain (`preview_start` tuotanto-URLiin, sitten `javascript_tool`
+hakemaan `script[src]` ja `fetch`aamaan chunkit samasta originista, mikä kiertää tarkistuksen
+koska selain on jo läpäissyt sen), tai (b) `npx vercel inspect <deployment-url>` joka kertoo
+tilan ja aliakset ilman sivun latausta.
+
+Vaihtoehto: `npx vercel ls jako-pelini` → uusin `● Ready` ja syntyi pushistasi. Molemmat tuotantodomainit päivittyvät: https://tommi-jako.vercel.app (ensisijainen) + https://tommi-jako52.vercel.app.
 
 7. **Raportoi.** `APP_VERSION` + commit-hash + live-URL. Vahvista erikseen että SEKÄ GitHub ETTÄ Vercel-tuotanto ovat ajan tasalla — se on tämän skillin koko pointti.
 
