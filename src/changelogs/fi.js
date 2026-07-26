@@ -1,11 +1,20 @@
-// ── Muutosloki (fi = totuuden lähde) ──────────────────────────────────────────
-// Kielikohtaiset versiot samassa kansiossa (en.js, sv.js, …) — kukin oma laiska
-// chunkkinsa, ladataan vasta kun Info → Muutosloki avataan; puuttuva kieli
-// putoaa tähän fi-versioon. Rakenteen on oltava identtinen kaikissa kielissä
-// (samat date-arvot, sama määrä items-rivejä samassa järjestyksessä).
-// /deploy lisää uusimman merkinnän TÄHÄN tiedostoon (taulukon alkuun) JA
-// käännättää sen kaikkiin saman kansion kielitiedostoihin.
+// ── Muutosloki (VAIN suomeksi) ────────────────────────────────────────────────
+// Tämä on kansion ainoa tiedosto, ja niin on tarkoitus. Päätös 3.7.2026: 22 kielen
+// käännös per julkaisu paisutti kansiota noin 450 kt:lla duplikaattidataa ja toisti
+// saman käännöstyön joka deployssa ilman käännösmuistia. Selaimen oma Käännä-toiminto
+// kattaa muut kielet niille jotka haluavat lukea lokin.
+// Ladataan laiskana chunkkina vasta kun Info → Muutosloki avataan.
+// /deploy lisää uusimman merkinnän TÄHÄN tiedostoon, taulukon alkuun. Älä luo
+// kielikohtaisia tiedostoja: tämän ylätunnisteen aiempi versio ohjeisti niin vielä
+// kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
+  {
+    date: '26.7.2026',
+    items: [
+      'Maijassa Oppipoika pelaa nyt selvästi aloittelijamaisemmin: se lyö pöytään vain yhden kortin kerrallaan, kun Kisälli ja Mestari lyövät koko maan yhdellä kertaa. Aiemmin kaikki kolme tasoa hyökkäsivät samalla tavalla, joten Kisälli ei käytännössä eronnut Oppipojasta. Mittasimme muutoksen 400 pelin sarjoilla: Kisälli voittaa Oppipojan nyt 68 prosentissa peleistä, kun aiemmin luku oli 51 eli sattuman tasolla.',
+      'Moskan pöytäotsikko taipuu nyt oikein myös muilla kielillä kuin suomeksi. Yhden parin kohdalla luki esimerkiksi englanniksi "1 pairs" ja saksaksi "1 Paare". Suomen vastaava virhe korjattiin edellisessä julkaisussa, ja nyt sama korjaus on tehty kaikkiin 23 kieleen.',
+    ],
+  },
   {
     date: '25.7.2026',
     items: [
