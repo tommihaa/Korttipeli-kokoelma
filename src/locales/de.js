@@ -1,7 +1,7 @@
 // ── Deutsche Strings ──────────────────────────────────────────────────────────
 // Spiegelung von fi.js. Ein hier fehlender Schlüssel fällt automatisch auf fi zurück
 // (siehe i18n.jsx). Die Eigennamen der Spiele (Kultakala, Moska, …) bleiben finnisch —
-// nur Beschreibungen und Regeln werden übersetzt. Muutosloki on lokalisoitu: src/changelogs/de.js.
+// nur Beschreibungen und Regeln werden übersetzt. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const de = {
   ui: {
     advice: {

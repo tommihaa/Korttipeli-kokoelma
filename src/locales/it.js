@@ -1,7 +1,7 @@
 // ── Stringhe in italiano ───────────────────────────────────────────────────────
 // Mirror di fi.js. Qualsiasi chiave mancante qui ricade automaticamente sul finlandese
 // (vedi i18n.jsx). I nomi propri dei giochi (Kultakala, Moska, …) restano finlandesi —
-// si traducono solo descrizioni e regole. Muutosloki on lokalisoitu: src/changelogs/it.js.
+// si traducono solo descrizioni e regole. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const it = {
   ui: {
     advice: {

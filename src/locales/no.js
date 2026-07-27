@@ -1,7 +1,7 @@
 // ── Norske strenger (bokmål) ───────────────────────────────────────────────────
 // Speiling av fi.js. Manglende nøkler faller automatisk tilbake til fi (se i18n.jsx).
 // Spillenes egennavn (Kultakala, Moska, …) beholdes finske — bare beskrivelser og
-// regler oversettes. Muutosloki on lokalisoitu: src/changelogs/no.js.
+// regler oversettes. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const no = {
   ui: {
     advice: {

@@ -1,7 +1,7 @@
 // ── Danske strenge ────────────────────────────────────────────────────────────
 // Spejl af fi.js. Manglende nøgler falder automatisk tilbage til fi (se i18n.jsx).
 // Spillenes egennavne (Kultakala, Moska, …) holdes finske — kun beskrivelser og
-// regler oversættes. Muutosloki on lokalisoitu: src/changelogs/da.js.
+// regler oversættes. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const da = {
   ui: {
     advice: {

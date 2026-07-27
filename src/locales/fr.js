@@ -1,7 +1,7 @@
 // ── Chaînes en français ────────────────────────────────────────────────────────
 // Miroir de fi.js. Toute clé manquante ici retombe automatiquement sur fi (voir i18n.jsx).
 // Les noms propres des jeux (Kultakala, Moska, …) restent en finnois — seules les
-// descriptions et les règles sont traduites. Muutosloki on lokalisoitu: src/changelogs/fr.js.
+// descriptions et les règles sont traduites. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const fr = {
   ui: {
     advice: {
