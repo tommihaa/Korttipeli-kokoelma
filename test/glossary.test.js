@@ -104,6 +104,8 @@ describe('sääntötekstien avaintermit osuvat pelidatalla', () => {
     // Katkelmia src/locales/fi.js:n ja PELI.md-tiedostojen teksteistä, ei keksittyjä.
     const texts = [
       'valitse pöytäkortteja, joiden summa + käsikorttisi = rakennelman arvo',
+      'Vastustaja voi kähveltää rakennelmasi.',
+      'Kaappaa oma rakennelmasi kortilla. Kukaan ei voi enää varastaa sitä.',
       'Kova kakkonen voi lyödä minkä tahansa kortin päälle paitsi kaatokortin.',
       'Puolustaja kaataa pöydän hyökkäyskortit valttimaan kortilla.',
       'Kasan kaksi päällimmäistä korttia ovat samaa arvoa: täsmäys.',
