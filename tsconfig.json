@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+
+    // Koodi on JS/JSX eikä TS, ja pysyy sellaisena: tyypit kirjoitetaan JSDociin.
+    // allowJs + checkJs on siis koko projektin muoto, ei siirtymävaihe.
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+
+    // strict on pois tarkoituksella. Vihreä lähtötaso 65 tiedostolle on saavutettavissa
+    // ilman sitä; strict lisäisi null-tarkistukset kaikkialle kerralla, mikä on eri
+    // kokoinen päätös eikä tämän portin työtä.
+    "strict": false,
+    "skipLibCheck": true,
+
+    "types": ["node", "vite/client"]
+  },
+  "include": ["src", "test", "vite.config.js"]
+}

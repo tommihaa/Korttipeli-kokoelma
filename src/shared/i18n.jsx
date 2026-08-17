@@ -159,7 +159,12 @@ export function useLang() {
 // Palauttaa t()-funktion sidottuna aktiiviseen kieleen.
 // lang-riippuvuus varmistaa että komponentti renderöi uudelleen kielen vaihtuessa;
 // itse käännös tehdään moduulitason tr():llä (yksi totuuden lähde).
+// JSDoc-tyyppi on tässä pakollinen eikä koriste: ilman sitä TS päättelee params-parametrin
+// pakolliseksi, ja jokainen t('avain') yhdellä argumentilla on virhe. Mitattu 17.8.2026:
+// se yksin oli 469 virhettä kaikkiaan 651:stä.
+/** @typedef {(key: string, params?: Record<string, any>) => any} TFn */
+
 export function useT() {
   const { lang } = useLang();
-  return useCallback((key, params) => tr(key, params), [lang]);
+  return useCallback(/** @type {TFn} */((key, params) => tr(key, params)), [lang]);
 }
