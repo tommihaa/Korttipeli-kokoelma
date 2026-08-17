@@ -1,0 +1,28 @@
+name: Testit
+
+# Portti on olemassa siksi, että kattavuus laukeaisi ennen julkaisua eikä sen jälkeen.
+# Mittaus 17.8.2026: commit 41fe04d kaatoi 20 testiä ja päätyi silti tuotantoon (v1.2.204),
+# koska mikään ei ajanut pakettia pushin ja Vercelin välissä. Kattavuus oli riittävä,
+# ajaminen puuttui.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: testit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  vitest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
