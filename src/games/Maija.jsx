@@ -173,6 +173,21 @@ export function getAdvice(g, phase, table) {
 
 
 // ── Kortti ──────────────────────────────────────────────────────────
+/**
+ * Maijan oma Card varjostaa jaetun komponentin tarkoituksella (eri korostuslogiikka).
+ * @typedef {object} MaijaCardProps
+ * @property {any}     [card]
+ * @property {boolean} [small]
+ * @property {boolean} [xsmall]
+ * @property {boolean} [highlight]
+ * @property {any}     [advice]
+ * @property {boolean} [dim]
+ * @property {boolean} [selected]
+ * @property {any}     [onClick]
+ * @property {any}     [backStyle]
+ * @property {boolean} [faceDown]
+ * @param {MaijaCardProps} props
+ */
 function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, backStyle, faceDown }) {
   const [h, setH] = useState(false);
   const w = xsmall ? 38 : small ? 44 : 58, ht = xsmall ? 52 : small ? 60 : 80;

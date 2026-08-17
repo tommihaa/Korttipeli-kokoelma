@@ -120,6 +120,21 @@ export function getAdvice(g, phase, held, swapIdx, canStop) {
 }
 
 // Paikallinen Card — tukee "unknown"-tilaa
+/**
+ * @typedef {object} KaCardProps
+ * @property {any}     [card]
+ * @property {boolean} [faceUp]
+ * @property {boolean} [small]
+ * @property {boolean} [mini]
+ * @property {boolean} [tiny]
+ * @property {boolean} [highlight]
+ * @property {boolean} [dim]
+ * @property {boolean} [pulse]
+ * @property {boolean} [unknown]
+ * @property {any}     [onClick]
+ * @property {any}     [backStyle]
+ * @param {KaCardProps} props
+ */
 function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknown, onClick, backStyle }) {
   const [h, setH] = useState(false);
   const w = mini ? 30 : tiny ? 36 : small ? 44 : 60, ht = mini ? 42 : tiny ? 50 : small ? 60 : 82;

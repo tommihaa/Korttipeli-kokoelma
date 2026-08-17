@@ -6,6 +6,31 @@ import { isRed, cardName } from './helpers.js';
 const isRuutuKymppi = c => c && c.r === '10' && c.s === '♦';
 const isPataKakkonen = c => c && c.r === '2' && c.s === '♠';
 
+/**
+ * Kaikki propsit ovat valinnaisia, ja se on kortin oma sopimus eikä löysyyttä:
+ * yhdeksän peliä destrukturoi eri osajoukon, eikä yhtäkään näistä anneta joka
+ * kutsupaikassa. Ilman merkintää TS lukee destrukturoinnista pakolliset propsit.
+ * @typedef {object} CardProps
+ * @property {any}     [card]        kortti { r, s, id }, puuttuu empty-tilassa
+ * @property {boolean} [faceUp]      oletus true
+ * @property {boolean} [small]
+ * @property {boolean} [xsmall]
+ * @property {boolean} [large]
+ * @property {boolean} [highlight]
+ * @property {any}     [advice]      Mestarin neuvon korostus
+ * @property {boolean} [dim]
+ * @property {boolean} [selected]
+ * @property {any}     [onClick]
+ * @property {any}     [backStyle]   pakan takakuvio, BACKS-katalogista
+ * @property {any}     [special]
+ * @property {boolean} [empty]       tyhjä paikka, ei korttia
+ * @property {boolean} [pulse]
+ * @property {any}     [reactHL]
+ * @property {boolean} [justPlaced]
+ * @property {boolean} [disabled]
+ * @property {boolean} [showBadges]  oletus false
+ * @param {CardProps} props
+ */
 export default function Card({
   card,
   faceUp = true,

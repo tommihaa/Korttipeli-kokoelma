@@ -22,6 +22,15 @@ if (typeof document !== 'undefined' && !document.getElementById(FLASH_ID)) {
 // empty: ohittaa oletuksen (count === 0) — esim. Seiska, jossa lyöntipakka täydentää pakkaa.
 // flash: true käynnistää välähdyksen kun pakka juuri ehtyi.
 // style: ulkoasun säätö (fontSize, fontFamily, marginit) kutsupaikan mukaan.
+/**
+ * @typedef {object} PakkaCountProps
+ * @property {number}  [count]
+ * @property {boolean} [empty]
+ * @property {boolean} [flash]
+ * @property {string}  [variant]
+ * @property {any}     [style]
+ * @param {PakkaCountProps} props
+ */
 export default function PakkaCount({ count, empty, flash = false, variant = 'header', style }) {
   const t = useT();
   const isEmpty = empty === undefined ? count === 0 : empty;

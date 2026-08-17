@@ -29,6 +29,16 @@ function placeLabel(place) {
     : <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.dim }}>{place}.</span>;
 }
 
+/**
+ * @typedef {object} GameResultProps
+ * @property {any[]}   [ranking]         [{ name, place, isHuman, score? }]
+ * @property {any}     [revealCards]
+ * @property {any}     [scoreBreakdown]
+ * @property {any}     [onNewGame]
+ * @property {any}     [onMenu]
+ * @property {boolean} [isMobile]
+ * @param {GameResultProps} props
+ */
 export default function GameResult({
   ranking = [],
   revealCards,

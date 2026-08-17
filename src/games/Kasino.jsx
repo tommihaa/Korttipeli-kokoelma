@@ -1739,7 +1739,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
           <Card card={card} xsmall showBadges backStyle={BACKS[cardBack]} />
         );
         // Rivin wrapper
-        const CardRow = ({ children, accent }) => (
+        const CardRow = (/** @type {{ children?: any, accent?: string }} */ { children, accent }) => (
           <div style={{ display: 'flex', gap: 5, alignItems: 'center', padding: '6px 2px',
             borderBottom: `1px solid ${C.panelBorder}33`, flexWrap: 'wrap',
             borderLeft: accent ? `3px solid ${accent}` : undefined,

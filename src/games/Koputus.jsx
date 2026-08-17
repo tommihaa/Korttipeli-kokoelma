@@ -124,6 +124,24 @@ export function getAdvice(g, phase, drawn, knocked) {
   return null;
 }
 
+/**
+ * @typedef {object} PlayerGridProps
+ * @property {any}     [player]
+ * @property {boolean} [isActive]
+ * @property {any}     [clickableSet]
+ * @property {any}     [onCardClick]
+ * @property {any}     [peekSet]
+ * @property {boolean} [small]
+ * @property {boolean} [showScore]
+ * @property {string}  [phase]
+ * @property {boolean} [debug]
+ * @property {any}     [lastSwap]
+ * @property {any}     [backStyle]
+ * @property {boolean} [showKnown]
+ * @property {any}     [intentSlot]
+ * @property {any}     [adviceSlot]
+ * @param {PlayerGridProps} props
+ */
 function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, small, showScore, phase, debug, lastSwap, backStyle, showKnown = true, intentSlot, adviceSlot }) {
   const t = useT();
   return (
@@ -164,6 +182,15 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
 }
 
 // Module-scopessa ettei React remounttaa nappia (ja siten hover-tilaa/transitiota) joka renderillä.
+/**
+ * @typedef {object} BtnProps
+ * @property {any}     [label]
+ * @property {any}     [onClick]
+ * @property {string}  [color]
+ * @property {boolean} [outline]
+ * @property {boolean} [small]
+ * @param {BtnProps} props
+ */
 function Btn({ label, onClick, color, outline, small: sm }) {
   const [h, setH] = useState(false);
   return (

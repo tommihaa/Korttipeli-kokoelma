@@ -11,6 +11,21 @@
 //   empty      — jos true, näytetään tyhjä paikka (optional)
 //   glowColor  — CSS-väri hehkulle (optional)
 
+/**
+ * Yllä oleva kommentti merkitsee neljä propsia valinnaiseksi; typedef sanoo saman
+ * niin että tyyppitarkistus lukee sen.
+ * @typedef {object} FanStackProps
+ * @property {number}  [count]
+ * @property {number}  [w]
+ * @property {number}  [h]
+ * @property {any}     [backStyle]
+ * @property {string}  [borderColor]
+ * @property {any}     [topCard]
+ * @property {any}     [onClick]
+ * @property {boolean} [empty]
+ * @property {string}  [glowColor]
+ * @param {FanStackProps} props
+ */
 export default function FanStack({ count, w, h, backStyle, borderColor, topCard, onClick, empty, glowColor }) {
   const br = Math.round(w * 0.1);
   const bc = borderColor || backStyle?.border || '#2a4a32';

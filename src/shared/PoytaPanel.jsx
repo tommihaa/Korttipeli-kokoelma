@@ -10,6 +10,18 @@ import { C } from './colors.js';
 //   animation — paneelin oma animaatio (esim. Paskahousun kasaAnim)
 const DEFAULT_MIN = { m: 130, t: 210 };
 
+/**
+ * @typedef {object} PoytaPanelProps
+ * @property {any}     [title]
+ * @property {any}     [right]
+ * @property {any}     [children]
+ * @property {boolean} [isMobile]
+ * @property {string}  [border]
+ * @property {any}     [minHeight]  luku tai { m, t }
+ * @property {any}     [animation]
+ * @property {any}     [style]
+ * @param {PoytaPanelProps} props
+ */
 export default function PoytaPanel({
   title, right, children,
   isMobile = false,
