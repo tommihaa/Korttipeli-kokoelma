@@ -230,7 +230,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
       const target = ch.targetIdx;
       if (newPiles[target].length === 0) {
         addLog(M.winChallengeNoRival(pName(ch.byIdx), pName(target)));
-        giveCenter(ch.byIdx, newPiles, newCenter, null);
+        giveCenter(ch.byIdx, newPiles, newCenter);
         return;
       }
       setCur(target); curRef.current = target;
@@ -304,7 +304,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
         while ((newPiles[target2].length === 0 || target2 === playerIdx) && t2 < nn) { target2 = (target2 + 1) % nn; t2++; }
         if (t2 >= nn || target2 === playerIdx) {
           addLog(M.respondedSpecialNoRival(pName(playerIdx), lblColored(card)));
-          giveCenter(playerIdx, newPiles, newCenter, null); return;
+          giveCenter(playerIdx, newPiles, newCenter); return;
         }
         const newCh = { byIdx: playerIdx, targetIdx: target2, cardsLeft: SPEC[card.r], specRank: card.r };
         setCh(newCh); chRef.current = newCh;
@@ -318,7 +318,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
           setCh(null); chRef.current = null;
           setFR({ card, winner: ch.byIdx, n: newCenter.length });
           clearTimeout(failTmr.current);
-          failTmr.current = tm(() => { setFR(null); giveCenter(ch.byIdx, newPiles, newCenter, null); }, 1600);
+          failTmr.current = tm(() => { setFR(null); giveCenter(ch.byIdx, newPiles, newCenter); }, 1600);
         } else {
           const newCh = { ...ch, cardsLeft: left };
           setCh(newCh); chRef.current = newCh;
@@ -335,7 +335,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
       while ((newPiles[target].length === 0 || target === playerIdx) && t < n) { target = (target + 1) % n; t++; }
       if (t >= n || target === playerIdx) {
         addLog(M.challengedNoRival(pName(playerIdx), lblColored(card)));
-        giveCenter(playerIdx, newPiles, newCenter, null); return;
+        giveCenter(playerIdx, newPiles, newCenter); return;
       }
       const newCh = { byIdx: playerIdx, targetIdx: target, cardsLeft: SPEC[card.r], specRank: card.r };
       setCh(newCh); chRef.current = newCh;
@@ -427,7 +427,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
       setBestMs(prev => prev === null || ms < prev ? ms : prev);
     }
     setSR({ winner: playerIdx, ms, n }); tm(() => setSR(null), 2000);
-    giveCenter(playerIdx, curPiles, curCenter, ms);
+    giveCenter(playerIdx, curPiles, curCenter);
   }
 
   function humanSlap() {
