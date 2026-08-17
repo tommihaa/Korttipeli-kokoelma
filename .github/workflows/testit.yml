@@ -22,7 +22,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          # Node 24 (npm 11) on sama kuin kehityskoneella. Node 22:n npm 10 rakentaa
+          # vitestin viteriippuvuudesta eri puun kuin lukkotiedostoon on kirjattu ja
+          # kaataa npm ci:n, vaikka sama lukkotiedosto asentuu npm 11:llä puhtaasti.
+          node-version: '24'
           cache: npm
       - run: npm ci
       - run: npm test
