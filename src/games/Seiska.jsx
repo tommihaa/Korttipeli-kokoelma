@@ -926,7 +926,11 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
-  useEffect(() => { if (G?.phase === 'gameover') window.scrollTo(0, 0); }, [G?.phase]);
+  // Sisarissa (Moska, Paskahousu, Ristiseiska) on tässä toinen efekti joka vierittää ylös
+  // kun phase on 'gameover'. Sitä ei ole tässä, ja se on tietoinen ero eikä puute: niissä
+  // 'gameover' vaihtaa näkymän kokonaan tulosnäytöksi, Seiskassa 'finished' jättää
+  // pelinäkymän paikalleen ja lisää alaosaan Tulokset-napin. Ylös vierittäminen veisi
+  // pelaajan pois siitä napista, ja tulosnäytön oma vieritys hoituu App.jsx:ssä.
 
   // ── Select ──────────────────────────────────────────────────
   if (screen === 'select') return (
