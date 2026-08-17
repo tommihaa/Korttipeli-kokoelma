@@ -1535,7 +1535,13 @@ export default function App() {
 
   if (active) {
     const game = GAMES.find(g => g.id === active);
-    const GameComponent = game.component;
+    // Cast on tässä kirjaus eikä vaimennus. App välittää saman propsijoukon kaikille
+    // yhdeksälle pelille, mutta jokainen destrukturoi vain tarvitsemansa (ks. CLAUDE.md,
+    // Component props): yhtä kanonista signatuuria ei ole, joten yhdeksän komponentin
+    // unionin propsityyppi on niiden leikkaus eikä yhdiste. Esimerkiksi game-propsin ottaa
+    // vain Kasino. Jaettu GameProps-typedef poistaisi castin, mutta se olisi kanonisen
+    // signatuurin luominen eli designpäätös, ei tyypitystyö.
+    const GameComponent = /** @type {any} */ (game.component);
     const maxW = isMobile ? 'calc(100vw - 20px)' : game.maxWidth;
 
     // Tulosruutu pelin jälkeen (vain ihmispelaajan peli)

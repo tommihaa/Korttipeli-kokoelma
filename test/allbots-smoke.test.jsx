@@ -48,13 +48,15 @@ const GAMES = [
 // Web Audio ei ole jsdomissa; äänet ovat pois (soundOn=false), mutta varmistetaan
 // ettei mahdollinen actx()-kutsu kaada testiä.
 beforeEach(() => {
-  globalThis.AudioContext = class {
+  // Tynkä toteuttaa vain ne neljä jäsentä joita audio.js koskee, joten se ei ole
+  // AudioContext vaan sen korvike; cast kertoo sen tyyppitarkistukselle.
+  globalThis.AudioContext = /** @type {any} */ (class {
     createGain() { return { connect() {}, gain: { value: 0, setValueAtTime() {} } }; }
     createOscillator() { return { connect() {}, start() {}, stop() {}, frequency: { value: 0, setValueAtTime() {} } }; }
     get destination() { return {}; }
     get currentTime() { return 0; }
     resume() {}
-  };
+  });
   globalThis.webkitAudioContext = globalThis.AudioContext;
   vi.useFakeTimers();
 });

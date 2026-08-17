@@ -4,7 +4,8 @@ let _theme = 'oletus'; // 'oletus' | 'torvi-kannel' — ks. setTheme()
 export function actx() {
   try {
     if (!_ctx || _ctx.state === 'closed')
-      _ctx = new (window.AudioContext || window.webkitAudioContext)();
+      // webkitAudioContext on Safarin vanha nimi, eikä sitä ole lib.dom.d.ts:ssä.
+      _ctx = new (window.AudioContext || /** @type {any} */ (window).webkitAudioContext)();
   } catch (e) {}
   return _ctx;
 }
@@ -125,6 +126,11 @@ export function kantele(freq, dur = 0.9, gain = 0.24, t0 = 0) {
 /** Nouseva/laskeva sävelkulku jommallakummalla primitiivillä — yhteinen
  *  helper teemakohtaisille arpeggioille (esim. reveal, score, fanfare).
  *  horn/kantele ottavat positioparametrit (freq, dur, gain, t0), ei oliota. */
+/**
+ * @param {(freq: number, dur?: number, gain?: number, t0?: number) => void} fn
+ * @param {number[]} freqs
+ * @param {{ step?: number, dur?: number, gain?: number }} [opts]
+ */
 function run(fn, freqs, { step = 0.1, dur, gain } = {}) {
   freqs.forEach((f, i) => fn(f, dur, gain, i * step));
 }
@@ -181,8 +187,12 @@ const hornKanteleSfx = {
   fanfare:     () => { [523, 659, 784, 1047].forEach((f, i) => horn(f, 0.26, 0.14, i * 0.12)); horn(1047, 0.7, 0.06, 0.55); },
 };
 
-export const SFX = new Proxy({}, {
+// Proxyn kohde on tyhjä objekti, joten ilman merkintää SFX on tyypiltään {} ja jokainen
+// SFX.flip() on virhe. Tyyppi otetaan oletustaulusta eikä Record<string, any>:sta, jolloin
+// tarkistus myös hylkää äänen jota ei ole olemassa. Taulujen avaimet ovat samat, 20 ja 20,
+// eli lupaus pitää molemmilla teemoilla (mitattu 17.8.2026).
+export const SFX = /** @type {typeof oletusSfx} */ (new Proxy({}, {
   get(_target, name) {
     return (_theme === 'torvi-kannel' ? hornKanteleSfx : oletusSfx)[name];
   },
-});
+}));

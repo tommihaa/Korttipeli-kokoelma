@@ -70,7 +70,7 @@ export default function Card({
         onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
     : faceUp && card
       ? { role: 'img', 'aria-label': cardName(card) }
-      : { 'aria-hidden': 'true' };
+      : { 'aria-hidden': /** @type {const} */ (true) };
 
   const borderCol = justPlaced ? C.gold
     : reactHL ? C.red

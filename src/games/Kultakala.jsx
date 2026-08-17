@@ -145,7 +145,7 @@ function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknow
     const a11yU = onClick
       ? { role: 'button', tabIndex: 0, 'aria-label': 'tuntematon kortti',
           onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
-      : { 'aria-hidden': 'true' };
+      : { 'aria-hidden': /** @type {const} */ (true) };
     return (
       <div {...a11yU} onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
         style={{ width: w, height: ht, borderRadius: 7, position: 'relative', overflow: 'hidden', flexShrink: 0, border: '2px solid #4a6a9a', boxShadow: `0 0 ${h ? '14px' : '7px'} rgba(74,106,154,0.${h ? '5' : '28'})`, cursor: 'default', transition: 'box-shadow 0.2s' }}>
@@ -166,7 +166,7 @@ function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknow
         onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
     : faceUp && card
       ? { role: 'img', 'aria-label': cardName(card) }
-      : { 'aria-hidden': 'true' };
+      : { 'aria-hidden': /** @type {const} */ (true) };
 
   return (
     <div {...a11y} onClick={clickable ? onClick : undefined} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}

@@ -36,6 +36,9 @@ import Kasino from '../src/games/Kasino.jsx';
 const MINIMAL_GAME = { id: 'kasino', minPlayers: 2 };
 
 // [nimi, komponentti, kierrosten välinen nappi (vain Kasino, ks. smoke-testi)]
+// Tupletyyppi merkitään, koska ilman sitä alkioiden tyypiksi tulee unioni
+// (string | komponentti | RegExp | null) ja purettu name ei kelpaa merkkijonoksi.
+/** @type {Array<[string, any, RegExp | null]>} */
 const GAMES = [
   ['Paskahousu', Paskahousu, null],
   ['Koputus', Koputus, null],
@@ -74,13 +77,15 @@ function mulberry32(seed) {
 }
 
 beforeEach(() => {
-  globalThis.AudioContext = class {
+  // Tynkä toteuttaa vain ne neljä jäsentä joita audio.js koskee, joten se ei ole
+  // AudioContext vaan sen korvike; cast kertoo sen tyyppitarkistukselle.
+  globalThis.AudioContext = /** @type {any} */ (class {
     createGain() { return { connect() {}, gain: { value: 0, setValueAtTime() {} } }; }
     createOscillator() { return { connect() {}, start() {}, stop() {}, frequency: { value: 0, setValueAtTime() {} } }; }
     get destination() { return {}; }
     get currentTime() { return 0; }
     resume() {}
-  };
+  });
   globalThis.webkitAudioContext = globalThis.AudioContext;
   vi.useFakeTimers();
 });

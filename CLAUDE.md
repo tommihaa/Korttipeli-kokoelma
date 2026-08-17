@@ -159,6 +159,23 @@ Virstanpylväät:
 - Mobile: 1-col game grid, smaller fonts (11-12px), reduced padding
 - Tablet: 3-col game grid, fonts 12-14px, normal padding
 
+## Tyyppitarkistus (`npm run typecheck`)
+
+Koodi on JS/JSX eikä TS, ja pysyy sellaisena: `tsconfig.json` ajaa `allowJs` + `checkJs`
+-tilassa ja tyypit kirjoitetaan JSDociin. `strict` on pois tarkoituksella.
+
+Uutta koodia kirjoittaessa kaksi asiaa toistuvat, ja molemmat on halvempi merkitä heti kuin
+korjata jälkikäteen:
+
+- **Komponentin propsit** merkitään `@typedef`illä jossa valinnaiset propsit ovat
+  hakasuluissa. Ilman sitä destrukturointi lukee ne pakollisiksi, ja jokainen kutsu joka
+  jättää yhdenkin pois on virhe. Yhdeksän peliä destrukturoi eri osajoukon samasta
+  propsijoukosta, joten pakollisuus on käytännössä aina väärä lukema.
+- **Uusi ääni** lisätään `oletusSfx`- JA `hornKanteleSfx`-tauluun. `SFX` on tyypitetty
+  oletustaulusta, joten puuttuva avain kaatuu tarkistuksessa.
+
+Portti ajaa tämän ennen testejä (`.github/workflows/testit.yml`).
+
 ## Code style
 - Finnish variable names for game logic (e.g. `kortti`, `pelaaja`, `vuoro`)
 - English for React/component internals

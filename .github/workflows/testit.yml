@@ -4,6 +4,11 @@ name: Testit
 # Mittaus 17.8.2026: commit 41fe04d kaatoi 20 testiä ja päätyi silti tuotantoon (v1.2.204),
 # koska mikään ei ajanut pakettia pushin ja Vercelin välissä. Kattavuus oli riittävä,
 # ajaminen puuttui.
+#
+# typecheck ajetaan ennen testejä, koska se on nopeampi ja koska sen tavoittama vikaluokka
+# on eri: tyyppitarkistus lukee kaikki 65 tiedostoa, kun testit ajavat sen mitä ne ajavat.
+# Itu ja Superjatsi ajavat saman tarkistuksen suoraan npx tsc --noEmit -komennolla; tässä
+# se on npm-skriptin takana, jotta portti ja kehityskone ajavat saman nimisen komennon.
 
 on:
   push:
@@ -28,4 +33,5 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - run: npm run typecheck
       - run: npm test

@@ -12,6 +12,23 @@ export const TERM_SCHEMA_VERSION = 1;
 
 // match[]:    merkkijonot joita haetaan säännöistä (case-insensitive), pisin ensin
 // pelitLabel: ohittaa automaattisen pelinimilistan kun pelejä on monta
+
+/**
+ * Termiskeema kirjoitettuna auki tyyppinä. Tiedoston alun kommentti nimeää samat kentät
+ * ja TERMIMODUULI.md on speksi; tämä on se muoto jonka tyyppitarkistus lukee.
+ * @typedef {object} GlossaryTerm
+ * @property {string}   kategoria
+ * @property {string}   term        myös käännösavain, ks. tiedoston alun huomautus
+ * @property {string[]} match       * lopussa tarkoittaa vartalohakua
+ * @property {string}   selitys
+ * @property {string}   [esimerkki]
+ * @property {string}   [emoji]
+ * @property {any}      [emojiStyle]
+ * @property {string[]} [pelit]
+ * @property {string}   [pelitLabel]
+ */
+
+/** @type {GlossaryTerm[]} */
 export const SANASTO = [
   // ─ Perustermit ───────────────────────────────────────────────────────────
   { kategoria: 'perus', term: 'Maat',        match: ['pata','hertta','ruutu','risti','maata','maan'],                        emoji: '♠', selitys: 'Neljä maata: ♠ Pata · ♥ Hertta · ♦ Ruutu · ♣ Risti. Punaiset: ♥ ♦. Mustat: ♠ ♣. Maa ei yleensä ratkaise vaan arvo, paitsi valttipelissä.',                        pelitLabel: 'kaikki'                    },
@@ -47,7 +64,11 @@ export const SANASTO = [
 
 // ── Moottori (jaettu kontrakti, ks. TERMIMODUULI.md) ─────────────────────────
 
-/** Pilkkoo tekstin osiin: { text, isTerm, term } */
+/**
+ * Pilkkoo tekstin osiin: { text, isTerm, term }
+ * @param {string} text
+ * @param {GlossaryTerm[]} [entries]
+ */
 export function splitWithGlossary(text, entries = SANASTO) {
   const patterns = entries
     .flatMap(s => s.match.map(m => ({ m, term: s.term })))
