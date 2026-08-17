@@ -174,6 +174,12 @@ Virstanpylväät:
 - Add npm packages beyond what's in current prototype
 - Assume desktop viewport — always design for ~1200px landscape tablet
 
+**Poikkeus pakettikieltoon (17.8.2026): tyyppitarkistuksen työkalut.** `typescript`,
+`@types/react`, `@types/react-dom` ja `@types/node` ovat devDependencyjä, eivätkä ne päädy
+bundleen. Kielto on olemassa siksi, ettei ajonaikainen riippuvuuspuu kasva huomaamatta, eikä
+tämä lisäys kasvata sitä. Poikkeus koskee vain näitä neljää, ja se on rajattu tarkoituksella:
+seuraava devDependency on oma päätöksensä eikä seuraa tästä.
+
 ## Compact instructions
 When compacting: preserve current game logic state, component structure, and any
 unresolved bugs. Drop conversation filler and superseded code versions.
