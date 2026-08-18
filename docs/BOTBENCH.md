@@ -470,6 +470,49 @@ samantasoiseksi ja `flatNote` näkyy pelaajalle. Merkinnän poistaminen on linja
 mittauksen seuraus: 55 % on porras, mutta se on ohut, ja pelaajalle luvattu vaikeusero on eri
 väite kuin mitattu voitto-osuus. Kysymys jää auki tässä eikä ratkea kirjaamalla.
 
+## Kultakala ja Moska 18.8.2026 (N=400): kanonikorjausten mittaus, molemmat nollatuloksia
+
+Mitattu versiosta jossa pelikanonien auditointi vietiin koodiin (`bd44e03`, `f6b7382`). Kaksi
+muutosta koskee botteja, ja molemmat mitattiin samalla siemenellä kuin niiden viimeisin
+aiempi ajo.
+
+**Kultakala:** Mestari sai kierrostietoisen kynnyksen (tuntemattoman täytön hyötyvaatimus
+laskee 3:sta 1:een kun kierroksia on enintään kaksi), ja vastustajien rivit lukenut kuollut
+lohko poistettiin. Muutos koskee vain tasoa `hard`, joten `normal vs beginner` on verrokki.
+
+| pari | 24.7.2026 | 18.8.2026 | z |
+|------|----------:|----------:|--:|
+| hard vs beginner | 55,25 % | **55,6 %** (213 / 168 / 19) | 2,2 |
+| hard vs normal | 50,9 % | **49,1 %** (188 / 195 / 17) | -0,35 |
+| normal vs beginner | 57,6 % | **57,6 %** (226 / 165 / 9) | 3,05 |
+
+**Verrokki on bitilleen sama** (226/165/9 molemmissa ajoissa), mikä vahvistaa sekä siemenen
+toistettavuuden että sen että muutos osui vain Mestariin. Se on tässä tärkeämpi lukema kuin
+itse tulos, koska se erottaa nollatuloksen rikkinäisestä mittauksesta.
+
+**Nollatulos.** `hard vs normal` liikkui 50,9 → 49,1 %, eli kohinan sisällä. Kynnys laukeaa vain
+kahden viimeisen kierroksen aikana, ja niissä nostoja on jäljellä muutama per pelaaja, joten
+vaikutuspinta on pieni. Muutosta **ei palautettu**, toisin kuin Ristiseiskan passausmuistissa
+21.7.2026: se tehtiin kanonin ja koodin yhteensovittamiseksi eikä voimistamiseksi, ja poistettu
+kuollut lohko rikkoi kanonin näkyvyyssääntöä. Kultakalan yläportaan ongelma on siis yhä auki.
+
+**Moska:** passausehdot yhtenäistettiin ihmisen ehtoihin (botilta poistui passiketjun pituusraja
+ja valttikielto), ja ehdot koottiin yhteen funktioon (`moskaCanPass`) joka ajaa botin, Mestarin
+neuvon ja UI:n. Muutos koskee tasoja `normal` ja `hard`, joten verrokkia ei ole.
+
+| pari | 21.7.2026 | 18.8.2026 | z |
+|------|----------:|----------:|--:|
+| hard vs beginner | 71,8 % | **71,5 %** (286 / 114 / 0) | 8,6 |
+| hard vs normal | 53,5 % | **54,0 %** (216 / 184 / 0) | 1,6 |
+| normal vs beginner | 65,8 % | **64,75 %** (259 / 141 / 0) | 5,9 |
+
+**Nollatulos, ja tässä se oli toivottu lopputulos.** Muutoksen tarkoitus oli poistaa
+sääntöristiriita eikä muuttaa voimasuhteita, ja porras säilyi muodossa
+`beginner << normal ≈ hard`. Olennaisin luku ei ole voitto-% vaan **stalled 0 / unmapped 0**:
+botin passausportti oli aiemmin tiukempi kuin `doPass`in oma tarkistus, ja löysentäminen olisi
+voinut jättää botin odottamaan siirtoa jonka `doPass` hylkää. Uusi ehto kysyy vastaanottajan
+olemassaolon samalla haulla kuin `doPass`, ja 1200 peliä ajoi läpi ilman yhtään jumia.
+
 ## Käyttö jatkossa
 
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän

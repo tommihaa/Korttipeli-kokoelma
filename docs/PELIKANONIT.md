@@ -127,8 +127,11 @@ pelin ja pakan koko on julkista tietoa; kuollut lohko laski mukaan myös poistop
 `KULTAKALA.md` › AI-strategia kirjoitettiin uusiksi tasotaulukoksi, eli sama korjaus kattaa
 kokoelmatason löydöksen B tämän pelin osalta.
 
-**Mittaamatta:** muutos koskee Mestarin pelityyliä, joten botbench-ajo on tekemättä. Sama koskee
-Moskan passausmuutosta (löydös 5).
+**Mitattu 18.8.2026 (N=400/pari):** molemmat bottimuutokset ovat nollatuloksia, eikä kumpaakaan
+palautettu. Kultakalan `hard vs normal` 50,9 → 49,1 % ja Moskan 53,5 → 54,0 %, molemmat kohinan
+sisällä. Kultakalan verrokkipari toistui bitilleen, ja Moskassa 1200 peliä ajoi läpi ilman
+jumeja, mikä oli passausmuutoksen varsinainen tarkistettava. Luvut ja perustelut:
+`docs/BOTBENCH.md` › Kultakala ja Moska 18.8.2026.
 
 ### 2. Koputus: tasapelin ratkaisua ei ole toteutettu
 
