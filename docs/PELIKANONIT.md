@@ -112,6 +112,10 @@ reunatapaus.
 **Sopimusmuutoskysymys:** lisätäänkö toissijainen avain koodiin vai poistetaanko lause
 kanonista?
 
+**Ratkaistu 18.8.2026: sääntö vietiin koodiin.** Kanoni oli oikeassa ja koodi puutteellinen.
+`pRank` järjestää nyt ensin pisteillä ja sitten korttimäärällä, ja sama vertailu ohjaa
+sijoituslaskennan (`pBetter`) ja tulosnäytön. Kanoniin ei koskettu, koska se sanoi jo oikein.
+
 **Sivuhavainto, ei löydös:** erityiskortit (J/Q/K) laukeavat vain kun nostettu kortti
 **heitetään poistopakkaan** (`src/games/Koputus.jsx:436`). Kanonin Erityiskortit-osio ei
 nimeä ehtoa lainkaan, joten se ei ole ristiriita vaan aukko.
@@ -221,6 +225,12 @@ Mestarin maakohtainen pidättelyehto sellaisena kuin se 18.8.2026 kirjattiin (`f
 rivi 357), Kisällin ja Oppipojan vanhempi `suitCount > 1` (rivi 345), ja *"pelaa pienin arvo
 muista"* (rivi 361).
 
+**Ratkaistu 18.8.2026: säännöt kirjattiin kanoniin sellaisina kuin ne koodissa ovat.**
+`RISTISEISKA.md` sai oman osion *Pantti: passaaminen maksaa toiselle pelaajalle kortin*, jossa
+ovat myös ensimmäisen kierroksen vapautus, antajan valinta kortillisista pelaajista ja
+panttikortin valintatavan sääntövalinta. Koodiin ei koskettu. Kokoelmatason löydös A kapenee
+tämän myötä yhdellä rivillä: `randomPantti` on nyt kanonissa, mutta neljä muuta asetusta eivät.
+
 **Sivuhavainto, ei löydös:** rivin 672 seiskavalinta järjestää maat päinvastoin kuin rivin 333.
 Ero on tarkoitettu: jälkimmäinen on `aiShouldFumble`-haaran aloittelijavirhe (avaa seiskan
 huonoimpaan maahan), ja koodin kommentti sanoo sen.
@@ -305,9 +315,11 @@ oma päätöksensä eikä seuraa säännöstä, ja sen vaikutus on mitattava eik
 | Seiska | 0 | |
 | **Kokoelmataso** | **2** | Sääntövalinnat ja kyvykkyysporras |
 
-Yksitoista pelikohtaista löydöstä ja kaksi kokoelmatason löydöstä. **Yksi on ratkaistu**
-(Kasinon pistelasku, 18.8.2026, versio 1.2.210), loput odottavat sopimusmuutospäätöstä eikä
-niihin kosketa ennen sitä.
+Yksitoista pelikohtaista löydöstä ja kaksi kokoelmatason löydöstä. **Kolme on ratkaistu
+18.8.2026** ja ne menivät kolmeen eri suuntaan, mikä on itsessään tulos: Kasinon pistelasku
+ratkesi kanonin ulkopuolelta (vakiosäännöt, molemmat puolet olivat väärässä), Koputuksen
+tasapeli koodiin (kanoni oli oikeassa) ja Ristiseiskan pantti kanoniin (koodi oli oikeassa).
+Loput odottavat sopimusmuutospäätöstä eikä niihin kosketa ennen sitä.
 
 ## Miksi tästä ei tehty konetarkistinta
 
