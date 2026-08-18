@@ -59,6 +59,17 @@ AI:n pakan täydentäminen:
 1. Pyrkii saavuttamaan 5 kortin käden
 2. Ajattelee seuraavan hyökkäyksen strategiaa
 
+### Kyvykkyysporras
+
+| Kyky | Oppipoika | Kisälli | Mestari |
+|---|---|---|---|
+| Hyökkäyksen korttimäärä | yksi kortti kerrallaan | koko maa | koko maa |
+| Kortin valinta maan sisällä | suurin ensin (virhe) | pienin ensin | pienin ensin |
+| Maija kädessä | kohtelee tavallisena korttina | Maija-dumppi | Maija-dumppi |
+| Valttihyökkäys pakan tyhjennyttyä | ei | ei | kyllä, ehdoilla |
+| Valtilla kaataminen | tuhlaa valttia: valitsee pienimmän kaatavan kortin maasta riippumatta | säästää valttia: käyttää vasta kun pakka on tyhjä tai pöydässä on vähintään kolme korttia | sama, mutta raja on kaksi korttia |
+| Kaatojärjestys | pöydän järjestyksessä | pöydän järjestyksessä | tärkein ensin (Maija, sitten suurimmat) |
+
 ## Pakka- ja kierroskoko
 
 - **4 pelaajaa**: noin 10–13 kierrosta

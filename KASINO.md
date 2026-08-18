@@ -87,6 +87,18 @@ AI:n rakentamislogiikka:
 - Käytä rakentamista strategisesti
 - Ei rakenna jos vastustaja voi helposti varastaa
 
+### Kyvykkyysporras
+
+Tasot eroavat **kyvyiltään** eivätkä satunnaisuudelta.
+
+| Kyky | Oppipoika | Kisälli | Mestari |
+|---|---|---|---|
+| Kaappauksen valinta | naiivi: eniten kortteja | pistearvon mukaan | pistearvon mukaan |
+| Rakentaminen | ei rakenna | rakentaa | rakentaa, arvio hypergeometrisella päättelyllä |
+| Rakennelman varastaminen | ei varasta | varastaa | varastaa |
+| Bonuskortit kaappauksen mukana | ei poimi | poimii samaan arvoon summautuvat | poimii samaan arvoon summautuvat |
+| Jättökortin vaara | ei arvioi | heuristinen arvio | laskettu arvio, ässän suojaus |
+
 ## Pelin luonne
 
 Kasino on **strateginen peli** jossa pistelaskenta on olennainen. Mökkien hankkiminen (pöydän täydellinen tyhjennys) on dramaattinen hetki ja voi ratkaista pelin. Rakentaminen lisää psykologista elementtiä.

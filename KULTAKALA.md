@@ -36,11 +36,24 @@ AI **ei voi nähdä**:
 - Kenen pistemäärä on paras/huonoin
 - Tuntemattomia kortteja
 
-**Päätöslogiikka:**
-1. Jos nostettu kortti on parempi kuin pahin tunnettu kortti → vaihda
-2. Muuten: jos kortti on hyvä (arvo ≤ kynnys), vaihda tuntemattomaan paikkaan
-   - Kynnys riippuu kierrosten määrästä (myöhäispelissä aggressiivisempi)
+**Päätöslogiikka (nostopäätös poistopakan ylimmästä):**
+1. Jos kortti on parempi kuin pahin tunnettu oma kortti → vaihda
+2. Muuten: jos kortti on hyvä, vaihda tuntemattomaan paikkaan
 3. Muuten heitä poistopakkaan
+
+**Kyvykkyysporras.** Tasot eroavat kyvyiltään eivätkä satunnaisuudelta. Kohta 2 on
+tasokohtainen, ja vain Mestari lukee kierrosten määrää:
+
+| Taso | Kohdan 1 kynnys | Kohta 2: milloin tuntemattomaan |
+|---|---|---|
+| Oppipoika | pahin tunnettu **+3** (ottaa liian herkästi, esim. 9:n 7:n tilalle) | ei täytä tuntemattomia |
+| Kisälli | pahin tunnettu | ei täytä tuntemattomia |
+| Mestari | pahin tunnettu, ja verrataan kumpi hyöty on suurempi | arvo **≤ 4**, ja **≤ 6** kun kierroksia on enintään kaksi |
+
+Tuntemattoman paikan odotusarvo on **7**, joten Mestarin ehto tarkoittaa vähintään kolmen
+pisteen odotettua hyötyä, ja loppupelissä vähintään yhden. **Myöhäispelissä siis
+aggressiivisempi**, koska täyttämättä jäänyt tuntematon paikka jää tuntemattomaksi eikä
+korjaukselle jää enää vuoroja. Kynnys lukee vain nostopakan kokoa ja botin omaa riviä.
 
 **Vaihtojen järjestys:**
 - Vaihdetaan paikkoihin 5, 4, 3, 2, 1 järjestyksessä

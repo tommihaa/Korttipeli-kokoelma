@@ -51,6 +51,17 @@ AI:n pelilogiikka:
 3. Nopea reaktio tasapelitilanteissa
 4. Yksinkertainen strategia — näe peli enemmän reaktiopelinä kuin strategiapelinä
 
+### Kyvykkyysporras
+
+Läpsyssä porras on sekä muistia että nopeutta. Reaktioajat on kalibroitu botbench-ajolla
+17.7.2026, koska vanha Oppipoika voitti Kisällin (porras ei ollut monotoninen).
+
+| Kyky | Oppipoika | Kisälli | Mestari |
+|---|---|---|---|
+| Reaktioviive | 1500–3300 ms | 1100–2300 ms | 500–1500 ms |
+| Kortinlaskenta (montako samaa arvoa on jo nähty) | ei | kyllä | kyllä |
+| Voitetun kasan järjestyksen muistaminen | ei | ei | kyllä, osaa ennakoida tulevan parin |
+
 ## Pelin luonne
 
 Läpsy on **puhtaasti reaktiopeli** — strategian sijaan nopeus ja tarkkavaisuus ovat ratkaisevat. Erityiskorttien haasteet lisäävät jännitystä ja tekevät pelistä epäennustettavaa.

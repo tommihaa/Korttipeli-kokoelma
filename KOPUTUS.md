@@ -50,6 +50,19 @@ AI:n päätöksenteko:
 
 AI pyrkii optimoimaan pisteissä ja käyttää muistia strategisesti. Paikoilla ei ole väliä, mutta omien pöytäkorttien määrän minimointi ja summan minimointi on tärkeää.
 
+### Kyvykkyysporras
+
+Kolme ensimmäistä riviä ovat kyvykkyyttä, kaksi viimeistä reaktionopeutta.
+
+| Kyky | Oppipoika | Kisälli | Mestari |
+|---|---|---|---|
+| Koputuskynnys (arvio ≤ x) | 5, eli ei uskalla koputtaa ajoissa | 8 | 8 |
+| Tuntemattoman arvio | 5 | 5 | 6 |
+| Poistopakan seuraaminen | ei huomaa poistopakkaa | ottaa paremman kuin pahin tunnettu | ottaa lisäksi pikkukortin (≤ 4) tuntemattomaan |
+| Tuntemattoman täytön kynnys | ei täytä | odotettu hyöty ≥ 5 | odotettu hyöty ≥ 3 |
+| Erityiskorttiin reagointi jää huomaamatta | 50 % | 25 % | 3 % |
+| Väärä reaktio | 15 % | ei koskaan | ei koskaan |
+
 ## Pakkakoko ja kierrosten määrä
 
 - **4 pelaajaa**: noin 13–15 kierrosta

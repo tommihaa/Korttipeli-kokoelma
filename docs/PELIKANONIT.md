@@ -75,6 +75,19 @@ Seuraus ei ole kosmeettinen: kanonin AI-osiosta ei voi lukea kumpaa tasoa se kuv
 sitä ei voi käyttää tarkistuslähteenä. Alla olevat löydökset 1, 4 ja 9 ovat kaikki tästä
 muodosta: kanonin lause on totta jostakin tasosta tai ei mistään, eikä lause kerro kummasta.
 
+**Ratkaistu 18.8.2026: jokainen kanoni sai oman tasotaulukon.** Muoto on sama kuin
+`SEISKA.md`:ssä ja `PASKAHOUSU.md`:ssä jo oli, ja puuttuvat kuusi kirjoitettiin koodista
+(`KASINO.md`, `KOPUTUS.md`, `KULTAKALA.md`, `LAEPSY.md`, `MAIJA.md`, `MOSKA.md`,
+`RISTISEISKA.md`). Kaikilla yhdeksällä on nyt rivi jolta näkee mitä Oppipoika, Kisälli ja
+Mestari kukin osaavat.
+
+**Kirjatessa selvisi että porras ei ole kaikkialla deterministinen, toisin kuin tämä löydös
+oletti.** Ristiseiskassa ja Moskassa aloittelijavirheet arvotaan yhä `aiNoise`lla (50 %, 15 %,
+0 %), ja Koputuksessa reaktion huomaamatta jääminen on samoin todennäköisyys. Deterministinen
+kyvykkyysporras on siis osa kokoelmaa eikä koko kokoelma, ja taulukot sanovat kummasta on kyse
+pelikohtaisesti. Tämä ei ole löydös vaan tarkennus: satunnaisuus on näissä nimenomaisesti
+valittu aloittelijavirheen muodoksi.
+
 ## Pelikohtaiset löydökset
 
 ### 1. Kultakala: kanonin kynnys ei ole koodissa, ja kuvattu suunta on päinvastainen
@@ -102,6 +115,20 @@ korjattu Seiskasta ja Kultakalasta jo kahdesti (`24eaa6d`, `03e6b54`).
 
 **Sopimusmuutoskysymys:** poistetaanko kuollut lohko ja korjataanko kanonin kohta 2 kuvaamaan
 `kkDrawDecision`ia, vai onko kierroskynnys tarkoitus herättää henkiin?
+
+**Ratkaistu 18.8.2026: kynnys herätettiin, mutta vain julkisella tiedolla ja vain Mestarille.**
+Uhka-analyysi poistettiin kokonaan (se luki muiden rivit ja tuntemattoman todellisen arvon, mitä
+kanonin näkyvyysosio kieltää), ja kierrostieto kytkettiin elävään nostopäätökseen: kun kierroksia
+on enintään kaksi, Mestarin tuntemattoman täytön hyötyvaatimus laskee kolmesta yhteen. Suunta on
+nyt kanonin mukainen eli **loppupelissä aggressiivisempi**, päinvastoin kuin kuolleessa lohkossa.
+Kierrosten määrä lasketaan nostopakan koosta (`kkRoundsLeft`), koska pakan tyhjeneminen päättää
+pelin ja pakan koko on julkista tietoa; kuollut lohko laski mukaan myös poistopakan.
+
+`KULTAKALA.md` › AI-strategia kirjoitettiin uusiksi tasotaulukoksi, eli sama korjaus kattaa
+kokoelmatason löydöksen B tämän pelin osalta.
+
+**Mittaamatta:** muutos koskee Mestarin pelityyliä, joten botbench-ajo on tekemättä. Sama koskee
+Moskan passausmuutosta (löydös 5).
 
 ### 2. Koputus: tasapelin ratkaisua ei ole toteutettu
 

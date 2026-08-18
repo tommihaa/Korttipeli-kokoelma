@@ -58,9 +58,16 @@ function initGame(nPlayers, pool, allBots = false) {
 
 const UNKNOWN_EV = 7; // tuntemattoman paikan odotusarvo
 
+// Kierroksia jäljellä: pelin päättää nostopakan tyhjeneminen, joten jako pakan
+// koosta pelaajamäärällä. Julkista tietoa (pakan koko näkyy PakkaCountissa).
+function kkRoundsLeft(g) {
+  return Math.ceil(g.deck.length / (g.players.length || 1));
+}
+
 // Nostopäätös: mistä nostetaan ja mihin poistopakan kortti menisi.
 // { source: 'deck' } tai { source: 'discard', mode: 'swapWorst'|'chain', worstKnownIdx }
-function kkDrawDecision(p, top, level) {
+// roundsLeft = kkRoundsLeft(g); undefined tarkoittaa ettei kierrostietoa käytetä.
+function kkDrawDecision(p, top, level, roundsLeft) {
   const worstKnownIdx = [...p.known].sort((a, b) => p.row[b].v - p.row[a].v)[0];
   const rightmostUnknown = [4, 3, 2, 1, 0].find(i => !p.known.has(i));
   // Oppipojan deterministinen heikkous: kynnys +3 (ottaa esim. 9:n 7:n tilalle)
@@ -70,7 +77,14 @@ function kkDrawDecision(p, top, level) {
   const worstV = worstKnownIdx !== undefined ? p.row[worstKnownIdx].v : -Infinity;
   const gainKnown   = top ? worstV - top.v : -Infinity;
   const gainUnknown = (top && rightmostUnknown !== undefined) ? UNKNOWN_EV - top.v : -Infinity;
-  if (level === 'hard' && top && (gainKnown > 0 || gainUnknown >= 3)) {
+  // Mestarin kierrostietoinen kynnys (18.8.2026): kun kierroksia on enintään kaksi,
+  // tuntemattoman täytön hyötyvaatimus laskee 3:sta 1:een, eli loppupelissä
+  // aggressiivisempi. Syy: tuntematon paikka jää tuntemattomaksi jos sitä ei täytetä
+  // nyt, eikä korjaukselle jää enää vuoroja. Kynnys lukee vain pakan kokoa ja botin
+  // omaa riviä, ei muiden kortteja (KULTAKALA.md > Pelaajien näkyvyys).
+  const lateGame = roundsLeft !== undefined && roundsLeft <= 2;
+  const unknownBar = (level === 'hard' && lateGame) ? 1 : 3;
+  if (level === 'hard' && top && (gainKnown > 0 || gainUnknown >= unknownBar)) {
     return { source: 'discard', mode: gainKnown >= gainUnknown ? 'swapWorst' : 'chain', worstKnownIdx };
   }
   if (level !== 'hard' && top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v + eagerBonus) {
@@ -107,7 +121,7 @@ export function getAdvice(g, phase, held, swapIdx, canStop) {
   if (!p) return null;
   if (phase === 'drawing') {
     const top = g.discard[g.discard.length - 1];
-    const d = kkDrawDecision(p, top, 'hard');
+    const d = kkDrawDecision(p, top, 'hard', kkRoundsLeft(g));
     return d.source === 'discard' ? { type: 'drawDiscard', card: top } : { type: 'drawDeck' };
   }
   if ((phase === 'holding' || phase === 'swapping') && held && swapIdx !== null) {
@@ -387,51 +401,11 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     const p = g.players[idx];
     const top = g.discard[g.discard.length - 1];
 
-    // Strategia: AI voi nähdä vain omat kortit. Pelaa omaa pistesummaansa parantaakseen.
-    const currentScore = p.row.reduce((s, c) => s + c.v, 0);
-    const cardsRemaining = g.deck.length + g.discard.length;
-    const roundsLeft = Math.ceil(cardsRemaining / (g.players.length || 1));
-
-    // **PHASE 1: Opponent Threat Analysis**
-    // Analysoi vastustajien uhkataso näkyvien pisteiden perusteella
-    const threats = g.players
-      .map((pl, i) => {
-        const visibleScore = pl.row.reduce((s, c) => s + c.v, 0);
-        const unknownEstimate = pl.unknown ? pl.unknown.v : 7; // Keskimääräinen arvio tuntemattomalle
-        const totalEstimate = visibleScore + unknownEstimate;
-        return {
-          playerIdx: i,
-          visibleScore,
-          totalEstimate,
-          knownCount: pl.known.size,
-          name: pl.name,
-        };
-      })
-      .filter(t => t.playerIdx !== idx) // Exclude self
-      .sort((a, b) => a.totalEstimate - b.totalEstimate);
-
-    const minThreat = threats.length > 0 ? threats[0].totalEstimate : Infinity;
-    const isLeadingThreaten = currentScore < minThreat; // We're losing if our score is lower
-    const gameState = {
-      farBehind: currentScore > minThreat + 10,
-      slightlyBehind: currentScore > minThreat && currentScore <= minThreat + 10,
-      closeGame: Math.abs(currentScore - minThreat) <= 5,
-      ahead: currentScore < minThreat,
-    };
-
-    // Mitä vähemmän kierroksia, sitä konservatiivisempi. Matala kynnys = enemmän swappeja.
-    const isLateGame = roundsLeft <= 2;
-    let swapThreshold = isLateGame ? 3 : 5;
-
-    // **PHASE 2: Dynamic Threshold Adjustment**
-    // Jos olemme jäljessä, ottaa enemmän riskejä
-    if (gameState.farBehind) {
-      swapThreshold = 7; // Aggressive when far behind
-    } else if (gameState.slightlyBehind) {
-      swapThreshold = 6; // More aggressive
-    } else if (gameState.closeGame && roundsLeft <= 2) {
-      swapThreshold = 2; // Very conservative in close late-game
-    }
+    // Strategia: AI näkee vain omat korttinsa ja julkisen tiedon (pakan koko, poistopakan
+    // ylin). Vastustajien rivejä lukenut uhka-analyysi poistettiin 18.8.2026: se oli
+    // kuollutta koodia eikä vaikuttanut yhteenkään siirtoon, ja se rikkoi kanonin
+    // näkyvyyssääntöä. Kierroskynnys jäi eloon kkDrawDecisionissa, kanonin suuntaisena.
+    const roundsLeft = kkRoundsLeft(g);
 
     let card, newG;
     // Kyvykkyysporras (ei satunnaiskohinaa): tasot eroavat kyvyiltään.
@@ -445,7 +419,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     // nollahypoteesitesti identtisillä säännöillä antoi saman jakauman). Mestarin
     // EV-logiikka pidetään, koska se on teoriassa oikein eikä mitatusti haittaa.
     const level = botLevelsRef.current?.[idx] ?? aiLevelRef.current;
-    const decision = kkDrawDecision(p, top, level);
+    const decision = kkDrawDecision(p, top, level, roundsLeft);
     if (decision.source === 'discard') {
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;

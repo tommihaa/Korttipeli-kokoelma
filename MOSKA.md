@@ -84,6 +84,15 @@ Pelin lopussa muodostuu ranking:
 1. Lisää vain saman vahvuuksia joita puolustus on käyttänyt
 2. Huomioi puolustajan käden koko — riskiarvioi
 
+### Kyvykkyysporras
+
+| Kyky | Oppipoika | Kisälli | Mestari |
+|---|---|---|---|
+| Hyökkäyskortin valinta | 50 % ajasta virhe: lyö suurimman | sama virhe 15 % ajasta | laskee poistuneet kortit, ei virheitä |
+| Siirtäminen (passaus) | ei siirrä koskaan | siirtää kun ehdot täyttyvät | siirtää kun ehdot täyttyvät |
+| Sivusta lisääminen | vain jos pöydässä enintään yksi kortti ja puolustajalla vähintään viisi | puolustajalla vähintään kolme tai pöydässä enintään kaksi | puolustajalla vähintään kaksi ja pöydässä alle viisi |
+| Puolustuksen kortinvalinta | pienin voittava, mutta 50 % ajasta tuhlaa valtin | pienin voittava, 15 % ajasta tuhlaa valtin | pienin voittava, ei virheitä |
+
 ## Pakka- ja kierroskoko
 
 - **4 pelaajaa**: noin 6–10 kierrosta

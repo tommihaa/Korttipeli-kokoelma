@@ -118,6 +118,18 @@ Ristiseiskan juoni on **kiusanteko-elementti**:
 ### Passauslogiikka
 - Passaa jos ei ole sallittua peliä
 
+### Kyvykkyysporras
+
+Ristiseiskan porras on **osin satunnainen**, toisin kuin useimmissa muissa peleissä:
+aloittelijavirheet arvotaan. Vain porttikortin pidättelyehto on deterministinen kyky.
+
+| Kyky | Oppipoika | Kisälli | Mestari |
+|---|---|---|---|
+| Aloittelijavirheen todennäköisyys | 50 % | 15 % | ei koskaan |
+| Virheen muoto | avaa seiskan huonoimpaan maahan, tai pelaa portin jota pitäisi pidätellä | sama, harvemmin | ei sovellu |
+| Porttikortin (6 ja 8) pidättely | pidättele kun samaa maata on useampi | sama | maakohtainen ehto: pidättele kun samassa maassa on enintään yksi kaukainen kortti |
+| Pantiksi annettava kortti | arvottu kortti 50 % ajasta | arvottu 15 % ajasta | aina huonoin: kauimpana pelattavuudesta |
+
 ## Pelin luonne
 
 Ristiseiska on **nerokas kiusantekopeli** jossa:
