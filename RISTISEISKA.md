@@ -2,7 +2,7 @@
 
 ## Pelitapa
 
-Kaikki kortit jaetaan tasan pelaajille. Pöytä on tyhjä — kortit rakennetaan pelissä. Tavoite: pääste kortit käsistä ensimmäisenä.
+Kaikki kortit jaetaan tasan pelaajille. Pöytä on tyhjä, kortit rakennetaan pelissä. Tavoite: pääste kortit käsistä ensimmäisenä.
 
 Se pelaaja, jolla on **ristiseiska (♣7)** aloittaa ja lyö sen pöytään.
 
@@ -32,11 +32,11 @@ A
 
 ## Vuoron kulku
 
-1. Omalla vuorolla on **lyötävä yksi** sallittu kortti — **tai passattava**
+1. Omalla vuorolla on **lyötävä yksi** sallittu kortti, **tai passattava**
 2. **Sallitut kortit**:
    - Mikä tahansa **7** (avaa uuden maan, jos pöytä tyhjä)
    - Jatko **olemassa olevaan jonoon** (esim. jos ♣8 on pöydässä, voi lyödä ♣9)
-3. Passaus on **sallittu vain jos ei käy** — mutta **voi lyödä vain yhden kortin per vuoro**
+3. Passaus on **sallittu vain jos ei käy**, mutta **voi lyödä vain yhden kortin per vuoro**
 
 ## Pantti: passaaminen maksaa toiselle pelaajalle kortin
 

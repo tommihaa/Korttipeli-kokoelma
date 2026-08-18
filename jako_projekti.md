@@ -1,4 +1,4 @@
-# JAKO — Korttipelien kokoelma
+# JAKO: Korttipelien kokoelma
 ## Projektidokumentti
 
 ---
@@ -13,19 +13,19 @@
 
 Yhtenäinen termistö jota käytetään kaikissa peleissä:
 
-- **Pöytäkortti** — pelaajan omat piilossa olevat kortit (Koputus, Kultakala, Läpsy)
-- **Pöytä** — yhteinen alue keskellä (Maija, Moska, Kasino)
-- **Pino** — pelaajan nostamaton korttipino (Läpsy)
-- **Kasa** — voitetut kortit (Läpsy) / kaapattavat kortit (Kasino)
-- **Kaataa** — Maijassa ja Moskassa
-- **Kaapata** — Kasinossa (eri mekaniikka, ei kaatopakkaa)
-- **Hyökkääjä / Puolustaja** — Moskassa
-- **Käsikortti** — pelaajan kädessä olevat kortit (Maija, Kasino)
-- **Nostopakka** — pakka josta nostetaan
-- **Kaatopakka** — poistettujen tai hylättyjen korttien pakka
-- **Lyöntipakka** — keskelle lyödyt kortit; digitaalisessa versiossa siisti pino, livessä käytännössä härökasa kortteja suurin piirtein päällekkäin
-- **Käsi** — pelaajan kädessä olevat kortit yleiskäsitteenä (vrt. *Käsikortti* joka on pelin sisäinen termi Maijassa ja Kasinossa)
-- **Etukäsi** — jakajan vasemmalla puolella istuva pelaaja, joka yleensä aloittaa pelin
+- **Pöytäkortti**: pelaajan omat piilossa olevat kortit (Koputus, Kultakala, Läpsy)
+- **Pöytä**: yhteinen alue keskellä (Maija, Moska, Kasino)
+- **Pino**: pelaajan nostamaton korttipino (Läpsy)
+- **Kasa**: voitetut kortit (Läpsy) / kaapattavat kortit (Kasino)
+- **Kaataa**: Maijassa ja Moskassa
+- **Kaapata**: Kasinossa (eri mekaniikka, ei kaatopakkaa)
+- **Hyökkääjä / Puolustaja**: Moskassa
+- **Käsikortti**: pelaajan kädessä olevat kortit (Maija, Kasino)
+- **Nostopakka**: pakka josta nostetaan
+- **Kaatopakka**: poistettujen tai hylättyjen korttien pakka
+- **Lyöntipakka**: keskelle lyödyt kortit; digitaalisessa versiossa siisti pino, livessä käytännössä härökasa kortteja suurin piirtein päällekkäin
+- **Käsi**: pelaajan kädessä olevat kortit yleiskäsitteenä (vrt. *Käsikortti* joka on pelin sisäinen termi Maijassa ja Kasinossa)
+- **Etukäsi**: jakajan vasemmalla puolella istuva pelaaja, joka yleensä aloittaa pelin
 
 ---
 
@@ -47,7 +47,7 @@ Yhtenäinen termistö jota käytetään kaikissa peleissä:
 
 ## Ääni- ja efektiperiaatteet
 
-- **Äänet oletuksena pois** kaikissa tiloissa — löydettävissä asetuksista
+- **Äänet oletuksena pois** kaikissa tiloissa: löydettävissä asetuksista
 - **Boss-fight-hetket** joissa ääni on perusteltua (jos pelaaja sen sallinut):
   - Valttikakkonen vaihtuu automaattisesti → kultainen transformaatio
   - Patakuningatar jää viimeiselle → dramaattinen häviö
@@ -63,7 +63,7 @@ Yhtenäinen termistö jota käytetään kaikissa peleissä:
 Alkuperäiset kuusi:
 1. Koputus (yksinkertaisin mekaniikka, hyvä aloituspiste)
 2. Läpsy (reaktiopeli, sopii mobiiliin)
-3. Kultakala (muistipeli, tuntematon elementti — lisätty ystävän pyynnöstä)
+3. Kultakala (muistipeli, tuntematon elementti, lisätty ystävän pyynnöstä)
 4. Maija (valttimaa, hyökkäys/puolustus)
 5. Kasino (kaappausmekaniikka, pisteet)
 6. Moska (monimutkaisin)
@@ -74,7 +74,7 @@ Myöhemmin lisätyt: Seiska, Ristiseiska, Paskahousu. Kokoelmassa on nyt **yhdek
 
 ## Pelit ja säännöt
 
-> **Kunkin pelin täydet säännöt ovat omassa kanonisessa PELI.md-tiedostossaan** —
+> **Kunkin pelin täydet säännöt ovat omassa kanonisessa PELI.md-tiedostossaan**,
 > koodia vasten todennettuina. **Tähän dokumenttiin ei toisteta pelisääntöjä**, jotta ne
 > eivät ajaudu erilleen totuudesta (aiemmin näin kävi: Kasinon pisteraja, Seiskan
 > Lappu-sakko ja Paskahousun 10/7-säännöt olivat rapistuneet tänne). Muokkaa aina
@@ -103,9 +103,9 @@ korttipelin sääntö. `playerCount` valitaan kunkin pelin aloitusnäytöllä (2
 
 **Teknologia:** React 18 + Vite, JSX, inline styles, CSS-animaatiot. Ei TypeScriptiä eikä ylimääräisiä npm-riippuvuuksia. Oma kevyt i18n (23 kieltä).
 **Rakenne:**
-- `src/App.jsx` — sovelluksen runko (valikko, asetukset, navigaatio)
-- `src/games/*.jsx` — yhdeksän peliä (Koputus, Läpsy, Kultakala, Maija, Kasino, Moska, Seiska, Ristiseiska, Paskahousu)
-- `src/shared/` — jaetut komponentit ja apurit (Card, FanStack, colors, helpers, audio)
+- `src/App.jsx`: sovelluksen runko (valikko, asetukset, navigaatio)
+- `src/games/*.jsx`: yhdeksän peliä (Koputus, Läpsy, Kultakala, Maija, Kasino, Moska, Seiska, Ristiseiska, Paskahousu)
+- `src/shared/`: jaetut komponentit ja apurit (Card, FanStack, colors, helpers, audio)
 
 **Navigaatiovirtaus:**
 Etusivu → Pelin sivu → Säännöt TAI Tilanvalinta → Pelitila
@@ -123,7 +123,7 @@ Etusivu → Pelin sivu → Säännöt TAI Tilanvalinta → Pelitila
 
 ## Muistiinpanot kehitykseen
 
-- Äänet oletuksena pois — löydettävissä asetuksista
+- Äänet oletuksena pois: löydettävissä asetuksista
 - Valttimaa aina pakan pohjimmaisesta kortista (Maija ja Moska yhdenmukaistettu)
 - Kultakalan tuntematon-elementti on pelin keskeinen satunnaistaja
 - Kultakalan noppafinaalit ovat spektaakkelihetki

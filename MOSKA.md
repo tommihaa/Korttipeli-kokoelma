@@ -41,7 +41,7 @@ säästävät valttia eli siirtävät valtilla vain jos muuta samaa vahvuutta ei
 
 ### Valttikakkosen automaattinen vaihto
 - Valttikakkosen (2♣, 2♠, 2♥, 2♦ riippuen valttista) haltija saa **alkuperäisen pakan pohjakortin**
-- Vaihto tapahtuu **automaattisesti** pelin alussa — dramaattinen hetki!
+- Vaihto tapahtuu **automaattisesti** pelin alussa: dramaattinen hetki!
 
 ### Nostorutiini
 1. Nostopakan käydessä vähiin pelaajat miettivät taktikointia
@@ -54,7 +54,7 @@ säästävät valttia eli siirtävät valtilla vain jos muuta samaa vahvuutta ei
 Pelin lopussa muodostuu ranking:
 1. Ensimmäinen joka pääsi korteista eroon
 2. Toinen, kolmas jne.
-3. **Viimeinen jolla on kortit on Moska** — häviää
+3. **Viimeinen jolla on kortit on Moska**, häviää
 
 ## Pelaajien näkyvyys
 
@@ -69,7 +69,7 @@ Pelin lopussa muodostuu ranking:
 
 ### AI:n hyökkäys
 1. Etsi korttiryhmiä saman vahvuuden mukaan
-2. Lyö säästävästi — ei tarvitse lyödä kaikkia samaa vahvuutta kerralla
+2. Lyö säästävästi, ei tarvitse lyödä kaikkia samaa vahvuutta kerralla
 3. Huomioi puolustajan käden koko (rajoitus!)
 
 ### AI:n puolustus
@@ -82,7 +82,7 @@ Pelin lopussa muodostuu ranking:
 
 ### AI:n lisäämisen logiikka
 1. Lisää vain saman vahvuuksia joita puolustus on käyttänyt
-2. Huomioi puolustajan käden koko — riskiarvioi
+2. Huomioi puolustajan käden koko, riskiarvioi
 
 ### Kyvykkyysporras
 
@@ -103,9 +103,9 @@ Pelin lopussa muodostuu ranking:
 ## Pelin luonne
 
 Moska on **vaativin peli** kokoelmassa. Se yhdistää:
-- **Hyökkäys/puolustus-dynamiikka** — puolustaja voi siirtää hyökkäyksen
-- **Taktiikka** — hyökkäyksen jatkaminen ja rajoitukset
-- **Psykologia** — mitä kortteja näytetään, milloin siirretään
-- **Dramaattisuus** — valttikakkosen vaihto ja viimeinen pelaaja (Moska)
+- **Hyökkäys/puolustus-dynamiikka**: puolustaja voi siirtää hyökkäyksen
+- **Taktiikka**: hyökkäyksen jatkaminen ja rajoitukset
+- **Psykologia**: mitä kortteja näytetään, milloin siirretään
+- **Dramaattisuus**: valttikakkosen vaihto ja viimeinen pelaaja (Moska)
 
 

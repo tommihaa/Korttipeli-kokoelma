@@ -1,4 +1,4 @@
-# Botbench — bottien voimamittari
+# Botbench: bottien voimamittari
 
 Itsepeluu-benchmark joka mittaa AI-tasojen (Oppipoika/beginner, Kisälli/normal,
 Mestari/hard) todellista voimaeroa: taso A vastaan taso B, istuimet vuorotellen
@@ -54,12 +54,12 @@ hard vs beginner **67 %**, hard vs normal **51 %**, normal vs beginner **47 %**.
    ~2000 ms ei riittänyt (voitot 50/50, koska osa Läpsyn voitoista ratkeaa
    haastekorteilla eikä läpsynopeudella). Mitattu korjauksen jälkeen (N=30):
    hard vs beginner **100 %**, hard vs normal **87 %**, normal vs beginner
-   **77 %** — porras monotoninen.
+   **77 %**, porras monotoninen.
 3. **Kasino ja Maija: tasoilla ei mitattavaa eroa** (52 %/50 % hard vs beginner).
    Kasinon hienostunut inferenssi ei realisoidu voitoiksi; Maijassa
    kohinavirheet eivät ilmeisesti maksa mitään. Molemmat ansaitsevat
    jatkotutkinnan ennen kuin tasoja mainostetaan pelaajalle vaikeuseroina.
-4. **Kultakala ja Koputus: Kisälli häviää Oppipojalle** (30 %/38 %) — sama
+4. **Kultakala ja Koputus: Kisälli häviää Oppipojalle** (30 %/38 %), sama
    epämonotonisuus kuin Läpsyssä, syy selvittämättä.
 5. **Paskahousun sekatasopeli pattiutui ilman yhtäkkistä kuolemaa.** Mestarin
    optimipeli tuottaa ikuisen loppupelisilmukan myös heikompaa vastaan; korjattu
@@ -127,13 +127,13 @@ Opit ja rajat:
    Oppipoika hamstrasi Maijaa loppuun asti, koska kortti oli suljettu pois
    hyökkäysryhmistä (nyt: tavallinen pata, lähtee isot ensin -tyylillä).
    Mittaus inhimillistyksen jälkeen: Kultakala 70/45/65, Maija 63/48/60.
-   Oppi: heikkouden pitää olla paitsi mitattava myös USKOTTAVA — "botti ei
+   Oppi: heikkouden pitää olla paitsi mitattava myös USKOTTAVA, "botti ei
    tee ilmeistä siirtoa" rikkoo illuusion nopeammin kuin heikko strategia.
 5. Kuollutta koodia siivottu: Kultakalan käyttämätön "PHASE 1-3" -analyysi
    (uhka-arvio, dynaaminen kynnys, paikkavalinta) poistettu/otettu osin
    käyttöön; Kasinon findWorstCapture poistettu.
 
-## Seiska 20.7.2026 (N=150) — ässäbonuksen järjestyskorjauksen jälkeen
+## Seiska 20.7.2026 (N=150): ässäbonuksen järjestyskorjauksen jälkeen
 
 Ajettu koska `aiAceBonusDecision` korjattiin järjestämään ässäbonuksen ryhmälyönti
 kanonisesti (bonusmaan kortti alimmaiseksi). Korjaus muuttaa pelin kulkua, joten
@@ -165,7 +165,7 @@ otoksella ennen kuin niitä käytetään referenssinä.
 koko pelin ajaksi, joten siemennetty ajo EI ole pariverrattu A/B ennen ja jälkeen
 vaan käytännössä uusi arvonta. Pienet erot N=30:llä eivät kerro mitään.
 
-## Seiska 21.7.2026 — outtien laskenta tasapeliin: NOLLATULOS (muutos palautettu)
+## Seiska 21.7.2026: outtien laskenta tasapeliin: NOLLATULOS (muutos palautettu)
 
 `aiBestPlay`n viimeinen rivi oli `return [nonPair.length ? nonPair[0] : non7[0]]`,
 eli kun useampi laillinen yksittäiskortti läpäisi kaikki suodattimet, valinnan
@@ -205,7 +205,7 @@ Kaksi opetusta, jotka ovat arvokkaampia kuin itse tulos:
 Nollatulos on kirjattu tänne nimenomaan siksi, ettei samaa ideaa ehdoteta uudelleen.
 Käden järjestys oli tässä yhtä hyvä kuin outtien laskenta.
 
-## Moska ja Ristiseiska 21.7.2026 (N=400) — "terveet ladderit" oli otosharha
+## Moska ja Ristiseiska 21.7.2026 (N=400): "terveet ladderit" oli otosharha
 
 Baseline nimesi Seiskan, Ristiseiskan ja Moskan terveimmiksi laddereiksi ja ehdotti
 niitä referenssiksi muiden pelien korjaamiseen. Se perustui N=30:een. Kun kaikki
@@ -242,7 +242,7 @@ otoksen virhe ei jakaudu tasaisesti johtopäätöksiin: se suosii kiinnostavan n
 eroja, koska kohina näyttää signaalilta. Älä nimeä referenssipeliä otoksella joka ei
 kestä kaksinkertaistusta.
 
-## Ristiseiska 21.7.2026 — passausmuisti Mestarille: NOLLATULOS (muutos palautettu)
+## Ristiseiska 21.7.2026: passausmuisti Mestarille: NOLLATULOS (muutos palautettu)
 
 Ristiseiskalla ei ole kyvykkyysporrasta (ks. edellinen osio). Hypoteesi: pelin ainoa
 taitokanava on toteuttamatta. RISTISEISKA.md rivi 39 sanoo *"Passaus on sallittu vain
@@ -285,7 +285,7 @@ osallistu muutokseen lainkaan, joten sen TÄYTYI tulla ulos samana (205/400). Se
 Rakenna tasokohtainen muutos aina niin, että jokin mitattava pari toimii
 verrokkina joka paljastaa vuodon muille tasoille.
 
-## Maija 21.7.2026 (N=400) — porras katkeaa keskeltä, tasot eivät samantasoiset
+## Maija 21.7.2026 (N=400): porras katkeaa keskeltä, tasot eivät samantasoiset
 
 Mitattu jotta tiedetään kuuluuko Maija "taso vaikuttaa vähän" -merkinnän piiriin
 (ks. `FLAT_AI_GAMES`, src/App.jsx). **Ei kuulu.**
@@ -315,7 +315,7 @@ osalta väärin päin: yläpää on terveempi kuin alapää.
 joten sen "porras kunnossa" -kirjaus on yhtä epäluotettava. Älä käytä sitä
 referenssinä ennen uusintamittausta.
 
-## Kasino 21.7.2026 (N=400) — samantasoisuus vahvistettu, merkintä lisätty
+## Kasino 21.7.2026 (N=400): samantasoisuus vahvistettu, merkintä lisätty
 
 Kasino oli baselinesta asti epäilty tuuripeliksi botti-erojen erotuskyvyn kannalta
 (löydös 3, kaikki parit ~50 % N=30/40:llä). N=400 vahvistaa sen, eli tämä on harvinainen
@@ -337,7 +337,7 @@ Tämä vahvistaa myös aiemman löydöksen 3 tulkinnan: viisi eri heikennystä/v
 liikuttanut Kasinon voittoja, vaikka mittarin todettiin reagoivan Kasinon koodimuutoksiin.
 Kaappauspelin lopputulos ratkeaa jakotuurilla siinä määrin, että botin taito hukkuu siihen.
 
-## Kultakala 24.7.2026 (N=400) — alaporras terve, ylätasot samantasoiset, EI merkintää
+## Kultakala 24.7.2026 (N=400): alaporras terve, ylätasot samantasoiset, EI merkintää
 
 Viimeinen mittaamaton peli. Mitattu jotta "porras beginneriä vastaan kunnossa
 (60-73 %)" -kirjaus (samasta N=40-erästä joka petti Maijalla) saadaan varmennettua
@@ -367,7 +367,7 @@ oikea. `hard vs normal` on aidosti samantasoinen ja beginner-porras aidosti olem
 sen suuruus oli yliarvioitu (60-73 % → 55-58 %). N=40 ei siis aina valehtele, mutta
 kolmesta neljästä tapauksesta se teki, joten johtopäätös vaatii yhä N≥400:n.
 
-## Maija 26.7.2026 (N=400) — alapää korjattu: monikorttihyökkäys on Kisällin kyky
+## Maija 26.7.2026 (N=400): alapää korjattu: monikorttihyökkäys on Kisällin kyky
 
 Ensimmäinen kohta joka ratkesi "Avoimet AI-työt" -listalta. Muutos on yhden rivin
 mittainen (`maijaPickAttack`, `maxCards`): **Oppipoika lyö yhden kortin kerrallaan,

@@ -1,18 +1,18 @@
-# P3 — Pass-and-Play
+# P3: Pass-and-Play
 
 ## Visio
 
 2–4 ihmispelaajaa vuorottelee yhdellä ruudulla (tabletti/puhelin). Tavoite: madaltaa kynnystä kokeilla pelejä yhdessä, oppia kortinpelin logiikkaa reaaliajassa ilman erillistä laitetta.
 
-## Päätetty — kaikki avoimet kysymykset ratkaistu (2026-05-24)
+## Päätetty: kaikki avoimet kysymykset ratkaistu (2026-05-24)
 
 ### Pelaajamääritys
 
-- **4 riviä** aina näkyvillä — rasti = pelaaja mukana pelissä
+- **4 riviä** aina näkyvillä: rasti = pelaaja mukana pelissä
 - Kaikki rivit tasa-arvoisia, Hero ei erikoisasemassa
 - Jokaisella rivillä: **Ihminen / Botti** -valinta + **nimi**
 - Ihminen kirjoittaa nimensä, Botti saa automaattinimen (Fortuna, Loki, Tyche...)
-- **Bottien keskinäinen taisto mahdollinen** — kaikki rivit botteja → katsomotila
+- **Bottien keskinäinen taisto mahdollinen**: kaikki rivit botteja → katsomotila
 
 ```
 [✓] [ Ihminen | Botti ]  [_Matti___________]
@@ -38,24 +38,24 @@ Kun vuoro siirtyy ihmiseltä toiselle ihmiselle, ruutu peitetään kokonaan:
 
 - Edellisen pelaajan kortit täysin piilossa
 - Seuraava pelaaja painaa → kortit näkyvät
-- **Ei peruutusta** vahingollisesta napauksesta — pelaajien opittava. Pelin oppiminen tärkeämpää kuin yhden edun saaminen.
-- Bottivuoroilla ei peittokuvaa — botti pelaa itsekseen
+- **Ei peruutusta** vahingollisesta napauksesta: pelaajien opittava. Pelin oppiminen tärkeämpää kuin yhden edun saaminen.
+- Bottivuoroilla ei peittokuvaa: botti pelaa itsekseen
 
 ### Muut päätökset
 
-- **Läpsy** ei kuulu P3:een — reaktiopeli ei toimi luontevasti yhdellä laitteella
-- **Cheat Mode**: jos päällä, päällä kaikille — globaali asetus, ei erikoiskäsittelyä
+- **Läpsy** ei kuulu P3:een: reaktiopeli ei toimi luontevasti yhdellä laitteella
+- **Cheat Mode**: jos päällä, päällä kaikille. Globaali asetus, ei erikoiskäsittelyä
 - **Asetukset**: pelaajamääritys tehdään pelin omassa aloitusnäytössä ennen pelin alkua
 
-## Pelit — soveltuvuus
+## Pelit: soveltuvuus
 
 | Peli | Pass-and-play | Huomio |
 |---|---|---|
-| Läpsy | ❌ Ei | Reaktiopeli — ei sovi yhdelle laitteelle |
-| Seiska | ✅ Helppo | Yksinkertaisin — pilotoidaan tänne ensin |
+| Läpsy | ❌ Ei | Reaktiopeli, ei sovi yhdelle laitteelle |
+| Seiska | ✅ Helppo | Yksinkertaisin, pilotoidaan tänne ensin |
 | Ristiseiska | ✅ Helppo | Rivit näkyvissä kaikille, käsi piiloon |
 | Paskahousu | ✅ Hyvä | Selkeä luovutuspiste |
-| Koputus | ✅ Sopii | Muistipeli — peittokuva kriittinen |
+| Koputus | ✅ Sopii | Muistipeli, peittokuva kriittinen |
 | Kultakala | ✅ Sopii | Sama kuin Koputus |
 | Maija | ✅ Hyvä | Hyökkäys/puolustusasetelma selkeä |
 | Kasino | ✅ Hyvä | Pöytä näkyy kaikille, käsi piiloon |
@@ -94,8 +94,8 @@ export default function HandoffScreen({ playerName, onReady }) {
 4. Botti-logiikka ohitetaan kun `isHuman = true`
 
 ### Järjestys
-1. `HandoffScreen.jsx` — jaettu komponentti
-2. `PlayerSetup.jsx` — jaettu komponentti
+1. `HandoffScreen.jsx`: jaettu komponentti
+2. `PlayerSetup.jsx`: jaettu komponentti
 3. **Pilotti: Seiska** (yksinkertaisin vuorojärjestys)
 4. Laajennus peleihin yksi kerrallaan (Ristiseiska → Paskahousu → ...)
 5. Moska viimeisenä

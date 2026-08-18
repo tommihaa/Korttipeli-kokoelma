@@ -9,7 +9,7 @@ Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 
 ## Sääntölogiikan muokkaus
-**Ennen minkään pelin näkyvyys-, vaihto- tai muun sääntölogiikan muokkaamista lue ensin kyseisen pelin `PELI.md` ja toista sääntö minulle vahvistettavaksi** (suunnat, mitkä kortit pysyvät piilossa, kynnykset). Säännöt ovat hienovaraisia ja niitä on luettu väärin — esim. Kultakalassa pelaaja EI näe omia pöytäkorttejaan alussa — hän oppii kunkin paikan (1–5) vasta vaihtaessaan kortin siihen (vaihtoketju oikealta vasemmalle 5→4→3→2→1); tuntematon (paikka 0) ei ole vaihdettavissa ja paljastuu vain lopussa. Älä päättele sääntöä koodista tai muistista, kun dokumentti on olemassa.
+**Ennen minkään pelin näkyvyys-, vaihto- tai muun sääntölogiikan muokkaamista lue ensin kyseisen pelin `PELI.md` ja toista sääntö minulle vahvistettavaksi** (suunnat, mitkä kortit pysyvät piilossa, kynnykset). Säännöt ovat hienovaraisia ja niitä on luettu väärin, esim. Kultakalassa pelaaja EI näe omia pöytäkorttejaan alussa, hän oppii kunkin paikan (1–5) vasta vaihtaessaan kortin siihen (vaihtoketju oikealta vasemmalle 5→4→3→2→1); tuntematon (paikka 0) ei ole vaihdettavissa ja paljastuu vain lopussa. Älä päättele sääntöä koodista tai muistista, kun dokumentti on olemassa.
 
 **Sopimusmuutos-protokolla:** jos tilanne (bugi, pelitestilöytö, ideakysymys) rikkoo PELI.md:n
 sääntökaanonia, älä oleta kumpaakaan osapuolta automaattisesti oikeaksi. Nosta eksplisiittisesti
@@ -30,14 +30,14 @@ tarkistettu puhtaaksi ja seitsemässä on nimettyjä ristiriitoja.
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 - `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.
-- Ristiseiska: `Math.max(playerCount, game.minPlayers)` — varmistaa min 3 pelaajaa
+- Ristiseiska: `Math.max(playerCount, game.minPlayers)` varmistaa min 3 pelaajaa
 
 ## Global settings (App.jsx → props to all games)
 | Prop | Default | Selitys |
 |---|---|---|
 | `showLog` | true | Tapahtumaloki auki |
 | `soundOn` | false | Äänet (oletuksena pois) |
-| `seeAll` | false | Cheat Mode — Hero näkee kaikki kortit |
+| `seeAll` | false | Cheat Mode: Hero näkee kaikki kortit |
 | `showCounts` | true | Korttimäärät näkyvillä |
 | `showLastPlay` | true | Kelluva viimeisin siirto -indikaattori |
 
@@ -45,18 +45,18 @@ Asetukset persistoidaan `useStickySetting`-hookilla (ks. Tech-osio). Poikkeus: `
 
 **Näkyvyysesiasetus (`uiPreset`):** Peliasetusten alussa segmented-valinta *Aloittelija/Kokenut* asettaa kuusi opastustoggea kerralla (`UI_PRESETS`-kartta App.jsx:ssä); yksittäiset togglet ovat "Lisäasetukset"-taitoksen takana (`showLisaasetukset`). Manuaalinen toggle-muutos → `uiPreset='custom'`.
 
-**Intuitiivisuus-UI (kesäkuu 2026):** Päävalikon pelikorteissa suosikit (`g.suosikki`) merkitään ★:llä + ensikäynnin "aloita tästä" -vyö (näkyy kun yhtään peliä ei pelattu, `stats`-summasta). Säännöt avautuvat selkeästä "Säännöt"-pillistä (ei enää matalakontrastinen ℹ — ℹ tarkoittaa nyt vain yläpalkin sovellus-Infoa); laajennuksessa linkki Sanastoon. Jaetut komponentit: `shared/GroupPicker.jsx` (vastustajaryhmän valinta jokaisen pelin aloitusnäytöllä, data `shared/playerGroups.js` = `NAME_GROUPS`/`POOL_BY_GROUP`; App välittää `playerGroup`+`onPlayerGroupChange` kaikille peleille) ja `shared/TurnPrompt.jsx` (pysyvä "👉 Sinun vuorosi — <toiminto>" -banneri pelinäkymän yläosassa, kytketty kunkin pelin ihmisvuoro-ehtoon; tekstit `ui.turn.*`).
+**Intuitiivisuus-UI (kesäkuu 2026):** Päävalikon pelikorteissa suosikit (`g.suosikki`) merkitään ★:llä + ensikäynnin "aloita tästä" -vyö (näkyy kun yhtään peliä ei pelattu, `stats`-summasta). Säännöt avautuvat selkeästä "Säännöt"-pillistä (ei enää matalakontrastinen ℹ, sillä ℹ tarkoittaa nyt vain yläpalkin sovellus-Infoa); laajennuksessa linkki Sanastoon. Jaetut komponentit: `shared/GroupPicker.jsx` (vastustajaryhmän valinta jokaisen pelin aloitusnäytöllä, data `shared/playerGroups.js` = `NAME_GROUPS`/`POOL_BY_GROUP`; App välittää `playerGroup`+`onPlayerGroupChange` kaikille peleille) ja `shared/TurnPrompt.jsx` (pysyvä "👉 Sinun vuorosi: <toiminto>" -banneri pelinäkymän yläosassa, kytketty kunkin pelin ihmisvuoro-ehtoon; tekstit `ui.turn.*`).
 
 ## Component props (kaikki 9 peliä)
-App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa** — yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, hints, soundOn, seeAll, showCounts, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange`.
+App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa**, yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, hints, soundOn, seeAll, showCounts, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange`.
 
 Yhteiset (kaikki destrukturoivat): `onResult, hints, soundOn: initSoundOn, seeAll: initSeeAll, showCounts, showLastPlay, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange, onSnapshot`.
 
 Pelikohtaiset (vain osa ottaa):
-- `game` — vain Kasino
-- `showNextBtn` — vain Kasino, Moska
-- `showAIKnown` — vain Koputus, Kultakala
-- `showIntention: initShowIntention` — Kasino, Koputus, Maija, Seiska, Ristiseiska, Paskahousu, Moska (ei Läpsy/Kultakala)
+- `game`: vain Kasino
+- `showNextBtn`: vain Kasino, Moska
+- `showAIKnown`: vain Koputus, Kultakala
+- `showIntention: initShowIntention`: Kasino, Koputus, Maija, Seiska, Ristiseiska, Paskahousu, Moska (ei Läpsy/Kultakala)
 
 ## AI-tasot (3 kpl)
 `Oppipoika | Kisälli | Mestari`
@@ -67,22 +67,22 @@ Pelikohtaiset (vain osa ottaa):
 At the start of every session run `npm run dev` in the background so the dev server is available at http://localhost:5173/ for preview verification during development.
 
 ## Verifiointi
-- **Jos muutos ei näy previewissä, epäile ensin vanhentunutta dev-palvelinta tai välimuistia — älä muokkaa jo oikeaa koodia.** Käynnistä dev-palvelin uudelleen + kova reload (ja tarkista `vite-error-overlay`) ennen kuin oletat koodin olevan vialla. Kerro mitä kokeilit.
-- HMR-virheet konsolipuskurissa ovat usein vanhentuneita välitiloja kaksivaiheisten editien ajalta — täysi reload on luotettava totuus.
+- **Jos muutos ei näy previewissä, epäile ensin vanhentunutta dev-palvelinta tai välimuistia: älä muokkaa jo oikeaa koodia.** Käynnistä dev-palvelin uudelleen + kova reload (ja tarkista `vite-error-overlay`) ennen kuin oletat koodin olevan vialla. Kerro mitä kokeilit.
+- HMR-virheet konsolipuskurissa ovat usein vanhentuneita välitiloja kaksivaiheisten editien ajalta: täysi reload on luotettava totuus.
 
 ## Deploy
-**Ennen deployta (käsin — ei automatisoitua):**
+**Ennen deployta (käsin, ei automatisoitua):**
 - Lisää `CHANGELOG`-merkintä `src/changelogs/fi.js`:ään (näkyy Info → Muutosloki). **Vain suomeksi** (päätös 3.7.2026: 22 kielen käännös per julkaisu paisutti tiedostomäärää ~450 kt duplikaattidataa ja toisti saman käännöstyön joka deployssa ilman käännösmuistia; selaimen natiivi Käännä-toiminto kattaa muut kielet kiinnostuneille, samoin kuin PWA-sovelluksissa Itu/Superjatsi joissa ei ole omaa käännösmekanismia lainkaan). Julkaisu EI päivitä tätä automaattisesti. **Poikkeus (16.8.2026): muutos joka ei näy pelaajalle ei saa merkintää.** Muutosloki on pelaajalle näkyvä Info-välilehdellä, joten se kertoo pelattavista muutoksista eikä ole per-deploy-loki; testit, sisäiset korjaukset ja käytöksen kannalta neutraalit datamuutokset jäävät committiviestiin. **Versiobumppi tehdään silti**, koska bundle muuttuu ja leiman on erotettava se edellisestä. Ennakkotapaus: 1.2.206, sanaston vartalomuutos ja termimoduulin testi.
 - Päivitä `TODO`-taulukko `src/App.jsx`:ssä (Asetukset → Tulossa), jos jokin kohta valmistui tai lisättiin.
 - **Bumppaa `package.json`in `version`-kenttä** (patch +1). `vite.config.js` lukee `__APP_VERSION__`-arvon suoraan siitä. Build EI enää laske versiota gitistä: `git rev-list --count HEAD` palautti Vercelin matalassa (shallow) kloonissa ~10, joten tuotannossa näkyi 1.2.010 kun lokaali build antoi 1.2.201 (todennettu 21.7.2026).
 
-Production deploy: **`git push origin main`** — Vercelin git-integraatio deployaa tuotantoon automaattisesti (todennettu 25.6.2026). Koko protokolla: `deploy`-skill (`.claude/skills/deploy/SKILL.md`).
+Production deploy: **`git push origin main`**, Vercelin git-integraatio deployaa tuotantoon automaattisesti (todennettu 25.6.2026). Koko protokolla: `deploy`-skill (`.claude/skills/deploy/SKILL.md`).
 Hätävara, vain jos git-integraatio irtoaa eikä push päivitä tuotantoa: `npm run deploy` (= `vercel build --prod && vercel deploy --prebuilt --prod`); kertasetup per kone `npx vercel pull --yes --environment production`.
 Live URL: https://tommi-jako.vercel.app  (ensisijainen)
-Vanha URL: https://tommi-jako52.vercel.app  (yhä voimassa — jaettu linkki kesälomalaisille; molemmat ovat tuotantodomaineja ja päivittyvät joka deployssa)
+Vanha URL: https://tommi-jako52.vercel.app  (yhä voimassa, jaettu linkki kesälomalaisille; molemmat ovat tuotantodomaineja ja päivittyvät joka deployssa)
 
 **Varoitukset:**
-- Deploy vain git push -reittiä (hätävarana `npm run deploy`). **ÄLÄ käytä `vercel alias set`** julkista domainia varten — se luo suojatun 401-aliaksen; domain-aliasointi hoidetaan Vercel-dashboardista.
+- Deploy vain git push -reittiä (hätävarana `npm run deploy`). **ÄLÄ käytä `vercel alias set`** julkista domainia varten: se luo suojatun 401-aliaksen; domain-aliasointi hoidetaan Vercel-dashboardista.
 - Deployn jälkeen huomioi välimuisti-/aikavyöhykeviive ennen kuin tulkitset, ettei muutos mennyt perille. Todenna tuotanto hakemalla bundle (`assets/index-*.js`) ja vertaamalla hash lokaaliin buildiin, älä pelkästä selaimen näkymästä.
 
 ## Games & Terminology
@@ -104,7 +104,7 @@ Key terms: kortti, käsi, pino, nosto, lasku, pistelasku, kierros, vuoro, jako
 
 ## Pakkatyypit
 
-Kolme tyyppiä — näkyy päävalikossa pelikorteissa:
+Kolme tyyppiä, näkyy päävalikossa pelikorteissa:
 
 | Tyyppi | Koodi | Pelit |
 |---|---|---|
@@ -113,8 +113,8 @@ Kolme tyyppiä — näkyy päävalikossa pelikorteissa:
 | Kierrätetty | `kierratetty` | Seiska |
 
 Erikoistapaukset (silti yllä olevissa luokissa):
-- **Koputus**: Koputus käynnistää viimeisen kierroksen — nostopakkaa voi jäädä huomiotta
-- **Seiska**: Voittaja pääsee korteistaan eroon ensin — nostopakkaa voi jäädä huomiotta
+- **Koputus**: Koputus käynnistää viimeisen kierroksen, nostopakkaa voi jäädä huomiotta
+- **Seiska**: Voittaja pääsee korteistaan eroon ensin, nostopakkaa voi jäädä huomiotta
 - **Kasino**: 16 pistettä ensin saanut voittaa; pisteet lasketaan nostopakan ehdyttyä pelatun kierroksen päätyttyä; tasapeli on mahdollinen
 
 ## Modes
@@ -122,7 +122,7 @@ Erikoistapaukset (silti yllä olevissa luokissa):
 - **Vapaa tila** – `hints=false`, ei ohjeviestejä, loki kiinni oletuksena
 - Toggle-napit pelin aikana oikeassa yläkulmassa (menu ← | pelinimi)
 
-## SFX (`src/shared/audio.js` — `SFX` objekti)
+## SFX (`src/shared/audio.js`: `SFX` objekti)
 Korttitoiminnot:
 | Funktio | Käyttötilanne |
 |---|---|
@@ -163,8 +163,8 @@ Virstanpylväät:
 ## Tech
 - React functional components + hooks only (no class components)
 - Tailwind core utilities only (no custom compiler)
-- localStorage asetuksille (lupa laajentaa 2026-06-19, kumoaa aiemman "preferenssit-vain"-linjan): kaikki Asetukset-paneelin togglet (`jako:showLog`, `jako:soundOn`, `jako:twoColorDeck`, `jako:showCounts`, `jako:showLastPlay`, `jako:showIntention`, `jako:showNextBtn`, `jako:showAIKnown`), näkyvyysesiasetus (`jako:uiPreset` = `beginner`|`experienced`|`custom`, ks. Global settings), AI-taso (`jako:aiLevel`), nimiryhmä (`jako:playerGroup`) sekä pelikohtaiset sääntövalinnat (`jako:paskahousu:rules`, `jako:ristiseiska:rules`, `jako:kasino:rules`) persistoidaan `useStickySetting`-hookilla (`src/shared/storage.js`, `loadPref`/`savePref`, try/catch-suojattu). Lisäksi **pelikohtaiset tilastot** (`jako:stats` — pelatut/voitot/sijoitusjakauma/vaikeustaso-erittely per peli) persistoidaan suoraan `loadPref`/`savePref`-parilla (`useStickySetting` ei sovi, koska tallenne pitää yhdistää oletuksiin `normalizeStats`-migraatiolla; ks. `StatsPanel.jsx` ja 📊-nappi). **POIKKEUKSET (eivät tallennu):** `seeAll` (cheat — nollautuu joka latauksessa tahallaan) ja `godMode` (disabloitu placeholder).
-- Single-file artifacts (.jsx) — no separate CSS/JS files
+- localStorage asetuksille (lupa laajentaa 2026-06-19, kumoaa aiemman "preferenssit-vain"-linjan): kaikki Asetukset-paneelin togglet (`jako:showLog`, `jako:soundOn`, `jako:twoColorDeck`, `jako:showCounts`, `jako:showLastPlay`, `jako:showIntention`, `jako:showNextBtn`, `jako:showAIKnown`), näkyvyysesiasetus (`jako:uiPreset` = `beginner`|`experienced`|`custom`, ks. Global settings), AI-taso (`jako:aiLevel`), nimiryhmä (`jako:playerGroup`) sekä pelikohtaiset sääntövalinnat (`jako:paskahousu:rules`, `jako:ristiseiska:rules`, `jako:kasino:rules`) persistoidaan `useStickySetting`-hookilla (`src/shared/storage.js`, `loadPref`/`savePref`, try/catch-suojattu). Lisäksi **pelikohtaiset tilastot** (`jako:stats`: pelatut/voitot/sijoitusjakauma/vaikeustaso-erittely per peli) persistoidaan suoraan `loadPref`/`savePref`-parilla (`useStickySetting` ei sovi, koska tallenne pitää yhdistää oletuksiin `normalizeStats`-migraatiolla; ks. `StatsPanel.jsx` ja 📊-nappi). **POIKKEUKSET (eivät tallennu):** `seeAll` (cheat, nollautuu joka latauksessa tahallaan) ja `godMode` (disabloitu placeholder).
+- Single-file artifacts (.jsx): no separate CSS/JS files
 - Touch + stylus primary input (phone + tablet), no hover-dependent interactions
 - Responsive: `window.innerWidth < 600` = mobile, else tablet
 - Mobile: 1-col game grid, smaller fonts (11-12px), reduced padding
@@ -192,15 +192,15 @@ Portti ajaa tämän ennen testejä (`.github/workflows/testit.yml`).
 - English for React/component internals
 - Destructure imports: `import { useState } from "react"`
 
-## Viestit (loki/viestikupla) — i18n-konventio
+## Viestit (loki/viestikupla): i18n-konventio
 - **Kattavuus:** kaikissa i18n-/lokalisointitöissä varmista uusien UI-stringien kattavuus kaikissa 23 kielessä (parity-tarkistus) ja pidä terminologia yhdenmukaisena jaetun termimoduulin kanssa (`src/shared/glossary.js`, speksi `Kaanon/TERMIMODUULI.md`). Poikkeus: changelog vain suomeksi (ks. Deploy).
-- **Tapahtumailmoitukset kolmannessa persoonassa** kaikille pelaajille, myös ihmiselle: `${name}: ...`, `Vuorossa ${name}.`, `${name} vei voiton`. Ihmisen nimi on aina `Hero`, joten "Vuorossa Hero.", "Hero: 7♣". Ei erillistä `isHuman ? 'Sinä…' : '${name}…'` -haaraa — yksi käännösmalli per viesti.
+- **Tapahtumailmoitukset kolmannessa persoonassa** kaikille pelaajille, myös ihmiselle: `${name}: ...`, `Vuorossa ${name}.`, `${name} vei voiton`. Ihmisen nimi on aina `Hero`, joten "Vuorossa Hero.", "Hero: 7♣". Ei erillistä `isHuman ? 'Sinä…' : '${name}…'` -haaraa: yksi käännösmalli per viesti.
 - **Poikkeus: säilytä toimintaohjeet/vihjeet 2. persoonassa** kun ne neuvovat ihmistä tekemään jotain (esim. Koputus/Kultakala "Nostit X. Vaihda…", Kasinon dynaaminen vihje, Ristiseiskan "…joten Passaa"). Nämä eivät ole ilmoituksia vaan ohjeita.
 
 ## DO NOT
 - Break single-file structure without asking
 - Add npm packages beyond what's in current prototype
-- Assume desktop viewport — always design for ~1200px landscape tablet
+- Assume desktop viewport: always design for ~1200px landscape tablet
 
 **Poikkeus pakettikieltoon (17.8.2026): tyyppitarkistuksen työkalut.** `typescript`,
 `@types/react`, `@types/react-dom` ja `@types/node` ovat devDependencyjä, eivätkä ne päädy

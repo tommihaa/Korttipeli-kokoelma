@@ -4,21 +4,21 @@
 
 Jokaiselle jaetaan 6 käsikorttia. Loput muodostavat nostopakan.
 
-Tavoite: pääse eroon käsikorteista — viimeinen on **Paskahousu**.
+Tavoite: pääse eroon käsikorteista, viimeinen on **Paskahousu**.
 
 ## Korttiarvot
 
 | Kortti | Arvo | Huomio |
 |---|---|---|
-| ♥2 / ♦2 | 2 | Pienin — käy vain tyhjälle pöydälle |
+| ♥2 / ♦2 | 2 | Pienin, käy vain tyhjälle pöydälle |
 | 3 | 3 | — |
 | 4–9 | 4–9 | Normaali alue |
 | 10 | — | **Kaataja** (arvo ≤ 9 päällä) tai rangaistus tyhjälle |
-| J | 11 | Kuvakortti — ei alle seiskan (7) päälle |
-| Q | 12 | Kuvakortti — ei alle seiskan (7) päälle |
-| K | 13 | Kuvakortti — ei alle seiskan (7) päälle |
+| J | 11 | Kuvakortti, ei alle seiskan (7) päälle |
+| Q | 12 | Kuvakortti, ei alle seiskan (7) päälle |
+| K | 13 | Kuvakortti, ei alle seiskan (7) päälle |
 | A | — | **Kaataja** (kuvakortin päälle) tai rangaistus tyhjälle |
-| ♠2 / ♣2 | 15 | Suurin — vain toinen musta kakkonen päälle |
+| ♠2 / ♣2 | 15 | Suurin, vain toinen musta kakkonen päälle |
 
 ## Vuoron kulku
 
@@ -57,7 +57,7 @@ Kasa tyhjennetään pelistä ja kaataja jatkaa:
 | **A** kaataa | Päällimmäinen on kuvakortti (J/Q/K) |
 | **4 samaa** | Neljä samanarvoista päällä (myös eri vuoroilta kertyneinä) |
 
-Kaataja saa jatkaa (uusi vuoro). Kasa menee sivuun — ei sekoiteta nostopakkaan.
+Kaataja saa jatkaa (uusi vuoro). Kasa menee sivuun, ei sekoiteta nostopakkaan.
 
 ## Rangaistuskortti tyhjälle pöydälle
 
@@ -69,13 +69,13 @@ Kun pelaaja täydentää kätensä nostopakasta ja nostaa **paremman kortin kuin
 
 - 3 sekuntia aikaa vaihtaa: lyöty kortti takaisin käteen, uusi kortti kasaan
 - Ehto: nostettu kortti käy kasaan ja on **arvo pienempi** tai erityiskortti (musta 2, tai kaataa kasan)
-- Vaihto voi myös kaataa kasan — silloin kaataja jatkaa
+- Vaihto voi myös kaataa kasan: silloin kaataja jatkaa
 - AI tekee vaihdon aina kun se on edullinen
 
 ## Pakka tyhjä
 
 Kun nostopakka loppuu:
-- Viesti lokissa: `📦 Pakka on tyhjä — peli jatkuu käsikortein.`
+- Viesti lokissa: `📦 Pakka on tyhjä: peli jatkuu käsikortein.`
 - Kortteja ei enää täydennetä käteen
 - Kasattuja kortteja ei sekoiteta uudelleen (kaadettua kasaa ei palauteta)
 
@@ -94,9 +94,9 @@ Kun nostopakka loppuu:
 
 ## Tapahtumaloki
 
-- **Vuorossa [Pelaaja].** — jokaisen uuden vuoron alussa
-- **📦 Pakka on tyhjä — peli jatkuu käsikortein.** — nostopakka loppui
-- **⏱ Pakka tyhjä — Yhtäkkinen kuolema! 2:30 laskuri käy.** — Mestari (`hard`) + 2 pelaajaa
+- **Vuorossa [Pelaaja].** Näkyy jokaisen uuden vuoron alussa.
+- **📦 Pakka on tyhjä: peli jatkuu käsikortein.** Näkyy kun nostopakka loppuu.
+- **⏱ Pakka tyhjä: Yhtäkkinen kuolema! 2:30 laskuri käy.** Näkyy Mestari-tasolla (`hard`) kahdella pelaajalla.
 
 ## Yhtäkkinen kuolema (Sudden Death)
 
@@ -122,7 +122,7 @@ Kolme tasoa (UI-nimet: **Oppipoika / Kisälli / Mestari**):
 
 1. **Pelaa pienin arvo** (säästää korkeat kortit)
 2. **Pelaa kaikki samanarvoiset yhdellä kertaa** (ryhmälyönti)
-3. **Säästä 10 ja A** — käytä vain jos ei muuta vaihtoehtoa
+3. **Säästä 10 ja A**: käytä vain jos ei muuta vaihtoehtoa
 4. 10 ja A pelataan yksi kerrallaan (yksikin tyhjentää kasan)
 
 ### Proaktiivinen kaato (Mestari, `hard`)
@@ -137,11 +137,11 @@ Jos kasassa ≥ 3 eri arvoa, arvioidaan käden rakenne:
 
 **Prioriteettijärjestys**:
 
-1. **Punainen 2** (♥2/♦2, arvo 2) tyhjälle pöydälle — muuten jumissa
+1. **Punainen 2** (♥2/♦2, arvo 2) tyhjälle pöydälle, muuten jumissa
 2. **Täydennä nelonen** (4 samaa) → välitön kaato
-3. **Kuvakortti** (J < Q < K) — pelaa pienin ensin, suurempi joustavampi myöhemmin
-4. **Normaali kortti** — pienin arvo ensin
-5. **Säästettävät** (9, 10, A, ♠2/♣2) — pelaa vain kun muuta ei ole
+3. **Kuvakortti** (J < Q < K), pelaa pienin ensin, suurempi joustavampi myöhemmin
+4. **Normaali kortti**: pienin arvo ensin
+5. **Säästettävät** (9, 10, A, ♠2/♣2), pelaa vain kun muuta ei ole
    - Järjestys: 9 ensin → 10/A → musta kakkonen viimeiseksi
 
 ### Täydellinen informaatio (Mestari, `hard`)
@@ -157,7 +157,7 @@ Jos kasassa ≥ 3 eri arvoa, arvioidaan käden rakenne:
 
 Paskahousu on **laituripeli** jossa:
 - Yksinkertaiset säännöt mutta kasan rakenteen analysointi tärkeää
-- 10/A ovat taktisia aseita — oikea hetki ratkaisee
+- 10/A ovat taktisia aseita: oikea hetki ratkaisee
 - Neljän samanarvoisen kerääminen tuo dramaattisen kaaton
 - Vaihto-mekanismi palkitsee onnellisen noston
 - Loppupelissä (pakka tyhjä) strategia muuttuu täysin: punainen 2 on vaarallinen, kova kakkonen vahvin

@@ -17,10 +17,10 @@ Kaikki kortit jaetaan tasan pelaajille käsikorteiksi, joka on myös pino, kasvo
 
 Kun pelaaja lyö erityiskortin, hänelle asetetaan haaste:
 
-- **Jätkä (J)** — seuraavalla pelaajalla on **1 kortti** aikaa vastata erityiskortilla
-- **Kuningatar (Q)** — **2 korttia** aikaa
-- **Kuningas (K)** — **3 korttia** aikaa  
-- **Ässä (A)** — **4 korttia** aikaa
+- **Jätkä (J)**: seuraavalla pelaajalla on **1 kortti** aikaa vastata erityiskortilla
+- **Kuningatar (Q)**: **2 korttia** aikaa
+- **Kuningas (K)**: **3 korttia** aikaa  
+- **Ässä (A)**: **4 korttia** aikaa
 
 **Haasteeseen vastaaminen:**
 - Jos vastaat **toisenlaisella erityiskortilla**, haaste siirtyy eteenpäin (esim. J:n jälkeen Q = 2 korttia lisää)
@@ -29,14 +29,14 @@ Kun pelaaja lyö erityiskortin, hänelle asetetaan haaste:
 
 ## Tietokoneversiossa
 
-Tasapelitilanteet (kaksi läpsäävät samanaikaisesti) ratkaistaan sekuntilaskurilla — reaktionopeus ratkaisee.
+Tasapelitilanteet (kaksi läpsäävät samanaikaisesti) ratkaistaan sekuntilaskurilla, reaktionopeus ratkaisee.
 
 ## Pelaajien näkyvyys
 
 - Jokainen pelaaja näkee **oman pinonsa** koko ajan
 - Jokainen näkee **keskelle käännetyt kortit** (lyöntipakka)
 - Muiden pelaajien pinojen **kokoa** näkee mutta ei sisältöä
-- Voitettu kasa pistetään voittajan pinon alle — muut eivät näe sen sisältöä
+- Voitettu kasa pistetään voittajan pinon alle: muut eivät näe sen sisältöä
 
 ## Pelin loppu
 
@@ -49,7 +49,7 @@ AI:n pelilogiikka:
 1. Kääntää vuorollaan oman pinonsa päällimmäisen kortin keskelle (Läpsyssä ei ole nostopakkaa)
 2. Läpsää haasteen mukaisesti (1–4 korttia ennen kuin tulee haaste)
 3. Nopea reaktio tasapelitilanteissa
-4. Yksinkertainen strategia — näe peli enemmän reaktiopelinä kuin strategiapelinä
+4. Yksinkertainen strategia, näe peli enemmän reaktiopelinä kuin strategiapelinä
 
 ### Kyvykkyysporras
 
@@ -64,4 +64,4 @@ Läpsyssä porras on sekä muistia että nopeutta. Reaktioajat on kalibroitu bot
 
 ## Pelin luonne
 
-Läpsy on **puhtaasti reaktiopeli** — strategian sijaan nopeus ja tarkkavaisuus ovat ratkaisevat. Erityiskorttien haasteet lisäävät jännitystä ja tekevät pelistä epäennustettavaa.
+Läpsy on **puhtaasti reaktiopeli**, strategian sijaan nopeus ja tarkkavaisuus ovat ratkaisevat. Erityiskorttien haasteet lisäävät jännitystä ja tekevät pelistä epäennustettavaa.

@@ -2,7 +2,7 @@
 
 ## Pelitapa
 
-Jokaiselle jaetaan 5 käsikorttia. Valtti määräytyy pakan pohjimmaisesta kortista (näkyvissä pakan alle). Pata ei voi olla valtti — näin käydessä uusi yritys.
+Jokaiselle jaetaan 5 käsikorttia. Valtti määräytyy pakan pohjimmaisesta kortista (näkyvissä pakan alle). Pata ei voi olla valtti, näin käydessä uusi yritys.
 
 Tavoite: Pakan ehdyttyä päästä korteistaan eroon ensimmäisenä.
 
@@ -18,13 +18,13 @@ Tavoite: Pakan ehdyttyä päästä korteistaan eroon ensimmäisenä.
 3. Jos kaikki kortit kaadetaan → puolustaja täydentää kätensä ja **hyökkää seuraavalla vuorolla**
 
 ### Spesiaalit säännöt
-- **Patakuningatar (Maija)** — ei kelpaa kaatokortiksi, vaan **on aina nostettava** käteen
+- **Patakuningatar (Maija)**: ei kelpaa kaatokortiksi, vaan **on aina nostettava** käteen
 - Täysin onnistuneesta kaadosta → kaatanut saa jatkaa hyökkääjänä
 
 ## Pisteet
 
 Käytetään **pelinumeroarvojen vertailua** (A=14, 2=2, 3=3, ..., K=13):
-- Sama maa: verrataan arvoja — suurempi voittaa
+- Sama maa: verrataan arvoja, suurempi voittaa
 - Valtti: voittaa minkä tahansa muun maan kortin
 
 ## Pelin loppu
@@ -32,7 +32,7 @@ Käytetään **pelinumeroarvojen vertailua** (A=14, 2=2, 3=3, ..., K=13):
 1. Nostopakan tyhjennettyä pelaajat jatkavat käsissään olevilla korteilla
 2. **Korteista pikimmiten eroon päässyt voittaa**
 3. Muut taistelevat sijoituksista
-4. **Patakuningatar (Maija) viimeinen omistaja hävisi pelin** — "lopussa istuu Maija"
+4. **Patakuningatar (Maija) viimeinen omistaja hävisi pelin**, "lopussa istuu Maija"
 
 ## Pelaajien näkyvyys
 
@@ -52,7 +52,7 @@ AI:n hyökkäys:
 
 AI:n puolustus:
 1. Kaataa pienimmän voittavalla kortilla (säästää kortteja)
-2. Suosii samaa maata — käyttää valttia vain välttämättäessä
+2. Suosii samaa maata, käyttää valttia vain välttämättäessä
 3. Ei kaada Maijaa (nostaa käteen)
 
 AI:n pakan täydentäminen:
@@ -79,4 +79,4 @@ AI:n pakan täydentäminen:
 
 ## Pelin luonne
 
-Maija on **hyökkäys/puolustus-peli** jossa strategia ja pelilukutaito ratkaisevat. Maija-kortin pelaaminen peliin luo dramaattisen hetken, sen nostaja menettää vuoronsa — viimeinen pelaaja, joka joutuu nostamaan sen, häviää.
+Maija on **hyökkäys/puolustus-peli** jossa strategia ja pelilukutaito ratkaisevat. Maija-kortin pelaaminen peliin luo dramaattisen hetken, sen nostaja menettää vuoronsa, viimeinen pelaaja, joka joutuu nostamaan sen, häviää.

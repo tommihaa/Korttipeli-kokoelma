@@ -2,9 +2,9 @@
 
 ## Pelitapa
 
-Kaikille jaetaan 4 korttia, pöytään avataan 4 korttia näkyviin. Käsikorttien loppuessa jaetaan uudet 4 per pelaaja — pöytään ei enää jaeta.
+Kaikille jaetaan 4 korttia, pöytään avataan 4 korttia näkyviin. Käsikorttien loppuessa jaetaan uudet 4 per pelaaja, pöytään ei enää jaeta.
 
-Tavoite: saada eniten pisteitä. **Pisteraja: 16* — ensimmäinen 16 pistettä saanut voittaa (tasapeli mahdollinen).
+Tavoite: saada eniten pisteitä. **Pisteraja: 16*, ensimmäinen 16 pistettä saanut voittaa (tasapeli mahdollinen).
 
 ## Vuoron kulku
 
@@ -69,8 +69,8 @@ Tausta: `docs/PELIKANONIT.md` löydös 9.
 ## AI-strategia
 
 ### AI näkee ja laskee:
-1. **Erityiskortit** — mitkä on pelattu (Pata 2, Ruutu 10, Ässä)
-2. **Patoja** — seuraa eniten patoja -pistettä
+1. **Erityiskortit**: mitkä on pelattu (Pata 2, Ruutu 10, Ässä)
+2. **Patoja**: seuraa eniten patoja -pistettä
 3. Pöydän kortit ja oman käden
 
 ### AI ei aktiivisesti laske:

@@ -2,7 +2,7 @@
 
 ## Pelitapa
 
-Jokaiselle jaetaan 4 pöytäkorttia neliöksi kuvapuolet alaspäin. Pelin alussa kukin saa katsoa 2 omaa korttiaan — muistettavaksi koko pelin ajan. Tavoite: pienin pistesumma.
+Jokaiselle jaetaan 4 pöytäkorttia neliöksi kuvapuolet alaspäin. Pelin alussa kukin saa katsoa 2 omaa korttiaan, muistettavaksi koko pelin ajan. Tavoite: pienin pistesumma.
 
 Jokaisen vuoron jakajasta seuraava pelaaja nostaa pakasta kortin. Voit vaihtaa sen johonkin omista pöytäkorteistasi tai heittää poistopakkaan.
 
@@ -15,9 +15,9 @@ Jokaisen vuoron jakajasta seuraava pelaaja nostaa pakasta kortin. Voit vaihtaa s
 
 ## Erityiskortit
 
-- **Jätkä (J)** — saat katsoa yhden omista pöytäkorteistasi
-- **Kuningatar (Q)** — saat vaihtaa yhden kortin kenen tahansa pelaajan minkä tahansa pöytäkortin kanssa
-- **Kuningas (K)** — saat katsoa oman pöytäkortin, yhden jonkun muun pelaajan pöytäkortin ja halutessasi tehdä vaihdon
+- **Jätkä (J)**: saat katsoa yhden omista pöytäkorteistasi
+- **Kuningatar (Q)**: saat vaihtaa yhden kortin kenen tahansa pelaajan minkä tahansa pöytäkortin kanssa
+- **Kuningas (K)**: saat katsoa oman pöytäkortin, yhden jonkun muun pelaajan pöytäkortin ja halutessasi tehdä vaihdon
 
 ## Pistelasku lopussa
 
@@ -27,7 +27,7 @@ Jokaisen vuoron jakajasta seuraava pelaaja nostaa pakasta kortin. Voit vaihtaa s
 
 ## Pelin loppu
 
-- **Koputus:** Kun uskot voittosi, koputa ennen nostokorttisi pelaamista — muut saavat vielä yhden vuoron
+- **Koputus:** Kun uskot voittosi, koputa ennen nostokorttisi pelaamista: muut saavat vielä yhden vuoron
 - Koputuksen tapahduttua tai kun kaikki kortit on pelattu summataan pelaajien pisteet: pienin summa voittaa
 - Tasatilanteessa vähempi kortteja omannut voittaa
 
@@ -42,7 +42,7 @@ Jokaisen vuoron jakajasta seuraava pelaaja nostaa pakasta kortin. Voit vaihtaa s
 ## AI-strategia
 
 AI:n päätöksenteko:
-1. Tarkista omat tunnetut kortit — vertaa nostettuun korttiin
+1. Tarkista omat tunnetut kortit, vertaa nostettuun korttiin
 2. Jos nostettu kortti on parempi kuin pahin tunnettu → vaihda siihen
 3. Jos nostettu kortti ei ole parempi → mahdollisesti vaihda tuntemattomaan paikkaan (riippuu pelaajamäärästä)
 4. Jos on sama kuin joku omista, niin heitä poistopakkaan. Ja viiveen salliessa täsmäävä pöytäkortti myös.

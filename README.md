@@ -1,6 +1,6 @@
-# Jako — korttipelikokoelma
+# Jako: korttipelikokoelma
 
-> **"Ethnic games to conquer the world"** — suomalaiset, skandinaaviset, baltialaiset ja venäläiset korttipelit ansaitsevat paremman digitaalisen toteutuksen.
+> **"Ethnic games to conquer the world"**, suomalaiset, skandinaaviset, baltialaiset ja venäläiset korttipelit ansaitsevat paremman digitaalisen toteutuksen.
 
 Selaimessa pelattava kokoelma: opi moninpelikorttipelit pelaamalla botteja vastaan. Ei tiliä, ei mainoksia, ei seurantaa.
 
@@ -17,7 +17,7 @@ git push         # julkaisu: Vercel git-integraatio deployaa tuotantoon (npm run
 
 ## Mistä mikäkin löytyy
 
-Tämä tiedosto pidetään tarkoituksella ohuena. Elävä tieto asuu ylläpidetyissä lähteissä — ei toistettuna tässä, ettei se rapistu:
+Tämä tiedosto pidetään tarkoituksella ohuena. Elävä tieto asuu ylläpidetyissä lähteissä, ei toistettuna tässä, ettei se rapistu:
 
 | Tarvitset | Katso |
 |-----------|-------|
