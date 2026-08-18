@@ -14,6 +14,10 @@ import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
+const pCards = p => p.cards.filter(Boolean).length;
+// Tasatilanteessa vähempi kortteja omannut voittaa (KOPUTUS.md, viety koodiin 18.8.2026)
+const pRank  = (a, b) => (pScore(a) - pScore(b)) || (pCards(a) - pCards(b));
+const pBetter = (q, p) => pRank(q, p) < 0;
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
@@ -372,10 +376,10 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
 
   function endGame(gState) {
     const players = gState.players;
-    const sorted  = [...players].sort((a, b) => pScore(a) - pScore(b));
+    const sorted  = [...players].sort(pRank);
     const ranking = sorted.map(p => {
       const s = pScore(p);
-      return { name: p.name, place: sorted.filter(q => pScore(q) < s).length + 1, score: s, isHuman: p.isHuman };
+      return { name: p.name, place: sorted.filter(q => pBetter(q, p)).length + 1, score: s, isHuman: p.isHuman };
     });
     const revealCards = players.map(p => ({ name: p.name, cards: p.cards }));
     if (sndRef.current) { SFX.reveal(); tm(() => SFX.fanfare(), 500); }
@@ -737,7 +741,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   );
 
   if (screen === 'gameover' && G && !allBotsRef.current) {
-    const sorted = [...G.players].sort((a, b) => pScore(a) - pScore(b));
+    const sorted = [...G.players].sort(pRank);
     return (
       <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
         <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>

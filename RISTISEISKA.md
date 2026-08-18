@@ -38,6 +38,33 @@ A
    - Jatko **olemassa olevaan jonoon** (esim. jos ♣8 on pöydässä, voi lyödä ♣9)
 3. Passaus on **sallittu vain jos ei käy** — mutta **voi lyödä vain yhden kortin per vuoro**
 
+## Pantti: passaaminen maksaa toiselle pelaajalle kortin
+
+Passaaminen ei ole ilmaista, ja tämä on pelin taktinen ydin: **passaava saa panttikortin
+edelliseltä pelaajalta jolla on vielä kortteja.** Passaajan käsi siis kasvaa yhdellä, ja
+antajan pienenee yhdellä.
+
+Kolme tarkennusta:
+
+1. **Ensimmäisellä kierroksella panttia ei anneta.** Kun jokainen on ollut vuorossa kerran,
+   sääntö astuu voimaan. Alussa pöytä on niin tyhjä että passaaminen olisi muuten pelkkää
+   sattumaa.
+2. **Antaja on edellinen pelaaja jolla on kortteja**, ei välttämättä istumajärjestyksessä
+   edellinen: jo lopettaneet ohitetaan.
+3. **Panttikortin valintatapa on aloitusnäytön sääntövalinta.** Vakiona antaja valitsee kortin
+   itse (ihmiseltä kysytään, botti antaa strategisesti huonoimman eli kauimpana
+   pelattavuudesta olevan). Toisessa asennossa kortti arvotaan myös ihmiseltä. Valinta
+   muistetaan selaimessa.
+
+Tästä seuraa porttikorttien pihtaamisen mielekkyys: lukittu pöytä pakottaa vastustajat
+passaamaan, ja passatessa he saavat kortin, mutta pihtaaja saa vuorollaan annettua pois juuri
+sen kortin josta ei muuten pääsisi eroon. Ks. AI-strategian kohta 2.
+
+*Kirjattu 18.8.2026.* Sääntö on ollut koodissa alusta asti mutta ei kanonissa, ja se löytyi
+kanoniauditoinnissa (`docs/PELIKANONIT.md` löydös 7). Kanoni ehti viitata panttiin
+AI-osiossaan ennen kuin sääntö oli täällä lausuttu.
+
+
 
 ## Erityissäännöt ja kiusanteko
 
