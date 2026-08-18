@@ -103,6 +103,14 @@ kaksi.
 `docs/BOTBENCH.md`:n lukuja. Ristiseiskalla ei ole mitattua kyvykkyysporrasta (`FLAT_AI_GAMES`),
 joten vertailukohtaa ei ole valmiina, eikä N=400-ajoa tehty tässä yhteydessä.
 
+**Mitattu 18.8.2026 myöhemmin, ja tulos oli myönteinen.** N=400 per pari:
+`hard vs beginner` 55,8 %, `hard vs normal` 55,0 %, verrokki `normal vs beginner` 51,3 %
+eli muuttumaton. Kirjaus perusteluineen on `docs/BOTBENCH.md`:n osiossa
+"Ristiseiska 18.8.2026". Yllä oleva väite vertailukohdan puuttumisesta oli väärä: mitattua
+kyvykkyysporrasta ei ole, mutta 21.7.2026 mitatut N=400-luvut kelpasivat vertailukohdaksi
+sellaisenaan. Vaihtoehdon poissulkeminen ilman tarkistusta oli virhe, ja se jätetään yllä
+näkyviin.
+
 ### Puhtaat
 
 Seiska (8 tekstiä), Maija (5), Läpsy (3), Kasino (7), Paskahousu (7), Kultakala (5, ks. huomio

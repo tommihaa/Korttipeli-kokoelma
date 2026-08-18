@@ -431,6 +431,45 @@ poisti alapään vian ja siirsi Maijan uuden kanavan odottajiin** (ks. luokittel
 | Kultakala | kyllä | ei (normal vs beg 57,6 %, z = 3,05) | ei |
 | Koputus, Läpsy, Paskahousu | ei (N=30/40) | — | ei |
 
+## Ristiseiska 18.8.2026 (N=400): maakohtainen porttisääntö, ensimmäinen ei-nollatulos
+
+Mitattu 18.8.2026 versiosta 1.2.209 (`7d5b8dc`), jossa Mestarin porttikorttien pidättelyehto
+muuttui maakohtaiseksi (`RISTISEISKA.md` kohta 2, `aiBestCard`). Muutos koskee vain tasoa
+`hard`, joten `normal vs beginner` on tässä verrokki jonka ei kuulu liikkua.
+
+| Pari | 21.7.2026 | 18.8.2026 | z vs. 50 % | z vs. 21.7. |
+|---|---:|---:|---:|---:|
+| hard vs beginner | 53,3 % | **55,8 %** (223/400) | 2,30 | 0,69 |
+| hard vs normal | 49,0 % | **55,0 %** (220/400) | 2,00 | 1,70 |
+| normal vs beginner | 51,3 % | **51,3 %** (205/400) | 0,50 | -0,01 |
+
+Kaikki 1 200 peliä ratkesivat: 0 tasapeliä, 0 pattiin jäänyttä, 0 istuimeen yhdistämätöntä.
+
+**Lukema on kuvio eikä yksittäinen voitto.** Kumpikaan Mestari-parin muutoksesta ei ole yksin
+merkitsevä (z = 0,69 ja z = 1,70), eikä 21.7. mitattua nollaporrasta voi siis julistaa
+kumotuksi yhdellä parilla. Painava on se että kolme lukua liikkuivat juuri niin kuin muutoksen
+kohde ennustaa: molemmat Mestari-parit ylös, ja verrokki paikallaan kolmanteen desimaaliin asti
+(51,3 % → 51,3 %). Satunnaisvaihtelu ei valitse liikkuvia pareja muutoksen kohteen mukaan.
+
+**Suurin liike on oikeassa parissa.** Ehto koskee Mestaria, ja Kisälli on ainoa vastustaja jolla
+on sama vanha porttisääntö käytössään (`suitCount > 1`). Juuri `hard vs normal` liikkui eniten
+(49,0 % → 55,0 %), eli muutos erottaa Mestarin nimenomaan siitä tasosta jonka säännön se
+korvasi. Oppipoikaa vastaan liike on pienempi, mikä on odotettua: Oppipoika hukkaa etua muissa
+kohdissa niin paljon, että porttisäännön osuus lopputuloksesta on pienempi.
+
+**Tämä on Ristiseiskan ensimmäinen ei-nollatulos.** Kaksi aiempaa yritystä olivat nollia:
+passausmuisti (21.7., muutos palautettu) ja sitä edeltänyt oletus terveestä ladderista joka
+osoittautui otosharhaksi. Osion "Avoimet AI-työt" kohta 3 luokitteli Ristiseiskan uuden kanavan
+odottajaksi ja nimesi oletukseksi *hyväksy nykytila*, koska kolmatta kanavaa ei ollut löytynyt.
+Kanava löytyi, eikä sitä löydetty AI-työnä vaan sivutuotteena: `MESTARIN_NEUVO.md`:n löydös 3
+oli kanonin ja koodin ristiriita, ja sen ratkaisu oli Tommin oma sääntö jota kumpikaan puoli ei
+ollut esittänyt.
+
+**Mitä tästä ei seuraa.** `FLAT_AI_GAMES` (`src/App.jsx:182`) merkitsee Ristiseiskan yhä
+samantasoiseksi ja `flatNote` näkyy pelaajalle. Merkinnän poistaminen on linjauskysymys eikä
+mittauksen seuraus: 55 % on porras, mutta se on ohut, ja pelaajalle luvattu vaikeusero on eri
+väite kuin mitattu voitto-osuus. Kysymys jää auki tässä eikä ratkea kirjaamalla.
+
 ## Käyttö jatkossa
 
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän
@@ -518,6 +557,16 @@ porttikorttien (6/8) pihtaamisen, mutta Mestari tekee sitä jo.
 
 **Oletus: hyväksy nykytila.** Kolmatta kanavaa ei ole löytynyt lukematta peliä uudelleen,
 eikä nykytila ole pelaajalle epärehellinen.
+
+**Kanava löytyi 18.8.2026, ja yllä oleva teksti jätetään näkyviin kumottuna.** Maakohtainen
+porttisääntö liikutti molempia Mestari-pareja ja jätti verrokin paikalleen, ks. osio
+"Ristiseiska 18.8.2026" yllä. Kumoutunut kohta on nimenomaan viimeinen virke: Mestari **teki**
+porttien pihtaamista jo, mutta väärällä ehdolla, joten kanava oli auki eikä käytetty. Ennuste
+piti siltä osin että kyse oli uudesta hypoteesista eikä saman kanavan viilauksesta, ja petti
+siltä osin että hypoteesin piti tulla AI-työstä: se tuli kanonin ja koodin ristiriidasta.
+
+**Avoin kohta kapenee eikä sulkeudu.** Kysymys ei ole enää *löytyykö kanavaa* vaan
+*riittääkö 55 % merkinnän poistoon*, ja se on Tommin linjaus.
 
 ### Reunaehdot AI-työssä
 
