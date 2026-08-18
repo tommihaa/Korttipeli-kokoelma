@@ -56,6 +56,14 @@ olevan kortin päälle"*, ja korttiarvotaulukko antaa punaiselle kakkoselle arvo
 valittavia kohtia), vai onko kanoni tarkoituksella vakiosäännöstön kuvaus ja variaatiot
 kuuluvat muualle?
 
+**Ratkaistu 18.8.2026: variaatiot kirjattiin kanoniin.** `PASKAHOUSU.md` sai osion
+*Sääntövalinnat aloitusnäytöltä* (käden koko 5 tai 6, kakkosten kovuus, kuvakortin alaraja
+0/6/7/8/9) ja `KASINO.md` alaosion rakennelman maksimiarvosta (13 tai 16). Kanoni kuvaa siis
+säännöstön valittavine kohtineen, ja vakioasento sanotaan kussakin taulukossa erikseen.
+Kirjatessa tarkentui kaksi asiaa joita auditointi ei nähnyt: käden koon ja kuvakortin alarajan
+asennot ovat useampia kuin kaksi, ja `specialBuilds` ei nosta vain kattoa vaan sallii
+rakennelmat erikoiskorttien kaappausarvoille (A = 14, ♠2 = 15, ♦10 = 16). Koodiin ei koskettu.
+
 ### B. Kanonien AI-osiot ovat kyvykkyysporrasta vanhempia
 
 Seitsemän kanonia kuvaa **yhden** AI-strategian. Koodissa on kolme tasoa, joiden ero on
@@ -136,6 +144,14 @@ Kaksi huomiota:
   peli jatkuu läpsäistävänä parina eikä vuoronvaihtona (rivit 414–420). Sääntö on koodissa
   perusteltuna, kanonissa sitä ei ole.
 
+**Ratkaistu 18.8.2026: molemmat kirjattiin kanoniin, koodiin ei koskettu.** AI-strategian kohta 1
+kuvaa nyt oman pinon kääntämistä ja sanoo ääneen ettei nostopakkaa ole, ja sakkokortin parisääntö
+on Vuoron kulun kohtana 5. Kummassakaan ei ollut haaraumaa: koodi oli oikeassa ja kanoni vaiti.
+
+**Auki jää AI-osion taso**, joka on kokoelmatason löydös B eikä tämän löydöksen oma: Läpsyssä on
+kolmiportainen kyvykkyysporras (reaktioaika 1500/1100/500 ms, kortinlaskenta Kisällistä alkaen,
+pinojärjestyksen ennustus vain Mestarilla), ja kanoni sanoo yhä *"yksinkertainen strategia"*.
+
 ### 4. Maija: kanonin hyökkäysavain on väärä, ja sama virhe on korjattu kerran jo muualla
 
 `MAIJA.md` › AI-strategia › AI:n hyökkäys kohta 2: *"Priorisoi pelaamalla hyökkäykseen sen maan
@@ -158,6 +174,11 @@ kanonin AI-osiota olennaisempia kuin siinä nyt lukevat kolme kohtaa.
 Sääntöpuoli on puhdas: viiden kortin käsi, valtti pakan pohjalta pata poissuljettuna
 (rivit 248–253), A = 14 pelin omassa arvotaulukossa (rivi 15, tietoisesti eri kuin jaettu
 `VAL` jossa A = 1), Maija ei kelpaa kaatokortiksi eikä kaadettavaksi (`canBeat`, rivit 36–37).
+
+**Ratkaistu 18.8.2026: kanoni korjattiin, koodiin ei koskettu.** Hyökkäysavain sanoo nyt
+korttimäärän, ja samalla kirjattiin kolme puuttuvaa kykyä: monikorttihyökkäyksen tasoehto,
+Maija-dumppi ja Mestarin valttihyökkäys. Suunta oli sama kuin neuvotekstillä 21.7.2026, eli
+koodi on tässä totuus.
 
 ### 5. Moska: passaussäännöt puuttuvat kanonista, ja kaksi toteutusta eroavat toisistaan
 
@@ -189,6 +210,23 @@ rajoitukseksi.
 **Sopimusmuutoskysymys:** kirjataanko passausehdot ja kuuden kortin katto kanoniin, ja
 yhtenäistetäänkö botin ja ihmisen ehdot? Jälkimmäinen on sopimusmuutos vain siltä osin kuin
 ero on tarkoitettu.
+
+**Ratkaistu 18.8.2026: ehdot kirjattiin kanoniin ja yhtenäistettiin ihmisen ehtoihin.** Sääntö
+asuu nyt koodissa yhdessä paikassa (`moskaCanPass`), ja sama funktio ajaa botin, Mestarin neuvon
+ja ihmisen napin. Botilta poistui passiketjun pituusraja, ja valtti kelpaa passikortiksi myös
+botilla silloin kun muuta samaa vahvuutta ei ole. Tasoporras jäi ehtojen ulkopuolelle: Oppipoika
+ei edelleenkään siirrä, ja valttia säästetään kortinvalinnassa eikä säännössä. `MOSKA.md` sai
+kuusikohtaisen ehtoluettelon ja kuuden hyökkäyskortin katon.
+
+**Yksi auditoinnin rivi oli väärässä, ja se korjataan tähän.** Taulukko sanoi ettei botilla ole
+ehtoa *yhtään korttia ei kaadettu*; sillä oli, `noBeats`-nimisenä samassa lauseessa. Todelliset
+erot olivat kaksi eikä kolme. Samalla löytyi neljäs kirjoituspaikka jota taulukossa ei ollut:
+Mestarin neuvo (`getAdvice`) toisti botin ehdot, eli neuvo saattoi vaieta siirrosta joka
+ihmiselle oli laillinen. Se korjautui samalla yhtenäistyksellä.
+
+**Uusi ehto 6 ei ole sääntömuutos vaan aiemman käyttäytymisen kirjaus.** `doPass` on aina
+hylännyt siirron jolle ei löydy vastaanottajaa, mutta hylkäys tuli vasta siirron jälkeen
+lokirivinä. Nyt sama tarkistus on ehdossa, joten siirtoa ei tarjota lainkaan.
 
 ### 6. Paskahousu: tarkistetut väitteet pitävät
 
@@ -291,8 +329,10 @@ jaetaan 11 pistettä tikkien lisäksi. Tikkiehto ratkesi toiseen suuntaan, koodi
 kanonin ehdoton sanamuoto korjattiin. `KASINO.md` kirjattiin ennen koodia
 (sopimusmuutos-protokolla), ja sääntörivi päivitettiin kaikkiin 23 lokaaliin.
 
-**Rakentamisen pelaajamäärärajaus on yhä auki**, samoin kokoelmatason löydös A:n
-`specialBuilds`.
+**Ratkaistu 18.8.2026: rajaus poistettiin kanonista.** Koodi oli oikeassa: rakentaminen on
+tarkoitettu kaikille pelaajamäärille. `KASINO.md`:n otsikosta, AI-osiosta ja luonnehdinnasta
+poistui *vain 2 pelaajaa*. Kokoelmatason löydös A:n `specialBuilds` ratkesi samalla kierroksella,
+ks. sen oma kohta.
 
 **Sivuseuraus joka jäi tekemättä tarkoituksella:** botin kaappausheuristiikka `aiCardScore`
 painottaa korttimäärää pelkkänä viimeisenä tasapelin ratkaisijana (`pts * 10000 + spades * 100

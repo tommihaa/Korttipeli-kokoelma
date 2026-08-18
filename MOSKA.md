@@ -16,11 +16,26 @@ Tavoite: päästä korteista eroon ensimmäisenä, sen jälkeen kun pakka on tyh
 1. Puolustaja **kaataa** jokaisen kortin:
    - Saman maan **suuremmalla** kortilla **tai**
    - **Valttimalla** (maa ei merkitse)
-2. **Jos hyökkäyksen siirtää, niin seuraava  pelaaja voi tehdä samoin, jolloin hänestä seuraavasta** tulee **uusi puolustaja**, joka hänkin voi tehdä saman
+2. **Jos hyökkäyksen siirtää, niin seuraava pelaaja voi tehdä samoin, jolloin hänestä seuraavasta** tulee **uusi puolustaja**, joka hänkin voi tehdä saman
+
+### Siirtämisen (passaamisen) ehdot
+
+Kaikkien ehtojen on täytyttävä, ja ne ovat **samat ihmiselle ja boteille**:
+
+1. Puolustaja **ei ole kaatanut yhtään korttia** tällä vuorolla
+2. Pöydässä on vain **yhtä vahvuutta** olevia kortteja
+3. Puolustaja **pelaa** samaa vahvuutta olevan kortin kädestään (valtti kelpaa)
+4. **Sama pelaaja ei voi siirtää kahdesti** samassa hyökkäyksessä
+5. Aktiivisia pelaajia on **enemmän kuin kaksi**
+6. Siirron vastaanottaja löytyy: hän ei saa olla päähyökkääjä eikä kukaan joka on jo siirtänyt
+
+Botin tasoporras on ehtojen ulkopuolella: **Oppipoika ei siirrä lainkaan**, ja Kisälli ja Mestari
+säästävät valttia eli siirtävät valtilla vain jos muuta samaa vahvuutta ei ole.
 
 ### Hyökkäyksen jatkaminen
 - Kuka tahansa hyökkääjä voi **lisätä samoja vahvuuksia** mitä puolustuksessa on käytetty
 - Rajoitus: puolustajalla on oltava **riittävästi kortteja** kaataa ne
+- Rajoitus: pöydässä on enintään **kuusi hyökkäyskorttia** yhteensä
 
 ## Erityissäännöt
 

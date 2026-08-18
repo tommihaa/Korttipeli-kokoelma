@@ -13,11 +13,18 @@ Tavoite: saada eniten pisteitä. **Pisteraja: 16* — ensimmäinen 16 pistettä 
 - Oman kortin arvo **vastaa summan** pöydän useiden korttien yhteissummasta
 - Kaappaa kortit pöydästä ja laita ne voittosalkkoosi
 
-### Rakentaminen (Build) — vain 2 pelaajaa
+### Rakentaminen (Build)
+- Käytössä **kaikilla pelaajamäärillä**, sekä ihmisellä että boteilla
 - **Yhdistä** kaksi tai useampia kortteja pöydässä ilmoittamalla summa
 - Esim. 2 + 5 = 7, odotat että sinulla on 7
 - Vastustaja **voi varastaa** rakennelmasi!
 - Rakennelma **on kaapattava seuraavalla vuorolla**
+
+#### Sääntövalinta: rakennelman maksimiarvo
+
+Rakennelman suurin sallittu arvo on **valittavissa ennen pelin alkua**, ja valinta muistetaan
+selaimessa. Vakio on **13** (kuningas). Erikoisrakennelmilla raja nousee **16**:een, jolloin
+rakennelman saa tehdä myös erikoiskorttien kaappausarvoille: ässä 14, ♠2 = 15 ja ♦10 = 16.
 
 ### Jättäminen (Trail)
 - Jos et kaappaa eikä rakenna → lyö joki käsikorteistasi  pöytään
@@ -76,13 +83,13 @@ Tausta: `docs/PELIKANONIT.md` löydös 9.
 2. Priorisoi erityiskortit (Pata 2, Ruutu 10)
 3. Jätä heikot kortit jos ei voi kaapata
 
-AI:n rakentamislogiikka (2 pelaajaa):
+AI:n rakentamislogiikka:
 - Käytä rakentamista strategisesti
 - Ei rakenna jos vastustaja voi helposti varastaa
 
 ## Pelin luonne
 
-Kasino on **strateginen peli** jossa pistelaskenta on olennainen. Mökkien hankkiminen (pöydän täydellinen tyhjennys) on dramaattinen hetki ja voi ratkaista pelin. Rakentaminen (2 pelaajaa) lisää psykologista elementtiä.
+Kasino on **strateginen peli** jossa pistelaskenta on olennainen. Mökkien hankkiminen (pöydän täydellinen tyhjennys) on dramaattinen hetki ja voi ratkaista pelin. Rakentaminen lisää psykologista elementtiä.
 
 ## Erityistapaus
 

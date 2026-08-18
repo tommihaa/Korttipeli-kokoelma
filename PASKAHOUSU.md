@@ -30,6 +30,17 @@ Tavoite: pääse eroon käsikorteista — viimeinen on **Paskahousu**.
 6. Jos ei voi pelata → **nosta pakasta** (sokkona) tai **nosta kasa** käteen
 7. Pelattuaan pelaaja täydentää kätensä 6 kortiksi nostopakasta
 
+## Sääntövalinnat aloitusnäytöltä
+
+Kolme yllä olevaa lukua on **valittavissa ennen pelin alkua**, ja valinta muistetaan selaimessa.
+Vakioasento on se jota tämä kanoni muuten kuvaa.
+
+| Valinta | Vakio | Muut asennot | Mitä se muuttaa |
+|---|---|---|---|
+| Käden koko | 6 | 5 | Kuinka moneen korttiin käsi täydennetään |
+| Kakkoset | ♠2 ja ♣2 kovia | kaikki kovia | Kotisäännöllä myös ♥2 ja ♦2 saavat arvon 15 |
+| Kuvakortin alaraja | 7 | 0, 6, 8, 9 | Minkä arvon päälle kuvakortin saa lyödä (0 = ei rajaa) |
+
 ## Sokkopakasta nosto
 
 - Nosta pakan päällimmäinen kortti paljastamatta ensin

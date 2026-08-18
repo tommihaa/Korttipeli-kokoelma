@@ -45,8 +45,10 @@ Käytetään **pelinumeroarvojen vertailua** (A=14, 2=2, 3=3, ..., K=13):
 ## AI-strategia
 
 AI:n hyökkäys:
-1. Lyö useamman saman maan kortin (strateginen valinta — Maijaa ei hidasteta)
-2. Priorisoi pelaamalla hyökkäykseen sen maan kortit millä paljon matalaa arvoa 
+1. Valitsee maan **korttimäärän** mukaan: eniten kortteja sisältävä ei-valttimaa ensin. Maan sisällä lyödään pienimmät ensin (Oppipoika päinvastoin, suurin ensin)
+2. Monikorttihyökkäys on **Kisällin ja Mestarin** kyky: Oppipoika lyö yhden kortin kerrallaan (26.7.2026 alkaen, jotta Oppipojalle ei jää pelin vahvinta shedding-työkalua)
+3. **Maija-dumppi** (Kisälli ja Mestari): kun Maija on kädessä, hyökkäys johdetaan Maijalla ja perään lyödään omat padat pienimmästä alkaen
+4. **Valttihyökkäys pakan tyhjennyttyä** (vain Mestari): jos omia valtteja on vähintään kaksi ja muualla enintään kolme, hyökätään valteilla pienimmästä alkaen
 
 AI:n puolustus:
 1. Kaataa pienimmän voittavalla kortilla (säästää kortteja)

@@ -10,7 +10,8 @@ Kaikki kortit jaetaan tasan pelaajille käsikorteiksi, joka on myös pino, kasvo
 2. Pelaajat jatkavat vuorotellen
 3. **Jos kaksi päällimmäistä korttia ovat samat** → nopein läpsääjä voittaa kasan
 4. Väärästä läpsäytyksestä → menetät pinosi päällimmäisen kortin kasaan
-5. Voittaja ottaa kasan pinonsa alle
+5. **Jos sakkokortti muodostaa keskelle uuden parin**, peli jatkuu läpsäistävänä parina eikä vuoro vaihdu (muuten pari jäisi lukituksi eikä sitä voisi enää laillisesti läpsäistä)
+6. Voittaja ottaa kasan pinonsa alle
 
 ## Erityiskorttien haaste
 
@@ -45,7 +46,7 @@ Tasapelitilanteet (kaksi läpsäävät samanaikaisesti) ratkaistaan sekuntilasku
 ## AI-strategia
 
 AI:n pelilogiikka:
-1. Nosta kortti pakasta ajanmukaisesti
+1. Kääntää vuorollaan oman pinonsa päällimmäisen kortin keskelle (Läpsyssä ei ole nostopakkaa)
 2. Läpsää haasteen mukaisesti (1–4 korttia ennen kuin tulee haaste)
 3. Nopea reaktio tasapelitilanteissa
 4. Yksinkertainen strategia — näe peli enemmän reaktiopelinä kuin strategiapelinä

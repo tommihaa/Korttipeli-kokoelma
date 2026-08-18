@@ -171,12 +171,41 @@ function aiPickAddCard(addable, hand, ts) {
   return unpaired.length ? unpaired[0] : sorted[0];
 }
 
-// Puolustajan passaus: pienin sopiva ei-valttikortti jonka arvo on jo pöydässä.
-// Portitus (ei beginner, passChain-raja) tehdään kutsupaikassa; tämä valitsee vain kortin.
+// Kuka ottaa passin vastaan, tai null jos kukaan ei voi. Sama haku kuin doPassissa,
+// jotta passausehto ei koskaan tarjoa siirtoa jonka doPass hylkää.
+function moskaNextDefender(g) {
+  let nextDef = nextActive(g.players, g.defender);
+  while (g.attackers.includes(nextDef) && nextDef !== g.defender) {
+    nextDef = nextActive(g.players, nextDef);
+  }
+  if (nextDef === g.defender || nextDef === g.primaryAtk || g.passChain.includes(nextDef)) return null;
+  return nextDef;
+}
+
+// Passauksen ehdot yhdessä paikassa: sama sääntö ajaa botin, Mestarin neuvon ja ihmisen
+// napin. Ennen 18.8.2026 ehdot oli kirjoitettu kolmesti eivätkä versiot vastanneet
+// toisiaan: boteilla oli passiketjun pituusraja jota ihmisellä ei ollut, ja koodin oma
+// kommentti väitti ehtojen olevan samat. Yhtenäistys tehtiin ihmisen ehtoihin.
+function moskaCanPass(g, playerIdx) {
+  if (!g || g.defender !== playerIdx) return false;
+  if (!g.table.length || g.table.some(t => t.def)) return false;           // yhtään ei kaadettu
+  const ranks = new Set(g.table.map(t => t.atk.r));
+  if (ranks.size !== 1) return false;                                      // pöytä yhtä vahvuutta
+  if (!g.players[playerIdx].hand.some(c => ranks.has(c.r))) return false;  // oma kortti samaa vahvuutta
+  if (g.passChain.includes(playerIdx)) return false;                       // ei kahdesti samalla
+  if (g.players.filter(pl => pl.rank === null).length <= 2) return false;  // aktiivisia yli 2
+  return moskaNextDefender(g) !== null;
+}
+
+// Puolustajan passauskortti: pienin sopiva, valttia säästetään. Valtti kelpaa sääntönä,
+// joten siihen mennään jos muuta samaa vahvuutta ei ole (ihmisellä on sama vapaus).
+// Portitus tehdään kutsupaikassa moskaCanPassilla; tämä valitsee vain kortin.
 function aiPickPass(table, hand, ts) {
   const atkRanks = new Set(table.map(t => t.atk.r));
-  const passCards = hand.filter(c => atkRanks.has(c.r) && c.s !== ts);
-  return passCards.sort((a, b) => MV(a) - MV(b))[0] || null;
+  const same = hand.filter(c => atkRanks.has(c.r));
+  const byValue = cs => [...cs].sort((a, b) => MV(a) - MV(b));
+  const nonTrump = byValue(same.filter(c => c.s !== ts));
+  return nonTrump[0] || byValue(same)[0] || null;
 }
 
 // Mestarin neuvo Herolle (pelaaja 0): sama hard-tason logiikka kuin botilla, vain
@@ -193,14 +222,8 @@ export function getAdvice(g, removed) {
 
   if (phase === 'defend' && defender === 0) {
     const p = players[0];
-    const activeCount = players.filter(pl => pl.rank === null).length;
-    const noBeats = !table.some(t => t.def);
-    // Passaus ensin — samat ehdot kuin UI:n canPassNow ja hard-botin passausportti
-    const passableRanks = new Set(table.map(t => t.atk.r));
-    const allSameRank = table.length > 0 && passableRanks.size === 1;
-    const canPass = noBeats && allSameRank && !g.passChain.includes(defender)
-      && activeCount > 2 && g.passChain.length < activeCount - 2;
-    if (canPass) {
+    // Passaus ensin — sama ehto kuin UI:n napilla ja botilla (moskaCanPass)
+    if (moskaCanPass(g, 0)) {
       const passCard = aiPickPass(table, p.hand, ts);
       if (passCard) return { type: 'pass', cards: [passCard] };
     }
@@ -594,12 +617,9 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
 
   function doPass(g, passCards) {
     const def = g.players[g.defender];
-    // Seuraava aktiiviinen pelaaja joka ei ole hyökkääjä
-    let nextDef = nextActive(g.players, g.defender);
-    while (g.attackers.includes(nextDef) && nextDef !== g.defender) {
-      nextDef = nextActive(g.players, nextDef);
-    }
-    if (nextDef === g.primaryAtk || g.passChain.includes(nextDef)) {
+    // Seuraava aktiivinen pelaaja joka ei ole hyökkääjä (sama haku kuin passausehdossa)
+    const nextDef = moskaNextDefender(g);
+    if (nextDef === null) {
       addLog(M.cannotPass);
       return;
     }
@@ -779,13 +799,13 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       const p = players[defender];
       if (p.isHuman) return;
 
-      // Kokeile siirtoa ensin (jos ei vielä kaatanut mitään) — Aloittelija ei siirrä
-      const noBeats = !table.some(t => t.def);
+      // Kokeile siirtoa ensin — Aloittelija ei siirrä. Ehto on sama kuin ihmisellä;
+      // tasoporras on kutsupaikassa eikä säännössä.
       const lvl = botLevelsRef.current?.[defender] ?? aiLevelRef.current;
-      if (lvl !== 'beginner' && noBeats && g.passChain.length < players.filter(pl => pl.rank === null).length - 2) {
-        // Pienin sopiva ei-valttikortti — säästää isot kortit
+      if (lvl !== 'beginner' && moskaCanPass(g, defender)) {
+        // Pienin sopiva kortti, valttia säästäen
         const passCard = aiPickPass(table, p.hand, ts);
-        if (passCard && players.filter(pl => pl.rank === null).length > 2) {
+        if (passCard) {
           aiTmr.current = tm(() => {
             doPass(gRef.current, [passCard]);
           }, 1000);
@@ -1095,15 +1115,9 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
   const unbeatenSlots = G.table.filter(t => !t.def);
   const defBeaten     = G.table.filter(t => t.def).length;
 
-  // Voiko siirtää: ei yhtään kaadettua, kaikki pöydässä samanarvoisia, hänellä vähintään yksi samanarvoinen
+  // Voiko siirtää: ehdot ovat moskaCanPassissa, samat ihmiselle ja botille
   const passableRanks = new Set(G.table.map(t => t.atk.r));
-  const allSameRank   = G.table.length > 0 && passableRanks.size === 1;
-  const canPassNow = isMyDef
-    && !G.table.some(t => t.def)
-    && allSameRank
-    && human.hand.some(c => passableRanks.has(c.r))
-    && !G.passChain.includes(G.defender)
-    && G.players.filter(p => p.rank === null).length > 2;
+  const canPassNow = isMyDef && moskaCanPass(G, 0);
 
   const humanAddable = isMyAdd ? getAddable(G, 0) : [];
 
