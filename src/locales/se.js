@@ -304,7 +304,7 @@ export const se = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Speala ${card}. Vuos smávva goarttat, verráhat (6 ja 8) easkka bákkus.`,
+        play: ({ card }) => `Speala ${card}. Vuos smávva goarttat. Doalat verráha (6 dahje 8) gieđas lohkkan, ja raba dan easkka go seamma ivnnis leat unnimusat guokte goartta maid it beasa fargga speallat.`,
         playSeven: ({ card }) => `Speala ${card}. Raba čiežá das gos dus leat eanemus goarttat.`,
         pass: "Ii oktage goarttastat heive. Passe.",
         give: ({ card }) => `Atte ${card}, dat lea guhkimusas speallamis.`,
@@ -549,6 +549,7 @@ export const se = {
         drawDiscard: ({ card }) => `Váldde ${card} bálkestanstohkosis. Oidnosis hálbbes goarta lea sihkkareabbo go čahppes váldin.`,
         drawDeck: "Bálkestanstohkosa goarta ii veahket du. Váldde stohkosis.",
         swapSlot: "Lonut váldojuvvon goartta deattuhuvvon goartta sadjái, dat unnida submi eanemusat.",
+        swapUnknown: "Lonut váldojuvvon goartta deattuhuvvon sadjái. It oainne dan goartta, muhto amas sadji lea gaskamearálaččat stuorát go dát goarti.",
         discardDrawn: "Bálkes váldojuvvon goartta eret, dat ii buorit gieđa.",
       },
       altName: 'golfa (coahkkaleapmi)',
@@ -729,7 +730,7 @@ export const se = {
     moska: {
       advice: {
         attack: ({ cards }) => `Falle goarttain ${cards}. Vállje árvvu mas leat juo eanemus goarttat eret spealus, de šaddet unnit lievlafallehusat. Vurke duolbmasiid bealuštussii.`,
-        beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti báktti riekta, seaille stuoribáid.`,
+        beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti riekta, trumfat easkka go bággehallat.`,
         take: "It sáhte vuoitit buot bevddebáktiid. Váldde daid gihtii.",
         pass: ({ cards }) => `Sádde fallehusa viidáseappot bákttiin ${cards}, de beasat ieš eret.`,
         add: ({ card }) => `Čájet ${card} bealde. Bealuštusas leat ain báktit maid vuoitit, nappo deatte.`,

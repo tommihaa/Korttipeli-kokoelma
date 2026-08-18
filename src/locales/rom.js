@@ -305,7 +305,7 @@ export const rom = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Khel ${card}. Anglune e cikne karti, e vudarešće karti (6 thaj 8) numa kana mora.`,
+        play: ({ card }) => `Khel ${card}. Anglune e cikne karti. Inker e vudareski karta (6 vaj 8) ando vast sar phandipe, thaj putar la numa kana ande godi farba si tut duj karti so našti khelen sigo.`,
         playSeven: ({ card }) => `Khel ${card}. Putar jekh efta ande farba kaj si tut maj but karti.`,
         pass: "Nijekh ćiri karta či perel. Phen paso.",
         give: ({ card }) => `De ${card}, voj si maj dur katar o khelipe.`,
@@ -550,6 +550,7 @@ export const rom = {
         drawDiscard: ({ card }) => `Le ${card} andar o čhudino pako. Dikhlini ijeftino karta si maj sigurno sar korro lipe.`,
         drawDeck: "E karta andar o čhudino pako či ažutil tut. Le andar o pako.",
         swapSlot: "Paruv e lini karta la sikadi kartaha, voj cikňarel ćiri suma maj but.",
+        swapUnknown: "Paruv e lini karta ando sikado than. Či dikhes godi karta, numa jekh biprinžardo than si maj baro sar kadi karta.",
         discardDrawn: "Čhude e lini karta, voj či lačharel ćiro vast.",
       },
       altName: 'Golfo (cipe)',
@@ -730,7 +731,7 @@ export const rom = {
     moska: {
       advice: {
         attack: ({ cards }) => `Marde le ${cards}. Alav o mol savestar avile avri maj but karti, kadja avena maj xanci marimata rigate. Garav le trumfuria pala zumaviba.`,
-        beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kart kaj marel, garav le baria.`,
+        beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kaj marel, trumfurja numaj kana trubul.`,
         take: "Naštik marés sa le kartja pe skafidi. Le len ando vast.",
         pass: ({ cards }) => `Bičhal o napaipe angle la ${cards}, thaj korkoro našes.`,
         add: ({ card }) => `Khel ${card} katar e rig. Le arakhitores si vi kartja te marel, anda kodo cider.`,

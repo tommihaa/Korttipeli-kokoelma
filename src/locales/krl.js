@@ -303,7 +303,7 @@ export const krl = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Lyö ${card}. Pienet kortit iel, verräkortit (6 da 8) vaste pakon ies.`,
+        play: ({ card }) => `Lyö ${card}. Pienet kortit iel. Pie verräkortti (6 libo 8) käis lukkuna, avua se vaste sit, konzu sammas maas on kaksi libo enämbi korttii, kudamii et sua ruttoh lyvvä.`,
         playSeven: ({ card }) => `Lyö ${card}. Avua seiččie muastih, kudamas sinul on enin kortiloi.`,
         pass: "Ni yksi korttilois ei päi. Passuiče.",
         give: ({ card }) => `Anna ${card}, se on loitombazennu pelattavas.`,
@@ -548,6 +548,7 @@ export const krl = {
         drawDiscard: ({ card }) => `Nosta poistopakas ${card}. Nägyi huogei kortti on varmembi migu sogei nosto.`,
         drawDeck: "Poistopakan kortti ei avvuta sinuu. Nosta nostopakas.",
         swapSlot: "Vaihta nostettu kortti korostettuh korttih, se pienendäy summua enimyölleh.",
+        swapUnknown: "Vaihta nostettu kortti korostettuh sijah. Et nähä sidä korttii, ga tundematoi sija on keskimiäräs suurembi kui tämä kortti.",
         discardDrawn: "Lykkiä nostettu kortti poistopakkah, se ei kohenda kätty.",
       },
       altName: "golfi (kolkutuš)",
@@ -728,7 +729,7 @@ export const krl = {
     moska: {
       advice: {
         attack: ({ cards }) => `Hyökkyä kortil ${cards}. Vallitse arvo, kudamua on jo enin pelattu poikes, sit sivus lyyväh harvemba. Säilytä valtit puolistukseh.`,
-        beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai kortti riittäy, suuret piä tallel.`,
+        beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai riittäy, valtit vaste pakon ies.`,
         take: "Et voi kuadua kaikkii stolan kortiloi. Ota ne kädeh.",
         pass: ({ cards }) => `Siirrä hyökkäy iel kortil ${cards}, ga iče piäzet pälkähäzes.`,
         add: ({ card }) => `Lyö ${card} laijjas. Puolistajal on vie kortiloi kuadua, ga paina piäle.`,

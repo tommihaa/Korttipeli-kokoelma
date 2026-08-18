@@ -313,7 +313,7 @@ export const cs = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Zahraj ${card}. Nejdřív nízké karty, brány (6 a 8) jen z donucení.`,
+        play: ({ card }) => `Zahraj ${card}. Nejdřív nízké karty. Bránu (6 nebo 8) si nech v ruce jako zámek a otevři ji až tehdy, když máš ve stejné barvě aspoň dvě karty, které hned tak nezahraješ.`,
         playSeven: ({ card }) => `Zahraj ${card}. Otevři sedmičku v barvě, které máš nejvíc.`,
         pass: "Žádná z tvých karet nesedí. Pasuj.",
         give: ({ card }) => `Odevzdej ${card}, je nejdál od zahrání.`,
@@ -558,6 +558,7 @@ export const cs = {
         drawDiscard: ({ card }) => `Vezmi ${card} z odhazovacího balíčku. Viditelná levná karta je jistější než líznutí naslepo.`,
         drawDeck: "Karta z odhazovacího balíčku ti nepomůže. Lízni si z balíčku.",
         swapSlot: "Vyměň líznutou kartu za zvýrazněnou kartu, nejvíc to sníží tvůj součet.",
+        swapUnknown: "Vyměň líznutou kartu za zvýrazněné místo. Tu kartu nevidíš, ale neznámé místo bývá v průměru vyšší než tahle karta.",
         discardDrawn: "Odhoď líznutou kartu, ruku ti nevylepší.",
       },
       altName: 'Golf (Ťukaná)',
@@ -738,7 +739,7 @@ export const cs = {
     moska: {
       advice: {
         attack: ({ cards }) => `Útoč kartou ${cards}. Vyber hodnotu, které je už nejvíc karet ze hry venku, bude méně přihazování. Šetři trumfy na obranu.`,
-        beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná karta, vysoké si nech.`,
+        beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná, trumfy až když musíš.`,
         take: "Nedokážeš přebít všechny karty na stole. Vezmi si je do ruky.",
         pass: ({ cards }) => `Pošli útok dál kartou ${cards}, a sám se z toho dostaneš.`,
         add: ({ card }) => `Přidej ${card} ze strany. Obránce má stále čím bít, tak přitlač.`,

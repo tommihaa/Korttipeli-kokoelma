@@ -304,7 +304,7 @@ export const la = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Lude ${card}. Primum parvae chartae, portae (6 et 8) tantum coactus.`,
+        play: ({ card }) => `Lude ${card}. Primum parvae chartae. Portam (6 vel 8) in manu sicut claustrum serva, eamque tunc demum aperi cum in eodem colore duas saltem chartas habes quas mox ludere non poteris.`,
         playSeven: ({ card }) => `Lude ${card}. Aperi septenarium in colore cuius plurimas chartas habes.`,
         pass: "Nulla chartarum tuarum convenit. Cede vicem.",
         give: ({ card }) => `Da ${card}, ea longissime a ludendo abest.`,
@@ -549,6 +549,7 @@ export const la = {
         drawDiscard: ({ card }) => `Sume ${card} ex acervo abiecto. Charta vilis conspicua tutior est quam tractus caecus.`,
         drawDeck: "Charta abiecta te non iuvat. Trahe e fasce.",
         swapSlot: "Muta chartam tractam pro charta insignita, ita summa maxime minuitur.",
+        swapUnknown: "Muta chartam tractam in locum insignitum. Chartam ibi non vides, sed locus ignotus plerumque maior est quam haec charta.",
         discardDrawn: "Abice chartam tractam, manum non meliorem facit.",
       },
       altName: 'Golf (Pulsatio)',
@@ -729,7 +730,7 @@ export const la = {
     moska: {
       advice: {
         attack: ({ cards }) => `Impugna cum ${cards}. Elige valorem cuius plurimae chartae iam e ludo exierunt, ita pauciores impetus laterales erunt. Serva triumphos defensioni.`,
-        beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima charta vincens sufficit, magnas serva.`,
+        beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima vincens sufficit, triumphi tantum coactus.`,
         take: "Non potes omnes chartas in mensa vincere. Sume eas in manum.",
         pass: ({ cards }) => `Transfer impetum charta ${cards}, et ipse evades.`,
         add: ({ card }) => `Lude ${card} a latere. Defensor adhuc chartas ad vincendum habet, ergo insta.`,

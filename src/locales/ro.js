@@ -304,7 +304,7 @@ export const ro = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Joacă ${card}. Întâi cărțile mici, cărțile-poartă (6 și 8) doar la nevoie.`,
+        play: ({ card }) => `Joacă ${card}. Întâi cărțile mici. Ține în mână o carte-poartă (6 sau 8) ca zăvor și deschide-o abia când în aceeași culoare ai cel puțin două cărți pe care nu le vei putea juca curând.`,
         playSeven: ({ card }) => `Joacă ${card}. Deschide un șapte în culoarea în care ai cele mai multe cărți.`,
         pass: "Nicio carte de-a ta nu se potrivește. Pasează.",
         give: ({ card }) => `Dă ${card}, e cea mai departe de a fi jucabilă.`,
@@ -549,6 +549,7 @@ export const ro = {
         drawDiscard: ({ card }) => `Ia ${card} din teancul de aruncate. O carte ieftină vizibilă e mai sigură decât o tragere oarbă.`,
         drawDeck: "Cartea din teancul de aruncate nu te ajută. Trage din pachet.",
         swapSlot: "Schimbă cartea trasă cu cartea evidențiată, îți scade suma cel mai mult.",
+        swapUnknown: "Schimbă cartea trasă cu locul evidențiat. Nu vezi cartea de acolo, dar un loc necunoscut valorează în medie mai mult decât cartea asta.",
         discardDrawn: "Aruncă respectiva carte trasă, nu îți îmbunătățește mâna.",
       },
       altName: 'Golf (Ciocănit)',
@@ -729,7 +730,7 @@ export const ro = {
     moska: {
       advice: {
         attack: ({ cards }) => `Atacă cu ${cards}. Alege valoarea din care au ieșit deja cele mai multe cărți, vor fi mai puține atacuri laterale. Păstrează atuurile pentru apărare.`,
-        beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică carte câștigătoare, păstrează-le pe cele mari.`,
+        beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică câștigătoare, atuurile doar când ești silit.`,
         take: "Nu poți bate toate cărțile de pe masă. Ia-le în mână.",
         pass: ({ cards }) => `Pasează atacul mai departe cu ${cards}, și scapi tu însuți.`,
         add: ({ card }) => `Joacă ${card} din lateral. Apărătorul mai are cărți de bătut, așa că insistă.`,

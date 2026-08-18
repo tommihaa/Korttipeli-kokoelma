@@ -302,7 +302,7 @@ export const de = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Spiele ${card}. Niedrige Karten zuerst, Torkarten (6 und 8) nur im Notfall.`,
+        play: ({ card }) => `Spiele ${card}. Niedrige Karten zuerst. Behalte eine Torkarte (6 oder 8) als Sperre auf der Hand und öffne sie erst, wenn du in derselben Farbe mindestens zwei Karten hast, die du so bald nicht spielen kannst.`,
         playSeven: ({ card }) => `Spiele ${card}. Eröffne eine Sieben in der Farbe, von der du am meisten hast.`,
         pass: "Keine deiner Karten passt. Passe.",
         give: ({ card }) => `Gib ${card}, sie ist am weitesten vom Spielbaren entfernt.`,
@@ -547,6 +547,7 @@ export const de = {
         drawDiscard: ({ card }) => `Nimm ${card} vom Ablagestapel. Eine sichtbare billige Karte schlägt ein blindes Ziehen.`,
         drawDeck: "Die Ablagekarte hilft dir nicht. Ziehe vom Stapel.",
         swapSlot: "Tausche die gezogene Karte gegen die hervorgehobene Karte, das senkt deine Summe am meisten.",
+        swapUnknown: "Tausche die gezogene Karte auf den hervorgehobenen Platz. Du siehst diese Karte nicht, aber ein unbekannter Platz ist im Schnitt höher als diese Karte.",
         discardDrawn: "Wirf die gezogene Karte ab, sie verbessert deine Hand nicht.",
       },
       altName: "Polnischer Poker",
@@ -727,7 +728,7 @@ export const de = {
     moska: {
       advice: {
         attack: ({ cards }) => `Greife mit ${cards} an. Wähle den Wert, von dem schon die meisten Karten aus dem Spiel sind, dann gibt es weniger Seitenangriffe. Spare Trümpfe für die Verteidigung.`,
-        beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, behalte die großen.`,
+        beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, Trümpfe erst wenn nötig.`,
         take: "Du kannst nicht alle Karten auf dem Tisch schlagen. Nimm sie auf die Hand.",
         pass: ({ cards }) => `Schiebe den Angriff mit ${cards} weiter, dann bist du selbst aus dem Schneider.`,
         add: ({ card }) => `Lege ${card} von der Seite. Der Verteidiger hat noch Karten zum Schlagen, also leg nach.`,

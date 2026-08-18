@@ -25,8 +25,9 @@ Ajautuma osuu siis aina perusteluun, ja se on aina samaa muotoa: oikea siirto v�
 Luettu 52 pelikohtaista neuvotekstiä (`src/locales/fi.js`, yhdeksän `advice`-lohkoa) kunkin pelin
 `getAdvice`-funktiota ja sen kutsumaa valintalogiikkaa vasten. Kolme ajautumaa, kuusi peliä puhdas.
 
-**Löydöksiä ei korjattu**, päätös 18.8.2026: kirjataan ensin, korjaus omana vuoronaan. Korjaus
-koskee 23 lokaalia, koska muut ovat käännöksiä suomesta.
+**Kaikki kolme on korjattu 18.8.2026** samana päivänä kun ne löytyivät, versiossa 1.2.209.
+Löydökset jätetään tähän näkyviin korjausmerkintöineen, koska tämä on tarkastuskirjanpito eikä
+työjono: poistettu löydös ei todista mitään, korjattu todistaa sekä vian että sen korjauksen.
 
 ### 1. Moska `beat`: ensisijainen avain jää nimeämättä
 
@@ -37,7 +38,11 @@ sitten arvon mukaan. Jos ainoa ei-valttikaato on kuningas ja kädessä on valtti
 valitsee kuninkaan. Teksti lupaa siis pienimmän voittavan, ja koodi säästää valtin.
 
 Maijan vastaava teksti sanoo saman asian oikein: *"Pienin voittava riittää, valtit vasta pakon
-edessä."* Korjaus on siis olemassa sisarpelissä eikä sitä tarvitse keksiä.
+edessä."*
+
+**Korjattu 18.8.2026.** Moskan teksti sai Maijan muotoilun kaikissa 23 kielessä, ja käännös
+kopioitiin kunkin lokaalin omasta Maija-tekstistä eikä tuotettu uudelleen. Lause on sama, joten
+uutta käännöstyötä ei tarvittu eikä uutta käännösvirhettä voinut syntyä.
 
 ### 2. Koputus `swapSlot`: varma pienennys luvataan sokkopaikasta
 
@@ -48,9 +53,15 @@ Teksti: *"Vaihda nostettu kortti korostettuun korttiin, se pienentää summaasi 
 kortti on sellainen jota pelaaja ei näe, eikä summa välttämättä pienene lainkaan. Valinta on
 oikea, mutta perustelu esittää odotusarvon varmuutena.
 
+**Korjattu 18.8.2026 jakamalla neuvo kahtia, ei sanamuotoa pehmentämällä.** `getAdvice` palauttaa
+nyt `swapSlot`in vain tunnetulle paikalle ja uuden `swapUnknown`in tuntemattomalle. Vanha teksti
+on siis oikein siinä haarassa jossa se nyt näytetään, ja tuntemattomalle paikalle sanotaan ääneen
+ettei korttia näe ja että peruste on keskiarvo. Muoto on talon oma: Kultakalassa sama jako on
+tehty jo aiemmin (*"Ketju kannattaa vs. vaihtoa ei voi pysäyttää: eri syy, eri neuvo"*).
+
 Sama muoto lievempänä Kultakalan `drawDiscard`-tekstissä: *"näkyvä pikkukortti"* on
 yksinkertaistus, koska `kkDrawDecision`in kynnys on suhteellinen omaan huonoimpaan korttiin eikä
-absoluuttinen. Tätä ei ole laskettu löydökseksi.
+absoluuttinen. Tätä ei ole laskettu löydökseksi eikä korjattu.
 
 ### 3. Ristiseiskan porttisääntö: kanoni ja koodi eri mieltä, eikä kumpaakaan ole valittu
 
@@ -81,10 +92,16 @@ mistä tahansa maasta, Tommin sääntö kun kaukaisia kortteja on **kyseisessä 
 Ehdot osoittavat siis eri suuntiin: koodi pidättelee sitä useammin mitä enemmän roskaa kädessä on,
 Tommin sääntö sitä useammin mitä vähemmän sitä on siinä maassa.
 
-Yksi yksityiskohta jää auki, eikä sitä arvattu: *enintään yksi* sallii myös nollan, jolloin
-panttina annettavaa korttia ei ole ja säännön oma perustelu jää ilman kohdetta. Toteutus tarvitsee
-tiedon siitä onko ehto *enintään yksi* vai *tasan yksi*. Vaikutus menee suoraan Mestarin tasoon,
-joten se liikuttaa myös Botbench-lukuja.
+**Ratkaistu 18.8.2026: ehto on *enintään yksi*, eli nolla kelpaa.** Silloin pidättely on puhdas
+blokkaus ilman omaa hintaa, koska pantiksi tarjottavaa ei ole eikä lukon pitäminen maksa mitään.
+Sääntö on kirjattu `RISTISEISKA.md`:n kohtaan 2 ennen koodia (sopimusmuutos-protokolla) ja viety
+`aiBestCard`iin tasolle `hard`. Neuvoteksti kirjoitettiin uudelleen kaikkiin 23 kieleen: se kertoo
+nyt portin olevan lukko ja avautuvan vasta kun kaukaisia kortteja on samassa maassa vähintään
+kaksi.
+
+**Mittaamatta jäi bottivoima.** Muutos koskee Mestarin tasoa, joten se voi liikuttaa
+`docs/BOTBENCH.md`:n lukuja. Ristiseiskalla ei ole mitattua kyvykkyysporrasta (`FLAT_AI_GAMES`),
+joten vertailukohtaa ei ole valmiina, eikä N=400-ajoa tehty tässä yhteydessä.
 
 ### Puhtaat
 

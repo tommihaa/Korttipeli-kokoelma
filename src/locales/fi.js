@@ -388,7 +388,7 @@ export const fi = {
         upperShort: 'yläpino',
       },
       advice: {
-        play: ({ card }) => `Lyö ${card}. Pienet kortit pois alta, portit (6 ja 8) vasta pakon edessä.`,
+        play: ({ card }) => `Lyö ${card}. Pienet kortit pois alta. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.`,
         playSeven: ({ card }) => `Lyö ${card}. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.`,
         pass: 'Mikään korttisi ei käy. Passaa.',
         give: ({ card }) => `Anna ${card}, se on kauimpana pelattavuudesta.`,
@@ -592,6 +592,7 @@ export const fi = {
         drawDiscard: ({ card }) => `Nosta poistopakasta ${card}. Näkyvä halpa kortti on varmempi kuin sokea nosto.`,
         drawDeck: 'Poistopakan kortti ei hyödytä sinua. Nosta nostopakasta.',
         swapSlot: 'Vaihda nostettu kortti korostettuun korttiin, se pienentää summaasi eniten.',
+        swapUnknown: "Vaihda nostettu kortti korostettuun paikkaan. Et näe sen korttia, mutta tuntematon paikka on keskimäärin tätä korttia isompi.",
         discardDrawn: 'Heitä nostettu kortti poistopakkaan, se ei paranna kättäsi.',
       },
       msg: {
@@ -805,7 +806,7 @@ export const fi = {
       },
       advice: {
         attack: ({ cards }) => `Hyökkää kortilla ${cards}. Valitse arvo, jota on jo eniten pelattu pois, niin sivusta lyödään harvemmin. Säästä valtit puolustukseen.`,
-        beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava kortti riittää, isot talteen.`,
+        beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava riittää, valtit vasta pakon edessä.`,
         take: 'Et pysty kaatamaan kaikkia pöydän kortteja. Ota ne käteen.',
         pass: ({ cards }) => `Siirrä hyökkäys eteenpäin kortilla ${cards}, niin pääset itse pälkähästä.`,
         add: ({ card }) => `Lyö ${card} sivusta. Puolustajalla riittää kortteja kaadettavaksi, paina päälle.`,

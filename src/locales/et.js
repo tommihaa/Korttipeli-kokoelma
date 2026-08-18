@@ -302,7 +302,7 @@ export const et = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Mängi ${card}. Väikesed kaardid enne, väravakaardid (6 ja 8) alles sunni korral.`,
+        play: ({ card }) => `Mängi ${card}. Väikesed kaardid enne. Hoia väravakaarti (6 või 8) käes lukuna ja ava see alles siis, kui samas mastis on vähemalt kaks kaarti, mida sa niipea mängida ei saa.`,
         playSeven: ({ card }) => `Mängi ${card}. Ava seitse mastis, kus sul on kõige rohkem kaarte.`,
         pass: "Ükski su kaart ei sobi. Passi.",
         give: ({ card }) => `Anna ${card}, see on mängitavusest kõige kaugemal.`,
@@ -547,6 +547,7 @@ export const et = {
         drawDiscard: ({ card }) => `Võta ${card} äraviskepakist. Nähtav odav kaart on kindlam kui pime võtmine.`,
         drawDeck: "Äraviskepaki kaart sind ei aita. Võta pakist.",
         swapSlot: "Vaheta võetud kaart esiletõstetud kaardi vastu, see vähendab su summat kõige rohkem.",
+        swapUnknown: "Vaheta võetud kaart esiletõstetud kohale. Sa ei näe seda kaarti, aga tundmatu koht on keskmiselt sellest kaardist suurem.",
         discardDrawn: "Viska võetud kaart äraviskepakki, see ei paranda su kätt.",
       },
       altName: "Golf (kaardimäng)",
@@ -727,7 +728,7 @@ export const et = {
     moska: {
       advice: {
         attack: ({ cards }) => `Ründa kaardiga ${cards}. Vali väärtus, millest on juba kõige rohkem kaarte mängust väljas, siis on vähem kõrvalrünnakuid. Hoia trumbid kaitseks.`,
-        beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev kaart piisab, hoia suured alles.`,
+        beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev piisab, trumbid alles sunni korral.`,
         take: "Sa ei suuda kõiki laual olevaid kaarte lüüa. Võta need kätte.",
         pass: ({ cards }) => `Lükka rünnak edasi kaardiga ${cards}, nii pääsed ise puhtalt.`,
         add: ({ card }) => `Mängi ${card} küljelt. Kaitsjal on veel kaarte lüüa, nii et suru peale.`,

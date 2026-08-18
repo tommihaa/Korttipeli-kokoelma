@@ -311,7 +311,7 @@ export const pl = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Zagraj ${card}. Najpierw niskie karty, karty-bramki (6 i 8) tylko z konieczności.`,
+        play: ({ card }) => `Zagraj ${card}. Najpierw niskie karty. Trzymaj kartę-bramkę (6 lub 8) w ręce jako zamek i otwórz ją dopiero wtedy, gdy w tym samym kolorze masz co najmniej dwie karty, których szybko nie zagrasz.`,
         playSeven: ({ card }) => `Zagraj ${card}. Otwórz siódemkę w kolorze, którego masz najwięcej.`,
         pass: "Żadna z twoich kart nie pasuje. Spasuj.",
         give: ({ card }) => `Oddaj ${card}, jest najdalej od zagrania.`,
@@ -556,6 +556,7 @@ export const pl = {
         drawDiscard: ({ card }) => `Weź ${card} ze stosu odrzuconych. Widoczna tania karta jest pewniejsza niż dobieranie w ciemno.`,
         drawDeck: "Karta z odrzuconych ci nie pomoże. Dobierz z talii.",
         swapSlot: "Wymień dobraną kartę na podświetloną kartę, to najbardziej obniży twoją sumę.",
+        swapUnknown: "Wymień dobraną kartę na podświetlone miejsce. Nie widzisz tej karty, ale nieznane miejsce jest średnio wyższe niż ta karta.",
         discardDrawn: "Odrzuć dobraną kartę, nie poprawia twojej ręki.",
       },
       altName: "Golf (Polish Poker)",
@@ -736,7 +737,7 @@ export const pl = {
     moska: {
       advice: {
         attack: ({ cards }) => `Atakuj kartą ${cards}. Wybierz figurę, której najwięcej kart już wyszło z gry, wtedy będzie mniej dorzucania. Zachowaj atuty do obrony.`,
-        beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca karta, zachowaj wysokie.`,
+        beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca, atuty dopiero gdy musisz.`,
         take: "Nie pobijesz wszystkich kart na stole. Weź je do ręki.",
         pass: ({ cards }) => `Przekaż atak dalej kartą ${cards}, a sam się wywiniesz.`,
         add: ({ card }) => `Dołóż ${card} z boku. Obrońca wciąż ma czym bić, więc naciskaj.`,

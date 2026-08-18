@@ -335,10 +335,8 @@ function aiBestCard(hand, rows, level = 'normal') {
 
   const isHard = level === 'hard';
 
-  // Normal: pidättele porttia aina kun samaa maata on useampi → pakotettu passaus
-  // Hard/Super: pidättele vain jos kädessä on hyvä panttikandidaatti samaa maata
-  //   (distanceToPlay ≥ 3) — muuten pelaa portti auki, sillä muut saman maan kortit
-  //   ovat jo lähellä pelattavaksi eikä panttina siirtäminen tuo etua.
+  // Normal/beginner: pidättele porttia aina kun samaa maata on useampi → pakotettu passaus
+  // Hard: pidättelyn ehto on maakohtainen, ks. RISTISEISKA.md kohta 2.
   const nonGates = valid.filter(c => {
     if (c.r !== '6' && c.r !== '8') return true;
     const cnt = suitCount(hand, c.s);
@@ -346,14 +344,17 @@ function aiBestCard(hand, rows, level = 'normal') {
       // Normal: pidättele jos samaa maata on useampi (cnt > 1), muuten pelaa
       return cnt <= 1;
     }
-    // Mestari (hard): porttikortti on placeholder — pihtaa se niin kauan kuin
-    // kädessä on huonoja kortteja joista haluaa päästä eroon panttina.
-    // Huono kortti = kaukana pelattavuudesta (dist ≥ 3), mistä maasta tahansa.
-    // cnt = 1 (vain tämä portti maassa) → pidättele silti: puhdas blokkaus.
-    const hasAnyBadCard = hand.some(
-      other => other.id !== c.id && distanceToPlay(other, rows) >= 3
-    );
-    return !hasAnyBadCard; // pelaa portti jos kaikki muut kortit lähellä pelattavuutta
+    // Mestari (hard): lukittu pöytä pakottaa passaamaan, ja passatessa annetaan kortti
+    // panttina. Pidättely on siis keino päästä eroon yhdestä kortista jota ei muuten saisi
+    // pelattua, joten se kannattaa kun samassa maassa on ENINTÄÄN yksi kaukainen kortti
+    // (distanceToPlay ≥ 3, porttia itseään ei lasketa). Kaksi tai useampi kaukaista samassa
+    // maassa → yksi pantti ei riitä niistä eroon, joten portti pelataan auki.
+    // Nolla kaukaista → pidättele silti: lukko on silloin puhdas blokkaus ilman omaa hintaa.
+    // Muutettu 18.8.2026, aiempi ehto laski kaukaisia koko kädestä maasta riippumatta.
+    const farSameSuit = hand.filter(
+      other => other.id !== c.id && other.s === c.s && distanceToPlay(other, rows) >= 3
+    ).length;
+    return farSameSuit > 1; // pelaa portti vasta kun pantti ei riitä
   });
 
   const pool = nonGates.length ? nonGates : valid;

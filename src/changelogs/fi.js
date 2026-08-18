@@ -9,6 +9,13 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '18.8.2026',
+    items: [
+      'Ristiseiskan Mestari pidättelee porttikorttia (6 ja 8) nyt maakohtaisesti. Portti jää käteen lukoksi niin kauan kuin samassa maassa on enintään yksi kortti jota ei pääse pian pelaamaan, koska lukittu pöytä pakottaa passaamaan ja passatessa saa annettua juuri sen kortin panttina. Portti avataan vasta kun kaukaisia kortteja on siinä maassa kaksi tai enemmän, koska yhdellä pantilla ei pääse useasta eroon. Aiemmin Mestari katsoi koko kättä maasta riippumatta.',
+      'Mestarin neuvon perusteluja korjattiin kahdessa pelissä. Moskassa neuvo lupasi pienimmän voittavan kortin, vaikka Mestari säästää valtit puolustukseen ja kaataa mieluummin isollakin ei-valtilla. Koputuksessa neuvo lupasi varman pienennyksen summaan silloinkin kun se ohjasi vaihtamaan kortin tuntemattomaan paikkaan, jota pelaaja ei näe. Molemmissa neuvon siirto oli oikea, vain perustelu opetti väärää. Korjattu kaikkiin 23 kieleen.',
+    ],
+  },
+  {
     date: '26.7.2026',
     items: [
       'Maijassa Oppipoika pelaa nyt selvästi aloittelijamaisemmin: se lyö pöytään vain yhden kortin kerrallaan, kun Kisälli ja Mestari lyövät koko maan yhdellä kertaa. Aiemmin kaikki kolme tasoa hyökkäsivät samalla tavalla, joten Kisälli ei käytännössä eronnut Oppipojasta. Mittasimme muutoksen 400 pelin sarjoilla: Kisälli voittaa Oppipojan nyt 68 prosentissa peleistä, kun aiemmin luku oli 51 eli sattuman tasolla.',

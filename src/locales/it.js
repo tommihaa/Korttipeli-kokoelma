@@ -302,7 +302,7 @@ export const it = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Gioca ${card}. Prima le carte basse, le carte porta (6 e 8) solo se costretto.`,
+        play: ({ card }) => `Gioca ${card}. Prima le carte basse. Tieni in mano una carta porta (6 o 8) come blocco e aprila solo quando in quel seme hai almeno due carte che non potrai giocare presto.`,
         playSeven: ({ card }) => `Gioca ${card}. Apri un sette nel seme in cui hai più carte.`,
         pass: "Nessuna delle tue carte va bene. Passa.",
         give: ({ card }) => `Consegna ${card}, è la più lontana dall'essere giocabile.`,
@@ -547,6 +547,7 @@ export const it = {
         drawDiscard: ({ card }) => `Prendi ${card} dagli scarti. Una carta economica visibile batte una pescata alla cieca.`,
         drawDeck: "La carta degli scarti non ti aiuta. Pesca dal mazzo.",
         swapSlot: "Scambia la carta pescata con la carta evidenziata, abbassa di più la tua somma.",
+        swapUnknown: "Scambia la carta pescata con la posizione evidenziata. Non vedi quella carta, ma una posizione sconosciuta vale in media più di questa.",
         discardDrawn: "Butta la carta pescata negli scarti, non migliora la tua mano.",
       },
       altName: "Golf (Polish Poker)",
@@ -727,7 +728,7 @@ export const it = {
     moska: {
       advice: {
         attack: ({ cards }) => `Attacca con ${cards}. Scegli il valore di cui sono già uscite più carte, così ci saranno meno attacchi laterali. Conserva le briscole per la difesa.`,
-        beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la carta vincente più bassa, tieni le alte.`,
+        beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la vincente più bassa, briscole solo quando sei costretto.`,
         take: "Non puoi battere tutte le carte sul tavolo. Prendile in mano.",
         pass: ({ cards }) => `Passa l'attacco con ${cards}, così te la cavi tu stesso.`,
         add: ({ card }) => `Gioca ${card} di fianco. Il difensore ha ancora carte da battere, quindi insisti.`,

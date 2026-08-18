@@ -306,7 +306,7 @@ export const en = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Play ${card}. Low cards out first, gate cards (6 and 8) only when forced.`,
+        play: ({ card }) => `Play ${card}. Low cards out first. Keep a gate card (6 or 8) in hand as a lock, and open it only when that suit holds at least two cards you cannot play soon.`,
         playSeven: ({ card }) => `Play ${card}. Open a seven in the suit where you hold the most cards.`,
         pass: "None of your cards fit. Pass.",
         give: ({ card }) => `Give ${card}, it is the furthest from playable.`,
@@ -551,6 +551,7 @@ export const en = {
         drawDiscard: ({ card }) => `Take ${card} from the discard pile. A visible cheap card beats a blind draw.`,
         drawDeck: "The discard card does not help you. Draw from the deck.",
         swapSlot: "Swap the drawn card for the highlighted card, it lowers your total the most.",
+        swapUnknown: "Swap the drawn card into the highlighted slot. You cannot see that card, but an unknown slot is on average higher than this one.",
         discardDrawn: "Throw the drawn card on the discard pile, it does not improve your hand.",
       },
       desc: 'A memory game with surprise twists',
@@ -735,7 +736,7 @@ export const en = {
     moska: {
       advice: {
         attack: ({ cards }) => `Attack with ${cards}. Pick the rank with the most copies already out of play, so there are fewer side attacks. Save trumps for defence.`,
-        beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winning card is enough, keep the big ones.`,
+        beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winner is enough, trumps only when forced.`,
         take: "You cannot beat every card on the table. Take them into your hand.",
         pass: ({ cards }) => `Pass the attack on with ${cards}, and you get off the hook yourself.`,
         add: ({ card }) => `Play ${card} from the side. The defender still has cards to beat, so pile it on.`,

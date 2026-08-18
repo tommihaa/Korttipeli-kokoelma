@@ -302,7 +302,7 @@ export const is = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Spilaðu ${card}. Lág spil fyrst, hliðspilin (6 og 8) aðeins þegar þú neyðist.`,
+        play: ({ card }) => `Spilaðu ${card}. Lág spil fyrst. Haltu hliðspilinu (6 eða 8) á hendi sem lás og opnaðu það fyrst þegar sami litur geymir að minnsta kosti tvö spil sem þú getur ekki spilað á næstunni.`,
         playSeven: ({ card }) => `Spilaðu ${card}. Opnaðu sjöu í litnum þar sem þú átt flest spil.`,
         pass: "Ekkert spilanna þinna passar. Segðu pass.",
         give: ({ card }) => `Gefðu ${card}, það er lengst frá því að vera spilanlegt.`,
@@ -547,6 +547,7 @@ export const is = {
         drawDiscard: ({ card }) => `Taktu ${card} úr kastbunkanum. Sýnilegt ódýrt spil er öruggara en blindur dráttur.`,
         drawDeck: "Spil kastbunkans hjálpar þér ekki. Dragðu úr stokknum.",
         swapSlot: "Skiptu dregna spilinu út fyrir auðkennda spilið, það lækkar summuna þína mest.",
+        swapUnknown: "Skiptu dregna spilinu inn á auðkennda reitinn. Þú sérð ekki spilið þar, en óþekktur reitur er að meðaltali hærri en þetta spil.",
         discardDrawn: "Kastaðu dregna spilinu, það bætir ekki höndina þína.",
       },
       altName: "Golf (spil)",
@@ -727,7 +728,7 @@ export const is = {
     moska: {
       advice: {
         attack: ({ cards }) => `Ráðstu með ${cards}. Veldu gildið sem flest spil eru þegar farin úr spilinu, þá verða hliðarárásir færri. Geymdu tromp í vörnina.`,
-        beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi spilið dugar, geymdu þau háu.`,
+        beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi dugar, tromp aðeins þegar þú neyðist.`,
         take: "Þú getur ekki slegið öll spilin á borðinu. Taktu þau á höndina.",
         pass: ({ cards }) => `Sendu árásina áfram með ${cards}, þá sleppur þú sjálfur.`,
         add: ({ card }) => `Leggðu ${card} frá hlið. Verjandinn á enn spil til að slá, svo þrýstu á.`,

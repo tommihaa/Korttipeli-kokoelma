@@ -305,7 +305,7 @@ export const hu = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Játszd ki: ${card}. Előbb a kis lapok, a kapulapok (6 és 8) csak kényszerből.`,
+        play: ({ card }) => `Játszd ki: ${card}. Előbb a kis lapok. A kapulapot (6 vagy 8) tartsd a kezedben zárként, és csak akkor nyisd meg, ha ugyanabban a színben legalább két olyan lapod van, amit egyhamar nem tudsz kijátszani.`,
         playSeven: ({ card }) => `Játszd ki: ${card}. Nyiss hetest abban a színben, amelyikből a legtöbb lapod van.`,
         pass: "Egyik lapod sem jó. Passzolj.",
         give: ({ card }) => `Add oda: ${card}, az van legtávolabb a kijátszhatóságtól.`,
@@ -550,6 +550,7 @@ export const hu = {
         drawDiscard: ({ card }) => `Vedd fel a dobópakliból: ${card}. A látható olcsó lap biztosabb, mint a vakhúzás.`,
         drawDeck: "A dobópakli lapja nem segít. Húzz a pakliból.",
         swapSlot: "Cseréld a húzott lapot a kiemelt lapra, az csökkenti legjobban az összeged.",
+        swapUnknown: "Cseréld a húzott lapot a kiemelt helyre. Azt a lapot nem látod, de egy ismeretlen hely átlagosan magasabb ennél a lapnál.",
         discardDrawn: "Dobd el a húzott lapot, nem javít a kezeden.",
       },
       altName: 'Golf (kopogós)',
@@ -730,7 +731,7 @@ export const hu = {
     moska: {
       advice: {
         attack: ({ cards }) => `Támadj ezzel: ${cards}. Válaszd azt az értéket, amelyből már a legtöbb lap kikerült a játékból, így kevesebb oldaltámadás lesz. Tartogasd az adukat védekezésre.`,
-        beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő lap is elég, a nagyokat tartsd meg.`,
+        beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő is elég, adut csak kényszerből.`,
         take: "Nem tudod az összes asztali lapot ütni. Vedd fel őket a kezedbe.",
         pass: ({ cards }) => `Told tovább a támadást a(z) ${cards} lappal, és magad megúszod.`,
         add: ({ card }) => `Tegyél be oldalról ${card} lapot. A védőnek még van mivel ütnie, úgyhogy nyomd rá.`,

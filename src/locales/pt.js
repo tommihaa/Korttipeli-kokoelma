@@ -302,7 +302,7 @@ export const pt = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Joga ${card}. Cartas baixas primeiro, as cartas-porta (6 e 8) só quando fores obrigado.`,
+        play: ({ card }) => `Joga ${card}. Cartas baixas primeiro. Guarda uma carta-porta (6 ou 8) na mão como tranca e só a abres quando esse naipe tiver pelo menos duas cartas que não vais poder jogar tão cedo.`,
         playSeven: ({ card }) => `Joga ${card}. Abre um sete no naipe em que tens mais cartas.`,
         pass: "Nenhuma das tuas cartas serve. Passa.",
         give: ({ card }) => `Entrega ${card}, é a que está mais longe de ser jogável.`,
@@ -547,6 +547,7 @@ export const pt = {
         drawDiscard: ({ card }) => `Tira ${card} do descarte. Uma carta barata visível é mais segura do que comprar às cegas.`,
         drawDeck: "A carta do descarte não te ajuda. Compra do baralho.",
         swapSlot: "Troca a carta comprada pela carta destacada, é o que mais baixa a tua soma.",
+        swapUnknown: "Troca a carta comprada pelo espaço destacado. Não vês essa carta, mas um espaço desconhecido vale em média mais do que esta carta.",
         discardDrawn: "Deita a carta comprada no descarte, não melhora a tua mão.",
       },
       altName: "Golfe (cartas)",
@@ -727,7 +728,7 @@ export const pt = {
     moska: {
       advice: {
         attack: ({ cards }) => `Ataca com ${cards}. Escolhe o valor de que já saíram mais cartas, assim haverá menos ataques laterais. Guarda os trunfos para a defesa.`,
-        beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a carta vencedora mais baixa, guarda as altas.`,
+        beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a vencedora mais baixa, trunfos só quando fores obrigado.`,
         take: "Não consegues vencer todas as cartas na mesa. Recolhe-as para a mão.",
         pass: ({ cards }) => `Passa o ataque com ${cards}, e assim livras-te tu mesmo.`,
         add: ({ card }) => `Joga ${card} pelo lado. O defensor ainda tem cartas para vencer, por isso insiste.`,

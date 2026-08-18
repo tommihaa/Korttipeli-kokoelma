@@ -302,7 +302,7 @@ export const fr = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Joue ${card}. Les petites cartes d'abord, les cartes-portes (6 et 8) seulement si tu y es forcé.`,
+        play: ({ card }) => `Joue ${card}. Les petites cartes d'abord. Garde une carte-porte (6 ou 8) en main comme un verrou et ne l'ouvre que lorsque la même couleur compte au moins deux cartes que tu ne pourras pas jouer de sitôt.`,
         playSeven: ({ card }) => `Joue ${card}. Ouvre un sept dans la couleur où tu as le plus de cartes.`,
         pass: "Aucune de tes cartes ne convient. Passe.",
         give: ({ card }) => `Donne ${card}, c'est la carte la plus loin d'être jouable.`,
@@ -547,6 +547,7 @@ export const fr = {
         drawDiscard: ({ card }) => `Prends ${card} dans la défausse. Une carte bon marché visible vaut mieux qu'une pioche à l'aveugle.`,
         drawDeck: "La carte de la défausse ne t'aide pas. Pioche.",
         swapSlot: "Échange la carte piochée contre la carte mise en évidence, cela baisse ta somme au maximum.",
+        swapUnknown: "Échange la carte piochée contre l'emplacement mis en évidence. Tu ne vois pas cette carte, mais un emplacement inconnu vaut en moyenne plus que celle-ci.",
         discardDrawn: "Jette la carte piochée, elle n'améliore pas ta main.",
       },
       altName: "Golf (Polish Poker)",
@@ -727,7 +728,7 @@ export const fr = {
     moska: {
       advice: {
         attack: ({ cards }) => `Attaquez avec ${cards}. Choisissez la valeur dont le plus de cartes sont déjà sorties du jeu, il y aura moins d'attaques latérales. Gardez les atouts pour la défense.`,
-        beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite carte gagnante suffit, garde les grosses.`,
+        beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite gagnante suffit, les atouts seulement quand tu y es forcé.`,
         take: "Tu ne peux pas battre toutes les cartes sur la table. Prends-les en main.",
         pass: ({ cards }) => `Renvoie l'attaque avec ${cards}, et tu t'en sors toi-même.`,
         add: ({ card }) => `Joue ${card} sur le côté. Le défenseur a encore des cartes à battre, alors insiste.`,

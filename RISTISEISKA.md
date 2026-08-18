@@ -68,14 +68,21 @@ Ristiseiskan juoni on **kiusanteko-elementti**:
 
 ### AI:n pelaamisen prioriteetti
 1. **Seiskat ensin**: avaa uusia maita strategisesti
-2. **Vältä porttikortteja** (6 ja 8) — käytä ne vain välttämättä
-   - **Kirjattu 18.8.2026: koodi ei tee tätä ehdoitta.** Taso `hard` pidättelee porttia vain jos
-     kädessä on jokin kortti jonka `distanceToPlay >= 3`, eli portti pelataan normaalisti kun
-     kaikki muut kortit ovat lähellä pelattavuutta. Poikkeus on tehty tarkoituksella, mutta tämä
-     rivi ja Mestarin neuvon teksti sanovat yhä ehdotonta muotoa. Sopimusmuutos on ratkaisematta,
-     ja Tommin oma kanta on kolmas vaihtoehto: ks. `docs/MESTARIN_NEUVO.md` löydös 3.
+2. **Vältä porttikortteja** (6 ja 8)
    - Syy: 6 lukitsee pöydän (5 ei voi astua vielä)
    - Syy: 8 lukitsee pöydän (väärin)
+   - **Pidättelyn ehto on maakohtainen (päätetty 18.8.2026, taso Mestari).** Porttia pidätellään
+     niin kauan kuin **samassa maassa on enintään yksi** kortti joka on kaukana pelattavuudesta
+     (`distanceToPlay >= 3`, porttia itseään ei lasketa). Kun kaukaisia kortteja on siinä maassa
+     kaksi tai enemmän, portti pelataan auki: yhdellä pantilla ei pääse useasta eroon, joten
+     lukon pitäminen maksaa enemmän kuin tuottaa.
+   - **Miksi pidättely kannattaa juuri silloin kun kaukaisia kortteja on vähän.** Lukittu pöytä
+     pakottaa passaamaan, ja passatessa annetaan kortti panttina. Pidättely on siis keino päästä
+     eroon yhdestä kortista jota ei muuten saisi pelattua. Toivottu kortti on juuri se kaukainen,
+     ja siksi ehto on *enintään yksi* eikä *vähintään yksi*: pidättely tehdään myös silloin kun
+     kaukaisia on nolla, koska lukko on silloin puhdas blokkaus ilman omaa hintaa.
+   - Ehto koskee vain Mestaria. Kisälli ja Oppipoika käyttävät samaa vanhempaa sääntöä:
+     porttia pidätellään jos kädessä on samaa maata useampi kuin yksi kortti (`suitCount > 1`).
 3. **Pelaa pienin arvo muista**: 2, 3, 4, 5, 9, 10, J, Q, K, A
 
 ### AI:n bonusvuorojen hyödyntäminen

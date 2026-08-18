@@ -302,7 +302,7 @@ export const es = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Juega ${card}. Las cartas bajas primero, las cartas puerta (6 y 8) solo si te obligan.`,
+        play: ({ card }) => `Juega ${card}. Las cartas bajas primero. Guarda una carta puerta (6 u 8) en la mano como cerrojo y ábrela solo cuando ese palo tenga al menos dos cartas que no podrás jugar pronto.`,
         playSeven: ({ card }) => `Juega ${card}. Abre un siete en el palo donde tienes más cartas.`,
         pass: "Ninguna de tus cartas sirve. Pasa.",
         give: ({ card }) => `Entrega ${card}, es la que está más lejos de ser jugable.`,
@@ -547,6 +547,7 @@ export const es = {
         drawDiscard: ({ card }) => `Toma ${card} del descarte. Una carta barata visible vale más que robar a ciegas.`,
         drawDeck: "La carta del descarte no te ayuda. Roba del mazo.",
         swapSlot: "Cambia la carta robada por la carta resaltada, es lo que más baja tu suma.",
+        swapUnknown: "Cambia la carta robada por el hueco resaltado. No ves esa carta, pero un hueco desconocido vale de media más que esta carta.",
         discardDrawn: "Tira la carta robada al descarte, no mejora tu mano.",
       },
       altName: "Golf (pócker polaco)",
@@ -727,7 +728,7 @@ export const es = {
     moska: {
       advice: {
         attack: ({ cards }) => `Ataca con ${cards}. Elige el valor del que ya han salido más cartas, así habrá menos ataques laterales. Guarda los triunfos para la defensa.`,
-        beat: ({ card, target }) => `Vence ${target} con ${card}. Basta la carta ganadora más baja, guarda las altas.`,
+        beat: ({ card, target }) => `Vence ${target} con ${card}. Basta la ganadora más baja, triunfos solo cuando no haya remedio.`,
         take: "No puedes vencer todas las cartas de la mesa. Recógelas en la mano.",
         pass: ({ cards }) => `Pasa el ataque con ${cards}, y así te libras tú mismo.`,
         add: ({ card }) => `Juega ${card} por el lado. El defensor aún tiene cartas que vencer, así que insiste.`,

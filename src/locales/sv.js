@@ -302,7 +302,7 @@ export const sv = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Spela ${card}. Låga kort först, portkorten (6 och 8) bara när du måste.`,
+        play: ({ card }) => `Spela ${card}. Låga kort först. Behåll portkortet (6 eller 8) på hand som ett lås, och öppna det först när samma färg har minst två kort du inte kan spela på ett tag.`,
         playSeven: ({ card }) => `Spela ${card}. Öppna en sjua i färgen där du har flest kort.`,
         pass: "Inget av dina kort passar. Passa.",
         give: ({ card }) => `Ge ${card}, det är längst från spelbart.`,
@@ -547,6 +547,7 @@ export const sv = {
         drawDiscard: ({ card }) => `Ta ${card} från slänghögen. Ett synligt billigt kort slår ett blint drag.`,
         drawDeck: "Slänghögens kort hjälper dig inte. Dra från leken.",
         swapSlot: "Byt det dragna kortet mot det markerade kortet, det sänker din summa mest.",
+        swapUnknown: "Byt det dragna kortet till den markerade platsen. Du ser inte kortet där, men en okänd plats är i snitt högre än det här kortet.",
         discardDrawn: "Släng det dragna kortet, det förbättrar inte din hand.",
       },
       altName: "Golf (kortspel)",
@@ -727,7 +728,7 @@ export const sv = {
     moska: {
       advice: {
         attack: ({ cards }) => `Anfall med ${cards}. Välj valören som har flest kort redan ute ur spelet, så blir det färre sidoanfall. Spara trumf till försvaret.`,
-        beat: ({ card, target }) => `Slå ${target} med ${card}. Det minsta vinnande kortet räcker, spara de stora.`,
+        beat: ({ card, target }) => `Slå ${target} med ${card}. Det minsta vinnande räcker, trumf först när du måste.`,
         take: "Du kan inte slå alla kort på bordet. Ta upp dem på handen.",
         pass: ({ cards }) => `Skjut vidare anfallet med ${cards}, så slipper du undan själv.`,
         add: ({ card }) => `Lägg ${card} från sidan. Försvararen har fortfarande kort att slå med, så tryck på.`,

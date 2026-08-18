@@ -119,7 +119,10 @@ export function getAdvice(g, phase, drawn, knocked) {
   }
   if (phase === 'drawn' && drawn) {
     const slot = koSwapTarget(p, drawn, 'hard');
-    return slot === null ? { type: 'discardDrawn' } : { type: 'swapSlot', slot };
+    if (slot === null) return { type: 'discardDrawn' };
+    // Tunnettu paikka = varma pienennys, tuntematon = odotusarvo (UNKNOWN_EV).
+    // Eri syy, eri neuvo: perustelu ei saa luvata varmuutta jota koodilla ei ole.
+    return { type: p.known.has(slot) ? 'swapSlot' : 'swapUnknown', slot };
   }
   return null;
 }
