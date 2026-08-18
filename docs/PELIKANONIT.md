@@ -275,6 +275,21 @@ otsikoitu *"vain 2 pelaajaa"*, ja luonnehdintaosio toistaa sen. Koodissa ei ole
 pelaajamäärätarkistusta rakentamiselle: rakennusnappi ja `buildMode` ovat käytössä kaikilla
 pelaajamäärillä, ja botin rakennuslogiikka (`findAIBuild`) ajetaan samoin.
 
+**Ratkaistu 18.8.2026 (versio 1.2.210), pistelaskun osalta.** Tommin valinta on vakiosäännöt:
+korttienemmistö nousi yhdestä kolmeen ja ässän piste kirjattiin kanoniin, jolloin kierroksesta
+jaetaan 11 pistettä tikkien lisäksi. Tikkiehto ratkesi toiseen suuntaan, koodin hyväksi, ja
+kanonin ehdoton sanamuoto korjattiin. `KASINO.md` kirjattiin ennen koodia
+(sopimusmuutos-protokolla), ja sääntörivi päivitettiin kaikkiin 23 lokaaliin.
+
+**Rakentamisen pelaajamäärärajaus on yhä auki**, samoin kokoelmatason löydös A:n
+`specialBuilds`.
+
+**Sivuseuraus joka jäi tekemättä tarkoituksella:** botin kaappausheuristiikka `aiCardScore`
+painottaa korttimäärää pelkkänä viimeisenä tasapelin ratkaisijana (`pts * 10000 + spades * 100
++ cards.length`). Korttienemmistön kolminkertaistuminen tekee siitä alipainotetun. Viritys on
+oma päätöksensä eikä seuraa säännöstä, ja sen vaikutus on mitattava eikä pääteltävä
+(`docs/BOTBENCH.md`: Kasinolla ei ole mitattua porrasta, joten muutoksen näkisi vasta ajossa).
+
 ## Yhteenveto
 
 | Peli | Löydöksiä | Painavin |
@@ -290,9 +305,9 @@ pelaajamäärillä, ja botin rakennuslogiikka (`findAIBuild`) ajetaan samoin.
 | Seiska | 0 | |
 | **Kokoelmataso** | **2** | Sääntövalinnat ja kyvykkyysporras |
 
-Yksitoista pelikohtaista löydöstä ja kaksi kokoelmatason löydöstä. Yksikään ei ole korjattu
-tässä yhteydessä: kaikki koskevat kysymystä *korjataanko kanoni vai koodi*, ja siihen
-vastataan sopimusmuutos-protokollan mukaan ennen kuin riviäkään muutetaan.
+Yksitoista pelikohtaista löydöstä ja kaksi kokoelmatason löydöstä. **Yksi on ratkaistu**
+(Kasinon pistelasku, 18.8.2026, versio 1.2.210), loput odottavat sopimusmuutospäätöstä eikä
+niihin kosketa ennen sitä.
 
 ## Miksi tästä ei tehty konetarkistinta
 
