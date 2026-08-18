@@ -512,7 +512,7 @@ export const da = {
         newMatch: 'Ny dyst →',
         roundPoints: 'RUNDENS POINT',
         buildsLabel: 'BYGNINGER',
-        scoring: '10♦ = 2p · 2♠ = 1p · hvert es = 1p · flest kort = 1p · flest spar = 1p · hver fejning = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · hvert es = 1p · flest kort = 3p · flest spar = 1p · hver fejning = 1p',
         nextGame: 'Næste spil →',
         showingResults: '🤖 Viser resultater...',
         next: 'Næste →',

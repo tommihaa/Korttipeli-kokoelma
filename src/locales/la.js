@@ -514,7 +514,7 @@ export const la = {
         newMatch: 'Novum certamen →',
         roundPoints: 'PUNCTA CIRCULI',
         buildsLabel: 'STRUCTURAE',
-        scoring: '10♦ = 2p · 2♠ = 1p · quisque as = 1p · plurimae chartae = 1p · plurimae picae = 1p · quaeque casa = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · quisque as = 1p · plurimae chartae = 3p · plurimae picae = 1p · quaeque casa = 1p',
         nextGame: 'Proximus lusus →',
         showingResults: '🤖 Monstrantur eventus...',
         next: 'Proximus →',

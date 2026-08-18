@@ -521,7 +521,7 @@ export const pl = {
         newMatch: 'Nowy mecz →',
         roundPoints: 'PUNKTY RUNDY',
         buildsLabel: 'BUDOWLE',
-        scoring: '10♦ = 2p · 2♠ = 1p · każdy as = 1p · najwięcej kart = 1p · najwięcej pik = 1p · każda zamiatka = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · każdy as = 1p · najwięcej kart = 3p · najwięcej pik = 1p · każda zamiatka = 1p',
         nextGame: 'Następna gra →',
         showingResults: '🤖 Wyświetlanie wyników...',
         next: 'Dalej →',

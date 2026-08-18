@@ -523,7 +523,7 @@ export const cs = {
         newMatch: 'Nový zápas →',
         roundPoints: 'BODY KOLA',
         buildsLabel: 'STAVBY',
-        scoring: '10♦ = 2b · 2♠ = 1b · každé eso = 1b · nejvíc karet = 1b · nejvíc piků = 1b · každý domeček = 1b',
+        scoring: '10♦ = 2b · 2♠ = 1b · každé eso = 1b · nejvíc karet = 3b · nejvíc piků = 1b · každý domeček = 1b',
         nextGame: 'Další hra →',
         showingResults: '🤖 Zobrazují se výsledky...',
         next: 'Další →',

@@ -512,7 +512,7 @@ export const pt = {
         newMatch: 'Novo confronto →',
         roundPoints: 'PONTOS DA RONDA',
         buildsLabel: 'CONSTRUÇÕES',
-        scoring: '10♦ = 2p · 2♠ = 1p · cada ás = 1p · mais cartas = 1p · mais espadas = 1p · cada varridela = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · cada ás = 1p · mais cartas = 3p · mais espadas = 1p · cada varridela = 1p',
         nextGame: 'Próximo jogo →',
         showingResults: '🤖 A mostrar resultados...',
         next: 'Próximo →',

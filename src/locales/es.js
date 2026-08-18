@@ -512,7 +512,7 @@ export const es = {
         newMatch: 'Nuevo encuentro →',
         roundPoints: 'PUNTOS DE LA RONDA',
         buildsLabel: 'CONSTRUCCIONES',
-        scoring: '10♦ = 2pts · 2♠ = 1pt · cada as = 1pt · más cartas = 1pt · más picas = 1pt · cada barrido = 1pt',
+        scoring: '10♦ = 2pts · 2♠ = 1pt · cada as = 1pt · más cartas = 3pt · más picas = 1pt · cada barrido = 1pt',
         nextGame: 'Siguiente partida →',
         showingResults: '🤖 Mostrando resultados...',
         next: 'Siguiente →',

@@ -516,7 +516,7 @@ export const en = {
         newMatch: 'New match →',
         roundPoints: 'ROUND POINTS',
         buildsLabel: 'BUILDS',
-        scoring: '10♦ = 2pts · 2♠ = 1pt · each ace = 1pt · most cards = 1pt · most spades = 1pt · each sweep = 1pt',
+        scoring: '10♦ = 2pts · 2♠ = 1pt · each ace = 1pt · most cards = 3pt · most spades = 1pt · each sweep = 1pt',
         nextGame: 'Next game →',
         showingResults: '🤖 Showing results…',
         next: 'Next →',

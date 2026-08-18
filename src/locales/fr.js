@@ -512,7 +512,7 @@ export const fr = {
         newMatch: 'Nouveau match →',
         roundPoints: 'POINTS DE LA MANCHE',
         buildsLabel: 'CONSTRUCTIONS',
-        scoring: '10♦ = 2pts · 2♠ = 1pt · chaque as = 1pt · plus de cartes = 1pt · plus de piques = 1pt · chaque rafle = 1pt',
+        scoring: '10♦ = 2pts · 2♠ = 1pt · chaque as = 1pt · plus de cartes = 3pt · plus de piques = 1pt · chaque rafle = 1pt',
         nextGame: 'Partie suivante →',
         showingResults: '🤖 Affichage des résultats...',
         next: 'Suivant →',

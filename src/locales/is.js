@@ -512,7 +512,7 @@ export const is = {
         newMatch: 'Ný viðureign →',
         roundPoints: 'STIG UMFERÐAR',
         buildsLabel: 'BYGGINGAR',
-        scoring: '10♦ = 2st · 2♠ = 1st · hver ás = 1st · flest spil = 1st · flest spaðar = 1st · hvert svep = 1st',
+        scoring: '10♦ = 2st · 2♠ = 1st · hver ás = 1st · flest spil = 3st · flest spaðar = 1st · hvert svep = 1st',
         nextGame: 'Næsti leikur →',
         showingResults: '🤖 Sýni niðurstöður...',
         next: 'Næst →',

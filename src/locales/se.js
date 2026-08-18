@@ -514,7 +514,7 @@ export const se = {
         newMatch: 'Ođđa spealan →',
         roundPoints: 'VUORU ČUOGGÁT',
         buildsLabel: 'HUKSEMAT',
-        scoring: '10♦ = 2č · 2♠ = 1č · juohke áhssa = 1č · eanemus goarttat = 1č · eanemus speađat = 1č · juohke bartta = 1č',
+        scoring: '10♦ = 2č · 2♠ = 1č · juohke áhssa = 1č · eanemus goarttat = 3č · eanemus speađat = 1č · juohke bartta = 1č',
         nextGame: 'Boahtte speallu →',
         showingResults: '🤖 Čájehuvvojit bohtosat...',
         next: 'Boahtte →',

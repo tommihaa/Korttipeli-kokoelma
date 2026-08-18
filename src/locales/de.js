@@ -512,7 +512,7 @@ export const de = {
         newMatch: 'Neues Match →',
         roundPoints: 'RUNDENPUNKTE',
         buildsLabel: 'AUFBAUTEN',
-        scoring: '10♦ = 2P · 2♠ = 1P · jedes Ass = 1P · meiste Karten = 1P · meiste Pik = 1P · jedes Fegen = 1P',
+        scoring: '10♦ = 2P · 2♠ = 1P · jedes Ass = 1P · meiste Karten = 3P · meiste Pik = 1P · jedes Fegen = 1P',
         nextGame: 'Nächstes Spiel →',
         showingResults: '🤖 Ergebnisse werden gezeigt...',
         next: 'Weiter →',

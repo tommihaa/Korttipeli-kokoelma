@@ -512,7 +512,7 @@ export const et = {
         newMatch: 'Uus matš →',
         roundPoints: 'RINGI PUNKTID',
         buildsLabel: 'EHITISED',
-        scoring: '10♦ = 2p · 2♠ = 1p · iga äss = 1p · enim kaarte = 1p · enim potte = 1p · iga mökki = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · iga äss = 1p · enim kaarte = 3p · enim potte = 1p · iga mökki = 1p',
         nextGame: 'Järgmine mäng →',
         showingResults: '🤖 Näitan tulemusi...',
         next: 'Järgmine →',

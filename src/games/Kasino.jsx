@@ -722,7 +722,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       const scoreBreakdown = g2.players.map((p, i) => {
         const bd = cumulBdRef.current[i];
         const items = [];
-        if (bd.mostCards)   items.push({ label: t('games.kasino.score.mostCards', { n: bd.mostCards }),     pts: bd.mostCards });
+        if (bd.mostCards)   items.push({ label: t('games.kasino.score.mostCards', { n: bd.mostCards }),     pts: bd.mostCards * 3 });
         if (bd.cardsTied)   items.push({ label: t('games.kasino.score.cardsTied', { n: bd.cardsTied }),     pts: 0 });
         if (bd.mostSpades)  items.push({ label: t('games.kasino.score.mostSpades', { n: bd.mostSpades }),   pts: bd.mostSpades });
         if (bd.spadesTied)  items.push({ label: t('games.kasino.score.spadesTied', { n: bd.spadesTied }),   pts: 0 });
@@ -782,7 +782,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
       const hasMostSpades  = spadesCounts[i] === maxSpades && !spadesTied;
       const isInCardsTie   = cardsTied  && counts[i] === maxCards;
       const isInSpadesTie  = spadesTied && spadesCounts[i] === maxSpades;
-      if (hasMostCards)  pts += 1;
+      if (hasMostCards)  pts += 3; // vakiosäännöt, linjattu 18.8.2026 (KASINO.md)
       if (hasMostSpades) pts += 1;
       const ruutuKymppiCount  = p.captured.filter(isRuutuKymppi).length;
       const pataKakkonenCount = p.captured.filter(isPataKakkonen).length;

@@ -512,7 +512,7 @@ export const sv = {
         newMatch: 'Ny match →',
         roundPoints: 'RUNDANS POÄNG',
         buildsLabel: 'BYGGEN',
-        scoring: '10♦ = 2p · 2♠ = 1p · varje ess = 1p · flest kort = 1p · flest spader = 1p · varje svep = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · varje ess = 1p · flest kort = 3p · flest spader = 1p · varje svep = 1p',
         nextGame: 'Nästa spel →',
         showingResults: '🤖 Visar resultat...',
         next: 'Nästa →',

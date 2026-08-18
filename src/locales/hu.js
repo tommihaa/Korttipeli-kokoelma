@@ -515,7 +515,7 @@ export const hu = {
         newMatch: 'Új mérkőzés →',
         roundPoints: 'A KÖR PONTJAI',
         buildsLabel: 'ÉPÍTMÉNYEK',
-        scoring: '10♦ = 2p · 2♠ = 1p · minden ász = 1p · legtöbb lap = 1p · legtöbb pikk = 1p · minden söprés = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · minden ász = 1p · legtöbb lap = 3p · legtöbb pikk = 1p · minden söprés = 1p',
         nextGame: 'Következő játék →',
         showingResults: '🤖 Eredmények megjelenítése...',
         next: 'Következő →',

@@ -514,7 +514,7 @@ export const ro = {
         newMatch: 'Meci nou →',
         roundPoints: 'PUNCTELE RUNDEI',
         buildsLabel: 'CONSTRUCȚII',
-        scoring: '10♦ = 2p · 2♠ = 1p · fiecare as = 1p · cele mai multe cărți = 1p · cele mai multe pici = 1p · fiecare mătură = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · fiecare as = 1p · cele mai multe cărți = 3p · cele mai multe pici = 1p · fiecare mătură = 1p',
         nextGame: 'Jocul următor →',
         showingResults: '🤖 Se arată rezultatele...',
         next: 'Următorul →',

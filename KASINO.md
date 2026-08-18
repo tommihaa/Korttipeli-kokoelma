@@ -25,13 +25,24 @@ Tavoite: saada eniten pisteitä. **Pisteraja: 16* — ensimmäinen 16 pistettä 
 ## Pisteet
 
 Pelin lopussa lasketaan:
-- **Eniten kortteja** = 1 piste
+- **Eniten kortteja** = 3 pistettä
+- **Eniten patoja** = 1 piste
 - **Ruutu kymppi (♦10)** = 2 pistettä
 - **Pata kakkonen (♠2)** = 1 piste
-- **Eniten patoja** = 1 piste
-- **Jokainen tikki** (pöydän täydellinen tyhjennys yhdellä kortilla) = 1 piste
+- **Jokainen ässä** = 1 piste (neljä ässää, siis 4 pistettä kierroksessa)
 
-**Yhteensä maksimissaan 11 pistettä per kierros.**
+**Yhteensä 11 pistettä per kierros**, tikit päälle. Kortti- ja patojen enemmistö jäävät
+jakamatta jos ne menevät tasan.
+
+**Tikki** (pöydän täydellinen tyhjennys yhdellä kortilla) = 1 piste per tikki, mutta vain jos
+**jollakulla toisella pelaajalla on tikkejä vähemmän**. Tasatikeillä kukaan ei saa tikkipisteitä.
+Ehto on tietoinen: se tekee tikistä kilpailullisen erän eikä varmaa palkkiota.
+
+*Pistetaulukko linjattu 18.8.2026.* Kanoni ja koodi olivat tähän asti eri mieltä kolmessa
+kohdassa, ja ristiriita ratkaistiin vakiosääntöjen hyväksi: korttienemmistö nousi yhdestä
+kolmeen ja ässän piste kirjattiin näkyviin. Loppusumma 11 oli kanonissa oikein koko ajan,
+mutta luettelo ei tuottanut sitä. Tikkiehto ratkaistiin toisin päin, koodin hyväksi.
+Tausta: `docs/PELIKANONIT.md` löydös 9.
 
 ## Pelin loppu
 

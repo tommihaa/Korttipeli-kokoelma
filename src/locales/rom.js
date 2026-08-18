@@ -515,7 +515,7 @@ export const rom = {
         newMatch: 'Nevo meči →',
         roundPoints: 'PUNKTI LE RUNDOSKE',
         buildsLabel: 'VAZDIMATA',
-        scoring: '10♦ = 2p · 2♠ = 1p · sako aso = 1p · majbut karti = 1p · majbut pike = 1p · sako kher = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · sako aso = 1p · majbut karti = 3p · majbut pike = 1p · sako kher = 1p',
         nextGame: 'Aver khelipe →',
         showingResults: '🤖 Sikadon le rezultatura...',
         next: 'Aver →',

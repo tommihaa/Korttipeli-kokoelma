@@ -513,7 +513,7 @@ export const krl = {
         newMatch: 'Uuži otteluo →',
         roundPoints: 'KIERROKSEN PISTEET',
         buildsLabel: 'RAKNELMAT',
-        scoring: '10♦ = 2p · 2♠ = 1p · jogahini ässä = 1p · enämbi korttie = 1p · enämbi puadua = 1p · jogahini mökki = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · jogahini ässä = 1p · enämbi korttie = 3p · enämbi puadua = 1p · jogahini mökki = 1p',
         nextGame: 'Šeuruava kiza →',
         showingResults: '🤖 Ozutetah tulokšie...',
         next: 'Šeuruava →',

@@ -512,7 +512,7 @@ export const no = {
         newMatch: 'Ny kamp →',
         roundPoints: 'RUNDENS POENG',
         buildsLabel: 'BYGGVERK',
-        scoring: '10♦ = 2p · 2♠ = 1p · hvert ess = 1p · flest kort = 1p · flest spar = 1p · hver feiing = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · hvert ess = 1p · flest kort = 3p · flest spar = 1p · hver feiing = 1p',
         nextGame: 'Neste spill →',
         showingResults: '🤖 Viser resultater...',
         next: 'Neste →',

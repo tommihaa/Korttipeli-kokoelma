@@ -512,7 +512,7 @@ export const it = {
         newMatch: 'Nuovo incontro →',
         roundPoints: 'PUNTI DEL GIRO',
         buildsLabel: 'COSTRUZIONI',
-        scoring: '10♦ = 2pt · 2♠ = 1pt · ogni asso = 1pt · più carte = 1pt · più picche = 1pt · ogni scopa = 1pt',
+        scoring: '10♦ = 2pt · 2♠ = 1pt · ogni asso = 1pt · più carte = 3pt · più picche = 1pt · ogni scopa = 1pt',
         nextGame: 'Prossima partita →',
         showingResults: '🤖 Mostro i risultati...',
         next: 'Avanti →',

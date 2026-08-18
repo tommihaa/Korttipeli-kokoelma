@@ -556,7 +556,7 @@ export const fi = {
         newMatch: 'Uusi ottelu →',
         roundPoints: 'KIERROKSEN PISTEET',
         buildsLabel: 'RAKENNELMAT',
-        scoring: '10♦ = 2p · 2♠ = 1p · kukin ässä = 1p · eniten kortteja = 1p · eniten patoja = 1p · kukin mökki = 1p',
+        scoring: '10♦ = 2p · 2♠ = 1p · kukin ässä = 1p · eniten kortteja = 3p · eniten patoja = 1p · kukin mökki = 1p',
         nextGame: 'Seuraava peli →',
         showingResults: '🤖 Näytetään tulokset...',
         next: 'Seuraava →',
