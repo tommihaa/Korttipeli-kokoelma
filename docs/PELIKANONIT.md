@@ -376,28 +376,38 @@ oma päätöksensä eikä seuraa säännöstä, ja sen vaikutus on mitattava eik
 |---|---|---|
 | Kasino | 2 | Pistelasku eroaa kolmessa kohdassa, ässä ja tikkiehto mukaan lukien |
 | Koputus | 1 | Tasapelin ratkaisua ei ole toteutettu |
-| Kultakala | 1 | Kanonin kynnys kuvaa kuollutta koodia, ja väärinpäin |
-| Läpsy | 1 | AI-osion kohta 1 kuvaa toista peliä |
-| Maija | 1 | Hyökkäysavain väärin, sama virhe korjattu kerran muualla |
+| Kultakala | 2 | Kanonin kynnys kuvaa kuollutta koodia, ja väärinpäin |
+| Läpsy | 2 | AI-osion kohta 1 kuvaa toista peliä |
+| Maija | 2 | Hyökkäysavain väärin, sama virhe korjattu kerran muualla |
 | Moska | 2 | Passausehdot puuttuvat, ja kaksi toteutusta eroavat |
 | Paskahousu | 0 | |
 | Ristiseiska | 1 | Panttimekaniikka puuttuu sääntöosiosta |
 | Seiska | 0 | |
 | **Kokoelmataso** | **2** | Sääntövalinnat ja kyvykkyysporras |
 
-Yksitoista pelikohtaista löydöstä ja kaksi kokoelmatason löydöstä. **Kaikki on ratkaistu
+Kaksitoista pelikohtaista löydöstä ja kaksi kokoelmatason löydöstä. **Kaikki on ratkaistu
 18.8.2026** kolmessa erässä: `d7b8272` kolme, `f6b7382` viisi ja `bd44e03` kaksi viimeistä,
 minkä jälkeen `2d417e4` mittasi kaksi bottimuutosta N=400:lla. Ensimmäiset kolme menivät kolmeen
 eri suuntaan, mikä on itsessään tulos: Kasinon pistelasku ratkesi kanonin ulkopuolelta
 (vakiosäännöt, molemmat puolet olivat väärässä), Koputuksen tasapeli koodiin (kanoni oli
 oikeassa) ja Ristiseiskan pantti kanoniin (koodi oli oikeassa).
 
-**Yksi luku on kesken, ja se jätetään näkyviin ratkaisematta.** Yllä oleva taulukko laskee
-yhdeksän pelikohtaista löydöstä, tämä kappale yksitoista. Ero ei ole laskuvirhe vaan
-määritelmäkysymys: Kultakalan sivulöydös näkyvyysosion rikkomisesta, Läpsyn kaksi huomiota ja
-Maijan puuttuvat kyvyt ovat kukin oma löydöksensä tai osa emolöydöstään, eikä dokumentti sano
-kummalla tavalla saraketta luetaan. Kysymys on tässä muodossa 18.8.2026 alkaen, ja lukua ei
-korjata kumpaankaan suuntaan ennen kuin sarakkeen määritelmä on valittu.
+**Sarakkeen määritelmä valittiin 19.8.2026: sivuhavainto on oma löydöksensä.** Taulukko laski
+yhdeksän pelikohtaista löydöstä ja tämä kappale yksitoista, eikä ero ollut laskuvirhe vaan
+puuttuva määritelmä. Tommin valinnalla kolme sivuhavaintoa saivat oman numeronsa: Kultakalan
+näkyvyysosion rikkominen kuolleessa lohkossa, Läpsyn sakkokortin parisääntö ja Maijan kaksi
+puuttuvaa kykyä. Taulukon luvut nousivat niiden osalta, ja pelikohtaisia löydöksiä on siis
+kaksitoista eikä yhdeksän tai yksitoista. Kumpikaan alkuperäisistä luvuista ei ollut oikein.
+
+**Sama sääntö nostaisi vielä kaksi, eikä niitä nostettu.** Moskan kuuden hyökkäyskortin katto on
+osiossaan otsikoitu *toiseksi puuttuvaksi säännöksi*, ja Paskahousun yhtäkkisen kuoleman
+istuinkohtainen ehto on kirjattu `docs/BOTBENCH.md`:hen muttei kanoniin; kumpikin on samaa lajia
+kuin nyt nostetut kolme. Ne odottavat päätöstä, koska valinta koski nimettyjä tapauksia eikä
+läpikäyntiä. Jos ne nostetaan, luvut ovat Moska 3, Paskahousu 1 ja pelikohtaisia neljätoista.
+
+**Kaksi sivuhavaintoa ei nouse kummassakaan tapauksessa**, koska dokumentti nimeää ne itse
+ei-löydöksiksi: Koputuksen erityiskorttien laukeamisehto ja Ristiseiskan käänteinen maajärjestys
+ovat molemmat tarkoitettuja ja koodissa perusteltuja.
 
 ## Miksi tästä ei tehty konetarkistinta
 
