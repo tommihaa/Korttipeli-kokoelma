@@ -16,6 +16,11 @@ sääntökaanonia, älä oleta kumpaakaan osapuolta automaattisesti oikeaksi. No
 pohdittavaksi: pitääkö koodi korjata kaanonin mukaiseksi VAI pitääkö kaanonia muuttaa?
 Kaanonmuutos kirjataan ensin PELI.md:hen ja vahvistetaan käyttäjällä, vasta sitten koodiin.
 
+**Mestarin neuvon tekstit ovat oma pintansa:** `getAdvice` kutsuu samaa valintafunktiota kuin
+botti, joten neuvon **siirto** ei voi ajautua, mutta neuvon **perustelu** voi. Tarkastuskirjanpito
+ja avoimet löydökset: `docs/MESTARIN_NEUVO.md`. Kun muutat bottilogiikan lajitteluavainta, lue
+sieltä väittääkö jokin neuvoteksti vanhaa avainta.
+
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 - `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.
