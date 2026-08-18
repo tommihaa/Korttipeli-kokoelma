@@ -236,37 +236,50 @@ seiskaa ei viimeisenä korttina (rivit 30, 42).
 koodifunktioita (`applyLappu`, `aiSuit`, `aiAceBonusDecision`), päiväyksiä ja tietoisia
 epäsymmetrioita. Se on kirjoitettu tarkistettavaksi, ja siksi se on kestänyt tarkistuksen.
 
-### 9. Kasino: ässän piste puuttuu pistelaskusta, ja rakentamisen pelaajamäärärajaus on väärä
+### 9. Kasino: koko pistelasku eroaa kanonista, ja rakentamisen pelaajamäärärajaus on väärä
 
-Kaksi löydöstä.
+Kaksi löydöstä, joista ensimmäinen tarkentui 18.8.2026 kirjoittamisen jälkeen ja on
+laajempi kuin ensin kirjattiin.
 
-**Ässän piste puuttuu.** `KASINO.md` › Pisteet luettelee viisi pisteenlähdettä (eniten kortteja,
-♦10, ♠2, eniten patoja, tikki). `scoreRound` (`src/games/Kasino.jsx:789`) laskee lisäksi yhden
-pisteen **jokaisesta kaapatusta ässästä** (`pts += ruutuKymppiCount * 2 + pataKakkonenCount +
-aceCount`), ja piste näkyy tulosnäytön erittelyssä omana rivinään. Neljä ässää on siis neljä
-pistettä kierroksessa, eli enemmän kuin mikään kanonin luettelemista eristä ruutukymppiä
-lukuun ottamatta.
+**Pistelasku eroaa kolmessa kohdassa.** `scoreRound` (`src/games/Kasino.jsx:771`) vasten
+`KASINO.md` › Pisteet:
 
-Kanonin lause *"Yhteensä maksimissaan 11 pistettä per kierros"* ei siis vastaa koodia. Luku ei
-myöskään ole johdettavissa kanonin omasta luettelosta: viisi eritettyä lähdettä antavat
-1 + 2 + 1 + 1 = 5 pistettä ja tikkejä muuttuvan määrän. Kanonin AI-osio tuntee ässän
-erityiskorttina (*"Erityiskortit: mitkä on pelattu (Pata 2, Ruutu 10, Ässä)"*), joten puute on
-nimenomaan pistelaskuosiossa.
+| Erä | Kanoni | Koodi |
+|---|---|---|
+| Eniten kortteja | 1 piste | 1 piste (`hasMostCards`, tasapelissä ei kummallekaan) |
+| Eniten patoja | 1 piste | 1 piste |
+| ♦10 | 2 pistettä | 2 pistettä |
+| ♠2 | 1 piste | 1 piste |
+| Ässä | **ei mainita** | **1 piste per ässä**, eli 4 kierroksessa |
+| Tikki | *"jokainen tikki = 1 piste"* | omat tikit **vain jos** jollakulla toisella on vähemmän |
+| Yhteensä | *"maksimissaan 11"* | 9 + tikit |
+
+**Luku 11 on todennäköisesti vakiosäännöistä, ja se selittää molemmat poikkeamat.**
+Perinteisessä Kasinossa pisteet ovat eniten kortteja 3, eniten patoja 1, ♦10 kaksi, ♠2 yksi
+ja jokainen neljästä ässästä yksi, eli tasan 11. Kanonin oma luettelo ei tuota yhtätoista
+millään lukutavalla (se antaa 5 plus tikit), joten luku on peräisin muualta kuin luettelosta.
+Tämä ei ole kanonin puolustus vaan sen diagnoosi: **kanonin luettelosta on pudonnut ässä ja
+korttienemmistön arvo on muuttunut kolmesta yhdeksi, mutta loppusumma on jäänyt entiselleen.**
+
+Koodi on siis linjassa itsensä kanssa mutta ei vakiosääntöjen eikä kanonin loppusumman kanssa,
+ja kanoni on ristiriidassa itsensä kanssa. Kysymys ei siksi ole *kumpi on oikeassa* vaan
+*mikä pistetaulukko peliin halutaan*, ja se on suunnittelupäätös eikä korjaus.
+
+**Tikkiehto on kolmas ero eikä sitä voi ratkaista samalla vastauksella.** Koodissa tikkipisteet
+saa vain jos jollakulla toisella on niitä vähemmän (rivi 791), eli kahden pelaajan tasatikeillä
+kumpikaan ei saa mitään. Kanonin *"jokainen tikki = 1 piste"* on ehdoton. Ero on
+`eniten tikkejä` -tyyppinen sääntö kirjoitettuna `jokainen tikki` -tyyppisen näköiseksi.
 
 **Rakentaminen ei ole rajattu kahteen pelaajaan.** `KASINO.md` › Rakentaminen (Build) on
 otsikoitu *"vain 2 pelaajaa"*, ja luonnehdintaosio toistaa sen. Koodissa ei ole
 pelaajamäärätarkistusta rakentamiselle: rakennusnappi ja `buildMode` ovat käytössä kaikilla
 pelaajamäärillä, ja botin rakennuslogiikka (`findAIBuild`) ajetaan samoin.
 
-**Sopimusmuutoskysymys molempiin:** korjataanko kanoni koodin mukaiseksi (ässä on pisteen
-arvoinen, rakentaminen on aina käytössä) vai koodi kanonin mukaiseksi? Jälkimmäinen olisi
-peliin puuttuva muutos molemmissa, joten kysymys ei ole muodollinen.
-
 ## Yhteenveto
 
 | Peli | Löydöksiä | Painavin |
 |---|---|---|
-| Kasino | 2 | Ässän piste puuttuu kanonin pistelaskusta |
+| Kasino | 2 | Pistelasku eroaa kolmessa kohdassa, ässä ja tikkiehto mukaan lukien |
 | Koputus | 1 | Tasapelin ratkaisua ei ole toteutettu |
 | Kultakala | 1 | Kanonin kynnys kuvaa kuollutta koodia, ja väärinpäin |
 | Läpsy | 1 | AI-osion kohta 1 kuvaa toista peliä |
