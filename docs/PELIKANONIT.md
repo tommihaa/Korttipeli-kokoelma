@@ -385,11 +385,19 @@ oma päätöksensä eikä seuraa säännöstä, ja sen vaikutus on mitattava eik
 | Seiska | 0 | |
 | **Kokoelmataso** | **2** | Sääntövalinnat ja kyvykkyysporras |
 
-Yksitoista pelikohtaista löydöstä ja kaksi kokoelmatason löydöstä. **Kolme on ratkaistu
-18.8.2026** ja ne menivät kolmeen eri suuntaan, mikä on itsessään tulos: Kasinon pistelasku
-ratkesi kanonin ulkopuolelta (vakiosäännöt, molemmat puolet olivat väärässä), Koputuksen
-tasapeli koodiin (kanoni oli oikeassa) ja Ristiseiskan pantti kanoniin (koodi oli oikeassa).
-Loput odottavat sopimusmuutospäätöstä eikä niihin kosketa ennen sitä.
+Yksitoista pelikohtaista löydöstä ja kaksi kokoelmatason löydöstä. **Kaikki on ratkaistu
+18.8.2026** kolmessa erässä: `d7b8272` kolme, `f6b7382` viisi ja `bd44e03` kaksi viimeistä,
+minkä jälkeen `2d417e4` mittasi kaksi bottimuutosta N=400:lla. Ensimmäiset kolme menivät kolmeen
+eri suuntaan, mikä on itsessään tulos: Kasinon pistelasku ratkesi kanonin ulkopuolelta
+(vakiosäännöt, molemmat puolet olivat väärässä), Koputuksen tasapeli koodiin (kanoni oli
+oikeassa) ja Ristiseiskan pantti kanoniin (koodi oli oikeassa).
+
+**Yksi luku on kesken, ja se jätetään näkyviin ratkaisematta.** Yllä oleva taulukko laskee
+yhdeksän pelikohtaista löydöstä, tämä kappale yksitoista. Ero ei ole laskuvirhe vaan
+määritelmäkysymys: Kultakalan sivulöydös näkyvyysosion rikkomisesta, Läpsyn kaksi huomiota ja
+Maijan puuttuvat kyvyt ovat kukin oma löydöksensä tai osa emolöydöstään, eikä dokumentti sano
+kummalla tavalla saraketta luetaan. Kysymys on tässä muodossa 18.8.2026 alkaen, ja lukua ei
+korjata kumpaankaan suuntaan ennen kuin sarakkeen määritelmä on valittu.
 
 ## Miksi tästä ei tehty konetarkistinta
 
