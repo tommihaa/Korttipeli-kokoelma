@@ -21,6 +21,12 @@ botti, joten neuvon **siirto** ei voi ajautua, mutta neuvon **perustelu** voi. T
 ja avoimet löydökset: `docs/MESTARIN_NEUVO.md`. Kun muutat bottilogiikan lajitteluavainta, lue
 sieltä väittääkö jokin neuvoteksti vanhaa avainta.
 
+**Pelikanonin ja koodin pinta on eri pinta kuin edellinen:** yhdeksän `PELI.md`:n sääntökuvaus
+koko pelilogiikkaa vasten, eikä sillä ole koodiin mitään yhteyttä joka estäisi ajautumisen.
+Tarkastuskirjanpito ja ratkaisemattomat sopimusmuutoskysymykset: `docs/PELIKANONIT.md`. Lue se
+ennen kuin siteeraat `PELI.md`:tä säännön lähteenä, koska yhdeksästä kanonista kaksi on
+tarkistettu puhtaaksi ja seitsemässä on nimettyjä ristiriitoja.
+
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 - `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.
