@@ -476,6 +476,8 @@ mukaan on epävarmuuden säilyttämistä, ei sääntötekninen pakko.
 yhdeksän pelin joukossa. Avoimeksi jää myös se, onko jokin yhdeksästä sellainen jota ei
 suostuttu pelaamaan kahdella, vai olivatko nämä kaksi vain ne jotka valittiin ensin.
 
+*Kohdan ensimmäinen puoli täydentyi erässä 7, ks. kohta 18.*
+
 ## 17. Sääntöriidan ratkaisi järjestäjä tai yhteisymmärrys, koska panosta ei ollut
 
 Tommi 20.8.2026, kysyttäessä miten pöydässä ratkaistiin erimielisyys siitä miten jokin sääntö
@@ -503,3 +505,77 @@ on kirjoittajan päätelmä eikä Tommin lause.
 
 **Avoin:** vastaus ei kerro kumpi kahdesta menettelystä oli tavallisempi, eikä sitä mitä
 tehtiin jos järjestäjä oli itse osapuoli erimielisyydessä.
+
+## 18. Kolmella pelaajalla pelivalinta vaihteli, ja se on eri vastaus kuin kahdella
+
+Tommi 20.8.2026, kysyttäessä mikä peli valittiin kun pöydässä oli kolme pelaajaa:
+
+> *se vaihteli*
+
+**Seuraus:** kohdan 16 kaksi peliä eivät ole listan alkupää vaan poikkeus. Kahden pelaajan
+asetelma pakotti valinnan kahteen nimettyyn peliin, kolmen ei pakottanut mihinkään. Raja ei siis
+kulje pelaajamäärän mukaan tasaisesti, vaan kahdessa tapahtuu jotain mitä kolmessa ei.
+
+**Seuraus:** tämä sopii kohdan 13 mittariin. Ennustettavuus kasvaa jyrkästi vasta kun pelaajia
+on kaksi, koska silloin toisen kädestä voi päätellä oman käden ja pöydän perusteella lähes
+kaiken. Kolmella sama päättely ei vielä kanna, joten epävarmuutta on riittävästi kaikkiin
+peleihin. Tämä on kirjoittajan päätelmä eikä Tommin lause.
+
+**Seuraus:** vastaus rajaa myös sitä mitä kohdan 15 kaaresta voi päätellä. Pelipäivän järjestys
+oli vakiintunut, mutta pelivalinta ei ollut sidottu kokoonpanoon muuten kuin kahden pelaajan
+tapauksessa.
+
+## 19. Moskan vaikein kohta tulee pakan loputtua, ja siellä auttaa muisti
+
+Tommi 20.8.2026, kysyttäessä mikä on se Moskan virhe jonka myös kokenut pelaaja tekee:
+
+> *kun pakan kortit on loppuneet, niin pitää päästä korteista eroon ja se toimii paremmin jos
+> muistaa mitä muut pelasi*
+
+Vastauksessa on kaksi osaa: pelin vaihe ja siinä auttava taito. Vaihe on nostopakan loppuminen,
+jolloin tavoite kääntyy korteista eroon pääsemiseksi, ja taito on muisti siitä mitä muut ovat
+pelanneet.
+
+**Seuraus:** virhe ei ole yksittäinen siirto vaan vaiheen vaihtumisen huomaamatta jättäminen.
+Kohdat 6 ja 7 kuvaavat virheitä joissa väärä kortti lähtee kädestä, ja tämä on eri lajia: sama
+siirto on oikea ennen pakan loppumista ja väärä sen jälkeen.
+
+**Seuraus, ja tämä on ensimmäinen kerta kun muisti nimetään taidoksi tässä dokumentissa:**
+pelatuista korteista pidetty kirjanpito on tieto jota kukaan ei anna, vaan se kertyy pelin
+mittaan. Se on siis kolmas informaatiokanava kohdan 10 kahden rinnalle, ja ainoa niistä joka
+on sovelluksessa täysimääräisesti olemassa. Botti voi muistaa kaiken, ihminen ei.
+
+**Seuraus:** tästä seuraa suoraan kyvykkyysportaan kannalta merkittävä asia. Muistin ero on
+paikka jossa botti voi olla epäreilun vahva ilman että se pelaa yhtään paremmin muuten, joten
+Moskan portaassa muistin rajaaminen on pelikokemuksen kannalta eri asia kuin siirtologiikan
+heikentäminen. Tämä on kirjoittajan päätelmä eikä Tommin lause, eikä sitä ole tarkistettu
+koodista.
+
+**Avoin:** vastaus ei kerro kuinka pitkälle muisti käytännössä yltää pöydässä, eikä sitä
+pidettiinkö kirjanpitoa hyväksyttävänä taitona vai jonkinlaisena liiallisuutena.
+
+## 20. Läpsyssä on paljon päätöksiä, ja se kaataa kysymyksen premissin
+
+Tommi 20.8.2026, kysyttäessä mikä Läpsyssä oli hyvää pöydässä, kun kysymys oletti että siinä
+ratkaisee käden nopeus eikä päätös:
+
+> *paljon päätöksiä*
+
+**Kysymyksen premissi oli väärä, ja se jätetään tähän näkyviin.** Kysyin miksi peli on hyvä
+siitä huolimatta että sen voi hävitä tekemättä mitään väärin, ja vastaus kumoaa oletuksen sen
+sijaan että vastaisi kysymykseen. Tämä on sama vikamuoto joka on nimetty menetelmäosiossa:
+liian pitkä johtopäätös tosi lähtökohdasta. Nopeus on aidosti ratkaisija tasatilanteessa, mutta
+siitä ei seuraa että peli olisi päätöksetön.
+
+**Seuraus:** läpsäisy itsessään on päätös eikä refleksi. Pelaaja päättää läpsäistäänkö, ja
+väärä läpsäisy maksaa kortin, joten jokainen käännetty kortti on riskin ja palkinnon punninta.
+Erityiskorttihaaste lisää saman päätöksen toiseen kohtaan.
+
+**Ristiriita, joka nostetaan tässä eikä ratkaista:** `LAEPSY.md` sanoo AI-strategian kohdalla
+että peli nähdään enemmän reaktiopelinä kuin strategiapelinä, ja tämä vastaus sanoo toista.
+Kanonin lause koskee botin toteutusta ja tämä kohta pöytäkokemusta, joten ne eivät ole
+välttämättä ristiriidassa, mutta ero on tarkistettava eikä sitä ratkaista kirjoittajan
+päättelyllä. Kysytään erässä 8.
+
+**Avoin:** vastaus ei nimeä mitkä päätökset ovat ne tärkeimmät, eikä sitä onko päätösten
+paljous Läpsyn hyvyyden syy vai vain sen ominaisuus.
