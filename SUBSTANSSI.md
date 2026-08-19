@@ -996,7 +996,14 @@ pelaamisen muotoon eikä pelaajamäärään tai peliin itseensä.
 
 **Seuraus:** sana *turnaus* on uusi tässä dokumentissa, eikä pelipäivän kaari (kohta 15) ole
 sama asia: kaari on järjestys, turnaus on kilpailurakenne pelien yli. Sitä ei ole kysytty
-pidettiinkö Laiturilla turnauksia, ja se jää avoimeksi.
+pidettiinkö Laiturilla turnauksia, ja se jää avoimeksi. *(Kysytty erässä 15, ks. kohta 39:
+turnauksia pidettiin.)*
+
+**20.8.2026 myöhemmin, erä 15: tämän kohdan lausuma kumoutui puoliksi.** Tommi vastasi että
+Läpsy oli parempi pienessä porukassa, ja vahvisti erikseen että tuoreempi vastaus korjaa
+aiemman. Lausuman *isommassa porukassa* -puoli kumoutuu ja jätetään näkyviin yllä.
+Ensimmäinen seuraus pitää muodoltaan (Läpsyn arvo on ehdollinen kokoonpanolle) mutta suunta
+vaihtui: ehto on pieni porukka eikä iso. Turnausosa kumoutui samalla, ks. kohta 39.
 
 ## 37. Pantin valinta oli pöydässä kiinteä, ja lapsuuden Ristiseiskassa oli pisteet
 
@@ -1102,3 +1109,37 @@ pistearvo kulkivat eri asteikkoa. Käteen jääneistä korteista kallein oli kun
 
 Pelin päättymisen laukaisin on kysytty ja vastaus oli *en muista*, joten se ei ole avoin
 kysymys vaan muistin raja. Kohdassa ei ole enää avoimia kysymyksiä.
+
+---
+
+## 39. Laiturilla pidettiin turnauksia, ja niitä oli kahta muotoa
+
+Tommi 20.8.2026 (erä 15), kysyttäessä pidettiinkö Laiturilla turnauksia, miten ne rakentuivat
+ja missä porukassa Läpsyä pelattiin:
+
+> *1 kyllä, voitosta piste*
+> *2 satunnaisia*
+> *3 läpsy oli parempi pienessä porukassa, ei pelattu eri pelien turnaus-sarjassa muistaakseni*
+
+ja samassa istunnossa täydennyksenä:
+
+> *oli myös turnauksia, missä pelin sijoituksesta sai pisteitä, mitä enemmän pelaajia ja
+> korkeammalle niin sitä enemmän sai pisteitä*
+
+Turnauksia siis pidettiin, ja muotoja oli kaksi. Kevyemmässä voitosta sai pisteen.
+Raskaammassa pisteitä sai sijoituksesta, ja pistemäärä skaalautui kahdella akselilla: mitä
+enemmän pelaajia ja mitä korkeampi sijoitus, sitä enemmän pisteitä. Turnaukseen kuuluvat
+pelit olivat satunnaisia eikä kiinteää sarjaa ollut. Läpsy ei muistin varauksella kuulunut
+turnauksiin.
+
+**Seuraus:** kohdan 36 luenta turnauksesta kilpailurakenteena pelien yli vahvistui, ja
+rakenne on rikkaampi kuin yksi pistelasku: sijoitusmuoto tunnistaa sen että voitto isossa
+pelissä on arvokkaampi kuin pienessä, eli turnaus mittasi kenttää eikä vain voittoa.
+Pelipäivän kaari (kohta 15) ja turnaus ovat yhä eri asiat: kaari määräsi järjestyksen,
+turnaus laski pisteet.
+
+**Seuraus:** kolmas vastaus kumosi erän 13 lausuman Läpsystä isossa porukassa, ja Tommi
+vahvisti korjauksen suunnan erikseen; kirjaus on kohdassa 36.
+
+**Avoin:** miten turnaus päättyi ja ratkesiko voittaja pistemäärään, ei kysytty tässä
+erässä. Ja kumpi muodoista oli tavallisempi, ei kysytty.
