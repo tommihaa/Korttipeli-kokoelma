@@ -1141,5 +1141,26 @@ turnaus laski pisteet.
 **Seuraus:** kolmas vastaus kumosi erän 13 lausuman Läpsystä isossa porukassa, ja Tommi
 vahvisti korjauksen suunnan erikseen; kirjaus on kohdassa 36.
 
-**Avoin:** miten turnaus päättyi ja ratkesiko voittaja pistemäärään, ei kysytty tässä
-erässä. Ja kumpi muodoista oli tavallisempi, ei kysytty.
+~~**Avoin:** miten turnaus päättyi ja ratkesiko voittaja pistemäärään, ei kysytty tässä
+erässä. Ja kumpi muodoista oli tavallisempi, ei kysytty.~~ *(Kysytty erässä 16, ks. alla.)*
+
+Tommi 20.8.2026 (erä 16), kysyttäessä miten turnaus päättyi, kumpi muoto oli tavallisempi ja
+kuinka usein turnauksia pidettiin:
+
+> *1 oli määrä eri pelejä*
+> *2 sijoituspisteet*
+> *3 harvinaisia, muutaman kerran vuodessa*
+
+Turnaus päättyi siis kun sovittu määrä eri pelejä oli pelattu, tavallisempi muoto oli
+sijoituspisteet, ja turnauksia pidettiin muutaman kerran vuodessa. Ensimmäinen kysymys oli
+kirjoittajan virheestä kaksi kysymystä yhtenä, ja sen toinen puoli (ratkesiko voittaja
+pistemäärään) jäi vastaamatta; se merkitään vastaamattomaksi eikä täytetä päättelemällä.
+
+**Seuraus:** turnauksen yksikkö oli eri pelien määrä, eli se mittasi taitoa pelivalikoiman
+yli eikä yhden pelin sisällä. Sijoituspisteiden yleisyys sopii samaan: sijoitus kertyy
+jokaisesta pelistä, voitto ei.
+
+**Seuraus:** turnaus erottuu pelipäivän kaaresta (kohta 15) myös rytmiltään. Kaari oli
+pelipäivän vakio, turnaus muutaman kerran vuodessa toistuva erikoistapahtuma.
+
+**Avoin:** ratkesiko turnauksen voittaja pistemäärään.
