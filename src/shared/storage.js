@@ -2,8 +2,9 @@
 // Käyttäjän ASETUKSET persistoidaan pääsääntöisesti (kieli, äänet, pakan väritila,
 // näkyvyystoggle­t, AI-taso, nimiryhmä sekä pelikohtaiset sääntövalinnat). Lupa laajentaa
 // annettu 2026-06-19. POIKKEUS: cheat-tila `seeAll` ei tallennu — se nollautuu joka
-// latauksessa, jottei peli jää huomaamatta huijaustilaan. Pelitila ja edistyminen (stats)
-// eivät myöskään tallennu. Ei henkilötietoa → ei suostumusbanneria.
+// latauksessa, jottei peli jää huomaamatta huijaustilaan. Pelitila (kesken jäänyt peli) ei
+// tallennu, mutta edistyminen tallentuu: jako:stats ja jako:sessions kirjoitetaan App.jsx:ssä.
+// Ei henkilötietoa → ei suostumusbanneria. Täysi inventaario: docs/SELAINTALLENNUS.md.
 //
 // Java-analogia: tämä on ohut Preferences-fasadi (kuin java.util.prefs.Preferences),
 // joka nielee poikkeukset hiljaa — jos selain estää storagen (privaattitila, kiintiö
