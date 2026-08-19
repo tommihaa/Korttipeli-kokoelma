@@ -186,7 +186,9 @@ function moskaNextDefender(g) {
 // napin. Ennen 18.8.2026 ehdot oli kirjoitettu kolmesti eivätkä versiot vastanneet
 // toisiaan: boteilla oli passiketjun pituusraja jota ihmisellä ei ollut, ja koodin oma
 // kommentti väitti ehtojen olevan samat. Yhtenäistys tehtiin ihmisen ehtoihin.
-function moskaCanPass(g, playerIdx) {
+// Export sauman takia: kuusikohtainen ehtoluettelo (MOSKA.md › Siirtämisen ehdot)
+// on kiinnitetty testissä test/moska-passaus.test.js.
+export function moskaCanPass(g, playerIdx) {
   if (!g || g.defender !== playerIdx) return false;
   if (!g.table.length || g.table.some(t => t.def)) return false;           // yhtään ei kaadettu
   const ranks = new Set(g.table.map(t => t.atk.r));

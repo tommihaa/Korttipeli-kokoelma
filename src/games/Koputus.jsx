@@ -16,7 +16,9 @@ import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const pCards = p => p.cards.filter(Boolean).length;
 // Tasatilanteessa vähempi kortteja omannut voittaa (KOPUTUS.md, viety koodiin 18.8.2026)
-const pRank  = (a, b) => (pScore(a) - pScore(b)) || (pCards(a) - pCards(b));
+// Export sauman takia: tasapeliavain (KOPUTUS.md › Pelin loppu, koodiin 18.8.2026)
+// on kiinnitetty testissä test/koputus-tasapeli.test.js.
+export const pRank  = (a, b) => (pScore(a) - pScore(b)) || (pCards(a) - pCards(b));
 const pBetter = (q, p) => pRank(q, p) < 0;
 const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 

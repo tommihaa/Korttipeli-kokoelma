@@ -357,6 +357,42 @@ function findGroups(cards, target) {
   return [];
 }
 
+// Kierroksen pistelasku. Moduulitasolla ja exportattuna sauman takia: pistetaulukko
+// (vakiosäännöt, linjattu 18.8.2026, KASINO.md › Pisteet) on kiinnitetty testissä
+// test/kasino-pistelasku.test.js, eikä sitä voisi testata komponentin sisältä.
+export function scoreRound(g) {
+  const counts      = g.players.map(p => p.captured.length);
+  const maxCards    = Math.max(...counts);
+  const spadesCounts = g.players.map(p => p.captured.filter(c => c.s === '♠').length);
+  const maxSpades   = Math.max(...spadesCounts);
+  const tikkiCounts = g.players.map(p => p.tikkiCount);
+  const cardsTied   = counts.filter(c => c === maxCards).length > 1;
+  const spadesTied  = spadesCounts.filter(s => s === maxSpades).length > 1;
+  return g.players.map((p, i) => {
+    let pts = 0;
+    const hasMostCards   = counts[i] === maxCards  && !cardsTied;
+    const hasMostSpades  = spadesCounts[i] === maxSpades && !spadesTied;
+    const isInCardsTie   = cardsTied  && counts[i] === maxCards;
+    const isInSpadesTie  = spadesTied && spadesCounts[i] === maxSpades;
+    if (hasMostCards)  pts += 3; // vakiosäännöt, linjattu 18.8.2026 (KASINO.md)
+    if (hasMostSpades) pts += 1;
+    const ruutuKymppiCount  = p.captured.filter(isRuutuKymppi).length;
+    const pataKakkonenCount = p.captured.filter(isPataKakkonen).length;
+    const aceCount          = p.captured.filter(c => c.r === 'A').length;
+    pts += ruutuKymppiCount * 2 + pataKakkonenCount + aceCount;
+    const tikkiPts = (tikkiCounts[i] > 0 && tikkiCounts.some((t, j) => j !== i && t < tikkiCounts[i]))
+      ? p.tikkiCount : 0;
+    pts += tikkiPts;
+    return {
+      roundPts: pts,
+      cards: counts[i], spades: spadesCounts[i],
+      tikkiCount: p.tikkiCount, aces: aceCount,
+      hasMostCards, hasMostSpades, isInCardsTie, isInSpadesTie,
+      ruutuKymppiCount, pataKakkonenCount, aceCount, tikkiPts,
+    };
+  });
+}
+
 // Sääntövalinta (aloitusnäytöltä): salli rakennelmat erikoiskorttien arvoille (A=14, ♠2=15, ♦10=16)
 const KASINO_DEFAULT_RULES = { specialBuilds: false };
 
@@ -766,39 +802,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     } else {
       addLog(M.newRound(scoreStr, getTurnHint(h0.hand, withScores.table, withScores.builds)));
     }
-  }
-
-  function scoreRound(g) {
-    const counts      = g.players.map(p => p.captured.length);
-    const maxCards    = Math.max(...counts);
-    const spadesCounts = g.players.map(p => p.captured.filter(c => c.s === '♠').length);
-    const maxSpades   = Math.max(...spadesCounts);
-    const tikkiCounts = g.players.map(p => p.tikkiCount);
-    const cardsTied   = counts.filter(c => c === maxCards).length > 1;
-    const spadesTied  = spadesCounts.filter(s => s === maxSpades).length > 1;
-    return g.players.map((p, i) => {
-      let pts = 0;
-      const hasMostCards   = counts[i] === maxCards  && !cardsTied;
-      const hasMostSpades  = spadesCounts[i] === maxSpades && !spadesTied;
-      const isInCardsTie   = cardsTied  && counts[i] === maxCards;
-      const isInSpadesTie  = spadesTied && spadesCounts[i] === maxSpades;
-      if (hasMostCards)  pts += 3; // vakiosäännöt, linjattu 18.8.2026 (KASINO.md)
-      if (hasMostSpades) pts += 1;
-      const ruutuKymppiCount  = p.captured.filter(isRuutuKymppi).length;
-      const pataKakkonenCount = p.captured.filter(isPataKakkonen).length;
-      const aceCount          = p.captured.filter(c => c.r === 'A').length;
-      pts += ruutuKymppiCount * 2 + pataKakkonenCount + aceCount;
-      const tikkiPts = (tikkiCounts[i] > 0 && tikkiCounts.some((t, j) => j !== i && t < tikkiCounts[i]))
-        ? p.tikkiCount : 0;
-      pts += tikkiPts;
-      return {
-        roundPts: pts,
-        cards: counts[i], spades: spadesCounts[i],
-        tikkiCount: p.tikkiCount, aces: aceCount,
-        hasMostCards, hasMostSpades, isInCardsTie, isInSpadesTie,
-        ruutuKymppiCount, pataKakkonenCount, aceCount, tikkiPts,
-      };
-    });
   }
 
   function doCapture(g, playerIdx, handCard, tableCards, silent = false) {
