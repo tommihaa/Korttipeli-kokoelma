@@ -1117,9 +1117,17 @@ joitain muutoksia sääntöihin. Muutokset kysyttiin samana päivänä, ja Tommi
 Kiusan muutokset ovat siis täsmälleen ne kolme jotka tämä kohta jo kuvaa: rivi päättyy
 kakkoseen alhaalla ja ässään ylhäällä, ja pantti on lopussa 30 pisteen arvoinen.
 
-**Seuraus** *(kirjoittajan päätelmä vastauksesta, ei Tommin lause)*: kiusa näyttää olevan
+**Seuraus** *(kirjoittajan päätelmä vastauksesta, kuitattu samana päivänä)*: kiusa on
 juuri tämän kohdan ja kohdan 37 kuvaaman lapsuuden pistemuodon nimi, ei kolmas muunnelma.
-Nimi ja muutokset osuvat yksiin, mutta yhtäläisyysmerkkiä ei ole kysytty suoraan.
+Yhtäläisyysmerkki kysyttiin suoraan, ja Tommi vastasi:
+
+> *sama peli se on, pelattiin sarjassa illan aikana*
+
+Vastaus toi yhden uuden asian: kiusaa pelattiin sarjana illan aikana, eli kierrokset
+muodostivat illan mittaisen kokonaisuuden. Se on eri asia kuin kohdan 39 turnaussarja,
+joka oli eri pelien sarja parin tunnin aikana: kiusan sarja oli saman pelin toistoa.
+Pelin päättymisen laukaisin pysyy muistin rajana, koska illan mitta ei ole vastaus siihen
+mikä sarjan sisällä laukaisi lopun, eikä sitä täytetä päättelemällä.
 
 **Seuraus:** ässä oli rivissä ylin mutta sakkona halvin (1 piste), eli pelijärjestys ja
 pistearvo kulkivat eri asteikkoa. Käteen jääneistä korteista kallein oli kuningas (13).
