@@ -1100,9 +1100,17 @@ kakkonen oli maarivin alin ja ässä ylin kortti, eli rivi tuli valmiiksi niiden
 **Korjaus:** panttikortti oli itsessään 30 pisteen arvoinen, eikä sen numeroarvoa laskettu
 päälle. Pantin haltija sai siis korttiensa numeroarvot ja pantista 30.
 
-**Seuraus:** pelillä oli kaksi nimeä, Ristiseiska ja kiusa. Jälkimmäinen nimeää pelin
-luonteen (kiusaaminen eli toisten pelin tukkiminen), ja se on ensimmäinen kirjattu tapaus
-jossa lapsuuden perinteellä oli oma nimi sovelluksen nimen rinnalla.
+**Seuraus:** pelillä oli kaksi nimeä, Ristiseiska ja kiusa. ~~Jälkimmäinen nimeää pelin
+luonteen (kiusaaminen eli toisten pelin tukkiminen)~~ *(kirjoittajan päätelmä, kumoutui
+samana päivänä)*, ja se on ensimmäinen kirjattu tapaus jossa lapsuuden perinteellä oli oma
+nimi sovelluksen nimen rinnalla.
+
+Tommi tarkensi 20.8.2026 omin sanoin:
+
+> *Kiusa oli synonyymi pelille Ristiseiska, joillain muutoksilla.*
+
+Kiusa ei siis nimennyt pelin luonnetta vaan oli saman pelin toinen nimi, ja siihen liittyi
+joitain muutoksia sääntöihin. Mitkä muutokset, ei ole kysytty ja jää avoimeksi.
 
 **Seuraus:** ässä oli rivissä ylin mutta sakkona halvin (1 piste), eli pelijärjestys ja
 pistearvo kulkivat eri asteikkoa. Käteen jääneistä korteista kallein oli kuningas (13).
@@ -1168,7 +1176,12 @@ Viimeinen avoin kysyttiin erikseen, ja Tommi vastasi 20.8.2026:
 > *kyllä, eniten pisteitä voitti, turnaussarja*
 
 Voittaja oli siis se jolla oli eniten pisteitä kun sovittu määrä pelejä oli pelattu, ja
-muodolla oli oma nimi: **turnaussarja**. Kohdassa ei ole enää avoimia kysymyksiä.
+muodolla oli oma nimi: **turnaussarja**. Tommi tarkensi nimen samana päivänä:
+
+> *Turnaussarja on pelien sarja parin tunnin aikana.*
+
+Turnaussarjalla oli siis myös aikamitta: se oli parin tunnin kokonaisuus, ei koko pelipäivän
+mittainen. Kohdassa ei ole enää avoimia kysymyksiä.
 
 **Seuraus:** turnaussarja on toinen lapsuuden perinteen oma nimi tässä dokumentissa (kiusa
 kohdassa 38 on ensimmäinen), eli perinteellä oli oma sanasto eikä vain omat säännöt.
