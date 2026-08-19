@@ -204,12 +204,9 @@ Aloittelijataso tekee tämän virheen tarkoituksella.
 sitä pienemmän päälle) ja A (kuvakortin päälle), ja kaato tyhjentää kasan pelistä ja antaa
 kaatajalle uuden vuoron. Virhe on kaataa tilanteessa jossa halvempi siirto olisi riittänyt.
 
-*Tulkinta jää tässä kesken tarkoituksella.* Vastauksen jälkiosa (*kun pakasta voi kokeilla
-yksiarvoisen pöydän pelaamisen*) viittaa todennäköisesti siihen että kasassa on vain yhtä
-arvoa ja pakassa on kortteja jäljellä, jolloin kannattaa lyödä ja katsoa mitä nostaa, ja
-vaihto-oikeus antaa vielä kolmen sekunnin peruutusmahdollisuuden. **Tätä ei kirjata väitteeksi
-ennen kuin Tommi on vahvistanut sen**, koska kyse on juuri siitä lajista jossa liian pitkä
-johtopäätös näyttäisi oikealta.
+*Tulkinta ratkesi erässä 3, ja kirjoittajan arvaus oli ohi. Se jätetään näkyviin.* Arvaus oli,
+että kyse on vaihto-oikeudesta: lyö kädestä, nosta täydennys ja peru kolmessa sekunnissa jos
+nostat paremman. Oikea vastaus on toinen mekaniikka, ja se on kohdassa 7.
 
 **Kultakalan esimerkki on kaksinkertainen virhe, ja se on kolmesta selvin.** Pienin summa
 voittaa ja ässä on 1, joten A ja 2 ovat pelin parhaat kortit. Poistopakkaan heittäminen
@@ -227,3 +224,63 @@ se heitettäisiin pois. **Vartija koskee kuitenkin vain paikkaa 1**, ja se on ke
 sääntö eikä yleinen kielto. Tommin nimeämä virhe on siis estetty siinä kohdassa jossa se on
 tavallisin, muttei nimetty missään dokumentissa, joten kanonin ja koodin ero on tässä kirjaus
 eikä käyttäytyminen.
+
+---
+
+## 7. Paskahousun kaatovirhe on hyvien korttien hukkaamista, ja vaihtoehto on sokkoriski
+
+Tommi 19.8.2026, kysyttäessä tarkoittiko hän kohdan 6 esimerkillä vaihto-oikeutta:
+
+> *kannattaa lyödä pakasta jos ei halua hukata parempia kortteja kuten kaatokortteja tai kovia
+> kakkosia*
+
+Kyse on siis **sokkopakasta nostosta** eikä vaihto-oikeudesta. Sen säännöt ovat kanonissa:
+pakan päällimmäinen nostetaan paljastamatta, ja jos se käy kasaan se lyödään kasaan (voi jopa
+kaataa kasan), mutta jos se ei käy, pelaaja ottaa koko kasan käteensä rangaistuksena.
+
+**Seuraus:** virhe ei ole kaataminen sinänsä vaan se, että pelaaja maksaa varmalla hyvällä
+kortilla tilanteessa jossa halpa arpa olisi riittänyt. Sokkonosto on riski, mutta sen hinta on
+kasan ottaminen käteen, ja se on halvempi kuin kaatajan tai kovan kakkosen polttaminen silloin
+kun kasa on helposti lyötävissä. Aloittelija ostaa siis varmuutta hinnalla jota ei tarvitsisi
+maksaa.
+
+**Seuraus:** tästä seuraa myös miksi kortin arvo ei ole sen arvo taulukossa. Kova kakkonen on
+korttitaulukon suurin (15), mutta sen arvo on siinä että se on käyttämättä, ja sama pätee
+kaatajiin. Vastaus on siis sama kuin kohdan 6 kolmella esimerkillä: kortin arvo on sen
+pidättämisessä.
+
+## 8. Kasinon rakentaminen on luettu kansainvälisistä säännöistä ja valittu mukaan
+
+Tommi 19.8.2026, kysyttäessä mistä rakentaminen tuli jos ei pöydästä:
+
+> *luin Kasino-pelin kansainvälisiä ohjeita, kuvauksia, sääntöjä ja tuumasin, että tämän haluan
+> mukaan*
+
+**Seuraus:** kohdan 4 aukko on tarkoituksellinen valinta eikä puute. Rakentaminen ei ole
+sovelluksessa siksi että se olisi kanonisoitu pöytäperinteestä, vaan siksi että se luettiin
+muualta ja arvioitiin peliä parantavaksi.
+
+**Seuraus:** aukko koettimessa on silti olemassa ja se pysyy. Valinta selittää **miksi**
+mekaniikka on mukana, muttei anna Tommille kokemusta siitä miltä se pöydässä pelaa. Kasinon
+bottitasojen ero nojaa siis mekaniikkaan jota kukaan tämän projektin sisällä ei ole pelannut
+kasvokkain, ja se on tiedettävä silloin kun Kasinon botteja arvioidaan pelituntuman eikä
+mittarin perusteella.
+
+## 9. Asetusten peruste on variaatio, ei oikean säännön etsiminen
+
+Tommi 19.8.2026, kysyttäessä miksi vakioksi tuli 6 korttia ja vain mustat kakkoset kovina,
+vaikka hän oppi pelaamaan toisin:
+
+> *variaatio pelaamiseen, vaihtoehdot avaa uusia väyliä*
+
+**Seuraus:** asetusvalikko ei ole kompromissi kotisäännön ja kirjan säännön välillä eikä yritys
+löytää oikeaa muotoa. Se on tarkoituksellinen pelitilan laajennus, jossa useampi asento on
+tarjolla siksi että ne pelaavat eri tavoin.
+
+**Seuraus, ja tämä kokoaa kohdat 5, 8 ja 9 yhteen:** kokoelma ei ole Tommin pöytäperinteen
+tallenne. Perinne on sen lähtökohta ja sen pelivalikoiman syy, mutta yksittäisten sääntöjen
+tasolla se on **yksi asento muiden joukossa** eikä mittapuu. Kolme eri suunnasta tullutta
+vastausta sanovat saman: opittu Paskahousun muoto arvioitiin tylsäksi ja vakioksi tuli toinen,
+Kasinon rakentaminen luettiin muualta ja otettiin mukaan, ja asetusten peruste on variaatio.
+Tämä on kirjoittajan päätelmä kolmesta vastauksesta eikä Tommin lause, ja se on vahvistettava
+ennen kuin se nousee tämän dokumentin teesiksi.
