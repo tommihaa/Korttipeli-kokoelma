@@ -15,6 +15,28 @@ ja se on kirjoitettu ensin.
 **Lukija on malli, ja tiedosto noudetaan kun aihe tulee vastaan.** Muoto on siksi väitelauseita
 eikä proosaa.
 
+## Tiivistelmä: teesi on yksi lause, ja se on Tommin
+
+Kysyttäessä kumpi kahdesta kokoavasta väitteestä pitää paikkansa (perinne päätti pelivalikoiman,
+vai perinne on sääntöjen tasolla yksi asento muiden joukossa), Tommi vastasi 19.8.2026 listan
+ulkopuolelta:
+
+> **"Siksi ei standardia vaan vaihtoehtoja"**
+
+Vastaus on parempi kuin kysymys. Kysymys pyysi valitsemaan kahdesta havainnosta, ja vastaus
+nimeää sen mitä molemmista seuraa. Kaikki alla oleva on tämän lauseen erittelyä.
+
+**Lause on tarkistettavissa muualta, ja se pitää.** Kokoelmassa on hautakivi nimelle *Tommin
+Standardi*, joka lausuttiin 20.5.2026 ja hylättiin kahdessa vuorokaudessa. Nimi olisi
+tarkoittanut yhtä kirjoitettua sääntötulkintaa paikallisten muunnelmien tilalle, ja Tommi kumosi
+sen itse muotoon *korttipelien rikkaus piilee paikallisissa säännöissä*. Tämän dokumentin
+havainnot ovat siis saman päätöksen toinen puoli: hautakivi kertoo mitä ei tehty, ja kohdat 5,
+8 ja 9 kertovat mitä sen sijaan tehtiin.
+
+**Mitä teesi ei sano.** Se ei sano ettei Tommin omalla tavalla olisi asemaa. Se on kokoelmassa
+mukana valittavana asentona jokaisessa kohdassa jossa siitä on kysytty, eikä yksikään asetus
+ole poistanut sitä. Teesi koskee oletusta ja mittapuuta, ei olemassaoloa.
+
 ## Menetelmä: jokainen väite on Tommin vastaus
 
 Pahin mahdollinen lopputulos on keksitty substanssi, koska se näyttää oikealta. Vastine ei ole
@@ -282,11 +304,13 @@ tallenne. Perinne on sen lähtökohta ja sen pelivalikoiman syy, mutta yksittäi
 tasolla se on **yksi asento muiden joukossa** eikä mittapuu. Kolme eri suunnasta tullutta
 vastausta sanovat saman: opittu Paskahousun muoto arvioitiin tylsäksi ja vakioksi tuli toinen,
 Kasinon rakentaminen luettiin muualta ja otettiin mukaan, ja asetusten peruste on variaatio.
-Tämä on kirjoittajan päätelmä kolmesta vastauksesta eikä Tommin lause, ja se on vahvistettava
-ennen kuin se nousee tämän dokumentin teesiksi.
+Tämä oli kirjoittajan päätelmä kolmesta vastauksesta eikä Tommin lause.
 
-*Tila 19.8.2026: Tommi vastasi väitteeseen **osin**, ja tarkennus on kesken. Päätelmä ei siis
-ole tämän dokumentin teesi eikä sitä saa lukea sellaisena.*
+*Ratkesi 19.8.2026, eikä kumpikaan väite ollut se mitä lähde piti tärkeänä.* Ensimmäinen
+vastaus oli **osin**, ja kun väite avattiin kahdeksi erilliseksi, vastaus tuli listan
+ulkopuolelta: *siksi ei standardia vaan vaihtoehtoja*. Kirjoittaja kysyi kumpi havainto pitää,
+ja lähde vastasi mitä niistä seuraa. Teesi on tiivistelmäosiossa, ja tämä kappale jää tähän
+näkyviin, koska se kertoo miten se saatiin.
 
 ---
 
