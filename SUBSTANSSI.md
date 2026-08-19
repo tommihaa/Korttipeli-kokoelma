@@ -247,6 +247,8 @@ sääntö eikä yleinen kielto. Tommin nimeämä virhe on siis estetty siinä ko
 tavallisin, muttei nimetty missään dokumentissa, joten kanonin ja koodin ero on tässä kirjaus
 eikä käyttäytyminen.
 
+*Neljäs esimerkki samasta virheestä kirjattiin erässä 9, ks. kohta 26.*
+
 ---
 
 ## 7. Paskahousun kaatovirhe on hyvien korttien hukkaamista, ja vaihtoehto on sokkoriski
@@ -643,3 +645,67 @@ näyttää: sama epävarmuuden vaatimus täyttyy yhdeksällä eri mekanismilla, 
 **Seuraus työtapaan:** haastattelun järjestys valitaan tästä eteenpäin kirjoittajan harkinnalla,
 eikä sitä tarvitse tilata erikseen. Peliä koskevat kysymykset kysytään yhtenä eränä yhdestä
 pelistä kerrallaan, koska erilaisuus tarkoittaa ettei yhden pelin vastaus valmistele seuraavaa.
+
+---
+
+## 24. Maijaa pelataan voittaakseen, ja keino on valttien kerääminen
+
+Tommi 20.8.2026, kysyttäessä pelattiinko Maijaa ensisijaisesti voittaakseen vai välttääkseen
+patakuningatarta:
+
+> *voittaminen ensisijaisesti keräämällä valtteja*
+
+Vastaus valitsee kysytystä parista ensimmäisen ja nimeää lisäksi keinon, jota ei kysytty.
+
+**Seuraus:** häviöehto ei ohjaa peliä yhtä paljon kuin voittoehto, vaikka Maija on yhdeksästä
+ainoa peli jossa häviäjä nimetään erikseen. Patakuningatar on siis riski jota vältetään pelin
+sivussa, ei tavoite jonka ympärille peli rakentuu.
+
+**Seuraus, ja tämä on kohdan 6 kanssa samansuuntainen:** valttien kerääminen on kortin arvon
+säilyttämistä eikä sen käyttämistä. Maija on rakenteeltaan sellainen että kaatamatta jättäminen
+kasvattaa kättä, joten pelaaja voi ottaa kortteja saadakseen valtteja myöhempää varten. Sama
+teema kuin pidättämisessä, mutta toisella mekanismilla. Tämä on kirjoittajan päätelmä
+kanonin säännöistä eikä Tommin lause.
+
+**Avoin:** vastaus ei kerro milloin painotus kääntyy. Pelin loppupuolella patakuningattaren
+välttäminen voi nousta ensisijaiseksi, mutta sitä ei ole kysytty.
+
+## 25. Pöytäpuhe on todellista vasta kun kortteja pelataan
+
+Tommi 20.8.2026, kysyttäessä tiedettiinkö kesken pelin kenellä patakuningatar on:
+
+> *pöytäpuhe on todellista vasta kun kortteja pelataan*
+
+Vastaus ei kerro kenellä kortti oli, vaan sen milloin puheella on katetta: pelattu kortti on
+tieto, ja sitä edeltävä puhe ei ole.
+
+**Seuraus, ja se tarkentaa kohtaa 10:** pöydän kolmesta kanavasta puhe on heikoin, eikä se ole
+itsenäinen informaatiolähde vaan pelattujen korttien tulkintaa. Arvuuttelu ennen kuin mitään on
+pelattu on siis puhetta ilman tietoa, ja juuri siksi patakuningatar pysyy piilossa siihen asti
+kun se ilmestyy.
+
+**Seuraus:** tämä sitoo kohdan 19 muistin ja kohdan 10 puheen samaan lähteeseen. Molemmat
+lukevat pelattuja kortteja, toinen omasta kirjanpidosta ja toinen ääneen. Sovelluksessa
+jälkimmäistä ei ole, ja edellinen on botilla täydellinen.
+
+**Avoin:** vastauksen voi lukea myös laajempana kuin Maijaa koskevana, eli kaikkia yhdeksää
+peliä koskevana kannanottona puheen arvosta. Kirjattu tässä Maijan kysymyksen vastauksena,
+koska sitä kysyttiin, eikä yleistetty.
+
+## 26. Maijan aloittelijavirhe on isojen korttien pelaaminen pienten sijaan
+
+Tommi 20.8.2026, kysyttäessä missä hetkessä Maijan aloittelija tekee virheen:
+
+> *pelaa isoja kortteja pienien sijaan*
+
+**Seuraus:** tämä on kohdan 6 kuvaaman virheen neljäs nimetty esimerkki ja neljäs eri peli.
+Kortin arvo on sen pidättämisessä, ja aloittelija käyttää sen heti. Maijassa muoto on kaikkein
+suorin: hyökkäykseen ja kaatamiseen kelpaa mikä tahansa riittävän suuri kortti, joten pienin
+riittävä on aina oikea ja aloittelija pelaa suurimman.
+
+**Seuraus:** virhe on Maijassa kaksinkertainen, koska iso kortti on sekä hyvä kaatokortti että
+hyvä hyökkäyskortti. Sen pelaaminen liian aikaisin menettää molemmat käyttötavat. Tämä on
+kirjoittajan päätelmä kanonin säännöistä.
+
+**Avoin:** vastaus ei erottele koskeeko virhe hyökkäystä, puolustusta vai molempia, eikä sitä
+onko valttikortin liian aikainen käyttö sama virhe vai oma erillinen.
