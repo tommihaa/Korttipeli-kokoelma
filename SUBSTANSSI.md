@@ -1070,6 +1070,17 @@ Käteen jäänyt kortti laskettiin siis numeroarvostaan, ei kappaleena. Isot kor
 olivat isompi sakko, eli kierroksen lopussa oli väliä paitsi sillä montako korttia jäi, myös
 sillä mitkä.
 
-**Avoin:** laskettiinko pantin haltijan omat kortit 30:n päälle myös pantin osalta, ja miten
-kuvakortit arvotettiin (J, Q, K, A). Pelin päättymisen laukaisin on kysytty ja vastaus oli
-*en muista*, joten se ei ole avoin kysymys vaan muistin raja.
+Molemmat avoimet kysyttiin monivalintana 20.8.2026, ja Tommi vastasi kumpaankin valitsemalla
+vaihtoehdon; alla olevat muotoilut ovat siis valittuja vaihtoehtoja eivätkä hänen omaa
+sanamuotoaan. Pantin haltijan pisteisiin laskettiin sekä 30 että panttikortin oma numeroarvo.
+Kuvakortit arvotettiin järjestysarvon mukaan (J 11, Q 12, K 13) ja ässä yhden pisteen
+arvoisena.
+
+**Seuraus:** pantin sakko ei ollut kiinteä 30 vaan 30 plus kortin numeroarvo, eli pantiksi
+jäänyt iso kortti sakotti enemmän kuin pieni.
+
+**Seuraus:** käteen jääneistä korteista kallein oli kuningas (13) ja halvin ässä (1), eli
+arvoasteikko ei jatkunut ässään asti vaan kiertyi alkuun.
+
+Pelin päättymisen laukaisin on kysytty ja vastaus oli *en muista*, joten se ei ole avoin
+kysymys vaan muistin raja. Kohdassa ei ole enää avoimia kysymyksiä.
