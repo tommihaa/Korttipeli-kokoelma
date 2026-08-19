@@ -1110,7 +1110,16 @@ Tommi tarkensi 20.8.2026 omin sanoin:
 > *Kiusa oli synonyymi pelille Ristiseiska, joillain muutoksilla.*
 
 Kiusa ei siis nimennyt pelin luonnetta vaan oli saman pelin toinen nimi, ja siihen liittyi
-joitain muutoksia sääntöihin. Mitkä muutokset, ei ole kysytty ja jää avoimeksi.
+joitain muutoksia sääntöihin. Muutokset kysyttiin samana päivänä, ja Tommi vastasi:
+
+> *2 kaataa alhaalla, pantti lopussa 30 pistettä, A kaataa ylhäällä*
+
+Kiusan muutokset ovat siis täsmälleen ne kolme jotka tämä kohta jo kuvaa: rivi päättyy
+kakkoseen alhaalla ja ässään ylhäällä, ja pantti on lopussa 30 pisteen arvoinen.
+
+**Seuraus** *(kirjoittajan päätelmä vastauksesta, ei Tommin lause)*: kiusa näyttää olevan
+juuri tämän kohdan ja kohdan 37 kuvaaman lapsuuden pistemuodon nimi, ei kolmas muunnelma.
+Nimi ja muutokset osuvat yksiin, mutta yhtäläisyysmerkkiä ei ole kysytty suoraan.
 
 **Seuraus:** ässä oli rivissä ylin mutta sakkona halvin (1 piste), eli pelijärjestys ja
 pistearvo kulkivat eri asteikkoa. Käteen jääneistä korteista kallein oli kuningas (13).
