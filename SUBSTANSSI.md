@@ -554,6 +554,8 @@ koodista.
 **Avoin:** vastaus ei kerro kuinka pitkälle muisti käytännössä yltää pöydässä, eikä sitä
 pidettiinkö kirjanpitoa hyväksyttävänä taitona vai jonkinlaisena liiallisuutena.
 
+*Kohdan jälkimmäinen puoli ratkesi erässä 8, ks. kohta 22.*
+
 ## 20. Läpsyssä on paljon päätöksiä, ja se kaataa kysymyksen premissin
 
 Tommi 20.8.2026, kysyttäessä mikä Läpsyssä oli hyvää pöydässä, kun kysymys oletti että siinä
@@ -577,5 +579,67 @@ Kanonin lause koskee botin toteutusta ja tämä kohta pöytäkokemusta, joten ne
 välttämättä ristiriidassa, mutta ero on tarkistettava eikä sitä ratkaista kirjoittajan
 päättelyllä. Kysytään erässä 8.
 
+*Ratkesi erässä 8, ks. kohta 21: ristiriitaa ei ollut, vaan kanonin lause on suhteellinen.*
+
 **Avoin:** vastaus ei nimeä mitkä päätökset ovat ne tärkeimmät, eikä sitä onko päätösten
 paljous Läpsyn hyvyyden syy vai vain sen ominaisuus.
+
+## 21. Läpsy on suosikkien joukossa, ja kanonin lause on oikein suhteellisena
+
+Tommi 20.8.2026, kysyttäessä onko `LAEPSY.md`:n väite reaktiopelistä väärin sanottu vai
+kuvaako se vain botin työtä:
+
+> *se on suosikeistani eniten reaktio-pelimäisin*
+
+Vastaus ratkaisee kohdassa 20 nostetun eron, eikä kumpikaan puoli kaadu. Lause on oikein, mutta
+se on suhteellinen eikä absoluuttinen: Läpsy on reaktiopelimäisin **suhteessa muihin**, ei
+päätöksetön. Kohta 20 ja tämä kohta kuvaavat siis samaa peliä kahdella eri mittarilla, joista
+toinen on sisäinen ja toinen vertaileva.
+
+**Seuraus, ja se on menetelmällinen:** kohdan 20 ristiriita ei ollut ristiriita vaan puuttuva
+vertailukohta. Sama virhemuoto on kokoelmassa nimetty aiemminkin, kun sosiaalisuuden syytä
+etsittiin alustan sisältä vaikka peruste oli vertaileva.
+
+**Löydös jota ei kysytty:** vastaus nimeää Läpsyn suosikkien joukkoon, ja tämä on ensimmäinen
+kerta kun mieltymys mainitaan tässä dokumentissa. Yhdeksän pelin joukossa on siis järjestys jota
+ei ole kysytty, eikä sitä pidä päätellä siitä mitkä pelit ovat saaneet eniten kohtia.
+
+**Avoin:** mitkä muut kuuluvat suosikkeihin, ja onko suosikkius eri asia kuin kohdan 12
+kriteeri. Peli voi olla hyvä seurapeli olematta oma suosikki, ja päinvastoin.
+
+## 22. Muistista ei puhuttu pöydässä, eikä sitä pidetty huijaamisena
+
+Tommi 20.8.2026, kysyttäessä oliko pelattujen korttien tarkka muistaminen porukassa arvostettu
+taito vai epäurheilijamaista:
+
+> *siitä ei puhuttu, ei tiedetty, arvostetaisin taitoa*
+
+Vastauksessa on kolme osaa ja ne ovat eri lajia. Kaksi ensimmäistä kuvaavat sitä mitä pöydässä
+tapahtui, eli aihe ei ollut esillä eikä muiden muistista ollut tietoa. Kolmas on Tommin oma
+kanta ja se on ehdollisessa muodossa, joten se on nykyinen näkemys eikä pöydän tapa.
+
+**Seuraus:** muisti oli pöydässä näkymätön taito. Kohdan 10 kolmesta kanavasta kaksi on
+havaittavia (puhe ja ilme), mutta kirjanpito ei näy ulos lainkaan, joten sitä ei voitu arvostaa
+eikä paheksua. Se ei siis ollut normin ulkopuolella vaan normin ulottumattomissa.
+
+**Seuraus:** kohdan 19 päätelmä botin muistiedusta ei siis törmää mihinkään pöytänormiin.
+Rajaamiselle ei ole perustetta reiluudesta, ja jos peruste on, se on pelikokemus eli kohdan 12
+epävarmuus. Tämä on kirjoittajan päätelmä.
+
+## 23. Yhdeksän peliä ovat keskenään niin erilaisia ettei käsittelyjärjestyksellä ole väliä
+
+Tommi 20.8.2026, kysyttäessä mikä kolmesta käsittelemättömästä pelistä avataan seuraavaksi:
+
+> *kaikki niin erilaisia, järjestyksellä ei ole väliä*
+
+Vastaus on menetelmällinen ohje, mutta sen perustelu on substanssia. Järjestys on vapaa **koska**
+pelit ovat erilaisia, eli niistä opittu ei siirry pelistä toiseen niin että käsittelyjärjestys
+kasaisi ymmärrystä.
+
+**Seuraus, ja se osoittaa teesiin:** yhdeksän pelin valikoima ei ole muunnelmia yhdestä
+ideasta vaan yhdeksän eri asiaa. Se tekee kohdan 12 kriteeristä vaativamman kuin miltä se
+näyttää: sama epävarmuuden vaatimus täyttyy yhdeksällä eri mekanismilla, ei yhdellä.
+
+**Seuraus työtapaan:** haastattelun järjestys valitaan tästä eteenpäin kirjoittajan harkinnalla,
+eikä sitä tarvitse tilata erikseen. Peliä koskevat kysymykset kysytään yhtenä eränä yhdestä
+pelistä kerrallaan, koska erilaisuus tarkoittaa ettei yhden pelin vastaus valmistele seuraavaa.
