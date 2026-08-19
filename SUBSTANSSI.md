@@ -126,6 +126,8 @@ useampia, muttei sitä kumpi niistä on Laiturin tapa ja kumpi kirjan tapa, eik�
 vakioasento valittu siksi että se on yleisin vai siksi että se on se jolla Tommi on pelannut.
 Tämä on juuri sitä tietoa jota ei saa mistään muualta kuin häneltä.
 
+*Aukko sulkeutui erässä 12, ks. kohta 33. Yksi kohta jäi auki: Ristiseiskan pantin arvonta.*
+
 ## 3. Aloittelijan virhe on kortin arvon väärinlukeminen, ei sääntörikkomus
 
 Kysyttäessä mitä aloittelija tekee pöydässä väärin ilman että mikään sääntö kieltää sitä,
@@ -609,6 +611,8 @@ ei ole kysytty, eikä sitä pidä päätellä siitä mitkä pelit ovat saaneet e
 **Avoin:** mitkä muut kuuluvat suosikkeihin, ja onko suosikkius eri asia kuin kohdan 12
 kriteeri. Peli voi olla hyvä seurapeli olematta oma suosikki, ja päinvastoin.
 
+*Kysyttiin erässä 12, ja vastaus on ristiriidassa tämän kohdan luennan kanssa, ks. kohta 34.*
+
 *Toinen mieltymyksen ilmaus kirjattiin erässä 11, ks. kohta 32.*
 
 ## 22. Muistista ei puhuttu pöydässä, eikä sitä pidetty huijaamisena
@@ -779,6 +783,8 @@ voi arvioida tietämättä mihin akseliin pelaaja tähtää.
 **Avoin:** vastaus ei nimeä yhtäkään konkreettista tilannetta, joten kohdan 6 kaltaista
 esimerkkiä ei Kasinosta vielä ole.
 
+*Kysyttiin erässä 12 ja jää avoimeksi, ks. kohta 35: pöytäversiossa ei ollut rakennelmia eikä tilanne noussut esiin.*
+
 ---
 
 ## 30. Molempia opiskelukaverin pelejä pelattiin, ja ajankohta oli ennen internetiä
@@ -873,3 +879,90 @@ Paskahousu keskitasoa ja Moska vaativa.
 takanaan. Kaikki kolme löydöstä koskevat kirjoittajan omia päätelmiä, eivät Tommin vastauksia,
 mikä on odotettu suunta: menetelmäosion mukaan `Seuraus:`-rivi saa kaatua ilman että vastaus
 kaatuu sen mukana.
+
+---
+
+## 33. Neljä viidestä sääntövalinnasta on nähty pöydässä, ja vaihtoehdot ovat luettuja
+
+Tommi 20.8.2026, kysyttäessä kumpi asento kussakin viidestä sääntövalinnasta on pöydästä ja
+mikä luetusta säännöstä:
+
+> *pöydässä kaikki paitsi Kasinon katto, muut luettuja*
+
+**Tämä sulkee sen aukon jota kohta 2 kutsui dokumentin tärkeimmäksi.** Muunnelmien alkuperä on
+nyt tiedossa yleisellä tasolla: neljässä valinnassa viidestä toinen asento on Tommin pöydässä
+näkemä ja toinen on luettu, ja Kasinon rakennelman katossa molemmat asennot ovat luettuja.
+
+| Sääntövalinta | Pöydässä nähty asento | Toinen asento |
+|---|---|---|
+| Paskahousun käden koko | kyllä (5, kohta 5) | luettu |
+| Paskahousun kakkosten kovuus | kyllä (kaikki kovia, kohta 5) | luettu |
+| Paskahousun kuvakortin alaraja | kyllä (ei rajaa, kohta 5) | luettu |
+| Ristiseiskan pantin arvonta | kyllä, mutta kumpi asento, ei ole kysytty | luettu |
+| Kasinon rakennelman katto | ei kumpaakaan | molemmat luettuja |
+
+**Seuraus:** asetusvalikko on kauttaaltaan pöytäperinteen ja luetun säännön pari, ei kahden
+luetun säännön pari. Se vahvistaa kohdan 9 vastauksen variaatiosta konkreettisella tasolla:
+vaihtoehto on melkein aina se jota Tommi ei ole pelannut, eli asetus avaa väylän pois omasta
+perinteestä eikä sen sisällä.
+
+**Seuraus:** Kasino on tässäkin poikkeus, ja se on nyt kolmas kerta samassa kohdassa. Kohta 4
+nimesi rakentamisen ainoaksi mekaniikaksi jota Tommi ei ole pelannut, kohta 8 kertoi sen tulleen
+luetusta säännöstä, ja tämä kertoo että myös sen asetusvalinta on kokonaan luettu. Kasinon
+kyvykkyysporras nojaa siis osaan jossa koetinta ei ole missään kohdassa.
+
+**Avoin:** Ristiseiskan pantin arvonnan kohdalla ei tiedetä kumpi kahdesta asennosta on se
+pöydässä nähty. Vastaus kertoo että jompikumpi on, muttei kumpi.
+
+## 34. Suosikit ovat Moska ja Paskahousu, ja mieltymys ei ohjaa valikoimaa
+
+Tommi 20.8.2026, kysyttäessä mitkä yhdeksästä ovat suosikkeja ja onko suosikkius eri asia kuin
+se että peli on hyvä porukalle:
+
+> *ei, moska ja paskahousu on suosikkejani, pelaan äärimmäistä peliä joten en kieltäydy jos se
+> levittää pelaamist*
+
+Vastauksen kolmas osa on kirjoitettu nopeasti, ja luen sen viittaukseksi äärettömään peliin
+(`Kaanon/KÄSITTEISTÖ.md` §1). Luenta on kirjoittajan, ja se on tämän kohdan ainoa epävarma osa.
+
+**Seuraus, ja se on suoraan tuotteeseen osuva:** oma mieltymys ei ole valikoiman peruste. Jos
+peli levittää pelaamista, se otetaan mukaan riippumatta siitä onko se Tommin suosikki, ja
+päinvastoin suosikkius ei anna pelille erityisasemaa. Tämä selittää miksi kokoelmassa on
+yhdeksän peliä eikä kahta, ja se on sama linja kuin kohdan 5 vakioasetuksissa: oma tapa on
+mukana valittavana eikä mittapuuna.
+
+**Ristiriita kohdan 21 kanssa, ja se nostetaan tässä ratkaisematta.** Erässä 8 vastaus kuului
+*se on suosikeistani eniten reaktio-pelimäisin*, ja luin siitä että Läpsy on suosikkien
+joukossa. Tässä suosikeiksi nimetään Moska ja Paskahousu. Joko luentani oli liian pitkä
+johtopäätös, tai suosikkien joukko on laajempi kuin kaksi. Ero on kysyttävä eikä pääteltävä,
+koska molemmat lauseet ovat Tommin.
+
+**Seuraus, jos suosikit ovat Moska ja Paskahousu:** ne ovat kanonin vaikeustaulukossa vaativa ja
+keskitaso, eli kokoelman raskaammasta päästä, ja molemmat ovat kaatopelejä joissa pidättäminen
+on keskeinen taito (kohdat 6 ja 7). Suosikkius osuisi siis samaan teemaan jota dokumentti on
+kiertänyt alusta asti. Tämä on kirjoittajan päätelmä eikä Tommin lause.
+
+## 35. Kasinoa pelattiin kaksinpelinä ilman rakennelmia, eikä konkreettista esimerkkiä ole
+
+Tommi 20.8.2026, kysyttäessä muistaako hän yhden konkreettisen tilanteen jossa otti Kasinossa
+vähemmän kortteja tavoitellakseen patoja tai arvokorttia:
+
+> *en, aktiivisesta pelaamisesta on aikaa ja se ei todellakaan noussut tuolle tasolle, se oli
+> kaksintaistelu pistemäärään eikä ollut mm. rakennelmia*
+
+Vastaus on kieltävä, ja se on kirjattava sellaisenaan: kohdan 29 avoin esimerkki jää avoimeksi
+eikä sitä täytetä päättelemällä.
+
+**Seuraus, ja tämä on uutta tietoa:** Kasinoa pelattiin **kahdella pelaajalla**. Kohta 16 nimesi
+kahden pelaajan peleiksi Kultakalan ja Koputuksen, ja ne ovat Laiturin pelejä; Kasino on
+opiskeluajalta ja se oli kaksinpeli alusta asti. Kohdan 16 lista ei siis ole täydellinen lista
+kahdelle sopivista peleistä, vaan lista siitä mihin Laiturilla vaihdettiin kun väkeä oli kaksi.
+
+**Seuraus:** peli päättyi pistemäärään, mikä vahvistaa kohdan 27 rakenteen kolmannen kerran ja
+nyt pöydän puolelta. Kasinon vetovoima oli kierrosten yli kertyvä piste, ja pöydässä se oli
+nimenomaan kaksintaistelu siitä.
+
+**Seuraus:** rakennelmien puuttuminen tarkoittaa ettei Kasinon pöytäversio ollut vain
+rakentamaton variaatio vaan kevyempi peli kokonaisuudessaan, eikä kohdan 29 kolmen akselin
+punninta noussut siinä esiin. Kolme akselia on siis pisteytyksen ominaisuus, jota Tommi kuvasi
+sääntöjen eikä oman pelikokemuksensa perusteella. Tämä tarkentaa kohtaa 29 eikä kumoa sitä.
