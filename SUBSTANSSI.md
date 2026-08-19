@@ -1027,3 +1027,42 @@ välttämättä sama, ja tämä on tarkistettava ennen kuin lapsuuden muodosta p
 **Avoin:** lukiko 30 pistettä sakkona vai tavoitteena, mihin rajaan pelattiin, ja miten pantti
 lapsuuden muodossa liikkui. Näitä ei kysytty, ja ne ovat eri erän työ, koska tämä vastaus
 avasi kokonaan uuden pelimuodon eikä vain sulkenut aukkoa.
+
+*Kolme neljästä sulkeutui erässä 14, ks. kohta 38: 30 oli rangaistus, kierros päättyi kun
+ensimmäinen pääsi korteistaan, ja pisteet laskettiin käteen jääneistä korteista. Pelin
+päättymisen laukaisin ei ole muistissa.*
+
+## 38. Lapsuuden Ristiseiskassa vähiten pisteitä voitti, ja kierros päättyi tyhjään käteen
+
+Tommi 20.8.2026, kysyttäessä oliko 30 rangaistus vai tavoite, mihin pelattiin ja miten pantti
+ja pisteet toimivat:
+
+> *1 ja 2 rangaistus, voittaja oli vähiten pisteitä saanut, mutta en muista mikä laukaisi*
+> *3 ja 4 se jolle pantti jäi sai 30 pistettä korttiensa pistemäärän lisäksi, muut vaan
+> pistemäärän, kun ensimmäinen pääsi korteistaan*
+
+Pisteet olivat siis sakkoa: kierros päättyi kun ensimmäinen pelaaja pääsi korteistaan,
+jokainen sai pisteitä käteen jääneistä korteistaan, pantin haltija lisäksi 30, ja pelin
+voitti se jolla oli lopussa vähiten pisteitä. Se mikä laukaisi pelin päättymisen (pisteraja,
+kierrosmäärä vai jokin muu) ei ole muistissa, ja se kirjataan sellaisenaan eikä täytetä
+päättelemällä.
+
+**Seuraus:** kohdan 37 varovaisuus pantin mekaniikasta osoittautui aiheettomaksi kierroksen
+sisällä. Kierros päättyi samalla tavalla kuin sovelluksessa (ensimmäinen tyhjä käsi), joten
+lapsuuden muoto on sovelluksen kierros plus pistekerros sen päällä, ei eri peli kierroksen
+sisältä. Kohdan 37 ensimmäinen seuraus (sovellus on yhden kierroksen muoto lapsuuden pelistä)
+vahvistuu.
+
+**Seuraus:** pantin +30 tekee pantista kierroksen suurimman yksittäisen riskin, koska se on
+kiinteä summa käden koosta riippumatta. Lapsuuden muodossa passaamisen hinta ei siis ollut
+vain kortin menetys vaan uhka kierroksen lopun sakosta, eli passauspäätös oli raskaampi kuin
+sovelluksessa.
+
+**Seuraus:** vähiten pisteitä voittaa on sama voittosuunta kuin Kultakalassa (pienin summa),
+eli yhdeksän pelin joukossa käänteinen pisteytys ei ollut Kultakalan yksittäistapaus vaan
+esiintyi myös lapsuuden perinteessä.
+
+**Avoin:** millä arvolla käteen jäänyt kortti laskettiin (yksi piste per kortti vai kortin
+numeroarvo), ja laskettiinko pantin haltijan omat kortit 30:n päälle myös pantin osalta.
+Pelin päättymisen laukaisin on kysytty ja vastaus oli *en muista*, joten se ei ole avoin
+kysymys vaan muistin raja.
