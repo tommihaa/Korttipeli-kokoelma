@@ -1072,15 +1072,33 @@ sillä mitkä.
 
 Molemmat avoimet kysyttiin monivalintana 20.8.2026, ja Tommi vastasi kumpaankin valitsemalla
 vaihtoehdon; alla olevat muotoilut ovat siis valittuja vaihtoehtoja eivätkä hänen omaa
-sanamuotoaan. Pantin haltijan pisteisiin laskettiin sekä 30 että panttikortin oma numeroarvo.
-Kuvakortit arvotettiin järjestysarvon mukaan (J 11, Q 12, K 13) ja ässä yhden pisteen
-arvoisena.
+sanamuotoaan. ~~Pantin haltijan pisteisiin laskettiin sekä 30 että panttikortin oma
+numeroarvo.~~ *(Kumoutui samana päivänä Tommin omalla sanamuodolla, ks. alla.)* Kuvakortit
+arvotettiin järjestysarvon mukaan (J 11, Q 12, K 13) ja ässä yhden pisteen arvoisena.
 
-**Seuraus:** pantin sakko ei ollut kiinteä 30 vaan 30 plus kortin numeroarvo, eli pantiksi
-jäänyt iso kortti sakotti enemmän kuin pieni.
+~~**Seuraus:** pantin sakko ei ollut kiinteä 30 vaan 30 plus kortin numeroarvo, eli pantiksi
+jäänyt iso kortti sakotti enemmän kuin pieni.~~ *(Kaatui korjauksen mukana ja jätetään
+näkyviin: seuraus oli vedetty monivalintavastauksesta joka kumoutui.)*
 
-**Seuraus:** käteen jääneistä korteista kallein oli kuningas (13) ja halvin ässä (1), eli
-arvoasteikko ei jatkunut ässään asti vaan kiertyi alkuun.
+Tommi täydensi 20.8.2026 omin sanoin, samassa istunnossa monivalinnan jälkeen:
+
+> *ristiseiska toinen nimi oli kiusa*
+> *2 kaatoi alhaalla ja A ylhäällä*
+> *pantti 30 pistettä*
+
+ja jatkokysymykseen pantista: *kun ensimmäinen pääsi korteistaan eroon muiden pisteet
+laskettiin, pantti oli 30 pistettä*. Kaatamisen hän vahvisti tarkoittavan rivin päättymistä:
+kakkonen oli maarivin alin ja ässä ylin kortti, eli rivi tuli valmiiksi niiden kohdalla.
+
+**Korjaus:** panttikortti oli itsessään 30 pisteen arvoinen, eikä sen numeroarvoa laskettu
+päälle. Pantin haltija sai siis korttiensa numeroarvot ja pantista 30.
+
+**Seuraus:** pelillä oli kaksi nimeä, Ristiseiska ja kiusa. Jälkimmäinen nimeää pelin
+luonteen (kiusaaminen eli toisten pelin tukkiminen), ja se on ensimmäinen kirjattu tapaus
+jossa lapsuuden perinteellä oli oma nimi sovelluksen nimen rinnalla.
+
+**Seuraus:** ässä oli rivissä ylin mutta sakkona halvin (1 piste), eli pelijärjestys ja
+pistearvo kulkivat eri asteikkoa. Käteen jääneistä korteista kallein oli kuningas (13).
 
 Pelin päättymisen laukaisin on kysytty ja vastaus oli *en muista*, joten se ei ole avoin
 kysymys vaan muistin raja. Kohdassa ei ole enää avoimia kysymyksiä.
