@@ -709,3 +709,66 @@ kirjoittajan päätelmä kanonin säännöistä.
 
 **Avoin:** vastaus ei erottele koskeeko virhe hyökkäystä, puolustusta vai molempia, eikä sitä
 onko valttikortin liian aikainen käyttö sama virhe vai oma erillinen.
+
+---
+
+## 27. Kasinon vetovoima on pisteiden kertyminen pelien yli
+
+Tommi 20.8.2026, kysyttäessä mikä Kasinossa oli se juttu joka teki siitä pelaamisen arvoisen
+ilman rakentamista:
+
+> *pisteiden kerääminen pelien yli*
+
+**Seuraus, ja se on tarkistettu eikä oletettu:** Kasino on yhdeksästä ainoa jolla on
+pisteraja kierrosten yli. `KASINO.md` nimeää rajaksi 16 pistettä ja yksi kierros jakaa 11,
+joten peli kestää vähintään kaksi kierrosta. Muiden kahdeksan kanonissa ei ole vastaavaa
+kertymää, vaan yksi peli ratkeaa itsessään.
+
+**Seuraus:** vastaus nimeää siis rakenteen eikä yksittäistä mekaniikkaa, ja se on eri lajia
+kuin muiden pelien vetovoima. Kohdan 12 kriteeri koskee yhtä peliä, mutta tässä kiinnostavuus
+syntyy pelien välistä, eli siitä että hävitty kierros ei ole hävitty peli.
+
+**Seuraus:** tämä selittää myös miksi rakentamisen puuttuminen ei haitannut. Se on kaappaamisen
+laajennus yhden kierroksen sisällä, eikä se kosketa sitä kerrosta josta vetovoima tuli. Tämä on
+kirjoittajan päätelmä eikä Tommin lause.
+
+## 28. Pisteet laskettiin kierroksen lopussa, ja kanoni sanoo saman
+
+Tommi 20.8.2026, kysyttäessä laskettiinko pisteet joka jaon jälkeen vai vasta lopuksi:
+
+> *pisteet laskettiin kun kortit oli pelattu*
+
+**Seuraus:** kyseessä on vahvistus eikä uusi tieto. `KASINO.md` sanoo kierroksen päättyvän kun
+pakka on jaettu ja kortit pelattu, ja pisteet lasketaan silloin. Pöytätapa ja koodi ovat siis
+tässä samat, mikä on merkille pantavaa siksi että kohdassa 5 vakioasetukset olivat
+pelattavuuspäätöksiä eivätkä perinnettä. Kaikki ei siis ole muunnettu, ja tämä on kohta jossa
+pöydän tapa siirtyi sellaisenaan.
+
+**Avoin:** vastaus ei kerro pidettiinkö kierrosten välillä kirjaa paperilla vai muistissa,
+eikä sitä pelattiinko 16 pisteen rajaan vai johonkin muuhun.
+
+## 29. Kasinossa on kolme palkitsemisen akselia, ja siksi liian vähän ottaminen ei ole yksi tilanne
+
+Tommi 20.8.2026, kysyttäessä missä tilanteessa pelaaja ottaa pöydästä liian vähän:
+
+> *monikin tilanne, korttien määrästä palkitaan, padoista palkitaan, arvokorteista palkitaan*
+
+Vastaus kieltää kysymyksen muodon ja antaa tilalle syyn. Tilanteita on monta, koska pisteitä
+tulee kolmesta eri lähteestä, ja jokainen niistä tekee eri korttivalinnasta oikean.
+
+**Seuraus:** oikea kaappaus riippuu siitä mitä pelaaja on keräämässä. Korttien määrä palkitsee
+laajimman kaappauksen, padat palkitsevat maakohtaisen valinnan, ja arvokortit palkitsevat
+yksittäisen kortin ottamisen silloinkin kun se on määrällisesti pieni valinta. Kolme akselia
+voivat siis olla keskenään ristiriidassa samassa vuorossa, ja juuri se tekee virheestä
+tilannekohtaisen.
+
+**Seuraus, ja se on kohdan 12 kannalta olennainen:** kolme akselia on rakenteellinen syy sille
+ettei kukaan ole varma miten voittaa. Vastustajan kaappaus ei paljasta mitä hän tavoittelee,
+koska sama kaappaus voi palvella eri akselia. Tämä on kirjoittajan päätelmä eikä Tommin lause.
+
+**Seuraus:** tämä on myös eri virhemuoto kuin kohtien 6 ja 26 liian hyvän kortin pelaaminen.
+Siellä virhe on resurssin tuhlaus ja tunnistettavissa ilman tavoitteen tuntemista, tässä sitä ei
+voi arvioida tietämättä mihin akseliin pelaaja tähtää.
+
+**Avoin:** vastaus ei nimeä yhtäkään konkreettista tilannetta, joten kohdan 6 kaltaista
+esimerkkiä ei Kasinosta vielä ole.
