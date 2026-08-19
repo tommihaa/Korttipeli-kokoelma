@@ -609,6 +609,8 @@ ei ole kysytty, eikä sitä pidä päätellä siitä mitkä pelit ovat saaneet e
 **Avoin:** mitkä muut kuuluvat suosikkeihin, ja onko suosikkius eri asia kuin kohdan 12
 kriteeri. Peli voi olla hyvä seurapeli olematta oma suosikki, ja päinvastoin.
 
+*Toinen mieltymyksen ilmaus kirjattiin erässä 11, ks. kohta 32.*
+
 ## 22. Muistista ei puhuttu pöydässä, eikä sitä pidetty huijaamisena
 
 Tommi 20.8.2026, kysyttäessä oliko pelattujen korttien tarkka muistaminen porukassa arvostettu
@@ -772,3 +774,65 @@ voi arvioida tietämättä mihin akseliin pelaaja tähtää.
 
 **Avoin:** vastaus ei nimeä yhtäkään konkreettista tilannetta, joten kohdan 6 kaltaista
 esimerkkiä ei Kasinosta vielä ole.
+
+---
+
+## 30. Molempia opiskelukaverin pelejä pelattiin, ja ajankohta oli ennen internetiä
+
+Tommi 20.8.2026, kysyttäessä opittiinko Kasino ja Seiska samaan aikaan vai pelattiinko toista
+useammin:
+
+> *se oli aika ennen internettiä, molemmat kävi*
+
+Vastaus ei aseta pelejä järjestykseen vaan nimeää ajan. Kumpikaan ei ollut toisen varapeli.
+
+**Seuraus, ja tämä on ensimmäinen ajallinen konteksti tässä dokumentissa:** korttipelit olivat
+sen ajan käytettävissä oleva ajanviete, eivät valinta muiden ajanvietteiden joukosta. Se
+selittää kohdan 15 pelipäivän kaaren: peliä ei valittu illan ohjelmaksi vaan ilta koostui
+peleistä.
+
+**Seuraus:** tämä asettaa myös kohdan 1 kolme oppimispaikkaa aikajanalle. Lapsuus, opiskeluaika
+ja Laituri ovat kolme eri elämänvaihetta, ja pelivalikoima on kertynyt niiden yli eikä yhdestä
+lähteestä. Tämä on kirjoittajan päätelmä eikä Tommin lause.
+
+## 31. Seiskassa uhka luetaan vastustajan korttimäärästä
+
+Tommi 20.8.2026, kysyttäessä mistä hetkestä Seiskassa huomaa jälkikäteen hävinneensä:
+
+> *kun kaverin kortit vähenee niin uhat kasvaa*
+
+**Seuraus:** ratkaisuhetki ei ole yksittäinen siirto vaan tilanne joka kehittyy näkyvissä.
+Korttimäärä on tieto jonka kaikki näkevät koko ajan, joten Seiskassa uhkaa ei tarvitse päätellä
+vaan se on luettavissa suoraan.
+
+**Seuraus, ja se erottaa Seiskan Maijasta:** kohdan 25 mukaan Maijassa puhe on todellista vasta
+kun kortteja pelataan, eli tieto tulee jälkikäteen. Seiskassa uhkatieto tulee etukäteen ja on
+jatkuvasti näkyvissä. Kaksi peliä käyttävät siis eri informaatiorakennetta, mikä tukee kohtaa 23:
+yhdeksän peliä eivät ole saman idean muunnelmia.
+
+**Avoin:** vastaus ei kerro mitä tälle tehdään, eli onko oikea vastaus hyökätä vähäkorttista
+vastaan vai suojata omaa kättä. Erityiskorttien kohdistaminen on Seiskassa mahdollista, mutta
+sitä ei ole kysytty.
+
+## 32. Seiska on Uno vähemmillä korteilla, ja konsepti on Tommin mielestä nerokas
+
+Tommi 20.8.2026, kysyttäessä toimiiko Seiskassa jokin pöydässä mutta ei sovelluksessa tai
+päinvastoin:
+
+> *seiska on mielestäni sama kuin uno, mutta vähemmillä korteilla ja aivan nerokas konsepti*
+
+**Kysytty puoli jäi vastaamatta, ja se merkitään tähän eikä täytetä päättelemällä.** Kysymys
+koski siirtymää pöydän ja sovelluksen välillä, ja vastaus koskee pelin luonnetta. Sitä ei
+yleistetä siirtymäkysymyksen vastaukseksi.
+
+**Vastaus vahvistaa kanonin oman luonnehdinnan.** `SEISKA.md` ja `CLAUDE.md` kutsuvat peliä
+UNO-tyyppiseksi jo ennestään, ja Lappu-mekaniikka on kirjattu vastineeksi Unon reaktiosäännölle.
+Uutta on täsmennys *vähemmillä korteilla*, eli tavallisella pakalla saadaan sama rakenne ilman
+omaa pakkaa.
+
+**Seuraus:** tämä on toinen mieltymyksen ilmaus kohdan 21 jälkeen, ja se kohdistuu konseptiin
+eikä pelikokemukseen. Suosikkius ja rakenteen arvostus ovat siis eri asioita, eikä kumpaakaan
+ole vielä kysytty järjestelmällisesti.
+
+**Avoin:** kumman suuntainen sukulaisuus on, jää tässä kysymättä ja kirjaamatta. Se kuuluu
+korttipelien yleiseen kirjallisuuteen, jota menetelmäosion mukaan ei toisteta täällä.
