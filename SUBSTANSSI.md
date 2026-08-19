@@ -608,6 +608,9 @@ etsittiin alustan sisältä vaikka peruste oli vertaileva.
 kerta kun mieltymys mainitaan tässä dokumentissa. Yhdeksän pelin joukossa on siis järjestys jota
 ei ole kysytty, eikä sitä pidä päätellä siitä mitkä pelit ovat saaneet eniten kohtia.
 
+*Luenta kumoutui erässä 13, ks. kohta 36: lause vertasi eikä nimennyt suosikiksi, ja suosikit
+ovat Moska ja Paskahousu (kohta 34). Kumottu rivi jää näkyviin.*
+
 **Avoin:** mitkä muut kuuluvat suosikkeihin, ja onko suosikkius eri asia kuin kohdan 12
 kriteeri. Peli voi olla hyvä seurapeli olematta oma suosikki, ja päinvastoin.
 
@@ -914,6 +917,8 @@ kyvykkyysporras nojaa siis osaan jossa koetinta ei ole missään kohdassa.
 **Avoin:** Ristiseiskan pantin arvonnan kohdalla ei tiedetä kumpi kahdesta asennosta on se
 pöydässä nähty. Vastaus kertoo että jompikumpi on, muttei kumpi.
 
+*Sulkeutui erässä 13, ks. kohta 37: pöydässä antaja valitsi itse, ja se on myös vakioasento.*
+
 ## 34. Suosikit ovat Moska ja Paskahousu, ja mieltymys ei ohjaa valikoimaa
 
 Tommi 20.8.2026, kysyttäessä mitkä yhdeksästä ovat suosikkeja ja onko suosikkius eri asia kuin
@@ -936,6 +941,9 @@ mukana valittavana eikä mittapuuna.
 joukossa. Tässä suosikeiksi nimetään Moska ja Paskahousu. Joko luentani oli liian pitkä
 johtopäätös, tai suosikkien joukko on laajempi kuin kaksi. Ero on kysyttävä eikä pääteltävä,
 koska molemmat lauseet ovat Tommin.
+
+*Ratkesi erässä 13, ks. kohta 36: luenta oli liian pitkä, eikä lauseiden välillä ollut
+ristiriitaa.*
 
 **Seuraus, jos suosikit ovat Moska ja Paskahousu:** ne ovat kanonin vaikeustaulukossa vaativa ja
 keskitaso, eli kokoelman raskaammasta päästä, ja molemmat ovat kaatopelejä joissa pidättäminen
@@ -966,3 +974,56 @@ nimenomaan kaksintaistelu siitä.
 rakentamaton variaatio vaan kevyempi peli kokonaisuudessaan, eikä kohdan 29 kolmen akselin
 punninta noussut siinä esiin. Kolme akselia on siis pisteytyksen ominaisuus, jota Tommi kuvasi
 sääntöjen eikä oman pelikokemuksensa perusteella. Tämä tarkentaa kohtaa 29 eikä kumoa sitä.
+
+---
+
+## 36. Läpsyn paikka on turnaus ja iso porukka, eikä ristiriitaa ollut
+
+Tommi 20.8.2026, kysyttäessä kuuluuko Läpsy suosikkeihin Moskan ja Paskahousun rinnalle:
+
+> *läpsy on ok osana turnausta ja isommassa porukassa*
+
+**Kohdan 34 ristiriita ratkeaa, ja se oli kirjoittajan luentavirhe.** Erän 8 lause *se on
+suosikeistani eniten reaktio-pelimäisin* ei nimennyt Läpsyä suosikiksi, vaan vertasi sitä
+muihin, ja luin joukon jäsenyyden lauseesta joka kuvasi sijaintia akselilla. Suosikit ovat
+kohdan 34 kaksi, ja Läpsy on *ok* eli hyväksytty muttei suosikki. Kohdan 21 löydösrivi jää
+näkyviin kumottuna.
+
+**Seuraus, ja tämä on uutta:** Läpsyn arvo on ehdollinen kokoonpanolle. Se toimii osana
+turnausta ja isommassa porukassa, eli sen paikka on sarjassa muiden pelien joukossa eikä
+itsenäisenä valintana. Tämä on ensimmäinen kerta kun jonkin pelin hyvyys sidotaan
+pelaamisen muotoon eikä pelaajamäärään tai peliin itseensä.
+
+**Seuraus:** sana *turnaus* on uusi tässä dokumentissa, eikä pelipäivän kaari (kohta 15) ole
+sama asia: kaari on järjestys, turnaus on kilpailurakenne pelien yli. Sitä ei ole kysytty
+pidettiinkö Laiturilla turnauksia, ja se jää avoimeksi.
+
+## 37. Pantin valinta oli pöydässä kiinteä, ja lapsuuden Ristiseiskassa oli pisteet
+
+Tommi 20.8.2026, kysyttäessä kumpi pantin asento oli pöydän tapa:
+
+> *kiinteä, mutta lapsena opin missä pelattiin useampia kierroksia missä laskettiin pisteitä ja
+> kella pantti jäi sai 30*
+
+Ensimmäinen sana sulkee kohdan 33 viimeisen aukon: pöydässä pantin antaja valitsi kortin itse,
+ja se on myös sovelluksen vakioasento. Arvonta on se luettu vaihtoehto. Kaikki viisi
+sääntövalintaa ovat nyt jäljitettyjä.
+
+**Loppuosa on uusi löydös, jota ei kysytty: lapsuuden Ristiseiska oli pistepeli.** Pelattiin
+useampia kierroksia, pisteet laskettiin, ja se jolle pantti jäi sai 30. Tästä seuraa kolme
+asiaa, ja ne ovat eri painoisia:
+
+**Seuraus:** sovelluksen Ristiseiska ei ole lapsuuden pelin kopio vaan yhden kierroksen muoto
+siitä. Kierrosten yli kertyvä pistelasku on sama rakenne jonka kohta 27 nimesi Kasinon
+vetovoimaksi ja jonka kohta 27 sanoi puuttuvan muilta kahdeksalta. Väite piti sovelluksesta,
+mutta pöydän puolella se ei pitänyt: myös Ristiseiskaa pelattiin pisteillä kierrosten yli.
+Kohdan 27 tarkistus luki kanonit oikein, mutta kanoni ei tässä kata pöytäperinnettä.
+
+**Seuraus:** pantti oli lapsuuden muodossa eri roolissa kuin sovelluksessa. Sovelluksessa
+pantti on kierroksen sisäinen kustannus passaamisesta, ja lapsuuden muodossa panttiin liittyi
+kierroksen lopun pistesakko (30 sille jolle se jäi). Sana on sama, mekaniikka ei ole
+välttämättä sama, ja tämä on tarkistettava ennen kuin lapsuuden muodosta päätellään enempää.
+
+**Avoin:** lukiko 30 pistettä sakkona vai tavoitteena, mihin rajaan pelattiin, ja miten pantti
+lapsuuden muodossa liikkui. Näitä ei kysytty, ja ne ovat eri erän työ, koska tämä vastaus
+avasi kokonaan uuden pelimuodon eikä vain sulkenut aukkoa.
