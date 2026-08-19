@@ -622,9 +622,12 @@ Vastauksessa on kolme osaa ja ne ovat eri lajia. Kaksi ensimmäistä kuvaavat si
 tapahtui, eli aihe ei ollut esillä eikä muiden muistista ollut tietoa. Kolmas on Tommin oma
 kanta ja se on ehdollisessa muodossa, joten se on nykyinen näkemys eikä pöydän tapa.
 
-**Seuraus:** muisti oli pöydässä näkymätön taito. Kohdan 10 kolmesta kanavasta kaksi on
-havaittavia (puhe ja ilme), mutta kirjanpito ei näy ulos lainkaan, joten sitä ei voitu arvostaa
-eikä paheksua. Se ei siis ollut normin ulkopuolella vaan normin ulottumattomissa.
+**Seuraus:** muisti oli pöydässä näkymätön taito. Kohta 10 nimeää kaksi havaittavaa kanavaa,
+puheen ja ilmeen, ja kohdan 19 kirjanpito on kolmas mutta ei näy ulos lainkaan, joten sitä ei
+voitu arvostaa eikä paheksua.
+
+*Kanavien lukumäärä korjattiin grillauksessa 20.8.2026: kohdassa 10 kanavia on kaksi, ja
+muisti on kolmas vasta kohdan 19 jälkeen.* Se ei siis ollut normin ulkopuolella vaan normin ulottumattomissa.
 
 **Seuraus:** kohdan 19 päätelmä botin muistiedusta ei siis törmää mihinkään pöytänormiin.
 Rajaamiselle ei ole perustetta reiluudesta, ja jos peruste on, se on pelikokemus eli kohdan 12
@@ -681,7 +684,8 @@ Tommi 20.8.2026, kysyttäessä tiedettiinkö kesken pelin kenellä patakuningata
 Vastaus ei kerro kenellä kortti oli, vaan sen milloin puheella on katetta: pelattu kortti on
 tieto, ja sitä edeltävä puhe ei ole.
 
-**Seuraus, ja se tarkentaa kohtaa 10:** pöydän kolmesta kanavasta puhe on heikoin, eikä se ole
+**Seuraus, ja se tarkentaa kohtaa 10:** kolmesta kanavasta (puhe, ilme, kohdan 19 muisti) puhe
+on heikoin, eikä se ole
 itsenäinen informaatiolähde vaan pelattujen korttien tulkintaa. Arvuuttelu ennen kuin mitään on
 pelattu on siis puhetta ilman tietoa, ja juuri siksi patakuningatar pysyy piilossa siihen asti
 kun se ilmestyy.
@@ -786,7 +790,9 @@ useammin:
 
 Vastaus ei aseta pelejä järjestykseen vaan nimeää ajan. Kumpikaan ei ollut toisen varapeli.
 
-**Seuraus, ja tämä on ensimmäinen ajallinen konteksti tässä dokumentissa:** korttipelit olivat
+**Seuraus, ja tämä on ensimmäinen kerta kun aika nimetään aikakautena eikä elämänvaiheena:**
+kohta 1 asettaa oppimisen kolmeen elämänvaiheeseen, mutta vasta tämä kertoo mitä ympäröivässä
+maailmassa oli tai ei ollut tarjolla. Korttipelit olivat
 sen ajan käytettävissä oleva ajanviete, eivät valinta muiden ajanvietteiden joukosta. Se
 selittää kohdan 15 pelipäivän kaaren: peliä ei valittu illan ohjelmaksi vaan ilta koostui
 peleistä.
@@ -836,3 +842,34 @@ ole vielä kysytty järjestelmällisesti.
 
 **Avoin:** kumman suuntainen sukulaisuus on, jää tässä kysymättä ja kirjaamatta. Se kuuluu
 korttipelien yleiseen kirjallisuuteen, jota menetelmäosion mukaan ei toisteta täällä.
+
+---
+
+## Grillaus 20.8.2026: kolme löydöstä, joista yksi oli aito ristiriita
+
+Dokumentti luettiin kokonaan läpi erien 6 ja 11 jälkeen ristiriitojen etsimiseksi, eikä
+kohtia lisätty kysymällä. Tämä osio kirjaa mitä luenta tuotti, koska muuten korjauksista jäisi
+vain diff.
+
+**1. Aito ristiriita kahden oman kirjaukseni väliltä, ja se koski laskemista.** Kohta 19 sanoi
+muistin olevan kolmas kanava kohdan 10 kahden rinnalle, kohta 22 sanoi kohdassa 10 olevan kolme
+kanavaa, ja kohta 25 puhui kolmesta kanavasta nimeämättä mitkä. Kohta 10 nimeää kolme **asiaa**,
+mutta yksi niistä on opetusta eikä pelitiedon kanava, joten kanavia on siellä kaksi. Kohdat 22
+ja 25 korjattiin, ja korjaus on merkitty kohtaan 22 näkyviin. Vika oli tyypillinen: sama luku
+tarkoitti kolmessa kohdassa kolmea eri asiaa, ja se on saman lajin virhe kuin luvun
+kirjoittaminen ilman sitä mitä se laskee.
+
+**2. Liian pitkä väite, joka ei kestänyt omaa dokumenttiaan.** Kohta 30 sanoi tuovansa
+dokumenttiin ensimmäisen ajallisen kontekstin, mutta kohta 1 asettaa oppimisen jo kolmeen
+elämänvaiheeseen. Väite kavennettiin siihen mikä siitä pitää: aikakausi on uusi, elämänvaihe ei.
+
+**3. Kaksi tarkistettavaa väitettä tarkistettiin, ja molemmat pitivät.** Kohdan 27 väite siitä
+että Kasino on yhdeksästä ainoa jolla on pisteraja kierrosten yli, tarkistettiin kaikista
+yhdeksästä kanonista eikä vain Kasinon omasta. Ja kohdan 15 väite järjestyksen kulkemisesta
+kevyemmästä raskaampaan tarkistettiin `CLAUDE.md`:n vaikeustaulukosta: Ristiseiska on helppo,
+Paskahousu keskitasoa ja Moska vaativa.
+
+**Mitä grillaus ei löytänyt.** Yhtään keksittyä substanssia eli väitettä jolla ei ole vastausta
+takanaan. Kaikki kolme löydöstä koskevat kirjoittajan omia päätelmiä, eivät Tommin vastauksia,
+mikä on odotettu suunta: menetelmäosion mukaan `Seuraus:`-rivi saa kaatua ilman että vastaus
+kaatuu sen mukana.
