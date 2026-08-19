@@ -411,6 +411,8 @@ kertyy.
 **Avoin:** vastaus ei kerro pelattiinko peliä silti väärällä pelaajamäärällä kun muuta ei ollut,
 eikä sitä oliko jokin yhdeksästä sellainen jota ei suostuttu pelaamaan kahdella.
 
+*Kohta täydentyi erässä 6, ks. kohta 16.*
+
 ## 14. Ristiseiska oli aloituspeli
 
 Tommi 19.8.2026, kysyttäessä miten pelit valikoituivat päivän mittaan:
@@ -425,3 +427,79 @@ aloituspaikka sopii siihen kahdesta syystä: se on tunnetuin ja se on kevein.
 Aloituspelin olemassaolo antaa ymmärtää että pelit eivät olleet keskenään vaihdettavia päivän
 mittaan, mutta sitä ei ole kysytty mikä peli otettiin esiin kun porukka oli lämmennyt tai kun
 aikaa oli vähän jäljellä.
+
+*Kohta täydentyi erässä 6, ks. kohta 15.*
+
+## 15. Pelipäivällä oli järjestys, ja sen kaksi muuta paikkaa ovat Paskahousu ja Moska
+
+Tommi 20.8.2026, kysyttäessä mikä peli otettiin ristiseiskan jälkeen kun porukka oli lämmennyt
+ja mikä oli se jolla pelipäivä loppui:
+
+> *paskahousu, moska*
+
+**Luenta, ja se on kirjoittajan eikä Tommin:** kysymys nimesi kaksi paikkaa ja vastaus antaa
+kaksi peliä, joten luen ne samassa järjestyksessä eli Paskahousu keskelle ja Moska loppuun.
+Järjestysvastaavuutta ei ole vahvistettu, ja se on tämän kohdan ainoa epävarma osa.
+
+**Seuraus:** kohdan 14 aloituspeli ei ollut yksittäinen tapa vaan osa kaarta, jossa on vähintään
+kolme paikkaa. Kaari kulkee lisäksi oppimispaikkojen yli eikä niitä pitkin: Ristiseiska ja
+Paskahousu ovat kohdan 1 mukaan lapsuudesta ja Moska Laiturilta, joten päivän järjestys ei
+noudata sitä mistä pelit on opittu.
+
+**Seuraus:** kolmesta pelistä kaksi on kanonissa vaikeudeltaan kevyempiä kuin Moska, joten
+järjestys kulkee kevyemmästä raskaampaan. Tämä on kirjoittajan päätelmä kanonien
+vaikeusarvioista eikä Tommin sanoma, ja se saa kaatua ilman että vastaus kaatuu.
+
+**Avoin:** viisi muuta peliä eivät saa tästä paikkaa, eikä vastaus kerro sijoittuivatko ne
+kaaren väliin vai olivatko ne eri kokoonpanojen pelejä.
+
+## 16. Kahden pelaajan pelit ovat Kultakala ja Koputus
+
+Tommi 20.8.2026, kysyttäessä pelattiinko silti kun pelaajia oli vähemmän kuin peliin olisi
+haluttu ja oliko jokin peli jota ei suostuttu pelaamaan kahdella:
+
+> *kun pelaajia oli kaksi niin kultakala ja koputus toimi*
+
+Vastaus ei ratkaise kysymystä siitä pelattiinko muita silti, vaan nimeää sen mitä tehtiin
+sen sijaan: peli vaihdettiin sellaiseen joka kestää kahden pelaajan asetelman.
+
+**Seuraus:** kohdan 13 ennustettavuus ei ole yhtä paha kaikissa peleissä, ja nimetyt kaksi
+ovat ne joissa se ei kaada peliä. Kummassakin on rakenne joka tuottaa epävarmuutta muualta
+kuin toisten korttien arvailusta, ja Kultakalan kohdalla se on kirjattu kanoniin jo kohdan 13
+mukaisesti: kierrosmäärä kasvaa kun pelaajia on vähemmän, eli kahdella pelataan pisin peli.
+Tämä on kirjoittajan päätelmä.
+
+**Seuraus:** kohtien 12 ja 13 mittari saa tässä käytännön muodon. Pelin valinta pelaajamäärän
+mukaan on epävarmuuden säilyttämistä, ei sääntötekninen pakko.
+
+**Avoin:** kolmen pelaajan tapaus jää nimeämättä, ja se on todennäköisin väärä pelaajamäärä
+yhdeksän pelin joukossa. Avoimeksi jää myös se, onko jokin yhdeksästä sellainen jota ei
+suostuttu pelaamaan kahdella, vai olivatko nämä kaksi vain ne jotka valittiin ensin.
+
+## 17. Sääntöriidan ratkaisi järjestäjä tai yhteisymmärrys, koska panosta ei ollut
+
+Tommi 20.8.2026, kysyttäessä miten pöydässä ratkaistiin erimielisyys siitä miten jokin sääntö
+menee:
+
+> *panosta kun ei ole niin auktoriteetti oli järjestäjä tai yhteisymmärrys*
+
+Vastauksessa on kaksi osaa: ehto ja menettely. Ehto on se ettei pelistä ollut panosta, ja
+menettely on kaksiportainen eli järjestäjä tai yhteisymmärrys.
+
+**Seuraus, ja se osoittaa suoraan teesiin:** kirjoitettua sääntötekstiä ei käytetty ratkaisijana
+kertaakaan. Riita ratkesi paikallisesti ja tilanteessa, joten pöydässä ei ollut standardia jota
+vasten tarkistaa. Teesi *siksi ei standardia vaan vaihtoehtoja* ei siis koske vain sitä mitä
+pelivalikoimasta ajatellaan, vaan sitä miten erimielisyys oikeasti selvitettiin.
+
+**Seuraus:** ehto on tässä kantava osa eikä sivulause. Panoksettomuus tekee väärästä
+sääntötulkinnasta halvan, joten ratkaisulta ei vaadittu oikeellisuutta vaan riittävää
+hyväksyntää. Tämä selittää miksi paikallisia muunnelmia saattoi ylipäätään syntyä ja säilyä:
+mikään ei pakottanut niitä yhteen muotoon.
+
+**Seuraus:** sovelluksessa kumpaakaan auktoriteettia ei ole, koska koodi ratkaisee jokaisen
+sääntötilanteen ennen kuin siitä voi olla eri mieltä. Asetukset ovat tämän vastine: ne
+siirtävät järjestäjän valinnan pelin alkuun sen sijaan että se tehtäisiin kesken pelin. Tämä
+on kirjoittajan päätelmä eikä Tommin lause.
+
+**Avoin:** vastaus ei kerro kumpi kahdesta menettelystä oli tavallisempi, eikä sitä mitä
+tehtiin jos järjestäjä oli itse osapuoli erimielisyydessä.
