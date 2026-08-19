@@ -123,3 +123,101 @@ esitettävä peli kerrallaan.
 **Avoin:** kumpaakin virhettä ei ole vielä purettu yhdenkään yhdeksän pelin kohdalla, eikä
 sitä ole verrattu siihen mitä botit tekevät. Jälkimmäinen on tarkistettavissa koodista, mutta
 vasta kun tiedetään mitä pöydässä pidetään virheenä.
+
+*Kohta täydentyi erässä 2, ks. kohta 6.*
+
+---
+
+## 4. Kaikki yhdeksän on pelattu pöydässä, mutta Kasinon rakentaminen ei
+
+Tommi 19.8.2026, kysyttäessä onko joku peleistä poimittu kirjasta tai netistä pöydän sijaan:
+
+> *ei, mutta kasino pelissä en ole pelannut rakennelman sallivaa variaatioita*
+
+**Seuraus:** kaikkien yhdeksän pelin osalta Tommi on koetin, yhtä mekaniikkaa lukuun ottamatta.
+Se yksi on Kasinon rakentaminen, ja aukko on isompi kuin vastauksen sanamuodosta arvaisi:
+rakentamista **ei voi kytkeä pois** sovelluksessa. `KASINO_DEFAULT_RULES` tuntee vain
+`specialBuilds`-asetuksen, joka nostaa rakennelman katon 13:sta 16:een; rakentaminen itsessään
+on aina käytössä sekä ihmisellä että boteilla. Vakioasennon 13 ja vaihtoehdon 16 välinen valinta
+on siis valinta kahden sellaisen asennon välillä, joista kumpaakaan Tommi ei ole pöydässä
+pelannut.
+
+**Seuraus:** aukko osuu juuri siihen mekaniikkaan joka erottaa Kasinon bottitasot toisistaan.
+Kyvykkyysportaassa Aloittelija ei rakenna eikä varasta rakennelmia, ja ylemmät tasot tekevät
+molempia, Mestari hypergeometrisella päättelyllä. Kasinon kyvykkyysporras nojaa siis
+kokonaan siihen puoleen pelistä jossa ihmiskoetin ei ole koetin.
+
+**Avoin:** mistä rakentaminen on tullut sovellukseen, jos se ei ole tullut pöydästä. Se on
+Kasinon vakiosääntö laajasti, joten lähde on todennäköisesti kirjallinen, mutta sitä ei ole
+kysytty eikä sitä saa päätellä tästä.
+
+## 5. Vakioasetukset ovat pelattavuuspäätöksiä eivätkä perinnettä
+
+Tommi 19.8.2026, kysyttäessä kumpi asento kussakin sääntövalinnassa on hänen oma tapansa:
+
+> *totuin pelaamaan 5 korttia paskahousu, jossa kaikki kakkoset oli kovia eikä kynnystä milloin
+> voi pelata kuvakortti ja minusta se oli tylsää, kynnys ainakin tarvittiin*
+
+| Paskahousun sääntö | Tommin oma tapa | Sovelluksen vakio |
+|---|---|---|
+| Käden koko | 5 | 6 |
+| Kakkosten kovuus | kaikki kovia | vain ♠2 ja ♣2 |
+| Kuvakortin alaraja | ei rajaa (0) | 7 |
+
+Kaikissa kolmessa vakioasento on siis **eri kuin se jolla hän oppi pelaamaan**, ja kanoni
+esittää vakioasennon sääntönä.
+
+**Tommin arvio omasta tavastaan on kirjattava sellaisenaan, koska se on harvinainen laji
+substanssia:** hän sanoo oppimansa muodon olleen tylsä ja nimeää syyn, eli kuvakortin
+puuttuvan kynnyksen. Lähde arvioi siis omaa perinnettään eikä vain kuvaa sitä.
+
+**Seuraus:** vakioasento on suunnittelupäätös eikä perinne, ja ainakin yhden asetuksen kohdalla
+päätöksen peruste on nimetty. Kuvakortin alaraja 7 on siellä siksi että ilman rajaa peli oli
+tylsä, ei siksi että 7 olisi yleisin sääntö kirjoissa.
+
+**Seuraus:** asetusvalikko ei siis ole lista muunnelmia joista vakio olisi neutraalein, vaan
+säädin jonka toisessa päässä on Tommin oma perinne ja vakiokohdassa se mikä osoittautui
+paremmaksi pelata. Tämä on päinvastainen kuin oletus jonka asetusnäkymästä tekisi.
+
+**Avoin:** käden koon 5 ja kakkosten kovuuden kohdalla perustetta ei ole nimetty, vain
+kuvakortin kynnyksen. Ja Kasinon rakennelman katto jäi vastaamatta, mutta kohta 4 selittää
+miksi: kumpikaan asento ei ole pöydästä.
+
+## 6. Kolme nimettyä esimerkkiä liian hyvän kortin pelaamisesta
+
+Tommi 19.8.2026, kysyttäessä yhtä konkreettista esimerkkiä, vastasi kolmella eri pelistä:
+
+> *Ristiseiska: pelaa porttikortin jota olisi kannattanut pihdata*
+> *Paskahousu: kaataa kun pakasta voi kokeilla yksiarvoisen pöydän pelaamisen*
+> *Kultakala A tai 2 pelaaminen poistopakkaan*
+
+Kolme esimerkkiä ovat sama virhe kolmessa eri resurssissa: **pelataan kortti jonka arvo on
+sen pidättämisessä eikä pelaamisessa.**
+
+**Ristiseiskan esimerkki on jo mallinnettu koodissa, eikä se siksi ole uutta tietoa vaan
+vahvistus.** Porttikortit ovat 6 ja 8, ja niiden pidättely on kanonissa nimetty
+aloittelijavirheen vastakohdaksi (`RISTISEISKA.md`, kyvykkyysporras). Mestarin ehto on
+maakohtainen: porttia pidätellään jos samassa maassa on enintään yksi kaukainen kortti.
+Aloittelijataso tekee tämän virheen tarkoituksella.
+
+**Paskahousun esimerkki koskee kaatajakortin tuhlaamista.** Kaatajia ovat 10 (arvon 9 tai
+sitä pienemmän päälle) ja A (kuvakortin päälle), ja kaato tyhjentää kasan pelistä ja antaa
+kaatajalle uuden vuoron. Virhe on kaataa tilanteessa jossa halvempi siirto olisi riittänyt.
+
+*Tulkinta jää tässä kesken tarkoituksella.* Vastauksen jälkiosa (*kun pakasta voi kokeilla
+yksiarvoisen pöydän pelaamisen*) viittaa todennäköisesti siihen että kasassa on vain yhtä
+arvoa ja pakassa on kortteja jäljellä, jolloin kannattaa lyödä ja katsoa mitä nostaa, ja
+vaihto-oikeus antaa vielä kolmen sekunnin peruutusmahdollisuuden. **Tätä ei kirjata väitteeksi
+ennen kuin Tommi on vahvistanut sen**, koska kyse on juuri siitä lajista jossa liian pitkä
+johtopäätös näyttäisi oikealta.
+
+**Kultakalan esimerkki on kaksinkertainen virhe, ja se on kolmesta selvin.** Pienin summa
+voittaa ja ässä on 1, joten A ja 2 ovat pelin parhaat kortit. Poistopakkaan heittäminen
+menettää kortin ja **antaa sen näkyvästi vastustajalle**, koska poistopakan ylin kortti on
+kaikkien nähtävissä ja seuraava pelaaja saa nostaa sen.
+
+**Seuraus:** kolmesta esimerkistä yksi on jo koodissa (Ristiseiska), yksi on osittain kirjattu
+strategiaosioon mutta ei virheenä (Paskahousu), ja yhtä ei ole missään (Kultakala). Kultakalan
+botin päätöslogiikka vertaa nostettua korttia pahimpaan tunnettuun omaan korttiin, mutta
+kanonista ei käy ilmi estääkö mikään ehto hyvän kortin hylkäämistä. Se on tarkistettavissa
+koodista, ja tarkistus kannattaa tehdä ennen kuin kohta viedään pidemmälle.
