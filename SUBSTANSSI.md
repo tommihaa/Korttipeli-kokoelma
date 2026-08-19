@@ -1124,8 +1124,10 @@ Yhtäläisyysmerkki kysyttiin suoraan, ja Tommi vastasi:
 > *sama peli se on, pelattiin sarjassa illan aikana*
 
 Vastaus toi yhden uuden asian: kiusaa pelattiin sarjana illan aikana, eli kierrokset
-muodostivat illan mittaisen kokonaisuuden. Se on eri asia kuin kohdan 39 turnaussarja,
-joka oli eri pelien sarja parin tunnin aikana: kiusan sarja oli saman pelin toistoa.
+muodostivat illan mittaisen kokonaisuuden. ~~Se on eri asia kuin kohdan 39 turnaussarja,
+joka oli eri pelien sarja parin tunnin aikana: kiusan sarja oli saman pelin toistoa.~~
+*(Tarkentui samana päivänä: turnaussarja tarkoitti lapsuudessa saman pelin sarjaa ja
+Laiturilla eri pelien sarjaa, ks. kohta 39. Ero koskee siis Laiturin muotoa, ei sanaa.)*
 Pelin päättymisen laukaisin pysyy muistin rajana, koska illan mitta ei ole vastaus siihen
 mikä sarjan sisällä laukaisi lopun, eikä sitä täytetä päättelemällä.
 
@@ -1198,7 +1200,18 @@ muodolla oli oma nimi: **turnaussarja**. Tommi tarkensi nimen samana päivänä:
 > *Turnaussarja on pelien sarja parin tunnin aikana.*
 
 Turnaussarjalla oli siis myös aikamitta: se oli parin tunnin kokonaisuus, ei koko pelipäivän
-mittainen. Kohdassa ei ole enää avoimia kysymyksiä.
+mittainen. Tommi tarkensi vielä samana päivänä:
+
+> *turnaussarja lapsuudessa oli yhtä peliä, laiturilla monta eri peliä*
+
+Sama sana kantoi siis kahta sisältöä kahdessa ympäristössä: lapsuudessa turnaussarja oli
+saman pelin sarja, Laiturilla eri pelien sarja. Tämän kohdan kuvaus (sovittu määrä eri
+pelejä, sijoituspisteet) koskee Laituria, ja kohdan 38 kiusan iltasarja on lähellä lapsuuden
+turnaussarjaa; ovatko ne sama asia, ei ole kysytty. Kohdassa ei ole muita avoimia
+kysymyksiä.
+
+**Seuraus:** sanasto siirtyi ympäristöstä toiseen ja sisältö vaihtui matkalla, eli
+Laiturin turnauskulttuuri ei ollut lapsuuden muodon kopio vaan saman nimen uusi käyttö.
 
 **Seuraus:** turnaussarja on toinen lapsuuden perinteen oma nimi tässä dokumentissa (kiusa
 kohdassa 38 on ensimmäinen), eli perinteellä oli oma sanasto eikä vain omat säännöt.
