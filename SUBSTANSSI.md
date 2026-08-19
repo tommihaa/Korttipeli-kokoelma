@@ -357,3 +357,71 @@ siirtyi sellaisenaan.
 sille toiselle vaiheelle, eli täydennykselle silloin kun pelaaja keksii kysyä. Ero on siinä
 kuka aloittaa: pöydässä kysyi pelaaja, sovelluksessa neuvo on saatavilla nappia painamalla.
 Tämä on kirjoittajan päätelmä eikä Tommin lause.
+
+---
+
+## 12. Hyvän seurapelin kriteeri on yksi lause, ja se on epävarmuus
+
+Tommi 19.8.2026, kysyttäessä mikä tekee korttipelistä hyvän porukalle:
+
+> **"kukaan ei ole varma miten voittaa"**
+
+Vastaus on yhden lauseen kriteeri, eikä se koske pelin teemaa, kestoa, vaikeutta eikä sitä
+kuinka moni osaa sen ennestään.
+
+**Seuraus:** kriteeri on pelin sisäinen ominaisuus eikä porukan tai tilanteen ominaisuus.
+Se sulkee pois kaksi peliä yhtä lailla: sellaisen jossa oikea siirto on aina laskettavissa, ja
+sellaisen jossa kaikki on sattumaa niin ettei voittamisesta voi olla mitään käsitystä. Kelpaava
+peli on niiden välissä, ja siinä välissä on juuri se tila jossa pihtaaminen, arvuuttelu ja
+lukeminen kannattavat.
+
+**Tämä on eri kriteeri kuin ne neljä jotka on aiemmin nimetty uusille pelikandidaateille**
+(kiinnostus, elävä yhteisömuoto, botti opettaa ytimen, Tommi osaa pelin). Ne neljä ovat
+projektin edellytyksiä eli koskevat sitä voiko peli tulla tähän kokoelmaan. Tämä koskee peliä
+itseään pöydässä, riippumatta siitä onko sovellusta olemassa. Kriteerit eivät siis kilpaile, ja
+tämä on vanhempi kuin ne.
+
+**Seuraus, ja tämä on suoraan botteja koskeva:** jos hyvä peli on se jossa kukaan ei ole varma
+miten voittaa, niin täydellisesti pelaava botti on pelikokemuksen kannalta uhka eikä tavoite.
+Kyvykkyysporras vastaa tähän jo nyt, koska pelaaja valitsee tason. Päätelmä on kirjoittajan,
+mutta se on tarkistettavissa siitä että portaassa on kolme tasoa eikä yksi.
+
+## 13. Pelaajamäärä muuttaa peliä ennustettavuuden kautta
+
+Tommi 19.8.2026, kysyttäessä mitä pöydässä tapahtui kun pelaajia oli väärä määrä:
+
+> *vähemmän pelaajia tarkoittaa pelaajien tietävänsä paremmin toistensa kortit: korttien
+> ennustettavuus*
+
+**Seuraus:** pelaajamäärän alaraja ei ole sääntötekninen vaan kokemuksellinen. Peli ei mene
+rikki kahdella pelaajalla, vaan siitä tulee laskettavampi, koska pakan jakautuminen on
+pääteltävissä tarkemmin.
+
+**Seuraus, ja se sitoo tämän edelliseen kohtaan:** vähemmän pelaajia vie peliä poispäin kohdan
+12 kriteeristä. Mitä paremmin toisten kortit tietää, sitä lähempänä ollaan tilaa jossa joku on
+varma miten voittaa. Kaksi vastausta eri kysymyksiin osoittavat siis samaan mittariin, ja se on
+epävarmuuden määrä pöydässä.
+
+**Seuraus:** tämä on myös kirjattu sovellukseen yhdessä pelissä ilman että sitä on sanottu
+kriteerinä. Kultakalan kanoni laskee kierrosten määrän pelaajamäärästä (kaksi pelaajaa noin 20
+kierrosta, neljä noin 7) ja toteaa että mitä vähemmän kierroksia, sitä kriittisempiä päätökset
+ovat. Se on sama ilmiö toisesta suunnasta: pelaajamäärä muuttaa sitä kuinka paljon tietoa
+kertyy.
+
+**Avoin:** vastaus ei kerro pelattiinko peliä silti väärällä pelaajamäärällä kun muuta ei ollut,
+eikä sitä oliko jokin yhdeksästä sellainen jota ei suostuttu pelaamaan kahdella.
+
+## 14. Ristiseiska oli aloituspeli
+
+Tommi 19.8.2026, kysyttäessä miten pelit valikoituivat päivän mittaan:
+
+> *ristiseiska aloitti monesti*
+
+**Seuraus:** järjestys ei ollut sattumanvarainen, ja aloituspeli oli useimmiten sama. Ristiseiska
+on lisäksi yksi kahdesta lapsuudessa opitusta pelistä ja kanonissa vaikeudeltaan helppo, joten
+aloituspaikka sopii siihen kahdesta syystä: se on tunnetuin ja se on kevein.
+
+**Avoin, ja tämä on kysymyksen se puoli johon ei vielä vastattu:** mikä oli järjestyksen loppupää.
+Aloituspelin olemassaolo antaa ymmärtää että pelit eivät olleet keskenään vaihdettavia päivän
+mittaan, mutta sitä ei ole kysytty mikä peli otettiin esiin kun porukka oli lämmennyt tai kun
+aikaa oli vähän jäljellä.
