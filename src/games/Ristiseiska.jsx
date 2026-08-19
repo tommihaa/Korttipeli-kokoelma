@@ -99,7 +99,7 @@ function initGame(nP, pool, allBots = false, rules = DEFAULT_RULES) {
     givingCardTo: null,
     givingPlayerIdx: null,
     rules,
-    phase: 'play',
+    phase: /** @type {Vaihe} */ ('play'),
     turnCount: 0,
     firstRoundDone: false,
   };
@@ -388,6 +388,10 @@ export function getAdvice(g) {
 import { useT, tr } from '../shared/i18n.jsx';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
+// Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
+/** @typedef {'play'|'gameover'} Vaihe */
+/** @typedef {{phase: Vaihe, [k: string]: any}} PeliTila Vain vaihe on kiinnitetty; muut kentät vapaita. */
+
 export default function Ristiseiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,   setScreen]  = useState('select');
@@ -395,7 +399,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn: initSou
   const [rules,    setRules]   = useStickySetting('ristiseiska:rules', DEFAULT_RULES); // sääntövalinta muistetaan
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
-  const [G,        setG]       = useState(null);
+  const [G,        setG]       = useState(/** @type {PeliTila|null} */ (null));
   const [msg,      setMsg_]    = useState('');
   const [log,      setLog]     = useState([]);
   const [logOpen,  setLO]      = useState(showLog);

@@ -147,6 +147,7 @@ function maijaPickDefense(hand0, table, trump, deckEmpty, level) {
 
 // Mestarin neuvo Herolle (pelaaja 0): hard-tason logiikka, vain julkinen tieto.
 // Palauttaa { type, cards?/card?, target? } — type vastaa games.maija.advice.* -avainta.
+/** @param {*} g @param {Vaihe} phase @param {*} table */
 export function getAdvice(g, phase, table) {
   if (!g) return null;
   if (phase === 'attacking' && g.attackerIdx === 0) {
@@ -265,6 +266,9 @@ function initGame(nPlayers, pool, allBots = false) {
 import { useT } from '../shared/i18n.jsx';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
+// Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
+/** @typedef {'idle'|'attacking'|'defending'|'gameover'} Vaihe */
+
 export default function Maija({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
@@ -272,7 +276,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
-  const [phase, setPhase] = useState('idle');
+  const [phase, setPhase] = useState(/** @type {Vaihe} */ ('idle'));
   const [table, setTable] = useState([]);
   const [selectedCards, setSel] = useState([]);
   const [selDefTargetIdx, setSelDefTargetIdx] = useState(null);
@@ -292,7 +296,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   const [advice, setAdvice]               = useState(null); // { text, cardIds, targetId } | null
 
   const gRef = useRef(null);
-  const phaseRef = useRef('idle');
+  const phaseRef = useRef(/** @type {Vaihe} */ ('idle'));
   const prevDeckRef = useRef(null);
   const tableRef = useRef([]);
   const logRef = useRef([]);

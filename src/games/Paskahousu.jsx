@@ -108,7 +108,7 @@ function mkGame(nP, pool, allBots = false, rules = DEFAULT_RULES) {
   }, { idx: 0, val: Infinity }).idx;
   return {
     players, draw: deck, pile: [], top: null,
-    turn: starter, skipNext: -1, finished: [], phase: 'play',
+    turn: starter, skipNext: -1, finished: [], phase: /** @type {Vaihe} */ ('play'),
     allCards, clearedCards: [], rules,
   };
 }
@@ -307,6 +307,10 @@ export function getAdvice(g) {
 import { useT } from '../shared/i18n.jsx';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
+// Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
+/** @typedef {'play'|'swap_offer'|'gameover'} Vaihe */
+/** @typedef {{phase: Vaihe, [k: string]: any}} PeliTila Vain vaihe on kiinnitetty; muut kentät vapaita. */
+
 export default function Paskahousu({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,   setScreen]  = useState('select');
@@ -314,7 +318,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn: initSoun
   const [rules,    setRules]   = useStickySetting('paskahousu:rules', DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
   const [soundOn,  setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
-  const [G,        setG]       = useState(null);
+  const [G,        setG]       = useState(/** @type {PeliTila|null} */ (null));
   const [msg,      setMsg_]    = useState('');
   const [log,      setLog]     = useState([]);
   const [logOpen,  setLO]      = useState(showLog);

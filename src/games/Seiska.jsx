@@ -73,7 +73,7 @@ function mkInitState(playerDefs) {
     pendingLappu: null,
     aceBonus: null,
     finished: [],
-    phase: 'play',
+    phase: /** @type {Vaihe} */ ('play'),
     reshuffleCount: 0,
   };
 }
@@ -272,6 +272,12 @@ function initSlots(count) {
 import { useT } from '../shared/i18n.jsx';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
+// Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
+// 'gameover' ei kuulu joukkoon tarkoituksella: kaksi sisarelta kopioitua vertailua
+// siihen on jo poistettu kuolleina (03e6b54, 24eaa6d), ja tämä tyyppi estää kolmannen.
+/** @typedef {'play'|'awaiting_suit'|'finished'} Vaihe */
+/** @typedef {{phase: Vaihe, [k: string]: any}} PeliTila Vain vaihe on kiinnitetty; muut kentät vapaita. */
+
 export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,      setScreen]  = useState('select');
@@ -280,8 +286,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
   const [handoff,     setHandoff] = useState(null); // null | { name }
   const [soundOn,     setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
-  const [G,           setG]       = useState(null);
-  const [msg,         setMsg_]    = useState('');
+  const [G,           setG]       = useState(/** @type {PeliTila|null} */ (null));  const [msg,         setMsg_]    = useState('');
   const [log,         setLog]     = useState([]);
   const [logOpen,     setLO]      = useState(showLog);
   const [selected,    setSel]     = useState([]);

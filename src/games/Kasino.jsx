@@ -441,6 +441,9 @@ const M = {
 import { useT, tr } from '../shared/i18n.jsx';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
+// Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
+/** @typedef {'idle'|'select_table'} Vaihe */
+
 export default function Kasino({ game, onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
@@ -451,8 +454,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
   const [curIdx, setCur] = useState(0);
-  const [phase, setPhase] = useState('idle');
-  const [selTable, setSelTable] = useState([]);
+  const [phase, setPhase] = useState(/** @type {Vaihe} */ ('idle'));  const [selTable, setSelTable] = useState([]);
   const [selBuilds, setSelBuilds] = useState([]); // selected build IDs for capture
   const [captureMode, setCaptureMode] = useState(false); // kaappaustila
   const [buildMode, setBuildMode] = useState(false); // rakennustila
@@ -486,7 +488,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const [advice, setAdvice] = useState(null); // { text, handCardId, tableCardIds, buildId } | null
 
   const gRef    = useRef(null);
-  const phaseRef = useRef('idle');
+  const phaseRef = useRef(/** @type {Vaihe} */ ('idle'));
   const prevDeckRef = useRef(null);
   const curRef  = useRef(0);
   const logRef  = useRef([]);

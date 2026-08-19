@@ -116,6 +116,7 @@ function kkChainStep(p, held, idxPos, playerCount) {
 // Mestarin neuvo Herolle. phase 'drawing' → nostolähde; 'holding'/'swapping' →
 // jatkanko ketjua paikassa swapIdx vai lopetanko (canStop=false → pakko vaihtaa).
 // Palauttaa { type, card?, slot? } — type vastaa games.kultakala.advice.* -avainta.
+/** @param {*} g @param {Vaihe} phase */
 export function getAdvice(g, phase, held, swapIdx, canStop) {
   const p = g.players[0];
   if (!p) return null;
@@ -197,9 +198,14 @@ function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknow
   );
 }
 
+// Suljetut arvojoukot: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
+// Noppakomponentilla on oma vaihemuuttujansa, ja erillinen tyyppi pitää ne erillään.
+/** @typedef {'idle'|'drawing'|'holding'|'swapping'|'gameover'} Vaihe */
+/** @typedef {'rolling'|'result'} NoppaVaihe */
+
 function DiceRoll({ players, onDone, soundOn }) {
   const t = useT();
-  const [phase, setPhase] = useState('rolling');
+  const [phase, setPhase] = useState(/** @type {NoppaVaihe} */ ('rolling'));
   const [rolls, setRolls] = useState({});
 
   useEffect(() => {
@@ -253,7 +259,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   const [soundOn, setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG]             = useState(null);
-  const [phase, setPhase]     = useState('idle');
+  const [phase, setPhase]     = useState(/** @type {Vaihe} */ ('idle'));
   const [curIdx, setCur]      = useState(0);
   const [held, setHeld]       = useState(null);
   const [swapIdx, setSwapIdx] = useState(null);
@@ -275,7 +281,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   const [advice, setAdvice]               = useState(null); // { text, target? } | null
 
   const gRef        = useRef(null);
-  const phaseRef    = useRef('idle');
+  const phaseRef    = useRef(/** @type {Vaihe} */ ('idle'));
   const curRef      = useRef(0);
   const logRef      = useRef([]);
   const sndRef      = useRef(true);

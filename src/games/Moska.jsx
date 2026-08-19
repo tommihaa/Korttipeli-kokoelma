@@ -90,7 +90,7 @@ function initGame(nP, pool, allBots = false) {
     primaryAtk: firstAtk,
     defender: def,
     attackers: [firstAtk],
-    phase: 'attack',
+    phase: /** @type {Vaihe} */ ('attack'),
     rankings: [],
     passChain: [],      // puolustajat jotka ovat siirtäneet
     addQueue: [],       // pelaajat jotka voivat lisätä
@@ -261,14 +261,17 @@ export function getAdvice(g, removed) {
 import { useT, tr } from '../shared/i18n.jsx';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
+// Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
+/** @typedef {'attack'|'defend'|'add'|'gameover'} Vaihe */
+/** @typedef {{phase: Vaihe, [k: string]: any}} PeliTila Vain vaihe on kiinnitetty; muut kentät vapaita. */
+
 export default function Moska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
-  const [G, setG] = useState(null);
-  const [msg, setMsg_] = useState('');
+  const [G, setG] = useState(/** @type {PeliTila|null} */ (null));  const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
   const [logOpen, setLO] = useState(showLog);
   const [debugOpen, setDebug] = useState(initSeeAll);
@@ -542,7 +545,7 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
     const g2 = {
       ...g, players, deck, trumpCard: tc, rankings, table: [],
       primaryAtk: nextAtk, defender: nextDef, attackers: [nextAtk],
-      phase: 'attack', passChain: [], addQueue: [],
+      phase: /** @type {Vaihe} */ ('attack'), passChain: [], addQueue: [],
     };
 
     if (playerWasInvolved) {

@@ -46,12 +46,15 @@ export function lapsyAdvice(memory, center, heroIdx = 0) {
   return { type: 'flip' };
 }
 
+// Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
+/** @typedef {'idle'|'match'|'gameover'} Vaihe */
+
 export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
   const [soundOn, setSnd]   = useState(initSoundOn);
-  const [phase, setPhase]   = useState('idle');
+  const [phase, setPhase]   = useState(/** @type {Vaihe} */ ('idle'));
   const [center, setCenter] = useState([]);
   const [piles, setPiles]   = useState([]);
   const [curTurn, setCur]   = useState(0);
@@ -78,7 +81,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   const pilesRef       = useRef([]);
   const finishOrderRef = useRef([]);
   const centerRef    = useRef([]);
-  const phaseRef     = useRef('idle');
+  const phaseRef     = useRef(/** @type {Vaihe} */ ('idle'));
   const curRef       = useRef(0);
   const chRef        = useRef(null);
   const sndRef       = useRef(false);
