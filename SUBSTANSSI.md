@@ -1163,4 +1163,12 @@ jokaisesta pelistä, voitto ei.
 **Seuraus:** turnaus erottuu pelipäivän kaaresta (kohta 15) myös rytmiltään. Kaari oli
 pelipäivän vakio, turnaus muutaman kerran vuodessa toistuva erikoistapahtuma.
 
-**Avoin:** ratkesiko turnauksen voittaja pistemäärään.
+Viimeinen avoin kysyttiin erikseen, ja Tommi vastasi 20.8.2026:
+
+> *kyllä, eniten pisteitä voitti, turnaussarja*
+
+Voittaja oli siis se jolla oli eniten pisteitä kun sovittu määrä pelejä oli pelattu, ja
+muodolla oli oma nimi: **turnaussarja**. Kohdassa ei ole enää avoimia kysymyksiä.
+
+**Seuraus:** turnaussarja on toinen lapsuuden perinteen oma nimi tässä dokumentissa (kiusa
+kohdassa 38 on ensimmäinen), eli perinteellä oli oma sanasto eikä vain omat säännöt.
