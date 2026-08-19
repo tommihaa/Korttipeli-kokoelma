@@ -217,7 +217,13 @@ menettää kortin ja **antaa sen näkyvästi vastustajalle**, koska poistopakan 
 kaikkien nähtävissä ja seuraava pelaaja saa nostaa sen.
 
 **Seuraus:** kolmesta esimerkistä yksi on jo koodissa (Ristiseiska), yksi on osittain kirjattu
-strategiaosioon mutta ei virheenä (Paskahousu), ja yhtä ei ole missään (Kultakala). Kultakalan
-botin päätöslogiikka vertaa nostettua korttia pahimpaan tunnettuun omaan korttiin, mutta
-kanonista ei käy ilmi estääkö mikään ehto hyvän kortin hylkäämistä. Se on tarkistettavissa
-koodista, ja tarkistus kannattaa tehdä ennen kuin kohta viedään pidemmälle.
+strategiaosioon mutta ei virheenä (Paskahousu), ja yhtä ei ole kanonissa (Kultakala).
+
+*Kultakalan koodi tarkistettiin heti, ja vartija on olemassa mutta kapea.* `kkChainStep`
+sisältää ehdon jonka kommentti sanoo suoraan: *paikka 1: älä aja ulos tunnettua pientä korttia
+poistopakkaan*. Raja on `playerCount + 1`, eli kolme pelaajamäärällä kaksi ja viisi
+pelaajamäärällä neljä, ja samalla rajalla pieni kortti myös vaihdetaan sisään sen sijaan että
+se heitettäisiin pois. **Vartija koskee kuitenkin vain paikkaa 1**, ja se on ketjuvaihdon
+sääntö eikä yleinen kielto. Tommin nimeämä virhe on siis estetty siinä kohdassa jossa se on
+tavallisin, muttei nimetty missään dokumentissa, joten kanonin ja koodin ero on tässä kirjaus
+eikä käyttäytyminen.
