@@ -4,6 +4,39 @@ Itsepeluu-benchmark joka mittaa AI-tasojen (Oppipoika/beginner, Kisälli/normal,
 Mestari/hard) todellista voimaeroa: taso A vastaan taso B, istuimet vuorotellen
 ABAB/BABA, 4 pelaajaa, siemennetty satunnaisuus (toistettava).
 
+## Mistä tarve tuli: katselutila teki tämän käsin (kirjattu 19.8.2026)
+
+Botbench ei ole ensimmäinen yritys mitata bottien laatua vaan **toinen**, ja ensimmäinen oli
+käsityötä. Menetelmä on päivättävissä Gemini-arkistoon, 28.5.2026:
+
+> Peluutan botteja avoimilla korteilla sivusta katsellen ottaakseni selvää löytävätkö he
+> tiensä voittajaksi ilman mokia ja kun tähän lisää korttien laskennan niin taso on korkea
+
+> Siis botit eivät näe toistensa kortteja, vain minä Tarkkailiija näen ne
+
+Viikkoa myöhemmin, 3.6.2026, menetelmä on nimetty ja sen raja tunnistettu:
+
+> On kolme vaikeustasoa, joista Mestari ei tee tietoisia virheitä, mutta yritän koulia sitäkin
+> paremmaksi nimenomaan katselutilassa eriskummallisuuksia bongaamalla ja niihin tarttumalla.
+> En osaa neuvoa agenttia tähän vielä.
+
+Viimeinen lause on tämän dokumentin syntysyy: **puuttuva osa oli automatisointi, ei
+havaintotapa.** Botbench julkaistiin 18.7.2026 eli kuusi viikkoa myöhemmin.
+
+**Seuraus työtapaan, ja se on yhä voimassa.** Katselutila ja Botbench eivät korvaa toisiaan
+vaan mittaavat eri asioita. Mittari näkee voimaeron mutta ei outoa siirtoa joka toistuu ilman
+että se näkyy voittoprosentissa; katselutila näkee juuri sen. Nollatulos mittarissa ei siis ole
+todiste siitä että botti pelaa järkevästi, ja useampi alla oleva löydös on löytynyt katsomalla
+eikä ajamalla.
+
+**Bottien näkyvyysvaatimus, samasta illasta 3.6.2026.** *Mulle tärkein oli huiputuksen ja
+epäsymmetrisyyden poisto. Vain laillisia siirtoja.* Botti ei siis saa lukea tilaa jota pelaaja
+ei näe, eikä sillä saa olla eri sääntöjä kuin pelaajalla. Tämä on se vaatimus jota katselutila
+oikeasti valvoi, ja `docs/PELIKANONIT.md` tarkistaa saman koodia vasten näkyvyystaulukoiden
+kohdalla. Vaikeustaso saa siis vaihdella osaamisessa, ei tiedossa.
+
+*Lähde: `Lahteet/louhinnat/04-pelit-ja-pelisuunnittelu.md` kohta 3, kuitattu 19.8.2026.*
+
 ## Ajo
 
 ```powershell
