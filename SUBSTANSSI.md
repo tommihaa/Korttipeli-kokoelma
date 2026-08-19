@@ -284,3 +284,52 @@ vastausta sanovat saman: opittu Paskahousun muoto arvioitiin tylsäksi ja vakiok
 Kasinon rakentaminen luettiin muualta ja otettiin mukaan, ja asetusten peruste on variaatio.
 Tämä on kirjoittajan päätelmä kolmesta vastauksesta eikä Tommin lause, ja se on vahvistettava
 ennen kuin se nousee tämän dokumentin teesiksi.
+
+*Tila 19.8.2026: Tommi vastasi väitteeseen **osin**, ja tarkennus on kesken. Päätelmä ei siis
+ole tämän dokumentin teesi eikä sitä saa lukea sellaisena.*
+
+---
+
+## 10. Pöydässä luetaan pelaajia, ja se on informaatiokanava jota sovelluksessa ei ole
+
+Tommi 19.8.2026, kysyttäessä mitä pöydässä sanotaan ääneen:
+
+> *opetetaan uusille, arvuutellaan kuka pihtaa, kaikilla ei ole pokerinaamaa*
+
+Kolme asiaa, ja ne ovat eri lajia. Ensimmäinen on opetusta kesken pelin, toinen on pelillistä
+päättelyä ääneen, ja kolmas on tahatonta vuotoa.
+
+**Seuraus:** pihtaamisen arvuuttelu on sama teema jota kohdat 6 ja 7 kuvaavat korttien
+puolelta, mutta pöydän puolelta. Pidättäminen on keskeinen taito useassa pelissä, ja pöydässä
+sitä vastaan pelataan **lukemalla ihmistä eikä vain kortteja**. Sovelluksessa tätä kanavaa ei
+ole lainkaan: botti ei vuoda mitään paitsi sen minkä sen siirrot paljastavat.
+
+**Seuraus, ja tässä on ansa joka on syytä nimetä ennen kuin joku innostuu:** pokerinaaman
+puute houkuttelee antamaan boteille tunnusomaisia tapoja, epäröintiä tai puheenvuoroja, jotta
+pöydän tuntu siirtyisi mukana. **Laituri-nimiryhmän kohdalla se on nimenomaan kielletty**
+(`CLAUDE.md`, Players): ryhmä on kunnianosoitus oikeille ihmisille, eikä sille anneta
+persoonallisuuksia, puhetyylejä eikä pelitapaeroja, koska juuri se hävittäisi
+kunnianosoituksen. Kielto ja tämä havainto osoittavat samaan kohtaan vastakkaisista suunnista,
+eikä havainto kumoa kieltoa.
+
+## 11. Sovelluksen opetustapa on tietoinen ero pöydän tapaan, ei sen kopio
+
+Tommi 19.8.2026, kysyttäessä miten peli opetettiin pöydässä uudelle pelaajalle:
+
+> *säännöt ensin ja täydennystä aina kun keksi kysyä, pelikertoja*
+
+Pöydän tapa on siis kolmiosainen: säännöt kerrotaan ensin, aukot täydennetään kysyttäessä, ja
+loppu tulee toistosta.
+
+Sovelluksen lupaus on toinen: *sääntöjä ei tarvitse opetella etukäteen, peli neuvoo pelatessa*
+(`src/locales/fi.js`).
+
+**Seuraus:** lupaus poistaa ensimmäisen vaiheen ja säilyttää kolmannen. Se ei siis ole Laiturin
+tavan kopio vaan **muunnos siitä**, ja muunnettu kohta on juuri se joka vaatii toisen ihmisen:
+sääntöjen kertominen ja kysymyksiin vastaaminen. Toisto ei vaadi ketään, ja se on se osa joka
+siirtyi sellaisenaan.
+
+**Seuraus:** tämä selittää myös miksi Mestarin neuvo on olemassa. Se on sovelluksen vastine
+sille toiselle vaiheelle, eli täydennykselle silloin kun pelaaja keksii kysyä. Ero on siinä
+kuka aloittaa: pöydässä kysyi pelaaja, sovelluksessa neuvo on saatavilla nappia painamalla.
+Tämä on kirjoittajan päätelmä eikä Tommin lause.
