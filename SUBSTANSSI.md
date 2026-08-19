@@ -1062,7 +1062,14 @@ sovelluksessa.
 eli yhdeksän pelin joukossa käänteinen pisteytys ei ollut Kultakalan yksittäistapaus vaan
 esiintyi myös lapsuuden perinteessä.
 
-**Avoin:** millä arvolla käteen jäänyt kortti laskettiin (yksi piste per kortti vai kortin
-numeroarvo), ja laskettiinko pantin haltijan omat kortit 30:n päälle myös pantin osalta.
-Pelin päättymisen laukaisin on kysytty ja vastaus oli *en muista*, joten se ei ole avoin
-kysymys vaan muistin raja.
+Korttien arvo kysyttiin jatkokysymyksenä, ja Tommi vastasi 20.8.2026:
+
+> *kortin numeroarvo*
+
+Käteen jäänyt kortti laskettiin siis numeroarvostaan, ei kappaleena. Isot kortit kädessä
+olivat isompi sakko, eli kierroksen lopussa oli väliä paitsi sillä montako korttia jäi, myös
+sillä mitkä.
+
+**Avoin:** laskettiinko pantin haltijan omat kortit 30:n päälle myös pantin osalta, ja miten
+kuvakortit arvotettiin (J, Q, K, A). Pelin päättymisen laukaisin on kysytty ja vastaus oli
+*en muista*, joten se ei ole avoin kysymys vaan muistin raja.
