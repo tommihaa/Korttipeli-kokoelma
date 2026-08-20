@@ -525,6 +525,27 @@ loput pelit olivat ryhmästä riippuvia, eivät kaaren kiinteitä väliportaita.
 mukaan. Peliaika oli muun tekemisen lomassa eikä oma ohjelmanumeronsa, mikä sopii kohdan 1
 kuvaukseen (*tehtiin asioita ja lätkittiin korttia teemasta riippuen*).
 
+Tommi 20.8.2026 (erä 24), kysyttäessä oliko kaari ohjaajan päättämä vai itsestään
+muodostunut, ja pelattiinko jotkin pelit nimenomaan ruuanlaittoryhmässä:
+
+> *oli ryhmien yhteiset pelit eka puoli tuntia, sitten ryhmien omat jutut ja yhteinen viime
+> puoli tuntia = 4 tuntia*
+> *ne oli enemmän tee yhdessä, kun tee ruokaa: siellä pelattiin enemmän pelejä, mutta
+> kirpparit, kävelyt ja muut ulos vievät toiminnot kuului asiaan*
+
+Neljän tunnin päivällä oli siis kiinteä kehys: ensimmäinen puoli tuntia ryhmien yhteiset
+pelit, sitten ryhmien omat tekemiset, ja viimeinen puoli tuntia taas yhteinen.
+Ruuanlaittoryhmän luonne oli tee yhdessä ennemmin kuin tee ruokaa: siellä pelattiin
+enemmän, mutta myös kirpputorit, kävelyt ja muut ulos vievät toiminnot kuuluivat asiaan.
+
+Kumpaakaan kysymyksen vaihtoehtoa (ohjaajan päättämä / itsestään muodostunut) vastaus ei
+valinnut, vaan se antoi kaarelle kehyksen: pelien vakiopaikka oli päivän yhteisissä
+puolissa tunneissa, ja loppu riippui ryhmästä.
+
+**Seuraus** *(kirjoittajan päätelmä)*: kohdan 14 aloituspeli saa rakenteellisen kodin.
+Ristiseiska aloituspelinä sopii ensimmäiseen yhteiseen puoleen tuntiin, jossa pelin on
+alettava nopeasti ja sovittava kaikille. Tämä saa kaatua, koska yhteyttä ei kysytty.
+
 ## 16. Kahden pelaajan pelit ovat Kultakala ja Koputus
 
 Tommi 20.8.2026, kysyttäessä pelattiinko silti kun pelaajia oli vähemmän kuin peliin olisi
@@ -1379,6 +1400,20 @@ sovellukseen, joten Jako-Moskaan tuotiin vuoro.
 vaikeni, vaan myös siellä missä pöydän sääntö on sidottu pelimuotoon jota sovellus ei voi
 toistaa. Sama ero on kirjattu opetustavasta (kohta 11): sovellus on tietoinen ero pöydän
 tapaan, ei sen kopio.
+
+Tommi 20.8.2026 (erä 24), kysyttäessä aiheuttiko nopein ensin -sivustalyönti kiistoja siitä
+kuka ehti ensin:
+
+> *ei, mutta kilpailuhenkisempi ryhmä varmasti olisi ollut kiistainen*
+
+Kiistoja ei tullut, ja Tommin oma arvio on että kilpailuhenkisemmässä ryhmässä sama sääntö
+olisi ollut kiistainen. Kaoottinen sääntö toimi siis ryhmän luonteen varassa eikä omalla
+selkeydellään.
+
+**Seuraus** *(kirjoittajan päätelmä)*: tämä sitoo kohdan 17 ehdon ja sivustalyönnin yhteen.
+Panokseton ja hauskanpitoon suuntautunut pöytä kesti säännön jota kilpailullinen pöytä ei
+olisi kestänyt, joten vuoron tuominen Jako-Moskaan ei korvannut vain reaaliaikaa vaan myös
+ryhmän luonteen: sovelluksella ei ole ympärillään ryhmää joka kantaisi kaoottisen säännön.
 
 **Seuraus:** neljäs lähde on nyt todistettu yhdellä nimetyllä tapauksella eikä vain
 lajina, ja se osuu Moskaan, jonka taso on kokoelman ainoa vaativaksi merkitty. Mitä muita
