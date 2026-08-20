@@ -583,9 +583,18 @@ toisen täysin litteän pelin sen jälkeen kun Ristiseiskan nollaporras kumoutui
 Kaikki 1 200 peliä tulkittiin: 0 pattiin jäänyttä, 0 istuimeen yhdistämätöntä. Tasapelit
 ovat 18.8.2026 koodiin viedyn tasasääntösäännön tulos ja ne on laskettu puolikkaina.
 
-~~**Tämä on mittarin vahvin porras**~~, ja se on ~~ainoa~~ *(ks. Läpsy alla, joka on sekä
-vahvempi että mitattu samalla tavalla)* peli jonka kolme paria on mitattu samassa
-N=400-ajossa ja jotka kaikki ovat merkitsevästi yli 50 %:n. Muotoilu on tarkoituksella
+~~**Tämä on mittarin vahvin porras, ja se on ainoa peli jonka kolme paria on mitattu
+samassa N=400-ajossa ja jotka kaikki ovat merkitsevästi yli 50 %:n.**~~
+
+*Korjattu samana päivänä, ja väärä muotoilu jätetään näkyviin: Läpsy mitattiin samalla
+kierroksella ja on sekä vahvempi (91,8 / 85,8 / 80,5) että mitattu samalla tavalla.
+Koputus on siis toiseksi vahvin, ja oikea väite kuuluu: **Koputus ja Läpsy ovat ne kaksi
+peliä joiden kolme paria on mitattu samassa N=400-ajossa ja jotka kaikki ovat
+merkitsevästi yli 50 %:n.** Kirjoitin ensimmäisen version silloin kun Läpsyn ajo oli
+vielä kesken, mikä on tämän kierroksen oma pikku oppitunti: älä kirjoita
+paremmuusjärjestystä keskeneräisestä mittauksesta.*
+
+Muotoilu on tarkoituksella
 kapeampi kuin *ensimmäinen monotoninen porras*, koska Seiska tulee lähelle (73,3 / 58,0 /
 77,3) mutta sen luvut ovat eri ajoista: vain `hard vs normal` on mitattu N=400:lla
 nykyisestä koodista, ja juuri sillä parilla on dokumentoitu epävakaus osaotosten välillä
