@@ -560,9 +560,33 @@ tuntina pelattiin.
 koko sisältö. Kortti oli yksi laji muiden joukossa, ja yhteinen aika oli seurustelua jonka
 väline peli oli.
 
-**Avoin:** vastauksessa mainittu sanamix on sama sana kuin Tommin oman sanapeliprojektin
+~~**Avoin:** vastauksessa mainittu sanamix on sama sana kuin Tommin oman sanapeliprojektin
 alkuperäinen nimi (nykyinen Itu). Mikä Laiturin sanamix oli ja onko sillä yhteys projektin
-nimeen, ei kysytty.
+nimeen, ei kysytty.~~ *(Ensimmäinen puoli kysytty erässä 26, ks. alla.)*
+
+Tommi 20.8.2026 (erä 26), kysyttäessä mikä Laiturin sanamix oli, kenen pelejä Uno, Yatzy ja
+Alias olivat ja kuka tietokilpailut laati:
+
+> *1 pieni matkapeli, heiteltiin kirjainnopat ja muodostettiin määräajassa sanoja*
+> *2 ne oli aina siellä*
+> *3 oli sekä ohjaajajan laatimia että valmiita pelejä tietokilpailuihin, myös verkosta
+> haettiin*
+
+(vastauksen *ohjaajajan* siteerattu korjattuna muotoon *ohjaajan*)
+
+Laiturin sanamix oli siis pieni matkapeli, jossa heitettiin kirjainnoppia ja muodostettiin
+määräajassa sanoja. Muut pelit olivat talon: ne olivat aina siellä, eikä kukaan tuonut niitä.
+Tietokilpailut olivat sekä ohjaajan laatimia että valmiita pelejä, ja aineistoa haettiin myös
+verkosta.
+
+**Avoin:** kysymys sanamixistä oli kirjoittajan virheestä kaksi kysymystä yhtenä, ja sen
+toinen puoli jäi vastaamatta: onko Laiturin sanamix se mistä Tommin sanapeliprojekti
+(nykyinen Itu) sai alkuperäisen nimensä SanaMix. Yhteys näyttää ilmeiseltä, koska molemmat
+ovat määräajassa tapahtuvaa sananmuodostusta, mutta sitä ei täytetä päättelemällä.
+
+**Seuraus:** ohjaajan tekemä työ ulottui korttivariaatioiden lisäksi tietokilpailuihin, ja
+välineistö oli talon pysyvää kalustoa. Pelikulttuuri ei siis ollut kenenkään mukanaan tuomaa
+vaan paikan omaa.
 
 ## 16. Kahden pelaajan pelit ovat Kultakala ja Koputus
 
