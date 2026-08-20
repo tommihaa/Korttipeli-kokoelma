@@ -11,6 +11,7 @@ export const CHANGELOG = [
   {
     date: '20.8.2026',
     items: [
+      'Moskan Mestari osaa nyt lyödä useamman samanarvoisen kortin kerralla, mutta vasta silloin kun nostopakka on tyhjä. Säännöt ovat sallineet sen alusta asti ja pelaaja on voinut tehdä niin, mutta botti löi aina vain yhden kortin. Pakan loputtua käsi ei enää täydenny, joten koko ryhmän lyöminen kerralla on silloin oikea siirto. Mittasimme muutoksen 400 pelin sarjalla eikä se muuttanut voitto-osuuksia, joten kyse on pelitavan uskottavuudesta eikä vaikeustason noususta. Kysy Mestalta kertoo saman perustelun kun tilanne osuu kohdalle.',
       'Paskahousun Koneäly-asetus kertoo nyt suoraan, että vaikeustason vaikutus jää tässä pelissä pieneksi. Mittasimme kaikki kolme tasoparia 400 pelin sarjoilla, ja voitto-osuudet olivat noin 54, 50 ja 49 prosenttia eli käytännössä kolikonheittoja. Botit pelaavat yhä eri tavoin ja tasovalitsin toimii, mutta ero ei muutu voitoiksi, joten emme lupaa sitä asetuksissa. Sama merkintä on ennestään Ristiseiskassa ja Kasinossa.',
     ],
   },
