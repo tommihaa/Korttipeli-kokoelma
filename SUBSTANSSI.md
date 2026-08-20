@@ -1906,9 +1906,12 @@ tempoetu (saman maan kortti päälle, muut eivät nosta), ei koskaan molempia.
 **Seuraus:** pöydän ässä sisälsi päätöksen jota sovelluksen ässässä ei ole. Sovelluksessa
 rangaistus ja bonusvuoro tulevat aina yhdessä, joten ässä on siellä vahvempi kortti ja sen
 lyöminen yksinkertaisempi valinta. Pöydässä lyöjä punnitsi rangaistuksen ja tempon välillä
-joka kerta. Ero on todellinen ja täsmällinen, ja se odottaa Tommin päätöstä siitä jääkö
-sovelluksen muoto, tuleeko pöydän muoto vakioksi vai tuleeko siitä aloitusnäytön
-sääntövalinta.
+joka kerta. Ero on todellinen ja täsmällinen.
+
+**Päätös 20.8.2026, Tommin omin sanoin:** *Mielestäni ässäsääntö toimii nyt niin kuin
+pitää.* Sovelluksen muoto jää, eikä pöydän muotoa tuoda vakioksi eikä sääntövalinnaksi.
+Kirjaus ei ole passiivinen säilytys vaan kannanotto: sovelluksen ässä on tässä muodossa
+tarkoituksella. Pöydän muoto jää tähän dokumenttiin tallenteena, ja kohta on suljettu.
 
 ## 57. Seiskan oppimisen tapa ei ole muistissa, ja Jako-Seiska vaati sääntöjen johtamista
 
