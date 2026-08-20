@@ -208,7 +208,11 @@ vasta kun tiedetään mitä pöydässä pidetään virheenä.
 
 *Kohta täydentyi erässä 2, ks. kohta 6. Purku valmistui erässä 52: aloittelijan virhe on
 nimetty kaikista yhdeksästä pelistä ja kokeneen virhe kahdeksasta, kooste kohdassa 69.
-Bottivertailu on yhä tekemättä, ja se on koodityötä eikä haastattelun avoin.*
+~~Bottivertailu on yhä tekemättä, ja se on koodityötä eikä haastattelun avoin.~~
+Bottivertailu tehtiin koodinlukuna 20.8.2026, tulokset `docs/BOTTIVERTAILU.md`:ssä:
+aloittelijan yhdeksästä virheestä seitsemän on mallinnettu portaaseen, kokeneen
+kahdeksasta neljä, ja kolme aukkoa on samaa muotoa (virheen välttäminen puuttuu koko
+portaalta: Koputuksen erikoiskortit, Moskan vaiheenvaihto, Paskahousun kutonen).*
 
 ---
 
@@ -2096,10 +2100,13 @@ kerääminen, joten sen laiminlyönti on pelin oma virhemuoto.
 joten tiedonhankinnan passiivisuus lykkää tai estää koputuksen. Virhe ei siis maksa
 yksittäistä korttia vaan koko pelin päätöskyvyn.
 
-**Avoin, ja se on koodikysymys:** kyvykkyysporras mallintaa aloittelijan virheen
+~~**Avoin, ja se on koodikysymys:** kyvykkyysporras mallintaa aloittelijan virheen
 (tuntemattoman täytön kynnys), mutta erillistä riviä tiedonhankinnan aggressiivisuudelle
 siinä ei ole. Erottavatko tasot toisensa myös tässä, on tarkistettava koodista eikä
-kanonista, ja se jää tehtäväksi.
+kanonista, ja se jää tehtäväksi.~~ *(Tarkistettu koodista 20.8.2026 bottivertailussa:
+tasot erottuvat tiedonhankinnassa vain sokkotäytön kautta. Erikoiskorttien katsomisia,
+eli juuri niitä keinoja jotka tämä kohta nimeää, botti ei käytä millään tasolla, vaan
+nostettu jätkä tai kuningas pelataan tavallisena korttina. Ks. `docs/BOTTIVERTAILU.md`.)*
 
 ## 49. Väärä täsmäyslyönti oli pöydässä harvinainen
 
