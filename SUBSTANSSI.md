@@ -510,6 +510,9 @@ on kirjoittajan päätelmä eikä Tommin lause.
 **Avoin:** vastaus ei kerro kumpi kahdesta menettelystä oli tavallisempi, eikä sitä mitä
 tehtiin jos järjestäjä oli itse osapuoli erimielisyydessä.
 
+*Täydennys erästä 19 (ks. kohta 39): järjestäjä on sama henkilö kuin Laiturin ohjaaja, joka
+ohjasi ryhmää päättämällä mitä tehdään ja kehitti myös pelien variaatioita.*
+
 ## 18. Kolmella pelaajalla pelivalinta vaihteli, ja se on eri vastaus kuin kahdella
 
 Tommi 20.8.2026, kysyttäessä mikä peli valittiin kun pöydässä oli kolme pelaajaa:
@@ -1238,8 +1241,24 @@ Laiturin pelit olivat omaa kehitystään ja ohjaajan hallinnassa.
 
 **Seuraus:** tämän kohdan aiempi päätelmä vahvistui ja sai tekijän. Laiturin turnauskulttuuri
 ei ollut lapsuuden muodon kopio, ja nyt tiedetään miksi: se oli ohjaajan omaa kehitystä.
-Ohjaaja on dokumentissa uusi henkilö; onko hän sama kuin kohdan 17 sääntöriidat ratkaissut
-järjestäjä, ei kysytty.
+Ohjaaja on dokumentissa uusi henkilö; ~~onko hän sama kuin kohdan 17 sääntöriidat ratkaissut
+järjestäjä, ei kysytty~~ *(kysytty erässä 19, ks. alla)*.
+
+Tommi 20.8.2026 (erä 19), kysyttäessä oliko ohjaaja sama henkilö kuin sääntöriidat ratkaissut
+järjestäjä ja kehittikö hän myös pelien sääntöjä vai vain turnausmuodot:
+
+> *hän ohjasi ryhmää päättämällä mitä tehdään, kyllä*
+> *variaatioita*
+
+Ohjaaja ja järjestäjä ovat siis sama henkilö, ja hänen roolinsa oli ohjata ryhmää päättämällä
+mitä tehdään. Hän kehitti myös pelien variaatioita, ei vain turnausmuotoja.
+
+**Seuraus:** osa Laiturilla pöydässä nähdyistä muunnelmista voi olla ohjaajan kehittämiä eikä
+perinteestä tulleita, mutta kumpia mitkäkin ovat, ei kysytty. Kohdan 33 "pöydässä nähty" ei
+siis erottele muunnelman ikää, vain sen että se elettiin pöydässä.
+
+**Seuraus:** teesi *siksi ei standardia vaan vaihtoehtoja* saa kolmannen lähteen. Vaihtoehtoja
+ei vain peritty (lapsuus) ja luettu (säännöt), niitä myös tehtiin paikan päällä (ohjaaja).
 
 ---
 
