@@ -508,8 +508,10 @@ mikään ei pakottanut niitä yhteen muotoon.
 
 **Seuraus:** sovelluksessa kumpaakaan auktoriteettia ei ole, koska koodi ratkaisee jokaisen
 sääntötilanteen ennen kuin siitä voi olla eri mieltä. Asetukset ovat tämän vastine: ne
-siirtävät järjestäjän valinnan pelin alkuun sen sijaan että se tehtäisiin kesken pelin. Tämä
-on kirjoittajan päätelmä eikä Tommin lause.
+~~siirtävät järjestäjän valinnan pelin alkuun sen sijaan että se tehtäisiin kesken pelin~~
+toistavat pöydän oman paikan. Tämä on kirjoittajan päätelmä eikä Tommin lause. *(Tarkentui
+erässä 20, ks. kohta 42: yksityiskohdat sovittiin pöydässäkin ennen pelin alkua, joten
+vastakkainasettelu kesken pelin tehtävään valintaan oli väärä.)*
 
 **Avoin:** vastaus ei kerro kumpi kahdesta menettelystä oli tavallisempi, eikä sitä mitä
 tehtiin jos järjestäjä oli itse osapuoli erimielisyydessä.
@@ -1327,3 +1329,29 @@ raja eikä avoin kysymys.
 
 **Seuraus:** perinne oli ylisukupolvinen samassa pöydässä, ei aikuisilta lapsille erikseen
 sovitettu.
+
+---
+
+## 42. Laiturin viisi peliä olivat olemassa olevia, ja säännöt sovittiin ennen pelin alkua
+
+Tommi 20.8.2026 (erä 20), kysyttäessä olivatko Laiturilla opitut viisi peliä olemassa olevia
+vai ohjaajan omia kehitelmiä, muistuuko konkreettinen esimerkki ohjaajan variaatiosta, ja
+otettiinko variaatio käyttöön sellaisenaan:
+
+> *1 olemassa olevia pelejä*
+> *2 en, ne eivät olleet tuttuja ennen*
+> *3 sääntöjen yksityiskohdat sovittiin ennen pelin alkua*
+
+Kaikki viisi olivat siis olemassa olevia pelejä, eivät kenenkään keksintöjä. Esimerkkiä
+ohjaajan variaatiosta ei ole, ja vastaus kertoo myös miksi: pelit eivät olleet Tommille
+tuttuja ennen Laituria. Sääntöjen yksityiskohdat sovittiin pöydässä ennen pelin alkua.
+
+**Seuraus** *(kirjoittajan päätelmä toisesta vastauksesta)*: oppijalle ohjaajan variaatio ja
+pelin oma sääntö näyttivät samalta, koska vertailukohtaa ei ollut. Kohdan 39 varaus on siis
+pysyvä eikä avoin: mitkä Laiturin muunnelmista ovat ohjaajan tekoa, ei ole selvitettävissä
+tästä lähteestä.
+
+**Seuraus:** kolmas vastaus vahvistaa kohdan 17 kirjoittajan päätelmän ja korjaa sen
+vastakkainasettelun. Sovelluksen asetukset pelin alussa eivät siirrä järjestäjän valintaa
+uuteen paikkaan vaan samaan paikkaan jossa se pöydässäkin tehtiin: yksityiskohdat sovittiin
+ennen alkua, ja kohdan 17 riitamenettely oli kesken pelin tapahtuva poikkeustilanne.
