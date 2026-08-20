@@ -902,6 +902,17 @@ jälkimmäistä ei ole, ja edellinen on botilla täydellinen.
 peliä koskevana kannanottona puheen arvosta. Kirjattu tässä Maijan kysymyksen vastauksena,
 koska sitä kysyttiin, eikä yleistetty.
 
+Laajuus kysyttiin erässä 41, ja Tommi vastasi 20.8.2026 listan ulkopuolelta:
+
+> *en ymmärrä enää mitä yritinkään sanoa*
+
+Avoin sulkeutuu ratkeamattomana: lähde ei enää tavoita oman lauseensa tarkoitusta, joten
+laajuutta ei voi kysyä uudelleen eikä vastausta yleistetä. Alkuperäinen lause jää kohtaan
+sellaisena kuin se lausuttiin, ja kaikki siitä vedetty on kirjoittajan luentaa jolla ei ole
+lähteen vahvistusta lausetta pidemmälle. Tämä on menetelmän tunnettu muoto (lähde kumoaa
+myös itseään, kohta 58 on toinen tapaus), ja se on parempi lopputulos kuin tulkinta jonka
+lähde olisi kohteliaisuudesta kuitannut.
+
 ## 26. Maijan aloittelijavirhe on isojen korttien pelaaminen pienten sijaan
 
 Tommi 20.8.2026, kysyttäessä missä hetkessä Maijan aloittelija tekee virheen:
@@ -917,8 +928,23 @@ riittävä on aina oikea ja aloittelija pelaa suurimman.
 hyvä hyökkäyskortti. Sen pelaaminen liian aikaisin menettää molemmat käyttötavat. Tämä on
 kirjoittajan päätelmä kanonin säännöistä.
 
-**Avoin:** vastaus ei erottele koskeeko virhe hyökkäystä, puolustusta vai molempia, eikä sitä
-onko valttikortin liian aikainen käyttö sama virhe vai oma erillinen.
+~~**Avoin:** vastaus ei erottele koskeeko virhe hyökkäystä, puolustusta vai molempia, eikä sitä
+onko valttikortin liian aikainen käyttö sama virhe vai oma erillinen.~~
+
+Molemmat puolet kysyttiin erässä 41 erillisinä kysymyksinä, ja Tommi valitsi 20.8.2026
+monivalinnoista: virhe tapahtui **kaataessa** (kaatoon käytettiin isompi kortti kuin olisi
+tarvinnut), ja valttikortin liian aikainen käyttö on **oma erillinen virheensä**.
+
+**Seuraus:** yllä oleva kaksinkertaisuuspäätelmä kapenee muttei kaadu. Virheen paikka on
+kaato eikä hyökkäys, eli aloittelija tuhlaa ison kortin tilanteessa jossa pienin riittävä
+näkyy pöydässä. Hukka on siis todennettavissa sillä hetkellä, toisin kuin hyökkäyksessä
+jossa oikeaa kokoa ei voi tietää etukäteen.
+
+**Seuraus** *(kirjoittajan päätelmä)*: valtin erillisyys tarkoittaa että Maijassa on kaksi
+aloittelijavirhettä eikä yksi. Kohdan 24 mukaan voittokeino on valttien kerääminen, joten
+valtin aikainen käyttö ei tuhlaa vain kortin arvoa vaan purkaa voittosuunnitelmaa, kun taas
+ison sivukortin tuhlaus kaadossa maksaa vain kortin. Eroa ei kysytty tarkemmin, ja tämä saa
+kaatua.
 
 ---
 
@@ -2057,7 +2083,15 @@ Nimi on pöydästä, ja padan valttikielto on pöydästä. Valtin vetotapa (pohj
 vai jokin muu) on muistin raja ja kirjataan sellaisena: pöydän sääntö oli kielto, ja
 sovelluksen mekanismi toteuttaa kiellon tavalla jonka alkuperää ei muisteta. Kolmas vastaus
 vahvisti mekaniikan (patarouva on Maija ja häviäjälle jäi se), mutta kysymyksen sanontapuoli
-(*lopussa istuu Maija*, sanottiinko niin) jäi vastaamatta ja merkitään vastaamattomaksi.
+(*lopussa istuu Maija*, sanottiinko niin) jäi vastaamatta ja merkittiin vastaamattomaksi.
+
+Sanontapuoli kysyttiin erässä 41 erikseen, ja Tommi valitsi 20.8.2026 monivalinnasta
+vaihtoehdon *ei vakiintunutta sanontaa*: häviö todettiin ilman erityistä fraasia.
+
+**Seuraus:** tämä on samaa sävyä kuin kohdan 60 havainto ettei Moskan häviäjää pilkattu.
+Kummassakaan häviäjäpelissä pöytä ei rakentanut häviölle kieltä, vaikka molemmissa häviäjä
+on mekaniikan tasolla nimetty. Sanonta *lopussa istuu Maija* on siis sovelluksen omaa
+tekstiä eikä pöydän perintöä.
 
 **Seuraus:** Maija on neljäs Laiturin peli peräkkäin jonka nimi tuli pöydästä sellaisenaan,
 eikä silläkään ole aloitusnäytön sääntövalintoja. Kohdan 58 jakauma vahvistuu: Laiturin
