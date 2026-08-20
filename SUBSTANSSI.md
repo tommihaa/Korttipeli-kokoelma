@@ -1818,8 +1818,11 @@ kynnystä ei ollut, ja kaikki kakkoset olivat kovia.
 ovat täsmälleen `PASKAHOUSU.md`:n kolmen sääntövalinnan ei-vakioasennot (käden koko 5,
 kuvakortin alaraja 0, kaikki kakkoset kovia). Lapsuuden Paskahousu on siis pelattavissa
 sovelluksessa asetuksia vaihtamalla, ja kohdan 33 rivi "pöydässä nähty asento" saa Paskahousun
-kohdalla yhden nimetyn pöydän: lapsuuden sukupöydän. Oliko sama muoto käytössä myös muualla,
-ei kysytty.
+kohdalla yhden nimetyn pöydän: lapsuuden sukupöydän. ~~Oliko sama muoto käytössä myös muualla,
+ei kysytty.~~ Kysyttiin erässä 51, ja Tommi vastasi 20.8.2026:
+**kyllä**, sama muoto oli käytössä muuallakin. Missä, ei kysytty, joten lapsuuden variaatio
+ei ollut sukupöydän oma keksintö vaan laajemmin tunnettu muoto jonka levinneisyys jää
+kirjaamatta.
 
 **Seuraus:** oma nimi oli lapsuuden peleistä vain Ristiseiskalla (kiusa, kohta 38), vaikka
 molempien muoto erosi kolmella muutoksella. Nimen synty ei siis seurannut muutosten määrästä,
@@ -2412,9 +2415,24 @@ tekee:
 kaataa liian isolla kortilla (kohta 26), kokenut jättää kaatamatta kokonaan. Virheen
 paikka on molemmilla kaatopäätös, mutta suunta on vastakkainen.
 
-**Avoin, ja se on jännite kohdan 24 kanssa:** kaatamatta jättäminen on siellä myös keino,
+~~**Avoin, ja se on jännite kohdan 24 kanssa:** kaatamatta jättäminen on siellä myös keino,
 koska käsi kasvaa ja valtteja kertyy. Missä tilanteessa keino muuttuu virheeksi, ei
-kysytty, eikä rajaa täytetä päättelemällä.
+kysytty, eikä rajaa täytetä päättelemällä.~~
+
+Raja kysyttiin erässä 51, ja Tommi vastasi 20.8.2026:
+
+> *pakan loputtua*
+
+Jännite kohdan 24 kanssa ratkesi vaiheella: kaatamatta jättäminen on keino niin kauan kuin
+pakkaa riittää, ja virhe pakan loputtua.
+
+**Seuraus:** tämä on sama vaiheraja jonka kohta 19 kirjasi Moskasta. Kahdessa pelissä
+pakan loppuminen kääntää oikean siirron vääräksi, ja kummassakin kokeneen virhe on juuri
+vaiheen vaihtumisen huomaamatta jättäminen, ei väärä yksittäinen siirto.
+
+**Seuraus** *(kirjoittajan päätelmä)*: mekanismi on molemmissa sama. Niin kauan kuin
+kädet täydentyvät pakasta, kasvava käsi on resurssi; kun täydennys loppuu, jokainen käteen
+jäänyt kortti on vain matkaa pelin lopusta. Tätä ei kysytty, ja se saa kaatua.
 
 ## 63. Paskahousun kokeneen virhe on ysin ja kutosen arvon ymmärtämättä jättäminen
 
@@ -2434,6 +2452,18 @@ kuvakortin alarajasta. Vakiosäännöillä kuvakortin saa lyödä vain arvon 7 t
 päälle, joten kutonen on korkein kortti jonka päälle kuvakorttia ei saa lyödä: kutosen
 pelaaminen pakottaa seuraajan pelaamaan numerokortin tai nostamaan. Tätä ei kysytty, ja
 se saa kaatua; mikä ysin ja kutosen arvo Tommin omassa tarkoituksessa on, jää avoimeksi.
+
+Arvot kysyttiin erässä 51, ja Tommi vastasi 20.8.2026:
+
+> *ysi käy monen kortin päälle, kutosen päälle käy paljon vähemmän kortteja kuin 7, siis
+> nostaminen on epätodennäköisempää itselle kun seuraavalle*
+
+Ysin arvo on joustavuus (se käy monen kortin päälle, eli sen saa lähes aina pois kädestä),
+ja kutosen arvo on tukkiminen: kutosen päälle käy paljon vähemmän kortteja kuin seiskan,
+joten kutosen pelaaja tekee nostamisesta todennäköisempää seuraajalle kuin itselleen.
+Yllä oleva päätelmä piti asiasisällöltään kutosen osalta, ja ysin osalta se oli väärässä
+paikassa: kanonin säästölista kuvaa ysin arvoa loppupelin korttina, Tommin peruste on
+pelattavuus joka vuorolla. Kohdassa ei ole enää avoimia kysymyksiä.
 
 ## 64. Ristiseiskan kokeneen virhe on väärän panttikortin antaminen
 
