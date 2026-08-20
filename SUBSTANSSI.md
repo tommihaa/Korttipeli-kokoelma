@@ -1626,7 +1626,22 @@ korttipelejä:
 
 **Seuraus:** pöytä skaalasi pelaajamäärään pakkaa kasvattamalla, ei pöytää jakamalla.
 Sovellus tuntee vain 2–4 pelaajaa ja yhden pakan, joten tämä on pöydän muoto jota sovellus
-ei kanna. Mihin peleihin toinen pakka otettiin ja kuinka isolla porukalla, ei kysytty.
+ei kanna. ~~Mihin peleihin toinen pakka otettiin ja kuinka isolla porukalla, ei kysytty.~~
+
+Tommi vastasi 20.8.2026 (erä 39), kysyttäessä mihin peleihin toinen pakka otettiin ja
+kuinka monta pelaajaa silloin oli:
+
+> *ristiseiska, moska - kun pöydässä oli kuusi-seitsemän pelaajaa tai enemmän*
+
+Toinen pakka otettiin Ristiseiskaan ja Moskaan, ja raja oli kuudesta seitsemään pelaajaa
+tai enemmän.
+
+**Seuraus:** pöydän yläraja oli siis selvästi sovelluksen neljää suurempi, ja kahden pakan
+muoto koski juuri niitä kahta peliä jotka kohdan 15 mukaan olivat pelipäivän kaaren
+kiinteitä paikkoja (Ristiseiska alussa, Moska lopussa). Yhteiset puolituntiset pelattiin
+koko ryhmällä (kohta 24 erän kuvaus), joten kaaren pelien piti venyä koko porukkaan, ja
+toinen pakka oli se venytys. Tämä on kirjoittajan päätelmä kohtien yhdistämisestä eikä
+Tommin lause.
 
 ---
 
