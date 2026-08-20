@@ -258,9 +258,34 @@ tylsä, ei siksi että 7 olisi yleisin sääntö kirjoissa.
 säädin jonka toisessa päässä on Tommin oma perinne ja vakiokohdassa se mikä osoittautui
 paremmaksi pelata. Tämä on päinvastainen kuin oletus jonka asetusnäkymästä tekisi.
 
-**Avoin:** käden koon 5 ja kakkosten kovuuden kohdalla perustetta ei ole nimetty, vain
-kuvakortin kynnyksen. Ja Kasinon rakennelman katto jäi vastaamatta, mutta kohta 4 selittää
+~~**Avoin:** käden koon 5 ja kakkosten kovuuden kohdalla perustetta ei ole nimetty, vain
+kuvakortin kynnyksen.~~ Ja Kasinon rakennelman katto jäi vastaamatta, mutta kohta 4 selittää
 miksi: kumpikaan asento ei ole pöydästä.
+
+Kaksi nimeämätöntä perustetta kysyttiin erässä 49, ja Tommi vastasi 20.8.2026:
+
+> *viiden kortin paskahousu on nopeampi peli. kuuden kortin paskahousussa pitää miettiä
+> strategiaa uudestaan. vähemmän kovia kakkosia monimutkaistaa peliä*
+
+Molemmat perusteet ovat nyt nimettyjä, ja ne ovat samaa lajia kuin kynnyksen: pelattavuus.
+Viiden kortin käsi on nopeampi ja kuuden kortin käsi pakottaa miettimään strategiaa
+uudestaan, eli vakio valitsi syvyyden nopeuden edelle. Kovien kakkosten pudottaminen
+neljästä kahteen monimutkaistaa peliä, eli sekin valitsi monimutkaisuuden.
+
+Tommi täydensi 20.8.2026 samassa istunnossa:
+
+> *kuuden kortin paskahousussa luulen tapahtuvan myös enemmän neljän samanarvoisen kaatoja*
+
+Sana *luulen* on Tommin oma varaus ja kirjataan sellaisenaan: isompi käsi tuottaisi hänen
+arvionsa mukaan useammin neljän samanarvoisen kaadon, mutta tämä on arvio eikä havainto.
+Mekanismi on uskottava (kuusi korttia kädessä pitää useampia saman arvon kopioita liikkeellä)
+ja se olisi periaatteessa mitattavissa sovelluksen peliajoista, mutta sitä ei ole mitattu.
+
+**Seuraus:** kaikkien kolmen vakiovalinnan peruste on nyt nimetty, ja ne osoittavat samaan
+suuntaan: vakio ei ole neutraalein muunnelma vaan strategisesti vaativin. Tämän kohdan
+otsikko (vakioasetukset ovat pelattavuuspäätöksiä eivätkä perinnettä) on siis todennettu
+Paskahousun osalta kokonaan, ja pelattavuus tarkoittaa tässä syvyyttä eikä helppoutta.
+Kohdassa ei ole enää avoimia kysymyksiä.
 
 ## 6. Kolme nimettyä esimerkkiä liian hyvän kortin pelaamisesta
 
@@ -2361,9 +2386,13 @@ kortti jonka pelaaminen avaa muille rivin jatkon (kirjoittajan sanoitus termille
 vastaus käytti selittämättä), ja pihtaaminen on sen panttaamista niin että muiden peli
 pysyy tukossa.
 
-**Seuraus:** tämä on kohdan 6 kuvaaman virheen viides nimetty esimerkki ja viides eri peli
-(kohta 26 oli neljäs). Ristiseiskassa muoto on puhtain tähän mennessä: kortin arvo ei ole
-sen koossa vaan siinä että muut tarvitsevat sitä, joten pidättämisen arvo on kokonaan
+~~**Seuraus:** tämä on kohdan 6 kuvaaman virheen viides nimetty esimerkki ja viides eri peli
+(kohta 26 oli neljäs).~~ *(Kirjoittajan laskuvirhe, huomattu erässä 49: sama esimerkki on
+kohdan 6 ensimmäinen, lähes sanasta sanaan.)* Kohta ei siis tuo uutta esimerkkiä vaan
+**riippumattoman toiston**: sama vastaus tuli samaan kysymykseen kahdesti eri päivinä lähes
+samoin sanoin, ja se on tämän menetelmän vahvin saatavilla oleva vahvistus (sama muoto kuin
+kohdassa 28). Ristiseiskassa virheen muoto on silti puhtain tähän mennessä: kortin arvo ei
+ole sen koossa vaan siinä että muut tarvitsevat sitä, joten pidättämisen arvo on kokonaan
 suhteessa muiden käsiin eikä kortin omaan arvoon.
 
 **Seuraus** *(kirjoittajan päätelmä)*: aloittelijan virhe on tässä pelin nimen vastakohta
