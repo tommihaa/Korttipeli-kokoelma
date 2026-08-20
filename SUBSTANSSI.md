@@ -693,6 +693,19 @@ Ensimmäinen puoli kysyttiin erässä 42, ja Tommi valitsi 20.8.2026 monivalinna
 varamenettely eikä ensisijainen, mikä sopii erän 21 täydennykseen: kun voitolla ei ollut niin
 väliä, riita ei tarvinnut tuomaria. Toinen puoli (järjestäjä itse osapuolena) on yhä avoin.
 
+Toinen puoli kysyttiin erässä 43, ja Tommi vastasi 20.8.2026:
+
+> *en muista niin tapahtuneen, peli oli reilua*
+
+Tapausta jossa järjestäjä olisi ollut itse riidan osapuoli ei muisteta tapahtuneen, ja
+vastauksen jälkiosa nimeää syyn tapauksen puuttumiselle: peli oli reilua. Kohdassa ei ole
+enää avoimia kysymyksiä.
+
+**Seuraus:** tämä on kolmas samaan suuntaan osoittava sävyhavainto panoksettomuuden (tämä
+kohta), pilkkaamattomuuden (kohdat 59 ja 60) ja vapaaehtoisuuden (erä 25) rinnalla:
+pöydässä ei ollut rakennetta jossa reiluus olisi joutunut koetukselle, koska kukaan ei
+pelannut mistään.
+
 *Täydennys erästä 19 (ks. kohta 39): järjestäjä on sama henkilö kuin Laiturin ohjaaja, joka
 ohjasi ryhmää päättämällä mitä tehdään ja kehitti myös pelien variaatioita.*
 
@@ -741,10 +754,28 @@ Moskan portaassa muistin rajaaminen on pelikokemuksen kannalta eri asia kuin sii
 heikentäminen. Tämä on kirjoittajan päätelmä eikä Tommin lause, eikä sitä ole tarkistettu
 koodista.
 
-**Avoin:** vastaus ei kerro kuinka pitkälle muisti käytännössä yltää pöydässä, eikä sitä
-pidettiinkö kirjanpitoa hyväksyttävänä taitona vai jonkinlaisena liiallisuutena.
+~~**Avoin:** vastaus ei kerro kuinka pitkälle muisti käytännössä yltää pöydässä, eikä sitä
+pidettiinkö kirjanpitoa hyväksyttävänä taitona vai jonkinlaisena liiallisuutena.~~
 
 *Kohdan jälkimmäinen puoli ratkesi erässä 8, ks. kohta 22.*
+
+Ensimmäinen puoli kysyttiin erässä 43, ja Tommi vastasi 20.8.2026:
+
+> *mitä isoja kortteja on lyöty, koska sivusta lyönneiltä puolustautuminen ei onnistuisi*
+
+Muisti ei siis ollut yleistä kirjanpitoa vaan kohdennettua: pöydässä muistettiin isot
+kortit, ja syy oli puolustus. Ilman tietoa siitä mitkä isot kortit ovat jo poissa,
+sivustalyönneiltä ei voinut puolustautua.
+
+**Seuraus:** muistin ulottuvuus on nyt rajattu sisällöltään eikä pituudeltaan. Kysymys
+kuinka pitkälle muisti ylsi sai vastauksen joka vaihtaa mitan: ei kuinka monta korttia,
+vaan mitkä kortit. Pienten korttien kirjanpitoa ei mainita, eli pöydän muisti oli
+priorisoitu sinne missä virhe maksaa eniten.
+
+**Seuraus** *(kirjoittajan päätelmä)*: tämä tarkentaa yllä olevaa kyvykkyysporraspäätelmää.
+Ihmismäinen muisti Moskassa ei ole vajaa kopio täydellisestä kirjanpidosta vaan isoihin
+kortteihin painottuva, joten botin muistin rajaaminen kannattaisi tehdä arvopainotteisesti
+eikä tasaisesti unohtamalla. Tätä ei kysytty eikä tarkistettu koodista, ja se saa kaatua.
 
 ## 20. Läpsyssä on paljon päätöksiä, ja se kaataa kysymyksen premissin
 
@@ -1415,6 +1446,12 @@ pistearvo kulkivat eri asteikkoa. Käteen jääneistä korteista kallein oli kun
 Pelin päättymisen laukaisin on kysytty ja vastaus oli *en muista*, joten se ei ole avoin
 kysymys vaan muistin raja. Kohdassa ei ole enää avoimia kysymyksiä.
 
+**Muistin raja kapeni erässä 43 toisen kysymyksen ohessa.** Kiusan iltasarjaa kuvatessaan
+(ks. kohta 39) Tommi sanoi että pelattiin *kunnes joku pistemäärä oli saavutettu ja voittaja
+löydetty*. Laukaisimen laji oli siis pisteraja eikä kierrosmäärä, ja muistin rajaksi jää
+enää sen suuruus: sanamuoto *joku pistemäärä* kertoo ettei lukua muisteta, eikä sitä täytetä
+päättelemällä.
+
 ---
 
 ## 39. Laiturilla pidettiin turnauksia, ja niitä oli kahta muotoa
@@ -1503,8 +1540,25 @@ kutsuttu sellaiseksi. Vastaus on kokemuksen kieltä, joten se kirjataan kokemuks
 rakenne-erona.
 
 **Seuraus:** lapsuudessa oli kaksi eri sarjamuotoa, kiusan iltasarja ja turnaussarja, ja ne
-pysyivät erillään myös pelaajien omassa kokemuksessa. **Avoin:** mikä muodot erotti muun kuin
-tuntuman tasolla, ei kysytty.
+pysyivät erillään myös pelaajien omassa kokemuksessa. ~~**Avoin:** mikä muodot erotti muun kuin
+tuntuman tasolla, ei kysytty.~~
+
+Avoin kysyttiin erässä 43, ja kysymys asetti premissin väärin: se sijoitti molemmat sarjat
+Laiturille, vaikka tämä kohta jo tiesi niiden olevan lapsuuden muotoja. Tommi vastasi ja
+korjasi premissin samalla 20.8.2026:
+
+> *iltasarja oli lapsuudessani, pelkkää kiusa-peliä kunnes joku pistemäärä oli saavutettu ja
+> voittaja löydetty*
+
+*(Sitaatista korjattu kirjoitusvirhe löydettty → löydetty.)*
+
+Ero on nyt rakenteellinen eikä vain tuntumaa: iltasarja oli yhden pelin sarja (pelkkää
+kiusaa) ja se päättyi pisterajaan, kun taas lapsuuden turnaussarja oli saman pelin sarja
+jonka peliä ei ole nimetty eikä päättymisehtoa kysytty. Avoin kapenee siis puolikkaaksi:
+iltasarjan rakenne tiedetään, turnaussarjan vastinpuoli ei.
+
+**Seuraus:** iltasarjan pisteraja on sama tieto joka kohdassa 38 oli muistin raja, ja se
+tarkentui tässä toisen kysymyksen ohessa; kirjaus on kohdassa 38.
 
 Tommi 20.8.2026 (erä 18), kysyttäessä siirtyikö paperille kirjaamisen tapa lapsuudesta
 Laiturin turnauksiin:
