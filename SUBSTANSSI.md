@@ -64,9 +64,10 @@ alkuperäinen vastaus on jätetty siihen näkyviin kumottuna.
 Repo on julkinen, joten tämä tiedosto on ulospäin näkyvää tekstiä. Se on tiedossa ja se on
 päätöksen sisältö eikä sen sivuvaikutus.
 
-**Rajaus 20.8.2026:** Laiturin tarkempi tausta (mikä toiminta toi porukan yhteen) on kysytty
-ja vastattu, ja Tommi päätti ettei vastausta kirjata tähän tiedostoon. Kysymys on siis
-suljettu eikä avoin, ja sitä ei kysytä haastattelussa uudelleen.
+**Rajaus 20.8.2026:** Laiturin tausta on kysytty ja vastattu tarkemmin kuin kohta 1 kertoo,
+ja Tommi päätti ettei tarkennusta (osallistumisen muoto ja sen osapuolet) kirjata tähän
+tiedostoon. Toiminnan laji ja päivärytmi ovat kohdassa 1, ja siihen tämä tiedosto jää.
+Kysymys on suljettu eikä avoin, ja sitä ei kysytä haastattelussa uudelleen.
 
 **Mikä ei muuttunut.** `laituri`-nimiryhmä on kunnianosoitus oikeille ihmisille eikä
 arkkityyppiryhmä, eikä sille anneta persoonallisuuksia, puhetyylejä tai pelitapaeroja
@@ -108,6 +109,18 @@ tarkistettava peli kerrallaan.
 **Avoin:** kysymys sisälsi toisen puolen, johon ei ole vielä vastattu. Onko yhdeksästä joku,
 jota Tommi ei ole pelannut pöydässä lainkaan vaan poiminut kirjasta tai netistä. Sen kohdalla
 hän ei olisi koetin, ja se on tiedettävä ennen kuin sen pelin substanssia kirjataan.
+
+Tommi täydensi 20.8.2026 (erä 21) omin sanoin:
+
+> *ristiseiska ja paskahousu oli minulle aiemmin tuttuja, seiska ja kasino halusin kokoelmaan
+> mukaan*
+
+Taulukon jako vahvistui, ja kokoelman koostumus sai perusteen jota ei ollut kysytty suoraan:
+Seiska ja Kasino ovat mukana siksi että Tommi halusi ne mukaan. Kokoelma ei siis ole
+pelkkä luettelo opituista peleistä vaan valinta, jossa ainakin kahden pelin peruste on oma
+halu. Kysymys jonka yhteydessä täydennys tuli (pelattiinko Laiturilla muitakin pelejä kuin
+viisi kokoelmaan päätynyttä) jäi vastaamatta, ja se merkitään vastaamattomaksi eikä täytetä
+päättelemällä.
 
 ## 2. Sääntömuunnelmat on jo ratkaistu koodissa, ja se on vastaus eri kysymykseen
 
@@ -512,6 +525,20 @@ sääntötilanteen ennen kuin siitä voi olla eri mieltä. Asetukset ovat tämä
 toistavat pöydän oman paikan. Tämä on kirjoittajan päätelmä eikä Tommin lause. *(Tarkentui
 erässä 20, ks. kohta 42: yksityiskohdat sovittiin pöydässäkin ennen pelin alkua, joten
 vastakkainasettelu kesken pelin tehtävään valintaan oli väärä.)*
+
+Tommi täydensi 20.8.2026 (erä 21) omin sanoin:
+
+> *reaaliaikainen livepeli on hyvä sopia yksityiskohdat ennen peliä, mutta jos ääretön peli
+> niin pelaajat haluaa viettää hauskaa, voitolla ei niin väliä*
+
+Sopiminen ennen peliä kuuluu siis reaaliaikaiseen livepeliin, ja sen yläpuolella on toinen
+kehys: kun peliä pelataan äärettömänä eli jatkamisen vuoksi, pelaajat haluavat viettää hauskaa
+eikä voitolla ole niin väliä, jolloin yksityiskohtien painoarvo laskee.
+
+**Seuraus** *(kirjoittajan päätelmä)*: tämän kohdan ehto (panosta ei ollut) ja täydennys ovat
+sama asia kahdesta suunnasta. Panoksettomuus ei ollut puute vaan seuraus siitä että peliä
+pelattiin jatkamisen eikä voittamisen vuoksi, ja Tommi käytti vastauksessaan itse samaa
+ääretön peli -käsitettä joka on kokoelmatason arvolinssi.
 
 **Avoin:** vastaus ei kerro kumpi kahdesta menettelystä oli tavallisempi, eikä sitä mitä
 tehtiin jos järjestäjä oli itse osapuoli erimielisyydessä.
@@ -1266,6 +1293,20 @@ siis erottele muunnelman ikää, vain sen että se elettiin pöydässä.
 **Seuraus:** teesi *siksi ei standardia vaan vaihtoehtoja* saa kolmannen lähteen. Vaihtoehtoja
 ei vain peritty (lapsuus) ja luettu (säännöt), niitä myös tehtiin paikan päällä (ohjaaja).
 
+Tommi täydensi 20.8.2026 (erä 21) omin sanoin:
+
+> *jälkeenpäin Jakoa rakentaessa olen etsinyt sääntöjä ja johtanut sääntöjä saadakseni
+> koherentin pelin aikaan*
+
+(vastauksen *sääntökä* siteerattu korjattuna muotoon *sääntöjä*)
+
+Sovelluksen säännöillä on siis neljäs lähde perityn, luetun ja ohjaajan tekemän rinnalla:
+Tommin itse johtamat säännöt, joiden peruste on pelin koherenssi eikä perinne tai lähde.
+
+**Seuraus:** johtaminen on tapahtunut Jakoa rakentaessa eli pöydän jälkeen, joten se ei
+sekoitu kohdan 33 kahtiajakoon (pöydässä nähty / luettu). Se täyttää aukot jotka pöytä ja
+luettu jättivät, ja sen mitta on toimiva peli.
+
 ---
 
 ## 40. Lapsuuden Paskahousulla ei ollut omaa nimeä, ja sen muoto on sovelluksessa valittavissa
@@ -1355,3 +1396,22 @@ tästä lähteestä.
 vastakkainasettelun. Sovelluksen asetukset pelin alussa eivät siirrä järjestäjän valintaa
 uuteen paikkaan vaan samaan paikkaan jossa se pöydässäkin tehtiin: yksityiskohdat sovittiin
 ennen alkua, ja kohdan 17 riitamenettely oli kesken pelin tapahtuva poikkeustilanne.
+
+Tommi 20.8.2026 (erä 21), kysyttäessä sovittiinko yksityiskohdat joka kerta samalla tavalla
+ja kuka ne ehdotti:
+
+> *1 vain paskahousussa oli säätöä, muissa en muista*
+> *2 yhteinen päätös*
+
+Sopimisen kohde oli siis käytännössä yksi peli: vain Paskahousussa yksityiskohdat vaihtelivat,
+muiden pelien osalta vastaus on *en muista*. Yksityiskohdat päätettiin yhdessä, ei ohjaajan
+sanelemana.
+
+**Seuraus** *(kirjoittajan päätelmä)*: tämä selittää sovelluksen sääntövalintojen jakauman.
+Viidestä valinnasta kolme on Paskahousun, ja kohdan 33 mukaan kaikkien kolmen ei-vakioasennot
+on nähty pöydässä: peli jossa pöytä sääti eniten sai sovelluksessa eniten säädettävää.
+
+**Seuraus:** yhteinen päätös tarkentaa ohjaajan roolia. Hän kehitti variaatioita ja päätti
+mitä tehdään, mutta sääntöjen yksityiskohdat eivät olleet sanelua vaan pöydän yhteinen
+päätös, eli sama kaksiportaisuus joka kohdassa 17 ratkoi riidat (järjestäjä tai
+yhteisymmärrys) päti myös ennen peliä.
