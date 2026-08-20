@@ -1746,8 +1746,17 @@ sovelluksessa ja sattuiko vääriä lyöntejä usein:
 
 Väärä lyönti oli harvinainen, ja Tommin arvio on 1/5. **Luvun yksikkö on epäselvä eikä sitä
 täytetä päättelemällä:** se voi tarkoittaa noin joka viidettä täsmäysyritystä tai noin joka
-viidettä peliä, ja se kysytään seuraavassa erässä. Kysymyksen toinen puoli (toimiko
-rangaistus samoin kuin sovelluksessa) jäi vastaamatta ja merkitään vastaamattomaksi.
+viidettä peliä. Yksikkö kysyttiin erässä 31 eikä siihen tullut vastausta, joten se jää
+avoimeksi.
+
+Tommi vastasi 20.8.2026 (erä 31) rangaistuskysymykseen:
+
+> *sama rangaistus oli*
+
+Väärän lyönnin rangaistus oli siis pöydässä sama kuin sovelluksessa, eli tämäkin mekaniikka
+siirtyi sellaisenaan. Kohdan 47 havainto laajenee: erikoiskorttien lisäksi myös
+täsmäysrangaistus on pöydästä muuttumattomana, ja Koputus on edelleen se peli jonka säännöstö
+on jäljitetty pöytään kattavimmin.
 
 **Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
 nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
