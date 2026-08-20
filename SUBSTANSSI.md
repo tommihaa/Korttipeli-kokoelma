@@ -1228,6 +1228,19 @@ rakenne-erona.
 pysyivät erillään myös pelaajien omassa kokemuksessa. **Avoin:** mikä muodot erotti muun kuin
 tuntuman tasolla, ei kysytty.
 
+Tommi 20.8.2026 (erä 18), kysyttäessä siirtyikö paperille kirjaamisen tapa lapsuudesta
+Laiturin turnauksiin:
+
+> *Laiturin pelit oli omaa kehitystään ja ohjaajan hallinnassa, paperille kirjattiin*
+
+Laiturilla pisteet kirjattiin siis myös paperille, mutta muoto ei ollut siirtoa lapsuudesta:
+Laiturin pelit olivat omaa kehitystään ja ohjaajan hallinnassa.
+
+**Seuraus:** tämän kohdan aiempi päätelmä vahvistui ja sai tekijän. Laiturin turnauskulttuuri
+ei ollut lapsuuden muodon kopio, ja nyt tiedetään miksi: se oli ohjaajan omaa kehitystä.
+Ohjaaja on dokumentissa uusi henkilö; onko hän sama kuin kohdan 17 sääntöriidat ratkaissut
+järjestäjä, ei kysytty.
+
 ---
 
 ## 40. Lapsuuden Paskahousulla ei ollut omaa nimeä, ja sen muoto on sovelluksessa valittavissa
@@ -1251,6 +1264,16 @@ ei kysytty.
 molempien muoto erosi kolmella muutoksella. Nimen synty ei siis seurannut muutosten määrästä,
 eikä sitä mistä se seurasi ole kysytty.
 
+Tommi 20.8.2026 (erä 18), kysyttäessä miten kaikkien kakkosten kovuus muutti peliä pelaajan
+kannalta:
+
+> *kakkoset oli arvokkaita*
+
+**Seuraus** *(kirjoittajan päätelmä vastauksesta)*: muutos näkyi pelaajalle kortin arvona,
+ei erillisenä sääntönä. Vakiomuodossa kovia kakkosia on kaksi ja lapsuuden muodossa neljä,
+joten arvokkaiden korttien määrä pakassa kaksinkertaistui, ja jokainen käteen osunut kakkonen
+oli pidettävä eikä hukattava.
+
 ---
 
 ## 41. Lapsuuden peliporukka oli sukua, ja turnaussarjan pisteet kirjattiin paperille
@@ -1268,3 +1291,16 @@ kirjattiin paperille.
 paikan ja porukan. Lapsuuden perinne oli sukuperinne jolla oli oma paikka, oma sanasto
 (kiusa, turnaussarja) ja kirjallinen pistekirjanpito, eli muodoltaan vakiintunut tapa eikä
 satunnaista pelailua.
+
+Tommi 20.8.2026 (erä 18), kysyttäessä pelasivatko aikuiset ja lapset samoissa peleissä ja
+kenen käsialalla turnaussarjan pisteet kirjattiin:
+
+> *1 kaikki*
+> *2 en muista*
+
+Pöytä oli siis yhteinen: aikuiset ja lapset pelasivat samoissa peleissä, eikä korttipöytä
+ollut lasten oma. Paperin pitäjä on kysytty ja vastaus oli *en muista*, joten se on muistin
+raja eikä avoin kysymys.
+
+**Seuraus:** perinne oli ylisukupolvinen samassa pöydässä, ei aikuisilta lapsille erikseen
+sovitettu.
