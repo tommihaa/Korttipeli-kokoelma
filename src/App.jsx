@@ -171,6 +171,11 @@ const loadChangelog = () =>
 //
 // Ristiseiska 21.7.2026 (N=400): 53,3 % / 49,0 % / 51,3 %.
 // Kasino     21.7.2026 (N=400): 53,8 % / 48,9 % / 51,5 % (tasapelit puolikkaina).
+// Paskahousu 20.8.2026 (N=400): 53,6 % / 49,5 % / 49,0 %, suurin z on 1,45.
+//   Luku kuvaa tuotannossa ollutta koodia: `aiCards` ja `runAI` ovat bitilleen
+//   samat kuin botbenchin julkaisucommitissa 18.7.2026, ja koko sääntöalueen
+//   ainoa ero siihen on yksi JSDoc-tyyppimerkintä. Vanha N=30-baseline lupasi
+//   hard vs beginner 70 %, eikä se toistunut isolla otoksella.
 //
 // EI listalla, vaikka porras on osin rikki (ylätasot samantasoiset, alaporras terve):
 // Maija (N=400) — Mestari voittaa Oppipojan todistetusti 57,8 % (z = 3,1), vaikka
@@ -179,7 +184,7 @@ const loadChangelog = () =>
 // "Taso vaikuttaa vähän" olisi näissä väärä väite.
 // Kaikki 9 peliä on nyt mitattu tai kirjattu mittaamattomaksi, ks. docs/BOTBENCH.md
 // osio "Yhteenveto: mitkä pelit saavat merkinnän".
-const FLAT_AI_GAMES = ['ristiseiska', 'kasino'];
+const FLAT_AI_GAMES = ['ristiseiska', 'kasino', 'paskahousu'];
 
 const TODO = [
   { label: '"Kokeile ääniä" -esikuuntelu Asetuksissa + pikamykistys', status: 'done' },

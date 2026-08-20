@@ -265,7 +265,12 @@ Maijalla (löydös 3 ja kyvykkyysporras-osion kohta 3).
 **Seuraus: baselinen lause *"Terveimmät ladderit: Seiska, Ristiseiska, Moska"* on
 kumottu kaikkien kolmen osalta** (Seiska ks. 21.7. nollatulososio). Mittarilla ei ole
 tällä hetkellä yhtään peliä jonka porras olisi todennetusti monotoninen kolmen tason
-yli. Lähimpänä on Läpsy (100/87/77, N=30), mutta sekin on mittaamatta isolla otoksella.
+yli. ~~Lähimpänä on Läpsy (100/87/77, N=30), mutta sekin on mittaamatta isolla otoksella.~~
+
+*Ensimmäinen virke piti 21.7.2026 ja lakkasi pitämästä 20.8.2026: Koputuksen kolme paria
+mitattiin samassa N=400-ajossa ja kaikki ovat merkitsevästi yli 50 %:n (69,9 / 61,6 /
+66,9). Jälkimmäinen virke on yhä voimassa Läpsyn osalta, ks. osio "Koputus ja Paskahousu
+20.8.2026".*
 
 **Metodioppi, kolmas kerta samasta asiasta:** N=30 ei ainoastaan ollut epätarkka, se
 tuotti systemaattisesti liian ruusuisen kuvan. Kolmesta "terveestä" ladderista kahden
@@ -462,7 +467,14 @@ poisti alapään vian ja siirsi Maijan uuden kanavan odottajiin** (ks. luokittel
 | Seiska | kyllä | ei (beginner häviää selvästi) | ei |
 | Moska | kyllä | ei (beginner häviää selvästi) | ei |
 | Kultakala | kyllä | ei (normal vs beg 57,6 %, z = 3,05) | ei |
-| Koputus, Läpsy, Paskahousu | ei (N=30/40) | — | ei |
+| ~~Koputus, Läpsy, Paskahousu~~ | ~~ei (N=30/40)~~ | ~~—~~ | ~~ei~~ |
+| Koputus | kyllä (20.8.2026) | ei (kaikki kolme paria yli 50 %, z = 4,65-7,95) | ei |
+| Paskahousu | kyllä (20.8.2026) | kyllä (suurin z = 1,45) | **on** (20.8.2026) |
+| Läpsy | mittaus kesken 20.8.2026 | — | ei |
+
+*Kolmen pelin rivi on korvattu kolmella omalla rivillä 20.8.2026, ks. osio "Koputus ja
+Paskahousu 20.8.2026". Vanha rivi jätetään näkyviin, koska se kertoo mitä mittausvelkaa
+oli olemassa.*
 
 ## Ristiseiska 18.8.2026 (N=400): maakohtainen porttisääntö, ensimmäinen ei-nollatulos
 
@@ -545,6 +557,96 @@ sääntöristiriita eikä muuttaa voimasuhteita, ja porras säilyi muodossa
 botin passausportti oli aiemmin tiukempi kuin `doPass`in oma tarkistus, ja löysentäminen olisi
 voinut jättää botin odottamaan siirtoa jonka `doPass` hylkää. Uusi ehto kysyy vastaanottajan
 olemassaolon samalla haulla kuin `doPass`, ja 1200 peliä ajoi läpi ilman yhtään jumia.
+
+## Koputus ja Paskahousu 20.8.2026 (N=400): vahvin mitattu porras ja ei porrasta lainkaan
+
+Mitattu commitista `b2b2559`, joka koskee vain dokumentteja, eli koodi on sama kuin
+18.8.2026 julkaistu. Syy ajoon tuli `docs/BOTTIVERTAILU.md`:stä: se nimesi kolme aukkoa
+joissa virheen välttäminen puuttuu koko portaalta, ja kaksi niistä on juuri näissä
+peleissä (Koputuksen erikoiskorttien katsomiset, Paskahousun kutonen). Kumpaakaan ei
+voinut työstää, koska tämän dokumentin oma työjärjestys vaatii N=400-vertailukohdan eikä
+sellaista ollut: Koputus oli N=40:n ja Paskahousu N=30:n varassa.
+
+### Koputus: kaikki kolme paria erottuvat
+
+| pari | winsA / winsB / ties | voitto-% | z | keskisija |
+|------|---------------------:|---------:|--:|---|
+| hard vs beginner | 277 / 118 / 5 | **69,9 %** | 7,95 | 2,10 vs 2,87 |
+| hard vs normal | 244 / 151 / 5 | **61,6 %** | 4,65 | 2,30 vs 2,67 |
+| normal vs beginner | 265 / 130 / 5 | **66,9 %** | 6,75 | 2,20 vs 2,75 |
+
+Kaikki 1 200 peliä tulkittiin: 0 pattiin jäänyttä, 0 istuimeen yhdistämätöntä. Tasapelit
+ovat 18.8.2026 koodiin viedyn tasasääntösäännön tulos ja ne on laskettu puolikkaina.
+
+**Tämä on mittarin vahvin porras, ja se on ainoa jonka kolme paria on mitattu samassa
+N=400-ajossa ja jotka kaikki ovat merkitsevästi yli 50 %:n.** Muotoilu on tarkoituksella
+kapeampi kuin *ensimmäinen monotoninen porras*, koska Seiska tulee lähelle (73,3 / 58,0 /
+77,3) mutta sen luvut ovat eri ajoista: vain `hard vs normal` on mitattu N=400:lla
+nykyisestä koodista, ja juuri sillä parilla on dokumentoitu epävakaus osaotosten välillä
+(52,0 % kierroksilla 0-149 ja 61,6 % kierroksilla 150-399). Seiskan puhdas yhden ajon
+uusintamittaus on siis edelleen tekemättä, eikä sitä pidä olettaa tehdyksi tämän osion
+perusteella.
+
+**Vertailu vanhaan N=40-lukuun (66/68/65) ei ole puhdas A/B.** Koputuksen bottilogiikka on
+välissä irrotettu `runAI`:n sisältä moduulitason funktioiksi (`koKnockEstimate`,
+`koWantsDiscard`, `koSwapTarget`) Mestarin neuvoa varten, ja tasapelisääntö on lisätty.
+Suunta on silti sama ja kaikki kolme paria vahvistuivat, joten pieni otos ei tässä
+valehdellut. Se on toinen tunnettu tapaus Kultakalan 24.7.2026 rinnalla.
+
+### Paskahousu: porrasta ei ole
+
+| pari | winsA / winsB / ties | voitto-% | z | keskisija |
+|------|---------------------:|---------:|--:|---|
+| hard vs beginner | 214 / 185 / 0 | **53,6 %** | 1,45 | 2,44 vs 2,56 |
+| hard vs normal | 198 / 202 / 0 | **49,5 %** | -0,20 | 2,50 vs 2,51 |
+| normal vs beginner | 196 / 204 / 0 | **49,0 %** | -0,40 | 2,48 vs 2,52 |
+
+Yksi peli 400:sta jäi pattiin `hard vs beginner` -parissa, joten sen n on 399. Se on
+huomionarvoista siksi, että pattikatkaisija on löydöksen 5 mukaan viritetty aina kun
+vähintään yksi istuin on Mestari, ja tässä parissa niitä on kaksi.
+
+**Vanha baseline lupasi hard vs beginner 70 %, ja ero ei johdu koodimuutoksesta.**
+Tarkistettu funktiotasolla: `aiCards` ja `runAI` ovat bitilleen samat kuin botbenchin
+julkaisucommitissa `311a9f0` (18.7.2026), ja koko sääntöalueen ainoa ero siihen on yksi
+JSDoc-tyyppimerkintä `mkGame`ssa. Vertailu ei silti ole puhdas A/B toiseen suuntaan:
+N=30-baseline mitattiin 17.7.2026 ennen saman päivän korjauksia, joten 70 % kuvaa
+mahdollisesti eri koodia. **Varma väite on tämä: Paskahousun porras on litteä, ja se on
+ollut litteä koko sen ajan jonka nykyinen koodi on ollut tuotannossa.**
+
+**Lisätty `FLAT_AI_GAMES`-listaan** (`src/App.jsx`) Tommin linjauksella 20.8.2026. Koodissa
+kirjattu lisäysehto täyttyy: N≥400 ja kaikki kolme paria noin 50 %, suurimman z:n ollessa
+1,45. Luvut ovat itse asiassa litteämmät kuin listalla ennestään olevan Kasinon
+(53,8 / 48,9 / 51,5). Paskahousu on nyt kolmas peli jonka Koneäly-osio kertoo pelaajalle
+suoraan, ettei tason vaikutus ole suuri.
+
+**Miksi porras puuttuu, ja tämä on `BOTTIVERTAILU.md`:n suora jatko.** Paskahousun ainoa
+tasoero on `aiShouldFumble` (0,5 / 0,15 / 0), eikä pelissä ole yhtään tasokohtaista
+kyvykkyyttä. Kumpikaan Tommin nimeämistä taitoelementeistä ei erota tasoja: ysi on
+loppupelin säästölistalla kaikilla tasoilla, ja kutosen tukkimisarvoa ei tunne yksikään
+taso, koska koodissa ei ole yhtään kutoseen viittaavaa päätöshaaraa. Mitattu tulos sanoo
+saman kuin koodinluku: 50 %:n virhetodennäköisyys maksaa noin kolme prosenttiyksikköä,
+eli fumble osuu päätöksiin jotka eivät ratkaise peliä. **Jos Paskahousulle halutaan
+porras, se vaatii tasokohtaisen kyvykkyyden eikä kohinan säätöä**, ja kutonen on ainoa
+nimetty ehdokas jolla on sekä lähde että puuttuva koodikohde.
+
+### Metodihavainto: Läpsy vaatii oman prosessin
+
+Ensimmäinen ajo kaatui 27,8 minuutin kohdalla V8:n kasarajaan (4 Gt, *Ineffective
+mark-compacts near heap limit*) kun vuoro tuli Läpsyyn. Kuusi paria yhdeksästä oli jo
+kirjoitettu levylle, koska `BOTBENCH_OUT` appendataan parin valmistuttua. **Käytä siis
+aina `BOTBENCH_OUT`ia pitkissä ajoissa**, muuten kaatuminen vie kaiken.
+
+Läpsy ajetaan omana prosessinaan ja mieluiten pari kerrallaan, jolloin muisti nollautuu
+parien välissä:
+
+```powershell
+$env:NODE_OPTIONS='--max-old-space-size=8192'
+```
+
+Kaksi muuta ansaa samasta ajosta. Ajo on käynnistettävä **projektin sisältä**, koska
+Projects-juuressa ei ole `node_modules`ia ja `npx vitest` alkaa asentaa omaa versiotaan
+joka ei löydä `jsdom`ia. Ja PowerShellissä natiivikomennon `2>&1` kääntää normaalinkin
+tulosteen virheeksi, joten ajo näyttää epäonnistuneelta vaikka se onnistuisi.
 
 ## Käyttö jatkossa
 

@@ -9,6 +9,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '20.8.2026',
+    items: [
+      'Paskahousun Koneäly-asetus kertoo nyt suoraan, että vaikeustason vaikutus jää tässä pelissä pieneksi. Mittasimme kaikki kolme tasoparia 400 pelin sarjoilla, ja voitto-osuudet olivat noin 54, 50 ja 49 prosenttia eli käytännössä kolikonheittoja. Botit pelaavat yhä eri tavoin ja tasovalitsin toimii, mutta ero ei muutu voitoiksi, joten emme lupaa sitä asetuksissa. Sama merkintä on ennestään Ristiseiskassa ja Kasinossa.',
+    ],
+  },
+  {
     date: '18.8.2026',
     items: [
       'Koputuksen tasatilanne ratkeaa nyt korttimäärällä: jos pisteet menevät tasan, voittaa se jolla on vähemmän pöytäkortteja. Sääntö on ollut peliohjeessa alusta asti, mutta sitä ei ollut koskaan toteutettu, joten samapisteiset jakoivat sijan. Käytännössä tämä palkitsee onnistuneesta lyönnistä ja rankaisee väärästä myös sijoituksessa eikä vain pisteissä.',
