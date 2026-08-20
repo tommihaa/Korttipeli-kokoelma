@@ -748,8 +748,25 @@ päättelyllä. Kysytään erässä 8.
 
 *Ratkesi erässä 8, ks. kohta 21: ristiriitaa ei ollut, vaan kanonin lause on suhteellinen.*
 
-**Avoin:** vastaus ei nimeä mitkä päätökset ovat ne tärkeimmät, eikä sitä onko päätösten
-paljous Läpsyn hyvyyden syy vai vain sen ominaisuus.
+~~**Avoin:** vastaus ei nimeä mitkä päätökset ovat ne tärkeimmät, eikä sitä onko päätösten
+paljous Läpsyn hyvyyden syy vai vain sen ominaisuus.~~
+
+**20.8.2026 (erä 36): kohdan vastaus kumoutui lähteen omalla korjauksella, ja molemmat
+jätetään näkyviin.** Kysyttäessä mitkä päätökset olivat ne tärkeimmät, Tommi vastasi:
+
+> *en ole enää samaa mieltä. Läpsy on nopeatempoinen peli. Päätös on lähinnä muotoa
+> läpsätäkö täsmäyksessä nopeasti vai ei.*
+
+Päätöksiä ei siis ole paljon vaan lähinnä yksi, ja se on sama jonka tämän kohdan
+ensimmäinen seuraus nimesi: läpsäisy on päätös. Alkuperäisen kysymyksen premissi (nopeus
+ratkaisee, ei päätös) oli siis lähempänä totta kuin siihen tullut vastaus, ja kanonin
+luonnehdinta reaktiopelistä vahvistuu ilman kohdan 21 suhteellista tulkintakehystä.
+Avoin sulkeutuu kumoutumalla.
+
+**Menetelmähuomio:** tämä on dokumentin ensimmäinen tapaus jossa lähde kumoaa aiemman oman
+vastauksensa suoraan eikä vain tarkenna sitä (kohdan 36 korjaus vaihtoi suunnan, tämä
+vaihtaa kannan). Ihmiskoetin kumoaa myös itseään, ja tuoreempi vastaus korjaa aiemman;
+sama periaate on kirjattu DGAndroidin haastattelusta.
 
 ## 21. Läpsy on suosikkien joukossa, ja kanonin lause on oikein suhteellisena
 
@@ -1933,6 +1950,26 @@ kirjoittajan päätelmä vastauksesta.
 **Seuraus:** *Laiturilla ei pelattu seiskaa* vahvistaa erän 23 kirjauksen (kohta 1: Seiskan
 paikan täytti Laiturilla Uno omalla pakallaan) itsenäisesti ja eri suunnasta, kysymättä.
 Kahden eri erän sama vastaus eri muodossa on tämän menetelmän vahvin todennus.
+
+---
+
+## 58. Läpsyn nimi ja haasteporrastus tulivat pöydästä sellaisinaan
+
+Tommi 20.8.2026 (erä 36), kysyttäessä kutsuttiinko peliä Laiturilla Läpsyksi ja oliko
+erityiskorttihaasteen porrastus (jätkä yksi kortti aikaa, rouva kaksi, kuningas kolme, ässä
+neljä) pöydän sääntö:
+
+> *läpsy*
+> *kyllä*
+
+Nimi ja haasteporrastus ovat pöydästä muuttumattomina.
+
+**Seuraus:** Läpsy on kolmas peli jonka säännöstön ydin on jäljitetty pöytään sellaisenaan,
+ja Tommin oma tuntomerkki (kohta 54: sellaisenaan siirtyneillä ei ole asetusmuunnoksia)
+pitää kolmannen kerran: Läpsylläkään ei ole aloitusnäytön sääntövalintoja. Kaikki kolme
+sellaisenaan siirtynyttä ovat Laiturin pelejä, ja kaikki asetusvalinnat ovat peleissä
+joiden muoto eli useammassa ympäristössä (lapsuus, luettu, pöytä). Tämä on kirjoittajan
+päätelmä kertyneestä jakaumasta eikä Tommin lause.
 
 **Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
 nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
