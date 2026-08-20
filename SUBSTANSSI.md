@@ -467,10 +467,28 @@ kierrosta, neljä noin 7) ja toteaa että mitä vähemmän kierroksia, sitä kri
 ovat. Se on sama ilmiö toisesta suunnasta: pelaajamäärä muuttaa sitä kuinka paljon tietoa
 kertyy.
 
-**Avoin:** vastaus ei kerro pelattiinko peliä silti väärällä pelaajamäärällä kun muuta ei ollut,
-eikä sitä oliko jokin yhdeksästä sellainen jota ei suostuttu pelaamaan kahdella.
+~~**Avoin:** vastaus ei kerro pelattiinko peliä silti väärällä pelaajamäärällä kun muuta ei ollut,
+eikä sitä oliko jokin yhdeksästä sellainen jota ei suostuttu pelaamaan kahdella.~~
 
 *Kohta täydentyi erässä 6, ks. kohta 16.*
+
+Molemmat puolet kysyttiin erässä 42 erillisinä kysymyksinä. Väärästä pelaajamäärästä Tommi
+valitsi 20.8.2026 monivalinnasta vaihtoehdon *ei, vaihdettiin peliä*, ja kahdella
+pelaamisesta hän vastasi listan ulkopuolelta omin sanoin:
+
+> *vain ristiseiska*
+
+Väärällä pelaajamäärällä ei siis pelattu vaan kokoonpanoon valittiin sopiva peli, ja ainoa
+peli josta kahdella kieltäydyttiin oli Ristiseiska.
+
+**Seuraus:** pöydän raja ja sovelluksen pakote ovat samat. Sovellus on yhdeksästä pelistä
+ainoana pakottanut Ristiseiskaan vähintään kolme pelaajaa, ja nyt tiedetään että sama raja
+oli pöydässä käytäntönä eikä vain sääntökirjan suosituksena. Yhdeksän pelin ainoa
+kovakoodattu pelaajaminimi osuu siis täsmälleen pöydän ainoaan kieltoon.
+
+**Seuraus** *(kirjoittajan päätelmä)*: vaihtaminen peliä eikä porukkaa sopii kohtaan 23:
+valikoima oli niin leveä että jokaiselle kokoonpanolle löytyi oma peli, joten venyttämiselle
+ei ollut tarvetta. Tätä ei kysytty, ja se saa kaatua.
 
 ## 14. Ristiseiska oli aloituspeli
 
@@ -669,6 +687,11 @@ pelattiin jatkamisen eikä voittamisen vuoksi, ja Tommi käytti vastauksessaan i
 
 **Avoin:** vastaus ei kerro kumpi kahdesta menettelystä oli tavallisempi, eikä sitä mitä
 tehtiin jos järjestäjä oli itse osapuoli erimielisyydessä.
+
+Ensimmäinen puoli kysyttiin erässä 42, ja Tommi valitsi 20.8.2026 monivalinnasta vaihtoehdon
+*yhteisymmärrys*: useimmiten sovittiin porukalla ilman ratkaisijaa. Järjestäjän sana oli siis
+varamenettely eikä ensisijainen, mikä sopii erän 21 täydennykseen: kun voitolla ei ollut niin
+väliä, riita ei tarvinnut tuomaria. Toinen puoli (järjestäjä itse osapuolena) on yhä avoin.
 
 *Täydennys erästä 19 (ks. kohta 39): järjestäjä on sama henkilö kuin Laiturin ohjaaja, joka
 ohjasi ryhmää päättämällä mitä tehdään ja kehitti myös pelien variaatioita.*
