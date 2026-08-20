@@ -106,9 +106,11 @@ kaksi on opittu yhdeltä ihmiseltä ja ovat siksi kapein otos, ja Laiturin viisi
 useasta pelaajasta koostuvassa porukassa. Tämä on päätelmä eikä Tommin vastaus, ja se on
 tarkistettava peli kerrallaan.
 
-**Avoin:** kysymys sisälsi toisen puolen, johon ei ole vielä vastattu. Onko yhdeksästä joku,
+~~**Avoin:** kysymys sisälsi toisen puolen, johon ei ole vielä vastattu. Onko yhdeksästä joku,
 jota Tommi ei ole pelannut pöydässä lainkaan vaan poiminut kirjasta tai netistä. Sen kohdalla
-hän ei olisi koetin, ja se on tiedettävä ennen kuin sen pelin substanssia kirjataan.
+hän ei olisi koetin, ja se on tiedettävä ennen kuin sen pelin substanssia kirjataan.~~
+*(Ratkesi kohdassa 4: kaikki yhdeksän on pelattu pöydässä, yhtä mekaniikkaa lukuun
+ottamatta. Viite lisätty toisessa grillauksessa 20.8.2026.)*
 
 Tommi täydensi 20.8.2026 (erä 21) omin sanoin:
 
@@ -181,7 +183,8 @@ useampia, muttei sitä kumpi niistä on Laiturin tapa ja kumpi kirjan tapa, eik�
 vakioasento valittu siksi että se on yleisin vai siksi että se on se jolla Tommi on pelannut.
 Tämä on juuri sitä tietoa jota ei saa mistään muualta kuin häneltä.
 
-*Aukko sulkeutui erässä 12, ks. kohta 33. Yksi kohta jäi auki: Ristiseiskan pantin arvonta.*
+*Aukko sulkeutui erässä 12, ks. kohta 33. Yksi kohta jäi auki: Ristiseiskan pantin arvonta.
+Sekin sulkeutui erässä 13, ks. kohta 37; viite lisätty toisessa grillauksessa 20.8.2026.*
 
 ## 3. Aloittelijan virhe on kortin arvon väärinlukeminen, ei sääntörikkomus
 
@@ -228,9 +231,11 @@ Kyvykkyysportaassa Aloittelija ei rakenna eikä varasta rakennelmia, ja ylemmät
 molempia, Mestari hypergeometrisella päättelyllä. Kasinon kyvykkyysporras nojaa siis
 kokonaan siihen puoleen pelistä jossa ihmiskoetin ei ole koetin.
 
-**Avoin:** mistä rakentaminen on tullut sovellukseen, jos se ei ole tullut pöydästä. Se on
+~~**Avoin:** mistä rakentaminen on tullut sovellukseen, jos se ei ole tullut pöydästä. Se on
 Kasinon vakiosääntö laajasti, joten lähde on todennäköisesti kirjallinen, mutta sitä ei ole
-kysytty eikä sitä saa päätellä tästä.
+kysytty eikä sitä saa päätellä tästä.~~
+*(Ratkesi kohdassa 8: rakentaminen luettiin kansainvälisistä säännöistä ja valittiin
+mukaan. Viite lisätty toisessa grillauksessa 20.8.2026.)*
 
 ## 5. Vakioasetukset ovat pelattavuuspäätöksiä eivätkä perinnettä
 
@@ -669,7 +674,9 @@ mukaan on epävarmuuden säilyttämistä, ei sääntötekninen pakko.
 yhdeksän pelin joukossa. Avoimeksi jää myös se, onko jokin yhdeksästä sellainen jota ei
 suostuttu pelaamaan kahdella, vai olivatko nämä kaksi vain ne jotka valittiin ensin.
 
-*Kohdan ensimmäinen puoli täydentyi erässä 7, ks. kohta 18.*
+*Kohdan ensimmäinen puoli täydentyi erässä 7, ks. kohta 18. Jälkimmäinen puoli ratkesi
+erässä 42, ks. kohta 13: kahdella kieltäydyttiin vain Ristiseiskasta. Viite lisätty
+toisessa grillauksessa 20.8.2026.*
 
 ## 17. Sääntöriidan ratkaisi järjestäjä tai yhteisymmärrys, koska panosta ei ollut
 
@@ -879,6 +886,11 @@ kriteeri. Peli voi olla hyvä seurapeli olematta oma suosikki, ja päinvastoin.
 
 *Toinen mieltymyksen ilmaus kirjattiin erässä 11, ks. kohta 32.*
 
+*Toinen grillaus 20.8.2026: kohdan 20 erän 36 korjaus (päätöksiä on lähinnä yksi) ohentaa
+tämän kohdan suhteellista kehystä. Kohdan ratkaisu pitää (ristiriitaa ei ollut), mutta
+kanonin luonnehdinta reaktiopelistä pitää erän 36 jälkeen ilman kehystäkin; kirjaus on
+kohdassa 20.*
+
 ## 22. Muistista ei puhuttu pöydässä, eikä sitä pidetty huijaamisena
 
 Tommi 20.8.2026, kysyttäessä oliko pelattujen korttien tarkka muistaminen porukassa arvostettu
@@ -1040,6 +1052,10 @@ ilman rakentamista:
 pisteraja kierrosten yli. `KASINO.md` nimeää rajaksi 16 pistettä ja yksi kierros jakaa 11,
 joten peli kestää vähintään kaksi kierrosta. Muiden kahdeksan kanonissa ei ole vastaavaa
 kertymää, vaan yksi peli ratkeaa itsessään.
+
+*(Rajaus erästä 14, ks. kohta 37: väite pitää kanoneista ja sovelluksesta, mutta pöydän
+puolella myös lapsuuden Ristiseiskaa pelattiin pistein kierrosten yli. Viite lisätty
+toisessa grillauksessa 20.8.2026.)*
 
 **Seuraus:** vastaus nimeää siis rakenteen eikä yksittäistä mekaniikkaa, ja se on eri lajia
 kuin muiden pelien vetovoima. Kohdan 12 kriteeri koskee yhtä peliä, mutta tässä kiinnostavuus
@@ -1261,7 +1277,10 @@ Tommi 20.8.2026, kysyttäessä mitkä yhdeksästä ovat suosikkeja ja onko suosi
 se että peli on hyvä porukalle:
 
 > *ei, moska ja paskahousu on suosikkejani, pelaan äärimmäistä peliä joten en kieltäydy jos se
-> levittää pelaamist*
+> levittää pelaamista*
+
+(vastauksen *pelaamist* siteerattu korjattuna muotoon *pelaamista*; korjaus tehty toisessa
+grillauksessa 20.8.2026)
 
 Vastauksen kolmas osa on kirjoitettu nopeasti, ja luen sen viittaukseksi äärettömään peliin
 (`Kaanon/KÄSITTEISTÖ.md` §1). Luenta on kirjoittajan, ja se on tämän kohdan ainoa epävarma osa.
@@ -1313,7 +1332,11 @@ sääntöjen eikä oman pelikokemuksensa perusteella. Tämä tarkentaa kohtaa 29
 
 ---
 
-## 36. Läpsyn paikka on turnaus ja iso porukka, eikä ristiriitaa ollut
+## 36. Läpsy on hyväksytty muttei suosikki, eikä ristiriitaa ollut
+
+*(Otsikko sanoi toiseen grillaukseen 20.8.2026 asti että Läpsyn paikka on turnaus ja iso
+porukka, vaikka molemmat puolet kumoutuivat erässä 15; korjattu kohdan 39
+otsikkokäytännön mukaan, ja vaiheet ovat alla näkyvissä.)*
 
 Tommi 20.8.2026, kysyttäessä kuuluuko Läpsy suosikkeihin Moskan ja Paskahousun rinnalle:
 
@@ -1346,7 +1369,10 @@ vaihtui: ehto on pieni porukka eikä iso. Turnausosa kumoutui samalla, ks. kohta
 Tommi 20.8.2026, kysyttäessä kumpi pantin asento oli pöydän tapa:
 
 > *kiinteä, mutta lapsena opin missä pelattiin useampia kierroksia missä laskettiin pisteitä ja
-> kella pantti jäi sai 30*
+> kelle pantti jäi sai 30*
+
+(vastauksen *kella* siteerattu korjattuna muotoon *kelle*; korjaus tehty toisessa
+grillauksessa 20.8.2026)
 
 Ensimmäinen sana sulkee kohdan 33 viimeisen aukon: pöydässä pantin antaja valitsi kortin itse,
 ja se on myös sovelluksen vakioasento. Arvonta on se luettu vaihtoehto. Kaikki viisi
@@ -1373,7 +1399,9 @@ avasi kokonaan uuden pelimuodon eikä vain sulkenut aukkoa.
 
 *Kolme neljästä sulkeutui erässä 14, ks. kohta 38: 30 oli rangaistus, kierros päättyi kun
 ensimmäinen pääsi korteistaan, ja pisteet laskettiin käteen jääneistä korteista. Pelin
-päättymisen laukaisin ei ole muistissa.*
+päättymisen laukaisin ei ole muistissa. Laukaisimen laji tarkentui erässä 43 pisterajaksi
+ja muistin rajaksi jäi sen suuruus, ks. kohta 38; tarkennus lisätty toisessa
+grillauksessa 20.8.2026.*
 
 ## 38. Lapsuuden Ristiseiskassa vähiten pisteitä voitti, ja kierros päättyi tyhjään käteen
 
@@ -2090,8 +2118,8 @@ täsmäysyritystä**.
 väärin ei ole pieni osuus yritystä kohti, joten *harvinainen* kuvaa pikemminkin sitä että
 yrityksiä itsessään oli harvoin: lyöntiin lähdettiin vasta melko varmana, ja silloinkin
 noin viidennes osui väärin. Tämä on sama korkean kynnyksen muoto jonka kohta 20 kirjasi
-Läpsystä ja johon kohdan 60 seuraus jo viittasi, mutta kytkentää ei kysytty ja se saa
-kaatua.
+Läpsystä ja johon alla oleva, kohdasta 60 tänne siirretty seuraus jo viittasi, mutta
+kytkentää ei kysytty ja se saa kaatua.
 
 Tommi vastasi 20.8.2026 (erä 31) rangaistuskysymykseen:
 
@@ -2101,6 +2129,32 @@ Väärän lyönnin rangaistus oli siis pöydässä sama kuin sovelluksessa, eli 
 siirtyi sellaisenaan. Kohdan 47 havainto laajenee: erikoiskorttien lisäksi myös
 täsmäysrangaistus on pöydästä muuttumattomana, ja Koputus on edelleen se peli jonka säännöstö
 on jäljitetty pöytään kattavimmin.
+
+**Seuraus** *(kirjoittajan päätelmä, siirretty kohdasta 60 toisessa grillauksessa
+20.8.2026: harvinaisuudella ei ollut siellä viittauskohdetta, ja kappale sanoo lähes saman
+kuin yllä oleva erän 40 seuraus)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
+nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
+Tämä saa kaatua, koska syytä harvinaisuuteen ei kysytty.
+
+## 50. Koputusta pelattiin useimmin isolla porukalla
+
+*(Kohta siirrettiin numeropaikalleen toisessa grillauksessa 20.8.2026; se oli kirjattu
+kohtien 60 ja 61 väliin.)*
+
+Tommi 20.8.2026 (erä 30), kysyttäessä pelattiinko Koputusta useammin kahdella pelaajalla vai
+isommalla porukalla:
+
+> *isommalla porukalla*
+
+**Seuraus:** kohta 16 tarkentuu samalla tavalla kuin kohta 35 tarkensi sitä Kasinon
+suunnasta. Kahden pelaajan lista (Kultakala ja Koputus) kertoo mihin vaihdettiin kun väkeä
+oli kaksi, ei sitä missä kokoonpanossa peli eli. Koputus kesti kahden pelaajan asetelman,
+mutta sen tavallinen pöytä oli iso.
+
+**Seuraus** *(kirjoittajan päätelmä)*: täsmäys selittää miksi iso pöytä oli pelin parhaimmillaan.
+Mitä enemmän pelaajia, sitä useampi voi kilpailla samasta täsmäyslyönnistä, joten pelin
+nopeuselementti elää pelaajamäärästä. Kahdella jäljelle jää muistipeli ilman kilpailua
+lyönnistä. Tämä saa kaatua, koska syytä ei kysytty.
 
 ---
 
@@ -2362,26 +2416,9 @@ ei todista sellaisenaan siirtymistä: Moskalla ei ole sääntövalintoja ja silt
 sivustalyönti käännettiin. Tuntomerkki toimii siis siihen suuntaan johon se lausuttiin,
 eikä sitä pidä lukea takaperin.
 
-**Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
-nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
-Tämä saa kaatua, koska syytä harvinaisuuteen ei kysytty.
-
-## 50. Koputusta pelattiin useimmin isolla porukalla
-
-Tommi 20.8.2026 (erä 30), kysyttäessä pelattiinko Koputusta useammin kahdella pelaajalla vai
-isommalla porukalla:
-
-> *isommalla porukalla*
-
-**Seuraus:** kohta 16 tarkentuu samalla tavalla kuin kohta 35 tarkensi sitä Kasinon
-suunnasta. Kahden pelaajan lista (Kultakala ja Koputus) kertoo mihin vaihdettiin kun väkeä
-oli kaksi, ei sitä missä kokoonpanossa peli eli. Koputus kesti kahden pelaajan asetelman,
-mutta sen tavallinen pöytä oli iso.
-
-**Seuraus** *(kirjoittajan päätelmä)*: täsmäys selittää miksi iso pöytä oli pelin parhaimmillaan.
-Mitä enemmän pelaajia, sitä useampi voi kilpailla samasta täsmäyslyönnistä, joten pelin
-nopeuselementti elää pelaajamäärästä. Kahdella jäljelle jää muistipeli ilman kilpailua
-lyönnistä. Tämä saa kaatua, koska syytä ei kysytty.
+*(Tässä oli seuraus väärän lyönnin harvinaisuudesta, jolla ei ollut tässä kohdassa
+viittauskohdetta: harvinaisuus on kohdan 49 täsmäyslyönnin ominaisuus, ja kappale
+siirrettiin sinne toisessa grillauksessa 20.8.2026.)*
 
 ## 61. Ristiseiskan aloittelijavirhe on porttikortin pelaaminen pihtaamisen sijaan
 
@@ -2571,3 +2608,57 @@ virhe kahdeksasta (Läpsyllä sitä ei ole, kohta 65; Kasinosta sitä ei ole kys
 kohdan 35 mukaan pöytäpeli ei noussut sille tasolle). Kohdan 3 alkuperäinen aukko
 (kumpaakaan virhettä ei ole purettu yhdenkään pelin kohdalla) on sulkeutunut kokonaan
 tämän erän myötä.
+
+---
+
+## Toinen grillaus 20.8.2026: kuusi löydöstä, kaikki kirjoittajan kirjanpitoa
+
+Dokumentti luettiin kokonaan läpi erän 53 jälkeen ristiriitojen etsimiseksi, eikä kohtia
+lisätty kysymällä. Edellisestä grillauksesta oli 42 erää. Tämä osio kirjaa mitä luenta
+tuotti, koska muuten korjauksista jäisi vain diff.
+
+**1. Viittauskohteeton kappale väärässä kohdassa.** Kohdassa 60 (Moska) oli seuraus väärän
+lyönnin harvinaisuudesta, vaikka harvinaisuus on kohdan 49 täsmäyslyönnin ominaisuus eikä
+kohdassa 60 ole mitään harvinaista. Kappale siirrettiin kohtaan 49, jonka oma erän 40
+seuraus viittasi siihen jo valmiiksi. Sisältö ei muuttunut, vain paikka.
+
+**2. Otsikko väitti kumoutunutta.** Kohdan 36 otsikko sanoi Läpsyn paikaksi turnausta ja
+isoa porukkaa, vaikka molemmat puolet kumoutuivat erässä 15 ja kumoutuminen oli kirjattu
+kohdan omaan tekstiin. Otsikko korjattiin kohdan 39 käytännön mukaan, ja vanha muoto on
+kirjattu otsikon alle.
+
+**3. Viisi vanhentunutta avoin-merkintää.** Kohdan 1 pöytäkysymys (ratkesi kohdassa 4),
+kohdan 2 pantin arvonta (kohdassa 37), kohdan 4 rakentamisen lähde (kohdassa 8), kohdan 16
+kahdella kieltäytyminen (erässä 42, kirjaus kohdassa 13) ja kohdan 37 laukaisinrivi (laji
+tarkentui kohdassa 38) sanoivat yhä avointa vaikka vastaus oli jo dokumentissa. Kaikki
+viisi saivat ratkaisuviitteen. Kohtia noudetaan yksittäin, joten avoin ilman viitettä
+johtaa kysymään uudelleen sen mikä on jo vastattu.
+
+**4. Ohentunut kohta ilman merkintää.** Kohdan 21 suhteellinen tulkintakehys (Läpsy on
+reaktiopelimäisin suhteessa muihin, ei päätöksetön) ohentui kun erä 36 korjasi kohdan 20
+(päätöksiä on lähinnä yksi), eikä kohdassa 21 ollut siitä merkintää. Viite lisättiin, ja
+kohdan ratkaisu (ristiriitaa ei ollut) pitää.
+
+**5. Rajaamaton väite, jonka rajaus asui toisessa kohdassa.** Kohta 27 sanoo Kasinon olevan
+yhdeksästä ainoa jolla on pisteraja kierrosten yli, ja kohta 37 tietää että pöydän puolella
+myös lapsuuden Ristiseiskaa pelattiin pistein kierrosten yli. Väite pitää kanoneista ja
+sovelluksesta, ja rajausviite lisättiin kohtaan 27.
+
+**6. Kirjanpidon pienet.** Kohta 50 oli kirjattu kohtien 60 ja 61 väliin ja siirrettiin
+numeropaikalleen, ja kaksi siteerauskäytännön ohittanutta kirjoitusasua (*kella* kohdassa
+37, *pelaamist* kohdassa 34) korjattiin näkyvällä merkinnällä.
+
+**Kolme tarkistettavaa väitettä tarkistettiin, ja kaikki pitivät.** Kohdan 45 porrasrivi
+(Oppipoika ei täytä, Kisälli hyödyllä 5, Mestari hyödyllä 3) täsmää `KOPUTUS.md`:n
+taulukkoon. Kohdan 63 tarkistus täsmää `PASKAHOUSU.md`:hen: ysi on säästettävien listalla
+eikä kutosta mainita missään. Ja kohdan 4 koodiväite täsmää `Kasino.jsx`:ään:
+`KASINO_DEFAULT_RULES` tuntee vain `specialBuilds`-asetuksen, rakennelman katto on 13 tai
+16, ja rakentaminen itsessään on aina käytössä.
+
+**Mitä grillaus ei löytänyt.** Yhtään keksittyä substanssia eikä yhtään ratkaisematonta
+ristiriitaa Tommin vastausten välillä: kaikki kuusi löydöstä ovat kirjoittajan kirjanpitoa.
+Suunta on sama kuin ensimmäisessä grillauksessa mutta painotus eri: ensimmäinen löysi
+laskuvirheen sisällöstä, tämä löysi ylläpidon virheitä dokumentin kasvettua (ensimmäisen
+grillauksen hetkellä numeroituja kohtia oli 32, nyt 69). Vanhentunut avoin-merkintä on
+tämän dokumentin oma muoto vanhentuneesta tilaväitteestä, ja se syntyy kun vastaus
+kirjataan toiseen kohtaan kuin mihin kysymys jäi.
