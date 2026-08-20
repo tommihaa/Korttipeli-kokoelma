@@ -954,8 +954,28 @@ tässä samat, mikä on merkille pantavaa siksi että kohdassa 5 vakioasetukset 
 pelattavuuspäätöksiä eivätkä perinnettä. Kaikki ei siis ole muunnettu, ja tämä on kohta jossa
 pöydän tapa siirtyi sellaisenaan.
 
-**Avoin:** vastaus ei kerro pidettiinkö kierrosten välillä kirjaa paperilla vai muistissa,
-eikä sitä pelattiinko 16 pisteen rajaan vai johonkin muuhun.
+~~**Avoin:** vastaus ei kerro pidettiinkö kierrosten välillä kirjaa paperilla vai muistissa,
+eikä sitä pelattiinko 16 pisteen rajaan vai johonkin muuhun.~~
+
+Avoin kysyttiin erässä 40 kahtena kysymyksenä. Kirjanpitoon Tommi valitsi 20.8.2026
+monivalinnasta vaihtoehdon *paperilla*, ja pisterajaan hän vastasi listan ulkopuolelta omin
+sanoin:
+
+> *Pelasin kasinoa opiskelukaverin kanssa, ei ollut rakennelmia ja en muista oliko 16
+> pistettä voiton raja.*
+
+Kirjanpito oli siis paperilla, ja voittoraja on muistin raja: pelattiin pistemäärään (kohta
+35 sanoo saman), mutta oliko se 16, ei muisteta, eikä sitä täytetä päättelemällä.
+
+**Seuraus:** vastaus vahvistaa kohdan 35 kolme asiaa kysymättä niitä uudelleen: vastapelaaja
+oli opiskelukaveri, peli oli kaksinpeli ja rakennelmia ei ollut. Sama sisältö tuli nyt
+toisen kerran eri kysymyksen ohessa, mikä on tämän menetelmän vahvin saatavilla oleva
+vahvistus.
+
+**Seuraus** *(kirjoittajan päätelmä)*: paperi on nyt kirjattu kahdesta eri pöydästä, sillä
+kohdan 41 turnaussarjan pisteet kirjattiin paperille lapsuuden porukassa ja Kasinon
+kierrospisteet opiskeluajan kaksinpelissä. Kirjanpito kulki siellä missä pisteet kertyivät
+pelien yli, riippumatta porukasta. Tätä ei kysytty, ja se saa kaatua.
 
 ## 29. Kasinossa on kolme palkitsemisen akselia, ja siksi liian vähän ottaminen ei ole yksi tilanne
 
@@ -1022,9 +1042,21 @@ kun kortteja pelataan, eli tieto tulee jälkikäteen. Seiskassa uhkatieto tulee 
 jatkuvasti näkyvissä. Kaksi peliä käyttävät siis eri informaatiorakennetta, mikä tukee kohtaa 23:
 yhdeksän peliä eivät ole saman idean muunnelmia.
 
-**Avoin:** vastaus ei kerro mitä tälle tehdään, eli onko oikea vastaus hyökätä vähäkorttista
+~~**Avoin:** vastaus ei kerro mitä tälle tehdään, eli onko oikea vastaus hyökätä vähäkorttista
 vastaan vai suojata omaa kättä. Erityiskorttien kohdistaminen on Seiskassa mahdollista, mutta
-sitä ei ole kysytty.
+sitä ei ole kysytty.~~
+
+Avoin kysyttiin erässä 40 monivalintana, ja Tommi valitsi 20.8.2026 vaihtoehdon *hyökättiin
+vähäkorttista vastaan*: erikoiskortit kohdistettiin siihen pelaajaan jolla oli vähiten
+kortteja.
+
+**Seuraus:** uhkatieto ei ollut pöydässä vain luettavissa vaan siihen vastattiin. Seiskan
+erikoiskorttien kohdistaminen oli käytössä nimenomaan hyökkäyksenä johtoasemassa olevaa
+vastaan, eli näkyvä korttimäärä ohjasi kohdevalintaa suoraan.
+
+**Seuraus** *(kirjoittajan päätelmä)*: tämä on tasoitusmekanismi, joka pitää kohdan 12
+epävarmuutta yllä pelin loppuun asti: johtoon päässyt kerää muiden erikoiskortit niskaansa,
+joten etumatka hidastaa itseään. Tätä ei kysytty, ja se saa kaatua.
 
 ## 32. Seiska on Uno vähemmillä korteilla, ja konsepti on Tommin mielestä nerokas
 
@@ -1795,8 +1827,16 @@ sovelluksessa ja sattuiko vääriä lyöntejä usein:
 
 Väärä lyönti oli harvinainen, ja Tommin arvio on 1/5. **Luvun yksikkö on epäselvä eikä sitä
 täytetä päättelemällä:** se voi tarkoittaa noin joka viidettä täsmäysyritystä tai noin joka
-viidettä peliä. Yksikkö kysyttiin erässä 31 eikä siihen tullut vastausta, joten se jää
-avoimeksi.
+viidettä peliä. Yksikkö kysyttiin erässä 31 eikä siihen tullut vastausta. Erässä 40
+(20.8.2026) se ratkesi monivalinnassa: arvio tarkoittaa **noin joka viidettä
+täsmäysyritystä**.
+
+**Seuraus** *(kirjoittajan päätelmä)*: yksikkö muuttaa luvun luentaa. Joka viides yritys
+väärin ei ole pieni osuus yritystä kohti, joten *harvinainen* kuvaa pikemminkin sitä että
+yrityksiä itsessään oli harvoin: lyöntiin lähdettiin vasta melko varmana, ja silloinkin
+noin viidennes osui väärin. Tämä on sama korkean kynnyksen muoto jonka kohta 20 kirjasi
+Läpsystä ja johon kohdan 60 seuraus jo viittasi, mutta kytkentää ei kysytty ja se saa
+kaatua.
 
 Tommi vastasi 20.8.2026 (erä 31) rangaistuskysymykseen:
 
