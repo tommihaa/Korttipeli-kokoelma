@@ -1827,8 +1827,11 @@ ei ollut sukupöydän oma keksintö vaan laajemmin tunnettu muoto jonka levinnei
 kirjaamatta.
 
 **Seuraus:** oma nimi oli lapsuuden peleistä vain Ristiseiskalla (kiusa, kohta 38), vaikka
-molempien muoto erosi kolmella muutoksella. Nimen synty ei siis seurannut muutosten määrästä,
-eikä sitä mistä se seurasi ole kysytty.
+molempien muoto erosi kolmella muutoksella. Nimen synty ei siis seurannut muutosten määrästä.
+~~Eikä sitä mistä se seurasi ole kysytty.~~ Kysyttiin erässä 53, ja Tommi vastasi 20.8.2026:
+*en osaa arvailla*. Nimen alkuperä on muistin raja eikä avoin kysymys, ja vastauksen muoto on
+itsessään menetelmän mukainen: arvailua ei tarjottu senkään vertaa että se olisi pitänyt
+erikseen torjua.
 
 Tommi 20.8.2026 (erä 18), kysyttäessä miten kaikkien kakkosten kovuus muutti peliä pelaajan
 kannalta:
