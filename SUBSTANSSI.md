@@ -509,8 +509,21 @@ noudata sitä mistä pelit on opittu.
 järjestys kulkee kevyemmästä raskaampaan. Tämä on kirjoittajan päätelmä kanonien
 vaikeusarvioista eikä Tommin sanoma, ja se saa kaatua ilman että vastaus kaatuu.
 
-**Avoin:** viisi muuta peliä eivät saa tästä paikkaa, eikä vastaus kerro sijoittuivatko ne
-kaaren väliin vai olivatko ne eri kokoonpanojen pelejä.
+~~**Avoin:** viisi muuta peliä eivät saa tästä paikkaa, eikä vastaus kerro sijoittuivatko ne
+kaaren väliin vai olivatko ne eri kokoonpanojen pelejä.~~ *(Vastattu erässä 23, ks. alla.)*
+
+Tommi 20.8.2026 (erä 23), kysyttäessä oliko neljällä muulla Laiturin pelillä (Maija, Koputus,
+Kultakala, Läpsy) vakiintunut paikka pelipäivässä:
+
+> *riippui ryhmästä, ruuanlaiton lomassa oli aikaa pelata enemmän*
+
+Vakiintunutta paikkaa ei ollut, vaan sijoittuminen riippui ryhmästä, ja ruuanlaittoryhmän
+päivissä peliaikaa oli enemmän. Vastaus valitsi avoimen kysymyksen jälkimmäisen vaihtoehdon:
+loput pelit olivat ryhmästä riippuvia, eivät kaaren kiinteitä väliportaita.
+
+**Seuraus:** pelipäivän kaari oli kiinteä vain osalle peleistä, ja loppu jousti ryhmän
+mukaan. Peliaika oli muun tekemisen lomassa eikä oma ohjelmanumeronsa, mikä sopii kohdan 1
+kuvaukseen (*tehtiin asioita ja lätkittiin korttia teemasta riippuen*).
 
 ## 16. Kahden pelaajan pelit ovat Kultakala ja Koputus
 
@@ -1349,9 +1362,23 @@ Tommi 20.8.2026 (erä 22), kysyttäessä esimerkkiä itse johdetusta säännöst
 
 > *Moska milloin lyödä sivusta*
 
-Johdettu sääntö on siis Moskan sivustalyönnin ajoitus: pöytä tai luettu lähde ei kertonut
-milloin sivusta saa lyödä, ja sääntö johdettiin Jakoa rakentaessa koherentin pelin
-saamiseksi.
+Johdettu sääntö on siis Moskan sivustalyönnin ajoitus: ~~pöytä tai luettu lähde ei kertonut
+milloin sivusta saa lyödä~~ *(tarkentui samassa erässä, ks. alla: pöydällä oli sääntö)*, ja
+sääntö johdettiin Jakoa rakentaessa koherentin pelin saamiseksi.
+
+Tommi tarkensi 20.8.2026 (erä 23):
+
+> *sivustalyönti oli kaoottista, jossa sai lyödä ilman vuoroa, nopein ensin, Jako-Moskaan
+> toin vuoron mukaan*
+
+Pöydällä siis oli sääntö: sivusta sai lyödä ilman vuoroa ja nopein ehti ensin. Johtaminen ei
+ollut aukon täyttämistä vaan käännös: reaaliaikainen nopeussääntö ei siirry vuoropohjaiseen
+sovellukseen, joten Jako-Moskaan tuotiin vuoro.
+
+**Seuraus:** neljäs lähde tarkentuu. Johdettu sääntö ei synny vain siellä missä pöytä
+vaikeni, vaan myös siellä missä pöydän sääntö on sidottu pelimuotoon jota sovellus ei voi
+toistaa. Sama ero on kirjattu opetustavasta (kohta 11): sovellus on tietoinen ero pöydän
+tapaan, ei sen kopio.
 
 **Seuraus:** neljäs lähde on nyt todistettu yhdellä nimetyllä tapauksella eikä vain
 lajina, ja se osuu Moskaan, jonka taso on kokoelman ainoa vaativaksi merkitty. Mitä muita
