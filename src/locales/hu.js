@@ -730,6 +730,7 @@ export const hu = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Támadj ezekkel: ${cards}. A pakli üres, és a kezed már nem töltődik fel, ezért érdemes az azonos értékű lapokat egyszerre kijátszani.`,
         attack: ({ cards }) => `Támadj ezzel: ${cards}. Válaszd azt az értéket, amelyből már a legtöbb lap kikerült a játékból, így kevesebb oldaltámadás lesz. Tartogasd az adukat védekezésre.`,
         beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő is elég, adut csak kényszerből.`,
         take: "Nem tudod az összes asztali lapot ütni. Vedd fel őket a kezedbe.",

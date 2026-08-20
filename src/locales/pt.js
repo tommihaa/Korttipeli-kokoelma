@@ -727,6 +727,7 @@ export const pt = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Ataca com ${cards}. O baralho está vazio e a mão já não se repõe, por isso vale a pena jogar todo o grupo do mesmo valor de uma vez.`,
         attack: ({ cards }) => `Ataca com ${cards}. Escolhe o valor de que já saíram mais cartas, assim haverá menos ataques laterais. Guarda os trunfos para a defesa.`,
         beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a vencedora mais baixa, trunfos só quando fores obrigado.`,
         take: "Não consegues vencer todas as cartas na mesa. Recolhe-as para a mão.",

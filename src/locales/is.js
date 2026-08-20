@@ -727,6 +727,7 @@ export const is = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Ráðstu með ${cards}. Stokkurinn er tómur og höndin fyllist ekki lengur, því borgar sig að spila allan hópinn með sama gildi í einu.`,
         attack: ({ cards }) => `Ráðstu með ${cards}. Veldu gildið sem flest spil eru þegar farin úr spilinu, þá verða hliðarárásir færri. Geymdu tromp í vörnina.`,
         beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi dugar, tromp aðeins þegar þú neyðist.`,
         take: "Þú getur ekki slegið öll spilin á borðinu. Taktu þau á höndina.",

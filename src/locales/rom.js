@@ -730,6 +730,7 @@ export const rom = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Marde le ${cards}. Nai maj karti ando paketo thaj o vast či pherdol, kadja mišto si te des sa e karti le jekhe molesa jekhvar.`,
         attack: ({ cards }) => `Marde le ${cards}. Alav o mol savestar avile avri maj but karti, kadja avena maj xanci marimata rigate. Garav le trumfuria pala zumaviba.`,
         beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kaj marel, trumfurja numaj kana trubul.`,
         take: "Naštik marés sa le kartja pe skafidi. Le len ando vast.",

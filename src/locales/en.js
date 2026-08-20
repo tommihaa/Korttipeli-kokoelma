@@ -735,6 +735,7 @@ export const en = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Attack with ${cards}. The deck is empty and your hand no longer refills, so it pays to play the whole group of the same rank at once.`,
         attack: ({ cards }) => `Attack with ${cards}. Pick the rank with the most copies already out of play, so there are fewer side attacks. Save trumps for defence.`,
         beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winner is enough, trumps only when forced.`,
         take: "You cannot beat every card on the table. Take them into your hand.",

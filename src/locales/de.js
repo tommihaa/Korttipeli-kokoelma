@@ -727,6 +727,7 @@ export const de = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Greife mit ${cards} an. Der Stapel ist leer und die Hand füllt sich nicht mehr auf, deshalb lohnt es sich, die ganze Gruppe gleichen Werts auf einmal zu spielen.`,
         attack: ({ cards }) => `Greife mit ${cards} an. Wähle den Wert, von dem schon die meisten Karten aus dem Spiel sind, dann gibt es weniger Seitenangriffe. Spare Trümpfe für die Verteidigung.`,
         beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, Trümpfe erst wenn nötig.`,
         take: "Du kannst nicht alle Karten auf dem Tisch schlagen. Nimm sie auf die Hand.",

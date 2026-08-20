@@ -736,6 +736,7 @@ export const pl = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Atakuj kartami ${cards}. Talia jest pusta, a ręka już się nie uzupełnia, więc warto zagrać całą grupę tej samej figury naraz.`,
         attack: ({ cards }) => `Atakuj kartą ${cards}. Wybierz figurę, której najwięcej kart już wyszło z gry, wtedy będzie mniej dorzucania. Zachowaj atuty do obrony.`,
         beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca, atuty dopiero gdy musisz.`,
         take: "Nie pobijesz wszystkich kart na stole. Weź je do ręki.",

@@ -729,6 +729,7 @@ export const se = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Falle goarttaiguin ${cards}. Goarttat eai šat boađe lassin, danne gánnáha spealadit olles seamma árvvu joavkku oktanaga.`,
         attack: ({ cards }) => `Falle goarttain ${cards}. Vállje árvvu mas leat juo eanemus goarttat eret spealus, de šaddet unnit lievlafallehusat. Vurke duolbmasiid bealuštussii.`,
         beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti riekta, trumfat easkka go bággehallat.`,
         take: "It sáhte vuoitit buot bevddebáktiid. Váldde daid gihtii.",

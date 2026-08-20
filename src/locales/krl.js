@@ -728,6 +728,7 @@ export const krl = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Hyökkyä kortiloil ${cards}. Pakku on tyhjy da käzi ei enämbi täydy, sit kannattau lyvvä kogo yhten arvon joukko kerrallah.`,
         attack: ({ cards }) => `Hyökkyä kortil ${cards}. Vallitse arvo, kudamua on jo enin pelattu poikes, sit sivus lyyväh harvemba. Säilytä valtit puolistukseh.`,
         beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai riittäy, valtit vaste pakon ies.`,
         take: "Et voi kuadua kaikkii stolan kortiloi. Ota ne kädeh.",

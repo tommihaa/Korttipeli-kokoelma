@@ -729,6 +729,7 @@ export const ro = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Atacă cu ${cards}. Pachetul este gol și mâna nu se mai completează, așa că merită să joci tot grupul de aceeași valoare deodată.`,
         attack: ({ cards }) => `Atacă cu ${cards}. Alege valoarea din care au ieșit deja cele mai multe cărți, vor fi mai puține atacuri laterale. Păstrează atuurile pentru apărare.`,
         beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică câștigătoare, atuurile doar când ești silit.`,
         take: "Nu poți bate toate cărțile de pe masă. Ia-le în mână.",

@@ -727,6 +727,7 @@ export const it = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Attacca con ${cards}. Il mazzo è vuoto e la mano non si ricompone più, quindi conviene giocare tutto il gruppo dello stesso valore in una volta.`,
         attack: ({ cards }) => `Attacca con ${cards}. Scegli il valore di cui sono già uscite più carte, così ci saranno meno attacchi laterali. Conserva le briscole per la difesa.`,
         beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la vincente più bassa, briscole solo quando sei costretto.`,
         take: "Non puoi battere tutte le carte sul tavolo. Prendile in mano.",

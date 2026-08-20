@@ -806,6 +806,7 @@ export const fi = {
       },
       advice: {
         attack: ({ cards }) => `Hyökkää kortilla ${cards}. Valitse arvo, jota on jo eniten pelattu pois, niin sivusta lyödään harvemmin. Säästä valtit puolustukseen.`,
+        attackMulti: ({ cards }) => `Hyökkää korteilla ${cards}. Pakka on tyhjä eikä käsi enää täydenny, joten koko samanarvoinen ryhmä kannattaa lyödä kerralla.`,
         beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava riittää, valtit vasta pakon edessä.`,
         take: 'Et pysty kaatamaan kaikkia pöydän kortteja. Ota ne käteen.',
         pass: ({ cards }) => `Siirrä hyökkäys eteenpäin kortilla ${cards}, niin pääset itse pälkähästä.`,

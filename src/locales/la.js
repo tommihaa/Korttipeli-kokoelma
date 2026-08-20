@@ -729,6 +729,7 @@ export const la = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Impugna cum ${cards}. Acervus vacuus est nec manus amplius impletur, quare totum gregem eiusdem valoris simul mittere praestat.`,
         attack: ({ cards }) => `Impugna cum ${cards}. Elige valorem cuius plurimae chartae iam e ludo exierunt, ita pauciores impetus laterales erunt. Serva triumphos defensioni.`,
         beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima vincens sufficit, triumphi tantum coactus.`,
         take: "Non potes omnes chartas in mensa vincere. Sume eas in manum.",

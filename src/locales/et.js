@@ -727,6 +727,7 @@ export const et = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Ründa kaartidega ${cards}. Pakk on tühi ja käsi enam ei täitu, seega tasub mängida kogu sama väärtusega rühm korraga.`,
         attack: ({ cards }) => `Ründa kaardiga ${cards}. Vali väärtus, millest on juba kõige rohkem kaarte mängust väljas, siis on vähem kõrvalrünnakuid. Hoia trumbid kaitseks.`,
         beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev piisab, trumbid alles sunni korral.`,
         take: "Sa ei suuda kõiki laual olevaid kaarte lüüa. Võta need kätte.",

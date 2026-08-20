@@ -727,6 +727,7 @@ export const da = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Angrib med ${cards}. Bunken er tom, og hånden fyldes ikke længere op, så det betaler sig at spille hele gruppen med samme værdi på én gang.`,
         attack: ({ cards }) => `Angrib med ${cards}. Vælg den værdi, der har flest kort ude af spillet, så der bliver færre sideangreb. Gem trumfer til forsvaret.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det mindste vindende er nok, trumf først når du er tvunget.`,
         take: "Du kan ikke slå alle kort på bordet. Tag dem på hånden.",

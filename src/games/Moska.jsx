@@ -142,7 +142,7 @@ function getMaxAdd(g) {
 
 // Super Natural -hyökkäys: suosii arvoja joista moni kopio on jo poissa pelistä
 // → vähemmän riskiä että vastustajalla on sama arvo sivustalyöntiin
-function aiPickAttackSN(p, ts, removed) {
+function aiPickAttackSN(p, ts, removed, opts = {}) {
   const byRank = {};
   p.hand.forEach(c => { (byRank[c.r] = byRank[c.r] || []).push(c); });
   const groups = Object.values(byRank).map(cards => {
@@ -155,7 +155,17 @@ function aiPickAttackSN(p, ts, removed) {
     return MV(a.cards[0]) - MV(b.cards[0]);
   });
   if (!groups.length) return [];
-  return [groups[0].cards[0]];
+  const best = groups[0].cards;
+
+  // Vaiheen vaihtuminen: pakan loputtua käsi ei enää täydenny, joten koko
+  // samanarvoinen ryhmä kannattaa lyödä kerralla. Niin kauan kuin käsi täydentyy,
+  // yksi kortti riittää. MOSKA.md rivi 12 sallii useamman saman vahvuisen kortin ja
+  // rivi 13 rajaa määrän puolustajan käteen; doAttack ei valvo kumpaakaan rajaa vaan
+  // luottaa kutsujaan, joten ne ovat tässä. Samat rajat kuin ihmisellä
+  // (humanConfirmAttack: enintään kuusi ja enintään puolustajan käden verran).
+  if (!opts.deckGone) return [best[0]];
+  const limit = Math.min(6, opts.defenderHandSize ?? 1);
+  return limit > 1 ? best.slice(0, limit) : [best[0]];
 }
 
 // Pienin pariton ei-valtti ensin — kaatuu eniten "roskakortin" logiikkaan
@@ -218,8 +228,13 @@ export function getAdvice(g, removed) {
   const { phase, primaryAtk, defender, players, ts, table } = g;
 
   if (phase === 'attack' && primaryAtk === 0) {
-    const cards = aiPickAttackSN(players[0], ts, removed || new Set());
-    return cards.length ? { type: 'attack', cards } : null;
+    const cards = aiPickAttackSN(players[0], ts, removed || new Set(), {
+      deckGone: g.deck.length === 0 && g.trumpCard === null,
+      defenderHandSize: players[defender].hand.length,
+    });
+    if (!cards.length) return null;
+    // Yhden kortin perustelu ei päde ryhmään, joten monikorttihyökkäyksellä on oma teksti.
+    return { type: cards.length > 1 ? 'attackMulti' : 'attack', cards };
   }
 
   if (phase === 'defend' && defender === 0) {
@@ -780,7 +795,10 @@ export default function Moska({ onResult, showLog = true, soundOn: initSoundOn =
       const lvlA = botLevelsRef.current?.[primaryAtk] ?? aiLevelRef.current;
       let cards;
       if (lvlA === 'hard') {
-        cards = aiPickAttackSN(p, ts, removedRef.current);
+        cards = aiPickAttackSN(p, ts, removedRef.current, {
+          deckGone: g.deck.length === 0 && g.trumpCard === null,
+          defenderHandSize: players[defender].hand.length,
+        });
       } else {
         cards = aiPickAttack(p, players[defender].hand.length, ts);
         // Aloittelija-virhe: hyökkää suurimmalla kortilla eikä pienimmällä

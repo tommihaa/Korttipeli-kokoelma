@@ -727,6 +727,7 @@ export const no = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Angrip med ${cards}. Bunken er tom og hånden fylles ikke lenger opp, så det lønner seg å spille hele gruppen med samme verdi på én gang.`,
         attack: ({ cards }) => `Angrip med ${cards}. Velg verdien som har flest kort allerede ute av spillet, så blir det færre sideangrep. Spar trumf til forsvaret.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det minste vinnende holder, trumf først når du må.`,
         take: "Du kan ikke slå alle kortene på bordet. Ta dem på hånden.",

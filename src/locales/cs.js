@@ -738,6 +738,7 @@ export const cs = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Útoč kartami ${cards}. Balíček je prázdný a ruka se už nedoplňuje, proto se vyplatí zahrát celou skupinu stejné hodnoty najednou.`,
         attack: ({ cards }) => `Útoč kartou ${cards}. Vyber hodnotu, které je už nejvíc karet ze hry venku, bude méně přihazování. Šetři trumfy na obranu.`,
         beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná, trumfy až když musíš.`,
         take: "Nedokážeš přebít všechny karty na stole. Vezmi si je do ruky.",

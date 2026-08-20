@@ -727,6 +727,7 @@ export const fr = {
     },
     moska: {
       advice: {
+        attackMulti: ({ cards }) => `Attaquez avec ${cards}. La pioche est vide et la main ne se complète plus, il vaut donc mieux jouer tout le groupe de même valeur d'un coup.`,
         attack: ({ cards }) => `Attaquez avec ${cards}. Choisissez la valeur dont le plus de cartes sont déjà sorties du jeu, il y aura moins d'attaques latérales. Gardez les atouts pour la défense.`,
         beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite gagnante suffit, les atouts seulement quand tu y es forcé.`,
         take: "Tu ne peux pas battre toutes les cartes sur la table. Prends-les en main.",
