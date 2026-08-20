@@ -579,10 +579,23 @@ määräajassa sanoja. Muut pelit olivat talon: ne olivat aina siellä, eikä ku
 Tietokilpailut olivat sekä ohjaajan laatimia että valmiita pelejä, ja aineistoa haettiin myös
 verkosta.
 
-**Avoin:** kysymys sanamixistä oli kirjoittajan virheestä kaksi kysymystä yhtenä, ja sen
+~~**Avoin:** kysymys sanamixistä oli kirjoittajan virheestä kaksi kysymystä yhtenä, ja sen
 toinen puoli jäi vastaamatta: onko Laiturin sanamix se mistä Tommin sanapeliprojekti
 (nykyinen Itu) sai alkuperäisen nimensä SanaMix. Yhteys näyttää ilmeiseltä, koska molemmat
-ovat määräajassa tapahtuvaa sananmuodostusta, mutta sitä ei täytetä päättelemällä.
+ovat määräajassa tapahtuvaa sananmuodostusta, mutta sitä ei täytetä päättelemällä.~~
+*(Kysytty erikseen erässä 27, ks. alla.)*
+
+Tommi vahvisti 20.8.2026 (erä 27), kysyttäessä saiko sanapeliprojekti alkuperäisen nimensä
+juuri tästä pelistä:
+
+> *kyllä, vie se myös Itun kanoniin - se innoitti*
+
+Laiturin sanamix siis innoitti projektin joka sai alkuperäisen nimen SanaMix ja on nykyään
+Itu. Kirjaus vietiin Tommin pyynnöstä myös Itun kanoniin (`ITU.md`) samana päivänä.
+
+**Seuraus:** Laiturin pelikulttuuri tuotti kokoelmaan yhdeksästä pelistä viisi ja sen
+lisäksi kokonaan toisen sovelluksen innoituksen. Se on tämän dokumentin ensimmäinen kirjaus
+jossa Laiturin vaikutus ylittää projektirajan.
 
 **Seuraus:** ohjaajan tekemä työ ulottui korttivariaatioiden lisäksi tietokilpailuihin, ja
 välineistö oli talon pysyvää kalustoa. Pelikulttuuri ei siis ollut kenenkään mukanaan tuomaa
