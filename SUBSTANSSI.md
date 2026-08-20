@@ -1884,17 +1884,31 @@ Tommi 20.8.2026 (erä 34), kysyttäessä kenelle erityiskortin isku pöydässä 
 vaan ässä osui kaikkiin muihin kerralla. Kohdan 31 avoimen kysymyksen muotoilu erityiskorttien
 kohdistamisesta oli siis väärä, ja ainoa kohdistuva valinta Seiskassa on ajoitus.
 
-**Vastauksen loppu nimeää säännön jota kanoni ei tunne samassa muodossa, ja ero jätetään
-tarkistettavaksi eikä ratkaista tässä.** Pöydässä nostolta välttyi jos *jatkoi*, minkä luen
-ässän lyömiseksi edellisen päälle; luenta on kirjoittajan. Sovelluksen kanoni tuntee ässän
-pinoamisen (bonusmaa vaihtuu), muttei sano että pinoaminen vapauttaisi nostolta. Kumpi muoto
-koodissa on ja kumpi pitäisi olla, on sopimusmuutos-kysymys eikä tämän dokumentin ratkaistava.
+**Vastauksen loppu nimeää säännön jota kanoni ei tunne samassa muodossa.** ~~Pöydässä
+nostolta välttyi jos *jatkoi*, minkä luen ässän lyömiseksi edellisen päälle; luenta on
+kirjoittajan.~~ *(Luenta kumoutui erässä 35, ks. alla, ja jätetään näkyviin.)*
 
-*Koodi tarkistettiin samana iltana:* rangaistus osuu kaikkiin muihin aina eikä pinoaminen
-vapauta nostolta (`applyAcePenalty`, jonka kommentti nimeää lähteekseen kanonin). Koodi ja
-kanoni ovat siis yhtä, ja ero on pöydän ja kanonin välillä, jos luenta jatkamisesta pitää.
-Ero odottaa ensin luennan vahvistusta ja sen jälkeen Tommin päätöstä siitä jääkö sovelluksen
-muoto vai tuleeko pöydän muoto asetukseksi tai vakioksi.
+*Koodi tarkistettiin samana iltana:* rangaistus osuu kaikkiin muihin aina
+(`applyAcePenalty`, jonka kommentti nimeää lähteekseen kanonin ja sanoo suoraan: muut
+nostavat aina, myös bonusvuoron yhteydessä). Koodi ja kanoni ovat siis yhtä, ja ero on
+pöydän ja kanonin välillä.
+
+Tommi tarkensi 20.8.2026 (erä 35), kysyttäessä tarkoittiko jatkaminen seuraavan pelaajan
+ässää edellisen päälle:
+
+> *ässän lyönyt voi pelata saman maan kortin ässän päälle, tällöin muut pelaajat ei nosta
+> ässäbonusta*
+
+Jatkaja on siis ässän lyöjä itse, ei seuraava pelaaja. Pöydän muodossa bonusjatkon käyttö
+perui rangaistuksen: ässä oli joko rangaistus (muut nostavat, jatkoa ei pelata) tai
+tempoetu (saman maan kortti päälle, muut eivät nosta), ei koskaan molempia.
+
+**Seuraus:** pöydän ässä sisälsi päätöksen jota sovelluksen ässässä ei ole. Sovelluksessa
+rangaistus ja bonusvuoro tulevat aina yhdessä, joten ässä on siellä vahvempi kortti ja sen
+lyöminen yksinkertaisempi valinta. Pöydässä lyöjä punnitsi rangaistuksen ja tempon välillä
+joka kerta. Ero on todellinen ja täsmällinen, ja se odottaa Tommin päätöstä siitä jääkö
+sovelluksen muoto, tuleeko pöydän muoto vakioksi vai tuleeko siitä aloitusnäytön
+sääntövalinta.
 
 ## 57. Seiskan oppimisen tapa ei ole muistissa, ja Jako-Seiska vaati sääntöjen johtamista
 
