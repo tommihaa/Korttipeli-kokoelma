@@ -142,6 +142,24 @@ kaksinpelihauskuus eivät ole ristiriidassa: Seiska ja Kasino eivät olleet Lait
 valikoimaa, joten niitä ei voinut valita siellä. Ne olivat opiskelukaverin kanssa pelattuja
 kaksinpelejä (kohdat 30 ja 35), ja juuri kaksinpelikelpoisuus toi ne kokoelmaan.
 
+Tommi 20.8.2026 (erä 23), kysyttäessä pelattiinko Laiturilla pelejä jotka eivät päätyneet
+kokoelmaan:
+
+> *Seiskan sijaan laiturilla pelattiin Uno-korttipeliä, mutta se oli eri pakka*
+
+Laiturilla pelattiin siis myös Unoa, ja se pelattiin omalla erikoispakallaan eikä
+tavallisella korttipakalla. Kokoelman ulkopuolelle jäänyt Laiturin peli on siis olemassa ja
+nimetty.
+
+**Seuraus:** kohta 32 saa vastinparin pöydästä. Seiska on Tommin sanoin Uno vähemmillä
+korteilla, ja nyt tiedetään että Laiturilla sama pelin paikka täytettiin oikealla Unolla:
+Seiska ja Uno eivät olleet saman pöydän rinnakkaisia pelejä vaan saman pelipaikan kaksi
+toteutusta eri ympäristöissä.
+
+**Seuraus** *(kirjoittajan päätelmä vastauksen pakkahuomiosta)*: eri pakka on
+uskottava syy siihen miksi Uno ei ole kokoelmassa, koska kokoelman yhdeksän peliä pelataan
+tavallisella korttipakalla. Perustetta ei kuitenkaan kysytty, joten tämä saa kaatua.
+
 ## 2. Sääntömuunnelmat on jo ratkaistu koodissa, ja se on vastaus eri kysymykseen
 
 Kysyttäessä missä yhdeksästä Tommin pelaamat säännöt eroavat eniten sääntökirjasta tai netistä,
