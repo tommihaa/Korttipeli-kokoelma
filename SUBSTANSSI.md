@@ -2616,6 +2616,40 @@ kohdan 35 mukaan pöytäpeli ei noussut sille tasolle). Kohdan 3 alkuperäinen a
 (kumpaakaan virhettä ei ole purettu yhdenkään pelin kohdalla) on sulkeutunut kokonaan
 tämän erän myötä.
 
+## 70. Linkin saaneista toinen valitsi Ristiseiskan, ja se on ensimmäinen mitattu vihje pelien keskinäisestä kilpailusta
+
+Tommi 21.8.2026 (Itun haastattelun erä 13, viety tänne Tommin kuittauksella samana päivänä),
+kysyttäessä sanoivatko Itua pelanneet veli ja siskontyttö siitä jotain oma-aloitteisesti:
+
+> *palautteessa uskon vapaaehtoisuuteen, toinen tykkää pelata ristiseiskaa*
+
+Kysymys koski Itua, ja vastauksen jälkiosa koskee Jakoa, joten se kirjataan molempiin. Kumpi
+kahdesta on kyseessä, ei käy vastauksesta ilmi eikä sitä arvata.
+
+**Havainnon konteksti asuu Itun dokumentissa** (`SanaMix/SUBSTANSSI.md` kohdat 17, 20 ja 39):
+Laiturin ohjaajille ja lähisuvulle lähti koko kolmikko eli Jako, Superjatsi ja Itu, samat
+linkit samalla kertaa.
+
+**Seuraus:** valinta tehtiin siis kokoelman sisällä eikä kokoelmaa vastaan. Pelaaja sai kolme
+peliä ja palasi yhteen niistä, ja se yksi on Jako. Tämä on ensimmäinen kirjattu havainto siitä
+että kokoelman pelit kilpailevat samasta pelaajasta, eikä sitä ollut aiemmin edes esitetty
+kysymyksenä: `LEVITYS.md` ja projektien omat kanonit käsittelevät levitystä yhteen suuntaan,
+eli miten peli tavoittaa pelaajan, eivät sitä mitä tapahtuu kun sama pelaaja saa kolme peliä
+kerralla.
+
+**Seuraus:** Ristiseiskan valikoituminen ei ole yllätys tämän dokumentin valossa. Se on kohdan
+15 mukaan pelipäivän kaaren aloituspeli ja kohdan 43 mukaan toinen niistä kahdesta jotka
+skaalattiin kahteen pakkaan isolla porukalla, eli se on pöydän peleistä tutuimpia. Havainto
+sopii siis siihen mitä korttipelien asemasta suvussa jo tiedetään, ja juuri siksi se on heikko
+näyttö: se ei erota Jakon ansiota Ristiseiskan tuttuudesta.
+
+**Rajaus, ja se on tässä koko havainnon kokoinen.** Otos on yksi pelaaja, havainto on saatu
+mutkan kautta eikä kysymällä, ja kysymättä jättäminen on periaate: palaute otetaan vastaan
+vapaaehtoisena. Tästä ei siis seuraa mittausta eikä sen aloittamista, koska mittaaminen
+tarkoittaisi kysymistä.
+
+---
+
 ---
 
 ## Toinen grillaus 20.8.2026: kuusi löydöstä, kaikki kirjoittajan kirjanpitoa
