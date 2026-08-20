@@ -1475,11 +1475,11 @@ enemmän pelaajia ja mitä korkeampi sijoitus, sitä enemmän pisteitä. Turnauk
 pelit olivat satunnaisia eikä kiinteää sarjaa ollut. Läpsy ei muistin varauksella kuulunut
 turnauksiin.
 
-**Seuraus:** kohdan 36 luenta turnauksesta kilpailurakenteena pelien yli vahvistui, ja
-rakenne on rikkaampi kuin yksi pistelasku: sijoitusmuoto tunnistaa sen että voitto isossa
-pelissä on arvokkaampi kuin pienessä, eli turnaus mittasi kenttää eikä vain voittoa.
-Pelipäivän kaari (kohta 15) ja turnaus ovat yhä eri asiat: kaari määräsi järjestyksen,
-turnaus laski pisteet.
+**Seuraus:** kohdan 36 luenta turnauksesta kilpailurakenteena pelien yli vahvistui.
+~~Rakenne on rikkaampi kuin yksi pistelasku: sijoitusmuoto tunnistaa sen että voitto isossa
+pelissä on arvokkaampi kuin pienessä, eli turnaus mittasi kenttää eikä vain voittoa.~~
+*(Kumoutui erässä 45: pistelasku kääntyi, ks. alla.)* Pelipäivän kaari (kohta 15) ja
+turnaus ovat yhä eri asiat: kaari määräsi järjestyksen, turnaus laski pisteet.
 
 **Seuraus:** kolmas vastaus kumosi erän 13 lausuman Läpsystä isossa porukassa, ja Tommi
 vahvisti korjauksen suunnan erikseen; kirjaus on kohdassa 36.
@@ -1510,7 +1510,8 @@ Viimeinen avoin kysyttiin erikseen, ja Tommi vastasi 20.8.2026:
 
 > *kyllä, eniten pisteitä voitti, turnaussarja*
 
-Voittaja oli siis se jolla oli eniten pisteitä kun sovittu määrä pelejä oli pelattu, ja
+~~Voittaja oli siis se jolla oli eniten pisteitä kun sovittu määrä pelejä oli pelattu~~
+*(Kumoutui erässä 45 Tommin omalla korjauksella: vähiten pisteitä voitti, ks. alla)*, ja
 muodolla oli oma nimi: **turnaussarja**. Tommi tarkensi nimen samana päivänä:
 
 > *Turnaussarja on pelien sarja parin tunnin aikana.*
@@ -1594,6 +1595,22 @@ Sovittu määrä eri pelejä saa siis suuruusluokan: ehkä seitsemän, ja *ehkä
 varaus joka kirjataan sellaisenaan. Seitsemän on enemmän kuin Laiturin viisi korttipeliä,
 joten joko sarjaan kuului muitakin lajeja kuin korttia tai muitakin korttipelejä kuin
 viisikko; kumpaa se tarkoittaa, ei kysytty eikä sitä täytetä päättelemällä.
+
+Tommi jatkoi 20.8.2026 samassa istunnossa:
+
+> *pisteitä sai sijoituksesta, voittajalla oli vähiten pisteitä*
+
+Rivi oli ristiriidassa erän 16 kirjauksen kanssa (*eniten pisteitä voitti*), joten sitä ei
+kirjattu suoraan vaan ristiriita nostettiin erässä 45 monivalintaan, ja Tommi valitsi:
+**vähiten pisteitä voitti**. Aiempi kirjaus kumoutuu ja on yliviivattu yllä.
+Turnaussarjan pisteet olivat siis sijoituslukuja joissa pieni on hyvä, samaan suuntaan kuin
+lapsuuden kiusassa jossa voittaja oli vähiten sakkopisteitä saanut (kohta 38); yhteyttä ei
+kysytty eikä siitä päätellä enempää.
+
+**Avoin:** erän 15 täydennys *mitä enemmän pelaajia ja korkeammalle niin sitä enemmän sai
+pisteitä* ei asetu uuteen pistelaskuun luontevasti, koska pienten pisteiden järjestelmässä
+korkea sijoitus antaa vähän pisteitä. Miten sijoitus tarkalleen muuttui pisteiksi, on
+avoin eikä sitä täytetä päättelemällä.
 
 Tommi 20.8.2026 (erä 18), kysyttäessä siirtyikö paperille kirjaamisen tapa lapsuudesta
 Laiturin turnauksiin:
