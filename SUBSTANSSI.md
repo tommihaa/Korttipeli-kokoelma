@@ -118,9 +118,29 @@ Tommi täydensi 20.8.2026 (erä 21) omin sanoin:
 Taulukon jako vahvistui, ja kokoelman koostumus sai perusteen jota ei ollut kysytty suoraan:
 Seiska ja Kasino ovat mukana siksi että Tommi halusi ne mukaan. Kokoelma ei siis ole
 pelkkä luettelo opituista peleistä vaan valinta, jossa ainakin kahden pelin peruste on oma
-halu. Kysymys jonka yhteydessä täydennys tuli (pelattiinko Laiturilla muitakin pelejä kuin
+halu. ~~Kysymys jonka yhteydessä täydennys tuli (pelattiinko Laiturilla muitakin pelejä kuin
 viisi kokoelmaan päätynyttä) jäi vastaamatta, ja se merkitään vastaamattomaksi eikä täytetä
-päättelemällä.
+päättelemällä.~~ *(Kysytty uudelleen erässä 22, ks. alla.)*
+
+Tommi 20.8.2026 (erä 22), kysyttäessä pelattiinko Laiturilla muitakin korttipelejä kuin ne
+viisi jotka sieltä opittiin, ja mikä Seiskassa ja Kasinossa sai haluamaan ne kokoelmaan:
+
+> *1 ristiseiska ja paskahousu*
+> *2 ne oli hauskoja kaksinpeleinäkin*
+
+Laiturilla pelattiin siis myös lapsuuden kaksi peliä, eli Laiturin pöydässä kulki seitsemän
+peliä yhdeksästä. Oppimispaikka ja pelipaikka ovat eri asiat: taulukko yllä kertoo mistä peli
+on opittu, ei missä sitä pelattiin. Kokoelman ulkopuolisia pelejä vastaus ei maininnut, eikä
+erikseen kysytty pelattiinko sellaisia. Seiskan ja Kasinon peruste on se että ne olivat
+hauskoja kaksinpeleinäkin.
+
+**Seuraus:** kohdan 14 aloituspeli saa selityksen: Ristiseiska saattoi olla Laiturin
+pelipäivän aloituspeli koska se oli siellä pelattujen joukossa, vaikka se oli opittu lapsena.
+
+**Seuraus:** kohdan 16 kaksinpelivalinta (Kultakala ja Koputus) ja Seiskan ja Kasinon
+kaksinpelihauskuus eivät ole ristiriidassa: Seiska ja Kasino eivät olleet Laiturin
+valikoimaa, joten niitä ei voinut valita siellä. Ne olivat opiskelukaverin kanssa pelattuja
+kaksinpelejä (kohdat 30 ja 35), ja juuri kaksinpelikelpoisuus toi ne kokoelmaan.
 
 ## 2. Sääntömuunnelmat on jo ratkaistu koodissa, ja se on vastaus eri kysymykseen
 
@@ -1306,6 +1326,18 @@ Tommin itse johtamat säännöt, joiden peruste on pelin koherenssi eikä perinn
 **Seuraus:** johtaminen on tapahtunut Jakoa rakentaessa eli pöydän jälkeen, joten se ei
 sekoitu kohdan 33 kahtiajakoon (pöydässä nähty / luettu). Se täyttää aukot jotka pöytä ja
 luettu jättivät, ja sen mitta on toimiva peli.
+
+Tommi 20.8.2026 (erä 22), kysyttäessä esimerkkiä itse johdetusta säännöstä:
+
+> *Moska milloin lyödä sivusta*
+
+Johdettu sääntö on siis Moskan sivustalyönnin ajoitus: pöytä tai luettu lähde ei kertonut
+milloin sivusta saa lyödä, ja sääntö johdettiin Jakoa rakentaessa koherentin pelin
+saamiseksi.
+
+**Seuraus:** neljäs lähde on nyt todistettu yhdellä nimetyllä tapauksella eikä vain
+lajina, ja se osuu Moskaan, jonka taso on kokoelman ainoa vaativaksi merkitty. Mitä muita
+sääntöjä on johdettuja, ei kysytty.
 
 ---
 
