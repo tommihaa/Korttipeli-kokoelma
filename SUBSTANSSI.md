@@ -1844,6 +1844,73 @@ kerrallaan pöytäalkuperä on nyt todennettu kahdelle pelille joilla valintoja 
 selittää osaltaan miksi niillä ei ole valintoja: pöydän muoto ei jättänyt vaihtoehtoja
 joista valita.
 
+Tommi vahvisti 20.8.2026 (erä 34) omin sanoin, kysymättä:
+
+> *pöydästä sellaisenaan siirtyneitä pelejä yhdistää ettei niistä ole asetusmuunnoksia*
+
+Yllä oleva kirjoittajan päätelmä on siis nyt Tommin oma lause, ja suunta on hänen
+muotoilussaan vahvempi: asetusmuunnosten puute ei vain selity siirrolla vaan on siirron
+tuntomerkki.
+
+---
+
+## 55. Seiskan kokeneen virhe on samanarvoisten säästämättä jättäminen
+
+Tommi 20.8.2026 (erä 34), kysyttäessä mikä on se Seiskan virhe jonka kokenutkin pelaaja
+tekee:
+
+> *ei säästä lopetuskorteiksi samanarvoisia*
+
+Samanarvoiset voi lyödä yhdellä kertaa, joten säästetty ryhmä on nopea lopetus. Virhe on
+hajottaa ryhmä pelaamalla sen kortteja yksitellen matkan varrella.
+
+**Seuraus:** tämä on pidättämisteeman (kohta 6) muunnos jossa pidätettävä ei ole yksittäinen
+kortti vaan korttien suhde: sama kortti on yksin tavallinen ja parinsa kanssa lopetusase.
+Arvo ei siis ole kortissa vaan käden rakenteessa, ja se on dokumentissa uusi muoto samasta
+teemasta.
+
+**Vastaus on jo mallinnettu koodissa, kolmannen kerran** (kohdat 6 ja 45 ovat kaksi
+aiempaa): ryhmälyöntilogiikan viimeinen sääntö on *muuten säästä pari*, ja yksittäiskortin
+valinta suosii korttia jolla ei ole paria kädessä. Mestarin strategia tekee siis juuri sen
+minkä laiminlyönnin Tommi nimeää kokeneen virheeksi.
+
+## 56. Ässä osui pöydässä kaikkiin, ja jatkaminen saattoi vapauttaa nostolta
+
+Tommi 20.8.2026 (erä 34), kysyttäessä kenelle erityiskortin isku pöydässä kohdistettiin:
+
+> *kaikki muut nostaa jos pelaaja laittaa ässän, paitsi jos jatkaa*
+
+**Kysymyksen premissi kaatui, ja se kirjataan kaatuneena:** iskua ei kohdistettu kenellekään,
+vaan ässä osui kaikkiin muihin kerralla. Kohdan 31 avoimen kysymyksen muotoilu erityiskorttien
+kohdistamisesta oli siis väärä, ja ainoa kohdistuva valinta Seiskassa on ajoitus.
+
+**Vastauksen loppu nimeää säännön jota kanoni ei tunne samassa muodossa, ja ero jätetään
+tarkistettavaksi eikä ratkaista tässä.** Pöydässä nostolta välttyi jos *jatkoi*, minkä luen
+ässän lyömiseksi edellisen päälle; luenta on kirjoittajan. Sovelluksen kanoni tuntee ässän
+pinoamisen (bonusmaa vaihtuu), muttei sano että pinoaminen vapauttaisi nostolta. Kumpi muoto
+koodissa on ja kumpi pitäisi olla, on sopimusmuutos-kysymys eikä tämän dokumentin ratkaistava.
+
+## 57. Seiskan oppimisen tapa ei ole muistissa, ja Jako-Seiska vaati sääntöjen johtamista
+
+Tommi 20.8.2026 (erä 34), kysyttäessä opittiinko Seiskan säännöt opiskelukaverilta
+sellaisinaan vai sovitettiinko niitä kahdestaan:
+
+> *en muista miten meni, mutta yksimielisyys oli. Jakoon seiskaa tehdessä moni asia piti
+> miettiä tarkemmin. Laiturilla ei pelattu seiskaa.*
+
+Oppimisen tarkka kulku on muistin raja, mutta kaksi asiaa on varmaa: säännöistä vallitsi
+yksimielisyys, ja sovellusta tehdessä moni asia piti miettiä tarkemmin kuin pöytä koskaan
+vaati.
+
+**Seuraus:** kohdan 39 neljäs sääntölähde (itse johdetut säännöt) saa toisen nimetyn pelin
+Moskan rinnalle. Seiskassa johtamisen syy ei ollut pelimuodon käännös vaan tarkkuusvaje:
+pöydän yksimielisyys ei koskaan joutunut määrittelemään sitä minkä koodi joutuu. Tämä on
+kirjoittajan päätelmä vastauksesta.
+
+**Seuraus:** *Laiturilla ei pelattu seiskaa* vahvistaa erän 23 kirjauksen (kohta 1: Seiskan
+paikan täytti Laiturilla Uno omalla pakallaan) itsenäisesti ja eri suunnasta, kysymättä.
+Kahden eri erän sama vastaus eri muodossa on tämän menetelmän vahvin todennus.
+
 **Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
 nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
 Tämä saa kaatua, koska syytä harvinaisuuteen ei kysytty.
