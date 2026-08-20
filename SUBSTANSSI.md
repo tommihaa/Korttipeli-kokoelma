@@ -1711,3 +1711,61 @@ valittavaa.
 sellaisenaan. Oma nimistö näyttää siis olleen lapsuuden sukuperinteen piirre eikä
 pöytäperinteiden yleinen ominaisuus, ja tämä on kirjoittajan päätelmä kahdesta
 tapauksesta eikä Tommin lause.
+
+## 48. Koputuksessa myös kokeneen virhe on laiminlyönti: tietoa ei hankita tarpeeksi
+
+Tommi 20.8.2026 (erä 30), kysyttäessä mikä on se Koputuksen virhe jonka kokenutkin pelaaja
+tekee:
+
+> *ei aggressiivisesti ota selvää pöytäkorteistaan*
+
+Kokeneen virhe on siis sama lajiltaan kuin aloittelijan (kohta 45): tekemättä jättäminen.
+Aloittelija ei täytä tuntematonta sokkona, kokenut ei käytä tarjolla olevia keinoja (jätkän
+ja kuninkaan katsomiset, sokkovaihdot) ottaakseen selvää omista pöytäkorteistaan.
+
+**Seuraus** *(kirjoittajan päätelmä)*: Koputuksen molemmat nimetyt virheet ovat passiivisuutta,
+kun muissa peleissä nimetyt virheet ovat vääriä pelauksia (kohdat 6, 26) tai vaiheen
+huomaamatta jättämistä (kohta 19). Se sopii kohdan 44 vetovoimaan: pelin ydin on tiedon
+kerääminen, joten sen laiminlyönti on pelin oma virhemuoto.
+
+**Seuraus:** kytkös kohtaan 46 on suora. Koputuspäätös nojaa siihen että omat arvot tietää,
+joten tiedonhankinnan passiivisuus lykkää tai estää koputuksen. Virhe ei siis maksa
+yksittäistä korttia vaan koko pelin päätöskyvyn.
+
+**Avoin, ja se on koodikysymys:** kyvykkyysporras mallintaa aloittelijan virheen
+(tuntemattoman täytön kynnys), mutta erillistä riviä tiedonhankinnan aggressiivisuudelle
+siinä ei ole. Erottavatko tasot toisensa myös tässä, on tarkistettava koodista eikä
+kanonista, ja se jää tehtäväksi.
+
+## 49. Väärä täsmäyslyönti oli pöydässä harvinainen
+
+Tommi 20.8.2026 (erä 30), kysyttäessä toimiko väärän lyönnin rangaistus pöydässä samoin kuin
+sovelluksessa ja sattuiko vääriä lyöntejä usein:
+
+> *väärä lyönti oli harvinaista, ehkä 1/5*
+
+Väärä lyönti oli harvinainen, ja Tommin arvio on 1/5. **Luvun yksikkö on epäselvä eikä sitä
+täytetä päättelemällä:** se voi tarkoittaa noin joka viidettä täsmäysyritystä tai noin joka
+viidettä peliä, ja se kysytään seuraavassa erässä. Kysymyksen toinen puoli (toimiko
+rangaistus samoin kuin sovelluksessa) jäi vastaamatta ja merkitään vastaamattomaksi.
+
+**Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
+nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
+Tämä saa kaatua, koska syytä harvinaisuuteen ei kysytty.
+
+## 50. Koputusta pelattiin useimmin isolla porukalla
+
+Tommi 20.8.2026 (erä 30), kysyttäessä pelattiinko Koputusta useammin kahdella pelaajalla vai
+isommalla porukalla:
+
+> *isommalla porukalla*
+
+**Seuraus:** kohta 16 tarkentuu samalla tavalla kuin kohta 35 tarkensi sitä Kasinon
+suunnasta. Kahden pelaajan lista (Kultakala ja Koputus) kertoo mihin vaihdettiin kun väkeä
+oli kaksi, ei sitä missä kokoonpanossa peli eli. Koputus kesti kahden pelaajan asetelman,
+mutta sen tavallinen pöytä oli iso.
+
+**Seuraus** *(kirjoittajan päätelmä)*: täsmäys selittää miksi iso pöytä oli pelin parhaimmillaan.
+Mitä enemmän pelaajia, sitä useampi voi kilpailla samasta täsmäyslyönnistä, joten pelin
+nopeuselementti elää pelaajamäärästä. Kahdella jäljelle jää muistipeli ilman kilpailua
+lyönnistä. Tämä saa kaatua, koska syytä ei kysytty.
