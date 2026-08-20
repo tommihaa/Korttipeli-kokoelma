@@ -1257,7 +1257,7 @@ näkemä ja toinen on luettu, ja Kasinon rakennelman katossa molemmat asennot ov
 | Paskahousun käden koko | kyllä (5, kohta 5) | luettu |
 | Paskahousun kakkosten kovuus | kyllä (kaikki kovia, kohta 5) | luettu |
 | Paskahousun kuvakortin alaraja | kyllä (ei rajaa, kohta 5) | luettu |
-| Ristiseiskan pantin arvonta | kyllä, mutta kumpi asento, ei ole kysytty | luettu |
+| Ristiseiskan pantin arvonta | kyllä: antaja valitsi itse (kohta 71) | luettu |
 | Kasinon rakennelman katto | ei kumpaakaan | molemmat luettuja |
 
 **Seuraus:** asetusvalikko on kauttaaltaan pöytäperinteen ja luetun säännön pari, ei kahden
@@ -1270,8 +1270,9 @@ nimesi rakentamisen ainoaksi mekaniikaksi jota Tommi ei ole pelannut, kohta 8 ke
 luetusta säännöstä, ja tämä kertoo että myös sen asetusvalinta on kokonaan luettu. Kasinon
 kyvykkyysporras nojaa siis osaan jossa koetinta ei ole missään kohdassa.
 
-**Avoin:** Ristiseiskan pantin arvonnan kohdalla ei tiedetä kumpi kahdesta asennosta on se
-pöydässä nähty. Vastaus kertoo että jompikumpi on, muttei kumpi.
+~~**Avoin:** Ristiseiskan pantin arvonnan kohdalla ei tiedetä kumpi kahdesta asennosta on se
+pöydässä nähty. Vastaus kertoo että jompikumpi on, muttei kumpi.~~ *(Kysytty 21.8.2026, ks.
+kohta 71: pöydässä antaja valitsi kortin itse. Taulukon viimeinen tyhjä ruutu on täytetty.)*
 
 *Sulkeutui erässä 13, ks. kohta 37: pöydässä antaja valitsi itse, ja se on myös vakioasento.*
 
@@ -2647,6 +2648,40 @@ näyttö: se ei erota Jakon ansiota Ristiseiskan tuttuudesta.
 mutkan kautta eikä kysymällä, ja kysymättä jättäminen on periaate: palaute otetaan vastaan
 vapaaehtoisena. Tästä ei siis seuraa mittausta eikä sen aloittamista, koska mittaaminen
 tarkoittaisi kysymistä.
+
+---
+
+## 71. Ristiseiskan pantin valitsi pöydässä antaja itse, eli passaaminen oli kauppa
+
+Tommi 21.8.2026 (erä 54), kysyttäessä miten panttikortti valittiin edellisen pelaajan kädestä
+kun joku joutui passaamaan:
+
+> *antaja valitsi itse*
+
+**Kohdan 33 taulukon viimeinen tyhjä ruutu on täytetty.** Sovelluksen vakioasento on siis se
+pöydässä nähty, ja arvonta on luettu vaihtoehto. Tämä pitää voimassa kohdan 33 seurauksen
+kauttaaltaan: jokainen asetus on pöytäperinteen ja luetun säännön pari, ja vaihtoehto on aina
+se jota Tommi ei ole pelannut, paitsi Kasinossa jossa kumpaakaan ei ole pelattu.
+
+**Seuraus, ja se on pelin luonnetta koskeva eikä pelkkä asetusrivi.** Valittu asento tekee
+passaamisesta kaupan eikä rangaistusta. Passaaja saa kortin jota ei halunnut, mutta antaja
+pääsee eroon siitä kortista josta hän eniten haluaa päästä eroon, joten kumpikin osapuoli
+saa jotain. Arvonta-asennossa antaja vain menettää satunnaisen kortin, jolloin passaaminen on
+yksisuuntainen rangaistus.
+
+**Seuraus:** juuri tämä on se mekaniikka jonka varaan pelin taktinen ydin on kanonissa
+rakennettu. `RISTISEISKA.md` johtaa porttikorttien pihtaamisen mielekkyyden siitä, että lukittu
+pöytä pakottaa vastustajat passaamaan ja pihtaaja saa vuorollaan annettua pois juuri sen kortin
+josta ei muuten pääsisi eroon. Se päättely edellyttää antajan valintaa eikä toimi
+arvonta-asennossa, ja nyt tiedetään että edellytys on pöydästä eikä luettu.
+
+**Seuraus:** kohdat 61 ja 64 saavat tästä perustansa. Aloittelijavirhe on porttikortin
+pelaaminen pihtaamisen sijaan ja kokeneen virhe väärän panttikortin antaminen, ja kumpikin on
+virhe vain siksi että kortin saa valita. Botin mallinnus antaa väärän pantin porrastetulla
+todennäköisyydellä, eli se mallintaa valintaa eikä sattumaa, ja se osuu siis oikeaan asentoon.
+
+**Rajaus:** vastaus koskee sitä miten pöydässä pelattiin, ei sitä kumpi asento on parempi peli.
+Sitä ei kysytty, eikä asetuksen olemassaoloa perustella tällä suuntaan tai toiseen.
 
 ---
 
