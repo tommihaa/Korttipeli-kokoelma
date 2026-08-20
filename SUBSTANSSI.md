@@ -1450,7 +1450,8 @@ kysymys vaan muistin raja. Kohdassa ei ole enää avoimia kysymyksiä.
 (ks. kohta 39) Tommi sanoi että pelattiin *kunnes joku pistemäärä oli saavutettu ja voittaja
 löydetty*. Laukaisimen laji oli siis pisteraja eikä kierrosmäärä, ja muistin rajaksi jää
 enää sen suuruus: sanamuoto *joku pistemäärä* kertoo ettei lukua muisteta, eikä sitä täytetä
-päättelemällä.
+päättelemällä. Suuruus kysyttiin erässä 44 vielä suoraan ja vastaus oli *en muista
+pisterajaa*, joten raja on nyt kysytty muistin raja eikä ohesta luettu.
 
 ---
 
@@ -1527,8 +1528,10 @@ turnaussarjaa; ~~ovatko ne sama asia, ei ole kysytty~~ *(kysytty erässä 17, ks
 **Seuraus:** sanasto siirtyi ympäristöstä toiseen ja sisältö vaihtui matkalla, eli
 Laiturin turnauskulttuuri ei ollut lapsuuden muodon kopio vaan saman nimen uusi käyttö.
 
-**Seuraus:** turnaussarja on toinen lapsuuden perinteen oma nimi tässä dokumentissa (kiusa
-kohdassa 38 on ensimmäinen), eli perinteellä oli oma sanasto eikä vain omat säännöt.
+~~**Seuraus:** turnaussarja on toinen lapsuuden perinteen oma nimi tässä dokumentissa (kiusa
+kohdassa 38 on ensimmäinen), eli perinteellä oli oma sanasto eikä vain omat säännöt.~~
+*(Kumoutui erässä 44: turnaussarja ja iltasarja ovat sama sarja, eikä ole varmaa että
+lapsuuden pöytä käytti turnaussarja-sanaa lainkaan, ks. alla ja erän 17 tuntumavastaus.)*
 
 Tommi 20.8.2026 (erä 17), kysyttäessä oliko kiusan iltasarja sama asia kuin lapsuuden
 turnaussarja:
@@ -1539,8 +1542,9 @@ Kiusan iltasarja ei siis ollut lapsuuden turnaussarja, tai ainakaan sitä ei koe
 kutsuttu sellaiseksi. Vastaus on kokemuksen kieltä, joten se kirjataan kokemuksena eikä
 rakenne-erona.
 
-**Seuraus:** lapsuudessa oli kaksi eri sarjamuotoa, kiusan iltasarja ja turnaussarja, ja ne
-pysyivät erillään myös pelaajien omassa kokemuksessa. ~~**Avoin:** mikä muodot erotti muun kuin
+~~**Seuraus:** lapsuudessa oli kaksi eri sarjamuotoa, kiusan iltasarja ja turnaussarja, ja ne
+pysyivät erillään myös pelaajien omassa kokemuksessa.~~ *(Kumoutui erässä 44: sarjamuotoja
+oli yksi, ks. alla.)* ~~**Avoin:** mikä muodot erotti muun kuin
 tuntuman tasolla, ei kysytty.~~
 
 Avoin kysyttiin erässä 43, ja kysymys asetti premissin väärin: se sijoitti molemmat sarjat
@@ -1552,13 +1556,44 @@ korjasi premissin samalla 20.8.2026:
 
 *(Sitaatista korjattu kirjoitusvirhe löydettty → löydetty.)*
 
-Ero on nyt rakenteellinen eikä vain tuntumaa: iltasarja oli yhden pelin sarja (pelkkää
+~~Ero on nyt rakenteellinen eikä vain tuntumaa: iltasarja oli yhden pelin sarja (pelkkää
 kiusaa) ja se päättyi pisterajaan, kun taas lapsuuden turnaussarja oli saman pelin sarja
 jonka peliä ei ole nimetty eikä päättymisehtoa kysytty. Avoin kapenee siis puolikkaaksi:
-iltasarjan rakenne tiedetään, turnaussarjan vastinpuoli ei.
+iltasarjan rakenne tiedetään, turnaussarjan vastinpuoli ei.~~ *(Jälkipuoli kumoutui erässä
+44, ks. alla; iltasarjan kuvaus pitää.)*
 
 **Seuraus:** iltasarjan pisteraja on sama tieto joka kohdassa 38 oli muistin raja, ja se
 tarkentui tässä toisen kysymyksen ohessa; kirjaus on kohdassa 38.
+
+Turnaussarjan vastinpuoli kysyttiin erässä 44, ja vastaus kaatoi kahden muodon asetelman.
+Tommi 20.8.2026:
+
+> *ei ollut lapsuuden turnaussarjoja, vain kiusaa*
+
+pisterajasta erikseen kysyttäessä: *en muista pisterajaa*, ja täsmennyksenä samassa
+istunnossa:
+
+> *lapsuuden turnaussarja on sama kuin iltasarja, kiusaa pelattiin*
+
+Lapsuudessa oli siis **yksi sarja kahdella nimellä**, ei kahta sarjamuotoa: iltasarja ja
+lapsuuden turnaussarja tarkoittavat samaa kiusan sarjaa. Aiempi lausuma *turnaussarja
+lapsuudessa oli yhtä peliä* ei kumoutunut vaan sai sisältönsä: se yksi peli oli kiusa.
+Kumoutui sen sijaan tämän kohdan luenta kahdesta erillisestä muodosta, joka oli rakennettu
+erän 17 tuntumavastauksen päälle; tuntumavastaus itse asettuu nyt niin, ettei sarja
+lapsuudessa tuntunut turnaussarjalta vaikka nimitys jälkikäteen kattaa sen. Iltasarjan
+pisteraja kysyttiin suoraan ja vastaus oli *en muista*, joten kohdan 38 muistin raja on nyt
+kysytty eikä vain toisen vastauksen ohesta luettu.
+
+Tommi lisäsi 20.8.2026 samassa istunnossa Laiturin muodosta:
+
+> *laiturin turnaussarja oli ehkä seitsemää eri peliä*
+
+*(Sitaatista korjattu kirjoitusvirhe turnussarja → turnaussarja.)*
+
+Sovittu määrä eri pelejä saa siis suuruusluokan: ehkä seitsemän, ja *ehkä* on Tommin oma
+varaus joka kirjataan sellaisenaan. Seitsemän on enemmän kuin Laiturin viisi korttipeliä,
+joten joko sarjaan kuului muitakin lajeja kuin korttia tai muitakin korttipelejä kuin
+viisikko; kumpaa se tarkoittaa, ei kysytty eikä sitä täytetä päättelemällä.
 
 Tommi 20.8.2026 (erä 18), kysyttäessä siirtyikö paperille kirjaamisen tapa lapsuudesta
 Laiturin turnauksiin:
@@ -2230,3 +2265,25 @@ mutta sen tavallinen pöytä oli iso.
 Mitä enemmän pelaajia, sitä useampi voi kilpailla samasta täsmäyslyönnistä, joten pelin
 nopeuselementti elää pelaajamäärästä. Kahdella jäljelle jää muistipeli ilman kilpailua
 lyönnistä. Tämä saa kaatua, koska syytä ei kysytty.
+
+## 61. Ristiseiskan aloittelijavirhe on porttikortin pelaaminen pihtaamisen sijaan
+
+Tommi 20.8.2026 (erä 44), kysyttäessä missä hetkessä Ristiseiskan aloittelija tekee virheen:
+
+> *pelaa porttikortin, jota voisi pihdata*
+
+Virhe on porttikortin pelaaminen silloin kun sen voisi pitää kädessä. Porttikortti on tässä
+kortti jonka pelaaminen avaa muille rivin jatkon (kirjoittajan sanoitus termille, jota
+vastaus käytti selittämättä), ja pihtaaminen on sen panttaamista niin että muiden peli
+pysyy tukossa.
+
+**Seuraus:** tämä on kohdan 6 kuvaaman virheen viides nimetty esimerkki ja viides eri peli
+(kohta 26 oli neljäs). Ristiseiskassa muoto on puhtain tähän mennessä: kortin arvo ei ole
+sen koossa vaan siinä että muut tarvitsevat sitä, joten pidättämisen arvo on kokonaan
+suhteessa muiden käsiin eikä kortin omaan arvoon.
+
+**Seuraus** *(kirjoittajan päätelmä)*: aloittelijan virhe on tässä pelin nimen vastakohta
+vain mekaniikan tasolla: kiusa-nimi oli kohdan 38 mukaan pelin toinen nimi eikä luonteen
+kuvaus, joten nimestä ei johdeta mitään. Virhe itsessään on silti juuri kiusaamisen
+tekemättä jättämistä: portti aukeaa ilmaiseksi. Tämä saa kaatua, koska kytkentää ei
+kysytty.
