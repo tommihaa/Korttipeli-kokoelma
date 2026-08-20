@@ -1207,11 +1207,64 @@ mittainen. Tommi tarkensi vielä samana päivänä:
 Sama sana kantoi siis kahta sisältöä kahdessa ympäristössä: lapsuudessa turnaussarja oli
 saman pelin sarja, Laiturilla eri pelien sarja. Tämän kohdan kuvaus (sovittu määrä eri
 pelejä, sijoituspisteet) koskee Laituria, ja kohdan 38 kiusan iltasarja on lähellä lapsuuden
-turnaussarjaa; ovatko ne sama asia, ei ole kysytty. Kohdassa ei ole muita avoimia
-kysymyksiä.
+turnaussarjaa; ~~ovatko ne sama asia, ei ole kysytty~~ *(kysytty erässä 17, ks. alla)*.
 
 **Seuraus:** sanasto siirtyi ympäristöstä toiseen ja sisältö vaihtui matkalla, eli
 Laiturin turnauskulttuuri ei ollut lapsuuden muodon kopio vaan saman nimen uusi käyttö.
 
 **Seuraus:** turnaussarja on toinen lapsuuden perinteen oma nimi tässä dokumentissa (kiusa
 kohdassa 38 on ensimmäinen), eli perinteellä oli oma sanasto eikä vain omat säännöt.
+
+Tommi 20.8.2026 (erä 17), kysyttäessä oliko kiusan iltasarja sama asia kuin lapsuuden
+turnaussarja:
+
+> *ei se turnaussarjalta silloin tuntunut*
+
+Kiusan iltasarja ei siis ollut lapsuuden turnaussarja, tai ainakaan sitä ei koettu eikä
+kutsuttu sellaiseksi. Vastaus on kokemuksen kieltä, joten se kirjataan kokemuksena eikä
+rakenne-erona.
+
+**Seuraus:** lapsuudessa oli kaksi eri sarjamuotoa, kiusan iltasarja ja turnaussarja, ja ne
+pysyivät erillään myös pelaajien omassa kokemuksessa. **Avoin:** mikä muodot erotti muun kuin
+tuntuman tasolla, ei kysytty.
+
+---
+
+## 40. Lapsuuden Paskahousulla ei ollut omaa nimeä, ja sen muoto on sovelluksessa valittavissa
+
+Tommi 20.8.2026 (erä 17), kysyttäessä oliko Paskahousulla lapsuudessa toinen nimi tai omia
+sääntömuutoksia niin kuin Ristiseiskalla oli kiusa:
+
+> *ei, variaatio oli 5 korttia, ei kynnystä ja kaikki kakkoset kovia*
+
+Toista nimeä ei ollut. Lapsuuden muoto erosi kolmessa kohdassa: käsi oli viisi korttia,
+kynnystä ei ollut, ja kaikki kakkoset olivat kovia.
+
+**Seuraus** *(kirjoittajan päätelmä, tarkistettu kanonista kirjaushetkellä)*: kolme muutosta
+ovat täsmälleen `PASKAHOUSU.md`:n kolmen sääntövalinnan ei-vakioasennot (käden koko 5,
+kuvakortin alaraja 0, kaikki kakkoset kovia). Lapsuuden Paskahousu on siis pelattavissa
+sovelluksessa asetuksia vaihtamalla, ja kohdan 33 rivi "pöydässä nähty asento" saa Paskahousun
+kohdalla yhden nimetyn pöydän: lapsuuden sukupöydän. Oliko sama muoto käytössä myös muualla,
+ei kysytty.
+
+**Seuraus:** oma nimi oli lapsuuden peleistä vain Ristiseiskalla (kiusa, kohta 38), vaikka
+molempien muoto erosi kolmella muutoksella. Nimen synty ei siis seurannut muutosten määrästä,
+eikä sitä mistä se seurasi ole kysytty.
+
+---
+
+## 41. Lapsuuden peliporukka oli sukua, ja turnaussarjan pisteet kirjattiin paperille
+
+Tommi 20.8.2026 (erä 17), kysyttäessä keitä lapsuuden peliporukkaan kuului ja missä yleensä
+pelattiin, sekä pidettiinkö turnaussarjan pisteet paperilla vai muistissa:
+
+> *sukulaiset mummon siskon luona*
+> *paperi*
+
+Lapsuuden pelit pelattiin sukulaisporukassa mummon siskon luona, ja turnaussarjan pisteet
+kirjattiin paperille.
+
+**Seuraus:** kohta 1 tarkentuu: lapsena opitut pelit (Ristiseiska ja Paskahousu) saavat nyt
+paikan ja porukan. Lapsuuden perinne oli sukuperinne jolla oli oma paikka, oma sanasto
+(kiusa, turnaussarja) ja kirjallinen pistekirjanpito, eli muodoltaan vakiintunut tapa eikä
+satunnaista pelailua.
