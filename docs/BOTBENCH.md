@@ -598,9 +598,13 @@ Muotoilu on tarkoituksella
 kapeampi kuin *ensimmäinen monotoninen porras*, koska Seiska tulee lähelle (73,3 / 58,0 /
 77,3) mutta sen luvut ovat eri ajoista: vain `hard vs normal` on mitattu N=400:lla
 nykyisestä koodista, ja juuri sillä parilla on dokumentoitu epävakaus osaotosten välillä
-(52,0 % kierroksilla 0-149 ja 61,6 % kierroksilla 150-399). Seiskan puhdas yhden ajon
+(52,0 % kierroksilla 0-149 ja 61,6 % kierroksilla 150-399). ~~Seiskan puhdas yhden ajon
 uusintamittaus on siis edelleen tekemättä, eikä sitä pidä olettaa tehdyksi tämän osion
-perusteella.
+perusteella.~~
+
+*Varaus purkautui samana päivänä: uusinta ajettiin 20.8.2026 ja kaikki kolme paria ovat nyt
+yhdestä ajosta (78,5 / 58,0 / 69,5), ks. osio "Kutonen, monikortti ja Seiska 20.8.2026". Rivi
+jätetään näkyviin kumottuna, koska se oli oikea sillä tiedolla joka kirjoitushetkellä oli.*
 
 **Vertailu vanhaan N=40-lukuun (66/68/65) ei ole puhdas A/B.** Koputuksen bottilogiikka on
 välissä irrotettu `runAI`:n sisältä moduulitason funktioiksi (`koKnockEstimate`,
@@ -693,6 +697,105 @@ Projects-juuressa ei ole `node_modules`ia ja `npx vitest` alkaa asentaa omaa ver
 joka ei löydä `jsdom`ia. Ja PowerShellissä natiivikomennon `2>&1` kääntää normaalinkin
 tulosteen virheeksi, joten ajo näyttää epäonnistuneelta vaikka se onnistuisi.
 
+## Kutonen, monikortti ja Seiska 20.8.2026 (N=400): kaksi nollatulosta ja yksi suljettu kohta
+
+Saman päivän toinen ajosarja, ja se toteutti kohtien 2 ja 4 ehdotukset. Molemmat ehdotukset
+olivat kirjattuja, kanoniin nojaavia ja nimetyllä koodikohteella varustettuja, ja **kumpikaan ei
+tuottanut porrasta**. Se on tämän osion sisältö: kaksi kartoitettua umpikujaa, ei kaksi
+epäonnistunutta ajoa, ja ero näiden välillä on mitattu eikä oletettu.
+
+**Baseline ajettiin ensin uudelleen, ja se toistui bitilleen kaikissa kolmessa parissa**
+(Moska 286/114/0 · 216/184/0 · 259/141/0, samat kuin 18.8.2026). Ilman tätä lukemaa muutosten
+jälkeisiä lukuja ei olisi voinut tulkita, koska ero olisi voinut olla ympäristön eikä muutoksen.
+
+### Paskahousu: kutoskiristys, nollatulos, muutos palautettu
+
+Mestari sai pakan tyhjennyttyä valita kortin joka maksimoi todennäköisyyden ettei seuraavalla
+ole vastausta, sen sijaan että lyö pienimmän. Sääntö kirjoitettiin yleisenä eikä kutosen nimeen
+sidottuna, koska kutonen on tuon laskun **tulos**: sen päälle käy 21 korttia 51:stä, kun
+seiskan päälle käy 29, koska kuvakortit tyssäävät alarajaan.
+
+| pari | tulos | 20.8. baseline | z |
+|------|------:|---------------:|--:|
+| hard vs beginner | **55,1 %** (220 / 179 / 0, n=399) | 53,6 % | 2,05 |
+| hard vs normal | **51,0 %** (204 / 196 / 0) | 49,5 % | 0,40 |
+| normal vs beginner | 49,0 % (196 / 204 / 0) | 49,0 % | -0,40 |
+
+**Verrokki tuli ulos bitilleen samana**, mikä todistaa että muutos pysyi Mestarissa. Molemmat
+Mestari-parit liikkuivat samaan suuntaan ja saman verran, kuusi voittoa neljästäsadasta
+kummassakin, mutta suuruus on kohinan kokoluokkaa. Ajot on siemennetty samoiksi peleiksi, joten
+oikea testi olisi parittainen ja vaatisi tiedon siitä montako yksittäistä peliä kääntyi; sitä ei
+kerätty, eikä pelkistä yhteenlasketuista luvuista voi laskea z:aa erotukselle.
+
+**Muutos palautettiin** Tommin linjauksella. Peruste on sama kuin Ristiseiskan passausmuistilla
+21.7.2026: muutos tehtiin voimistamaan eikä yhtenäistämään kanonia, eikä se voimistanut.
+Paskahousu pysyy `FLAT_AI_GAMES`-listalla, ja kohta 4 pysyy auki uudella tiedolla.
+
+### Moska: monikorttihyökkäys, nollatulos, muutos jäi koodiin
+
+Mestari lyö koko samanarvoisen ryhmän kun nostopakka **ja** valttikortti ovat lopussa, ja yhden
+kortin niin kauan kuin käsi täydentyy. Kanonin rivin 13 raja ja käyttöliittymän kuuden kortin
+raja ovat botin omassa valinnassa, koska `doAttack` ei valvo kumpaakaan vaan luottaa kutsujaan.
+
+| pari | tulos | baseline (sama päivä) | z |
+|------|------:|----------------------:|--:|
+| hard vs beginner | **72,5 %** (290 / 110 / 0) | 71,5 % | 9,0 |
+| hard vs normal | **54,25 %** (217 / 183 / 0) | 54,0 % | 1,7 |
+| normal vs beginner | 64,75 % (259 / 141 / 0) | 64,75 % | 5,9 |
+
+Verrokki on jälleen muuttumaton, ja `hard vs normal` liikkui **yhden ainoan pelin verran**
+neljästäsadasta. Se on niin lähellä nollaa kuin mittari pystyy antamaan.
+
+**Muutos jäi silti koodiin**, ja se on tietoinen poikkeus työjärjestyksen *peru jos porras ei
+nouse* -sääntöön. Peruste ei ole voitto-% vaan tämän dokumentin oma alkuosio: mittari näkee
+voimaeron muttei outoa siirtoa joka toistuu ilman että se näkyy voittoprosentissa, ja juuri sen
+näkee katselutila. Botti joka ei koskaan lyö kolmea samaa vaikka säännöt sallivat ja ihminen
+tekee niin, on täsmälleen sitä eriskummallisuutta jota katselutila oli rakennettu bongaamaan.
+
+### Seiska: puhdas yhden ajon uusinta, avoin kohta suljettu
+
+Seiskan luvut olivat kahdesta eri ajosta, ja vain `hard vs normal` oli mitattu N=400:lla
+nykyisestä koodista. Nyt kaikki kolme ovat samasta ajosta.
+
+| pari | tulos | vanha kirjattu | z |
+|------|------:|---------------:|--:|
+| hard vs beginner | **78,5 %** (314 / 86 / 0) | 73,3 % (eri ajosta) | 11,4 |
+| hard vs normal | **58,0 %** (232 / 168 / 0) | 58,0 % (sama luku) | 3,2 |
+| normal vs beginner | **69,5 %** (278 / 122 / 0) | 77,3 % (eri ajosta) | 7,8 |
+
+`hard vs normal` toistui bitilleen, mikä oli odotettavaa juuri siltä pariltä joka oli jo mitattu
+nykyisestä koodista. Uutta tietoa ovat kaksi muuta, ja `normal vs beginner` liikkui reilusti
+alaspäin. **Porras on monotoninen ja kaikki kolme paria ovat kohinan yläpuolella**, mutta
+suoraa vertailua Koputukseen ei tehdä tässä: se väite on mennyt kahdesti yli tässä
+dokumentissa, ja kolmatta muotoilua ei kirjoiteta ilman että sen tarve on osoitettu.
+
+### Menetelmä: nollatulos ilman laukeamislukua ei ole mittaus
+
+Tämän ajosarjan tärkein havainto ei ole kumpikaan voitto-%. Kaksi täysin eri tilannetta näyttää
+mittarissa identtiseltä: **haara laukesi ja osoittautui merkityksettömäksi**, tai **haara ei
+laukennut kertaakaan**. Jälkimmäisessä luku ei kerro muutoksesta mitään, ja se on sokean
+koettimen muoto (`KÄSITTEISTÖ.md` §0.2): komento onnistui ja vastasi eri kysymykseen kuin
+luultiin.
+
+Ero mitattiin väliaikaisella laskurilla, joka laskee kaksi eri asiaa. `fired` on montako kertaa
+haara ylipäätään laukesi, `changed` montako kertaa se valitsi eri siirron kuin vanha koodi olisi
+valinnut. Sata peliä kumpaakin peliä, `hard vs normal`:
+
+| haara | fired | changed | muuta |
+|---|------:|--------:|---|
+| Paskahousu, kutoskiristys | 140 | **70** | 0,7 muuttunutta siirtoa per peli |
+| Moska, monikorttihyökkäys | 450 | **161** | 385 korttia, eli 2,4 korttia per hyökkäys |
+
+Molemmat haarat siis laukeavat runsaasti ja muuttavat oikeasti siirtoja. **Kumpikaan nollatulos
+ei ole sokea koetin**, vaan aito mittaus siitä että muutos tapahtui eikä vaikuttanut. Ilman näitä
+lukuja kohtia 2 ja 4 ei olisi voinut sulkea, koska harvoin laukeava haara ja vaikutukseton haara
+johtavat vastakkaisiin päätöksiin.
+
+Kaksi rajausta. Paskahousun luku mittaa koodia joka on sittemmin palautettu, eli se dokumentoi
+palautetun muutoksen eikä nykytilaa. Ja laskuri oli **väliaikainen instrumentti** joka poistettiin
+ajon jälkeen: mittalaite tuotantokoodissa olisi johdettu kopio jota kukaan ei myöhemmin mitätöi,
+joten luku asuu tässä dokumentissa ja koodi on ennallaan.
+
 ## Käyttö jatkossa
 
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän
@@ -735,9 +838,9 @@ kuin valitsee mistä aloittaa:
 | ~~Maija (alapää)~~ | ~~kalibrointi~~ | ✅ ratkaistu 26.7.2026, ks. osio yllä |
 | Maija (yläpää) | uusi kanava | vasta kun kanava löytyy |
 | ~~Moska~~ | ~~ei diagnosoitu, luultavasti uusi kanava~~ | ~~kun syy on selvitetty~~ |
-| Moska | **uusi kanava, nyt diagnosoitu** (20.8.2026) | heti, ks. kohta 2 |
+| ~~Moska~~ | ~~uusi kanava, nyt diagnosoitu~~ | ✅ mitattu 20.8.2026: nollatulos, kanava suljettu |
 | Ristiseiska | **uusi kanava**, vanha todettu umpikujaksi | vasta kun kanava löytyy |
-| Paskahousu | **uusi kanava, nimetty koodikohde** (20.8.2026) | heti, ks. kohta 4 |
+| Paskahousu | **uusi kanava**, kutonen mitattu ja hylätty (20.8.2026) | vasta kun uusi kanava löytyy |
 
 **Luokittelu koeteltiin heti ja piti.** Maija ennustettiin kalibroinniksi ja ratkesi
 yhden rivin muutoksella ilman uutta taitoelementtiä, täsmälleen kuten laji lupasi.
@@ -771,7 +874,7 @@ osiossaan "Maija 26.7.2026" yllä.
 **Jäljelle jäi Maijan yläpää:** `hard vs normal` on yhä 52,9 % (z = 1,2). Se on eri lajin
 kohta, uuden kanavan odottaja, eikä jatku tästä samalla työtavalla.
 
-### 2. Moska: Mestari ei erotu Kisällistä, ja syy on nyt nimetty
+### 2. Moska: Mestari ei erotu Kisällistä ✅ KANAVA MITATTU 20.8.2026 (nollatulos)
 
 `hard vs normal` 53,5 % (N=400, 18.8.2026 uusintamittauksessa 54,0 %). Muoto on
 `beginner << normal ≈ hard`, sama kuin Seiskalla ja Kultakalalla: alaporras terve, yläpää
@@ -798,6 +901,13 @@ molemmat puutteet yhteen tasokohtaiseen muutokseen. Se on `hard`-only, joten
 Kanonin rivin 13 raja on toteutettava botin omassa valinnassa, koska `doAttack` ei valvo
 korttimäärää vaan luottaa kutsujaan.
 
+**Mitattu samana päivänä, ja ehdotus ei tuottanut porrasta.** `hard vs normal` 54,0 → 54,25 %,
+eli yksi peli neljästäsadasta, verrokki bitilleen muuttumaton. Laskuri osoitti että haara
+laukesi 1,6 kertaa pelissä ja löi keskimäärin 2,4 korttia, joten kyse ei ole laukeamattomasta
+haarasta vaan vaikutuksettomasta. Muutos jäi silti koodiin katselutilaperusteella, ks. osio
+"Kutonen, monikortti ja Seiska 20.8.2026". **Moskan yläpää on siis yhä auki, ja tunnetuista
+kanavista tämä on nyt käytetty loppuun.**
+
 ### 3. Ristiseiska: hyväksy nykytila vai etsi uusi kanava?
 
 Linjauskysymys, ei mittaus. Ristiseiska on merkitty samantasoiseksi ja `flatNote` näkyy
@@ -820,7 +930,7 @@ siltä osin että hypoteesin piti tulla AI-työstä: se tuli kanonin ja koodin r
 **Avoin kohta kapenee eikä sulkeudu.** Kysymys ei ole enää *löytyykö kanavaa* vaan
 *riittääkö 55 % merkinnän poistoon*, ja se on Tommin linjaus.
 
-### 4. Paskahousu: litteä porras, ja kutonen on ainoa nimetty kohde
+### 4. Paskahousu: litteä porras, ja kutonen on nyt mitattu ja hylätty
 
 Uusi kohta 20.8.2026. Kaikki kolme paria ovat noin 50 % (53,6 / 49,5 / 49,0, N=400), ja
 peli on lisätty `FLAT_AI_GAMES`-listaan, joten pelaajalle ei valehdella. Kohta on silti
@@ -834,10 +944,33 @@ prosenttiyksikköä, eli fumble osuu päätöksiin jotka eivät ratkaise peliä.
 **Nimetty kohde on kutonen.** Tommi nimesi kokeneen virheeksi ysin ja kutosen arvon
 ymmärtämättömyyden, ja perusteli kutosen näin: sen päälle käy paljon vähemmän kortteja
 kuin seiskan, joten kutosen pelaaja tekee nostamisesta todennäköisemmän seuraajalle kuin
-itselleen. Ysi on jo säästölistalla kaikilla tasoilla, mutta **kutoseen viittaavaa
-päätöshaaraa ei ole koodissa lainkaan**. Se on siis uusi kanava jolla on sekä lähde että
+itselleen. Ysi on jo säästölistalla kaikilla tasoilla, mutta ~~kutoseen viittaavaa
+päätöshaaraa ei ole koodissa lainkaan~~. Se on siis uusi kanava jolla on sekä lähde että
 puuttuva koodikohde, mikä on harvinaisempi yhdistelmä kuin Maijan tai Ristiseiskan
 yläpäässä.
+
+**Mitattu 20.8.2026, ja kanava on hylätty.** Ehdotus toteutettiin ja palautettiin samana
+päivänä: `hard vs normal` 49,5 → 51,0 %, `hard vs beginner` 53,6 → 55,1 %, verrokki bitilleen
+muuttumaton. Laskuri osoitti 0,7 muuttunutta siirtoa per peli, eli haara laukesi runsaasti,
+joten nollatulos koskee kanavaa eikä laukeamista. Yliviivattu lause pitää siis taas
+paikkansa, koska koodi palautettiin. Luvut ja peruste osiossa "Kutonen, monikortti ja Seiska
+20.8.2026".
+
+**Tommin havainto piti tasan, ja se on syytä kirjata erikseen tuloksesta riippumatta.** Mitattuna
+kutosen päälle käy 21 korttia 51:stä ja seiskan päälle 29, ja kutonen on suurin kortti joka
+vielä torjuu kuvakortit. Ysi on identtinen 21:llä, mikä selittää miksi molemmat nimettiin
+yhdessä: ne ovat kahden eri kaistan huiput. Kanava on siis todellinen pelissä, se ei vain
+ratkaise tässä toteutuksessa mitään.
+
+**Jäljelle jäi yksi suunniteltu mutta mittaamaton ehdokas, ja se on eri muuttuja.** Botti lyö
+aina kaikki saman arvoiset kortit kerralla, jolloin kolmen kutosen lyöminen jättää kasan päälle
+sarjan jonka **yksi** kutonen täydentää neljäksi, ja seuraava saa kasan pois ja jatkovuoron.
+Kahden lyöminen jättää sarjan jonka täydentämiseen tarvitaan kaksi, ja jos itse pitää kolmea,
+niitä on näkymättömissä enää yksi: silloin kaato ei ole epätodennäköinen vaan **mahdoton**, eikä
+pakan tyhjennyttyä kukaan muukaan voi täydentää sitä. Sääntö kirjoittuu siis lukumääränä eikä
+korttina: lyö suurin määrä jolla näkymättömät samanarvoiset eivät riitä neljään, ja jos sellaista
+määrää ei ole, lyö kaikki. Poikkeus on käsi joka tyhjenee lyönnillä, koska se voittaa aina.
+Ehdotusta ei ole mitattu, eikä sitä saa mitata samassa ajossa kutoskiristyksen kanssa.
 
 ### Reunaehdot AI-työssä
 

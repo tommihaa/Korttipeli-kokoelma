@@ -125,9 +125,17 @@ moskaCanPass`), ja kommentti nimeää tämän itse: Aloittelija ei siirrä.
 Puoliksi mallinnettu. Muistipuoli on Mestarilla: `aiPickAttackSN` käyttää poistuneiden
 korttien kirjanpitoa (`removedRef`) ja suosii arvoja joista kopiot ovat poissa, eli
 juuri sivustalyöntiriskin hallintaa jonka Tommi nimesi muistin syyksi. Sen sijaan
-**vaihetajua ei ole millään tasolla**: mikään hyökkäys-, puolustus- tai
+~~**vaihetajua ei ole millään tasolla**: mikään hyökkäys-, puolustus- tai
 lisäyspäätöksistä ei lue nostopakan kokoa, joten tavoitteen kääntymistä korteista eroon
-pääsemiseksi ei tapahdu. Siltä osin jokainen bottitaso tekee kokeneen virheen.
+pääsemiseksi ei tapahdu. Siltä osin jokainen bottitaso tekee kokeneen virheen.~~
+
+*Korjattu 20.8.2026: Mestarilla on nyt vaihetaju yhdessä päätöksessä.* `aiPickAttackSN` lukee
+pakan tyhjyyden (`deck.length === 0 && trumpCard === null`) ja lyö silloin koko samanarvoisen
+ryhmän yhden kortin sijaan, eli juuri tavoitteen kääntyminen korteista eroon pääsemiseksi.
+Muutos on tasokohtainen, joten **Oppipoika ja Kisälli tekevät kokeneen virheen edelleen**, ja
+myös Mestarilta puuttuu vaihetaju puolustus- ja lisäyspäätöksistä. Mittaus ei liikuttanut
+voitto-osuutta (`docs/BOTBENCH.md`, osio "Kutonen, monikortti ja Seiska 20.8.2026"), joten
+kohta 19 on mallinnettu mutta ei ratkaistu.
 
 ### Seiska
 
