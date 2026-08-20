@@ -1610,3 +1610,75 @@ korttipelejä:
 **Seuraus:** pöytä skaalasi pelaajamäärään pakkaa kasvattamalla, ei pöytää jakamalla.
 Sovellus tuntee vain 2–4 pelaajaa ja yhden pakan, joten tämä on pöydän muoto jota sovellus
 ei kanna. Mihin peleihin toinen pakka otettiin ja kuinka isolla porukalla, ei kysytty.
+
+---
+
+## 44. Koputuksen vetovoima on muistaminen ja täsmäys
+
+Tommi 20.8.2026 (erä 28), kysyttäessä mikä Koputuksessa oli se juttu joka teki siitä pöydässä
+pelaamisen arvoisen:
+
+> *muistaminen, täsmäys*
+
+Vastaus nimeää kaksi mekaniikkaa. Muistaminen on omien katsottujen korttien ja pelin mittaan
+paljastuneen tiedon kantamista, ja täsmäys on kanonin sääntö 3: kun kortti lyödään keskelle,
+kaikki saavat lyödä saman vahvuisen omasta pöytäkortistaan, ja nopeus ratkaisee.
+
+**Seuraus** *(kirjoittajan päätelmä)*: Koputus yhdistää samaan peliin kaksi ainesta jotka
+muualla kokoelmassa ovat eri pelien ytimiä: muistin (kohta 19 nimeää sen taidoksi Moskassa)
+ja nopeusreaktion (Läpsyn laji, kohta 21). Se sopii kohtaan 23: yhdeksän peliä eivät ole
+saman idean muunnelmia, ja Koputuksen oma yhdistelmä on juuri tämä pari.
+
+**Seuraus** *(kirjoittajan päätelmä)*: kohdan 16 kahden pelaajan parivalinta (Kultakala ja
+Koputus) saa tästä sisältöä. Molemmat ovat muistipelejä, ja muistin tuottama epävarmuus ei
+riipu pelaajamäärästä samalla tavalla kuin toisten korttien arvailu (kohta 13), joten ne
+kestävät kahden pelaajan asetelman. Tätä ei kysytty, ja se saa kaatua.
+
+## 45. Koputuksen aloittelijavirhe on sokkovaihdon välttäminen, ja porras mallintaa sen jo
+
+Tommi 20.8.2026 (erä 28), kysyttäessä missä hetkessä Koputuksen aloittelija tekee virheen
+vaikka mikään sääntö ei kiellä hänen siirtoaan:
+
+> *ei vaihda sokkona pientä korttia pöytäkortteihinsa*
+
+Virhe on siis tekemättä jättäminen: aloittelija nostaa pienen kortin eikä vaihda sitä sokkona
+tuntemattomaan pöytäkorttiinsa, vaikka kanoni sen sallii (tuntematonta voi vaihtaa sokkona,
+jos pitää nostokortistaan).
+
+**Seuraus:** tämä on eri virhelaji kuin kohtien 6 ja 26 liian hyvän kortin pelaaminen, ja
+lähempänä kohdan 7 muotoa: aloittelija ostaa varmuutta hinnalla jota ei tarvitsisi maksaa.
+Tuntematon pöytäkortti on odotusarvoltaan keskimääräinen, joten varman pienen kortin
+heittäminen poistopakkaan tuntemattoman säilyttämisen sijaan jättää arvoa pöytään. Tässä
+virhe on silti pelkkä laiminlyönti eikä väärä pelaus, ja se on dokumentin ensimmäinen
+sellainen.
+
+**Vastaus on jo mallinnettu koodissa, ja se on siksi vahvistus samalla tavalla kuin
+Ristiseiskan porttikortti kohdassa 6.** Kyvykkyysportaan rivi *tuntemattoman täytön kynnys*
+erottaa tasot täsmälleen tällä virheellä: Oppipoika ei täytä koskaan, Kisälli täyttää
+odotetulla hyödyllä 5 ja Mestari hyödyllä 3. Aloittelijataso tekee Tommin nimeämän virheen
+tarkoituksella.
+
+## 46. Koputuspäätöksen kriteerit ovat korttimäärä ja oma varmuus
+
+Tommi 20.8.2026 (erä 28), kysyttäessä mistä pöydässä tiesi että nyt kannattaa koputtaa:
+
+> *vähiten kortteja ja tietää niiden arvot varsinkin jos muille ne ovat tuntemattomia*
+
+Koputetaan siis kun kortteja on vähiten ja niiden arvot tietää itse, ja etu on suurimmillaan
+tuntemattomuuden vallitessa.
+
+**Seuraus** *(kirjoittajan päätelmä)*: kaksi kriteeriä ovat täsmälleen kohdan 44 kaksi
+vetovoimaa lunastettuina. Korttimäärä vähenee täsmäyksellä, ja arvojen tietäminen on
+muistamisen tulos, joten koputus on se hetki jossa molemmat mekaniikat maksavat.
+
+**Seuraus** *(kirjoittajan päätelmä kanonia vasten)*: pöydän ensimmäinen kriteeri ja koodin
+kynnys eivät ole sama mitta. Kanonin koputuskynnys on summa-arvio (arvio enintään 8), ja
+korttien lukumäärä on kanonissa vasta tasatilanteen ratkaisija. Mitat korreloivat, koska
+vähempi kortteja tarkoittaa yleensä pienempää summaa, mutta pöydän muotoilu lähtee määrästä
+ja koodin summasta. Ero on luultavasti kirjaus eikä käyttäytyminen, ja se saa kaatua.
+
+**Avoin, ja se on luentakysymys eikä uusi aihe:** vastauksen loppu *jos muille ne ovat
+tuntemattomia* taipuu kahteen suuntaan: omat kortit ovat muilta piilossa (kukaan ei voi
+varastaa hyviä pikkukortteja Q- tai K-vaihdolla), tai muiden omat kortit ovat heille
+itselleen tuntemattomia (heidän summa-arvionsa on epävarma eivätkä he uskalla koputtaa
+ensin). Kumpaa tarkoitettiin, kysytään seuraavassa erässä eikä täytetä päättelemällä.
