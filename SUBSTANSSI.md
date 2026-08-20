@@ -2400,3 +2400,77 @@ vain mekaniikan tasolla: kiusa-nimi oli kohdan 38 mukaan pelin toinen nimi eikä
 kuvaus, joten nimestä ei johdeta mitään. Virhe itsessään on silti juuri kiusaamisen
 tekemättä jättämistä: portti aukeaa ilmaiseksi. Tämä saa kaatua, koska kytkentää ei
 kysytty.
+
+## 62. Maijan kokeneen virhe on kaatamatta jättäminen
+
+Tommi 20.8.2026 (erä 50), kysyttäessä mikä on se Maijan virhe jonka myös kokenut pelaaja
+tekee:
+
+> *jättää kaatamatta*
+
+**Seuraus:** aloittelijan ja kokeneen virheet ovat saman päätöksen kaksi äärtä. Aloittelija
+kaataa liian isolla kortilla (kohta 26), kokenut jättää kaatamatta kokonaan. Virheen
+paikka on molemmilla kaatopäätös, mutta suunta on vastakkainen.
+
+**Avoin, ja se on jännite kohdan 24 kanssa:** kaatamatta jättäminen on siellä myös keino,
+koska käsi kasvaa ja valtteja kertyy. Missä tilanteessa keino muuttuu virheeksi, ei
+kysytty, eikä rajaa täytetä päättelemällä.
+
+## 63. Paskahousun kokeneen virhe on ysin ja kutosen arvon ymmärtämättä jättäminen
+
+Tommi 20.8.2026 (erä 50), kysyttäessä mikä on Paskahousussa kokeneen pelaajan virhe:
+
+> *ei ymmärrä ysin ja kutosen arvoa*
+
+Kokeneen virhe ei ole väärä yksittäinen lyönti vaan kahden kortin arvon ymmärtämättömyys.
+
+**Kirjoittajan tarkistus kanonista kirjaushetkellä:** puolet vastauksesta on jo
+mallinnettu ja puolet ei. `PASKAHOUSU.md`:n bottistrategia listaa ysin säästettäviin (9
+pelataan säästettävistä ensin, ennen kymppiä ja ässää), mutta kutosen erityisarvoa kanoni
+ei nimeä missään.
+
+**Seuraus** *(kirjoittajan päätelmä kanonin säännöistä)*: kutosen arvo voi tulla
+kuvakortin alarajasta. Vakiosäännöillä kuvakortin saa lyödä vain arvon 7 tai isomman
+päälle, joten kutonen on korkein kortti jonka päälle kuvakorttia ei saa lyödä: kutosen
+pelaaminen pakottaa seuraajan pelaamaan numerokortin tai nostamaan. Tätä ei kysytty, ja
+se saa kaatua; mikä ysin ja kutosen arvo Tommin omassa tarkoituksessa on, jää avoimeksi.
+
+## 64. Ristiseiskan kokeneen virhe on väärän panttikortin antaminen
+
+Tommi 20.8.2026 (erä 50), kysyttäessä mikä on Ristiseiskassa kokeneen pelaajan virhe:
+
+> *antaa väärän kortin, kun toisella ei käy*
+
+Virhe tapahtuu pantin antohetkellä: kun toinen pelaaja ei voi pelata ja passaa, edellinen
+pelaaja antaa hänelle panttikortin ja valitsee sen itse (kohta 37: valinta oli pöydässä
+antajan, ja se on myös sovelluksen vakioasento). Kokeneen virhe on valita väärä kortti.
+
+**Seuraus:** Ristiseiskan kaksi virhettä ovat eri mekaniikoissa. Aloittelijan virhe on
+pelivalinnassa (porttikortti pelataan kun se pitäisi pihdata, kohdat 6 ja 61), kokeneen
+virhe antovalinnassa. Jälkimmäinen on olemassa vain koska antaja valitsee itse, eli
+kokeneen virhe syntyy juuri siitä sääntöasennosta joka pöydässä oli käytössä.
+
+**Kirjoittajan tarkistus kanonista kirjaushetkellä:** sovellus mallintaa tämän valinnan jo:
+ihmiseltä kysytään mikä annetaan, ja botti antaa strategisesti huonoimman eli pelin
+etenemisestä kauimpana olevan kortin (`RISTISEISKA.md`).
+
+## 65. Läpsyn kokeneen virhettä ei nimetty, ja peli on Tommille tätä nykyä tylsä
+
+Tommi 20.8.2026 (erä 50), kysyttäessä mikä on Läpsyssä kokeneen pelaajan virhe:
+
+> *en tiedä mutta kenties se, että alkaa pelaamaan, minusta peli on tätä nykyä tylsä*
+
+Kokeneen virhettä ei ole, tai sitä ei tiedetä: *en tiedä* kirjataan sellaisenaan, ja
+*kenties se, että alkaa pelaamaan* on heitto joka kantaa asenteen eikä mekaniikkaa, joten
+sitä ei kirjata virheenä.
+
+**Vastauksen loppu on uusi mieltymystieto, ja se päivätään:** 20.8.2026 Läpsy on Tommille
+tylsä. Sanapari *tätä nykyä* tekee tästä ajallisen kerroksen eikä ristiriidan: kohta 21
+(suosikkien joukossa, suhteellisena) ja kohta 36 (ok osana turnausta ja isommassa
+porukassa) kuvaavat pelin ehdollista arvoa pöydässä, ja tämä kuvaa nykyhetken suhdetta
+peliin.
+
+**Seuraus:** kohdan 34 havainto (mieltymys ei ohjaa valikoimaa) saa vahvimman
+testitapauksensa: peli joka on tekijälleen tylsä on silti kokoelmassa yhdeksän joukossa,
+eikä tästä vastauksesta seuraa sille mitään. Se on teesin (*siksi ei standardia vaan
+vaihtoehtoja*) suora sovellus: valikoima ei ole tekijän maun kuva.
