@@ -1597,3 +1597,16 @@ on nähty pöydässä: peli jossa pöytä sääti eniten sai sovelluksessa enite
 mitä tehdään, mutta sääntöjen yksityiskohdat eivät olleet sanelua vaan pöydän yhteinen
 päätös, eli sama kaksiportaisuus joka kohdassa 17 ratkoi riidat (järjestäjä tai
 yhteisymmärrys) päti myös ennen peliä.
+
+## 43. Isolla porukalla korttipeleihin otettiin toinen pakka, ja pelattiin 104 kortilla
+
+Tommi 20.8.2026 (Itun haastattelun erä 10, viety tänne Tommin kuittauksella erässä 11),
+kysyttäessä pelattiinko Laiturin sanamixiä täydessä pöydässä vai pienemmällä porukalla kuin
+korttipelejä:
+
+> *korttipeleissä otettiin isommalla porukalla käyttöön toinen pakka eli pelattiin 104
+> kortilla*
+
+**Seuraus:** pöytä skaalasi pelaajamäärään pakkaa kasvattamalla, ei pöytää jakamalla.
+Sovellus tuntee vain 2–4 pelaajaa ja yhden pakan, joten tämä on pöydän muoto jota sovellus
+ei kanna. Mihin peleihin toinen pakka otettiin ja kuinka isolla porukalla, ei kysytty.
