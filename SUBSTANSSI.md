@@ -546,6 +546,24 @@ puolissa tunneissa, ja loppu riippui ryhmästä.
 Ristiseiska aloituspelinä sopii ensimmäiseen yhteiseen puoleen tuntiin, jossa pelin on
 alettava nopeasti ja sovittava kaikille. Tämä saa kaatua, koska yhteyttä ei kysytty.
 
+Tommi 20.8.2026 (erä 25), kysyttäessä olivatko yhteisen puolen tunnin pelit aina
+korttipelejä ja pelattiinko viimeisenä yhteisenä puolena tuntina:
+
+> *1 juotiin kahvia ja lajit vaihteli, oli myös yatzy, sanamix, alias, tietokilpailuja*
+> *2 kyllä*
+
+Yhteinen puoli tuntia oli siis kahvin ja vaihtelevien pelien aikaa: korttipelien rinnalla
+pelattiin Yatzya, sanamixiä, Aliasta ja tietokilpailuja. Myös viimeisenä yhteisenä puolena
+tuntina pelattiin.
+
+**Seuraus:** kokoelman yhdeksän korttipeliä olivat osa laajempaa pelikulttuuria, eivät sen
+koko sisältö. Kortti oli yksi laji muiden joukossa, ja yhteinen aika oli seurustelua jonka
+väline peli oli.
+
+**Avoin:** vastauksessa mainittu sanamix on sama sana kuin Tommin oman sanapeliprojektin
+alkuperäinen nimi (nykyinen Itu). Mikä Laiturin sanamix oli ja onko sillä yhteys projektin
+nimeen, ei kysytty.
+
 ## 16. Kahden pelaajan pelit ovat Kultakala ja Koputus
 
 Tommi 20.8.2026, kysyttäessä pelattiinko silti kun pelaajia oli vähemmän kuin peliin olisi
@@ -1414,6 +1432,21 @@ selkeydellään.
 Panokseton ja hauskanpitoon suuntautunut pöytä kesti säännön jota kilpailullinen pöytä ei
 olisi kestänyt, joten vuoron tuominen Jako-Moskaan ei korvannut vain reaaliaikaa vaan myös
 ryhmän luonteen: sovelluksella ei ole ympärillään ryhmää joka kantaisi kaoottisen säännön.
+
+Tommi 20.8.2026 (erä 25), kysyttäessä oliko ryhmän kilpailuhengettömyys sattumaa vai
+ohjaajan työn tulosta:
+
+> *se oli ääretöntä peliä, ei ollut pakko osallistua vain halukkaat*
+
+Vastaus tuli kysymyksen kahden vaihtoehdon ulkopuolelta: kilpailuhengettömyys ei ollut
+sattumaa eikä ohjaajan tekoa vaan seurausta vapaaehtoisuudesta. Kukaan ei pelannut pakosta,
+joten pöydässä olivat vain ne jotka halusivat olla, ja se piti pelin äärettömänä.
+
+**Seuraus:** tämä on toinen kerta kun Tommi kuvaa pöytää itse ääretön peli -käsitteellä
+(ensimmäinen kohdassa 17), ja nyt käsite sai mekanisminsa: vapaaehtoisuus valikoi pöytään
+hauskanpitäjät, ja hauskanpitäjien pöytä kestää säännöt joita kilpailu ei kestäisi. Kohdan 1
+kuvaus (*pakko ei ollut pelata ja aikaa oli toistoihin*) sanoi saman jo ennen kuin sitä
+osattiin kysyä.
 
 **Seuraus:** neljäs lähde on nyt todistettu yhdellä nimetyllä tapauksella eikä vain
 lajina, ja se osuu Moskaan, jonka taso on kokoelman ainoa vaativaksi merkitty. Mitä muita
