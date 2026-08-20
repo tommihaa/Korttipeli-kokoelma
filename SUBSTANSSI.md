@@ -859,8 +859,25 @@ kasvattaa kättä, joten pelaaja voi ottaa kortteja saadakseen valtteja myöhemp
 teema kuin pidättämisessä, mutta toisella mekanismilla. Tämä on kirjoittajan päätelmä
 kanonin säännöistä eikä Tommin lause.
 
-**Avoin:** vastaus ei kerro milloin painotus kääntyy. Pelin loppupuolella patakuningattaren
-välttäminen voi nousta ensisijaiseksi, mutta sitä ei ole kysytty.
+~~**Avoin:** vastaus ei kerro milloin painotus kääntyy. Pelin loppupuolella patakuningattaren
+välttäminen voi nousta ensisijaiseksi, mutta sitä ei ole kysytty.~~
+
+Tommi vastasi 20.8.2026 (erä 39), kysyttäessä kääntyikö loppupelissä painotus Maijan
+välttämiseen vai yritettiinkö loppuun asti voittaa:
+
+> *maija kädessä ei voi voittaa, joten sen pelaaminen oli tapa päästä eroon kortista, jolla
+> ei voi kaataa*
+
+Kysymyksen kahtiajako kaatui, ja tilalle tuli mekanismi: painotus ei kääntynyt vaiheena,
+vaan Maija itse pakotti. Kädessä se estää voiton, ja koska sillä ei voi kaataa, ainoa keino
+päästä siitä eroon on hyökätä sillä, jolloin puolustaja joutuu nostamaan sen (Maijaa ei voi
+kaataa vaan se on aina nostettava). Välttäminen ja voittaminen ovat siis sama teko eivätkä
+kaksi painotusta.
+
+**Vastaus on jo mallinnettu koodissa, neljännen kerran** (kohdat 6, 45 ja 55 ovat kolme
+aiempaa): Maija-dumppi on Kisällin ja Mestarin kyky, jossa hyökkäys johdetaan Maijalla ja
+perään lyödään omat padat, ja Oppipoika kohtelee Maijaa tavallisena korttina eli jättää
+juuri tämän tekemättä.
 
 ## 25. Pöytäpuhe on todellista vasta kun kortteja pelataan
 
