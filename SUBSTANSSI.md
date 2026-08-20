@@ -1470,8 +1470,11 @@ ja samassa istunnossa täydennyksenä:
 > korkeammalle niin sitä enemmän sai pisteitä*
 
 Turnauksia siis pidettiin, ja muotoja oli kaksi. Kevyemmässä voitosta sai pisteen.
-Raskaammassa pisteitä sai sijoituksesta, ja pistemäärä skaalautui kahdella akselilla: mitä
-enemmän pelaajia ja mitä korkeampi sijoitus, sitä enemmän pisteitä. Turnaukseen kuuluvat
+~~Raskaammassa pisteitä sai sijoituksesta, ja pistemäärä skaalautui kahdella akselilla: mitä
+enemmän pelaajia ja mitä korkeampi sijoitus, sitä enemmän pisteitä.~~ *(Luenta kumoutui
+erissä 45 ja 46: pisteitä sai sijoituksesta, mutta suunta oli päinvastainen, pieni piste
+oli hyvä, ks. alla. Vastauksen kaksi akselia jäivät: pelaajamäärä kasvatti viimeisen sijan
+pistemäärää, ja sijoitus ratkaisi luvun.)* Turnaukseen kuuluvat
 pelit olivat satunnaisia eikä kiinteää sarjaa ollut. Läpsy ei muistin varauksella kuulunut
 turnauksiin.
 
@@ -1607,10 +1610,29 @@ Turnaussarjan pisteet olivat siis sijoituslukuja joissa pieni on hyvä, samaan s
 lapsuuden kiusassa jossa voittaja oli vähiten sakkopisteitä saanut (kohta 38); yhteyttä ei
 kysytty eikä siitä päätellä enempää.
 
-**Avoin:** erän 15 täydennys *mitä enemmän pelaajia ja korkeammalle niin sitä enemmän sai
+~~**Avoin:** erän 15 täydennys *mitä enemmän pelaajia ja korkeammalle niin sitä enemmän sai
 pisteitä* ei asetu uuteen pistelaskuun luontevasti, koska pienten pisteiden järjestelmässä
 korkea sijoitus antaa vähän pisteitä. Miten sijoitus tarkalleen muuttui pisteiksi, on
-avoin eikä sitä täytetä päättelemällä.
+avoin eikä sitä täytetä päättelemällä.~~
+
+Avoin kysyttiin erässä 46, ja Tommi vastasi 20.8.2026:
+
+> *voittaja sai yhden pisteen, viimeinen pelaajamäärän verran*
+
+Sijoitus muuttui pisteiksi sellaisenaan: sija oli pistemäärä, eli voittaja sai yhden
+pisteen ja viimeinen pelaajamäärän verran. Jännite ratkesi kumoamalla erän 15 luennan
+suunnan: pelaajamäärä todella kasvatti jaossa olevia pisteitä, mutta isot pisteet olivat
+sakko eivätkä palkinto. Erän 15 vastaus ja tämä ovat siis yhteensopivia, ja väärin oli
+vain niistä vedetty luenta, joka on yliviivattu kohdan alussa.
+
+**Seuraus:** turnaussarjan pistelasku on sama muoto kuin lapsuuden kiusan (kohta 38):
+pisteet ovat sakkoa ja pienin summa voittaa. Sakkomuotoinen pistelasku on nyt kirjattu
+molemmista ympäristöistä, eikä kumpaakaan ole johdettu toisesta.
+
+**Seuraus** *(kirjoittajan päätelmä)*: sija pisteinä sellaisenaan tekee isosta pelistä
+automaattisesti painavamman ilman erillistä sääntöä, koska viimeisyys isossa pelissä maksaa
+enemmän. Kohdan 36 kumoutunut luenta (turnaus mittasi kenttää) oli siis oikeassa
+lopputuloksessa väärällä mekanismilla. Tätä ei kysytty, ja se saa kaatua.
 
 Tommi 20.8.2026 (erä 18), kysyttäessä siirtyikö paperille kirjaamisen tapa lapsuudesta
 Laiturin turnauksiin:
