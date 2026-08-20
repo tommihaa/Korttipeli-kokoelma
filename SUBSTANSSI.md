@@ -64,6 +64,10 @@ alkuperäinen vastaus on jätetty siihen näkyviin kumottuna.
 Repo on julkinen, joten tämä tiedosto on ulospäin näkyvää tekstiä. Se on tiedossa ja se on
 päätöksen sisältö eikä sen sivuvaikutus.
 
+**Rajaus 20.8.2026:** Laiturin tarkempi tausta (mikä toiminta toi porukan yhteen) on kysytty
+ja vastattu, ja Tommi päätti ettei vastausta kirjata tähän tiedostoon. Kysymys on siis
+suljettu eikä avoin, ja sitä ei kysytä haastattelussa uudelleen.
+
 **Mikä ei muuttunut.** `laituri`-nimiryhmä on kunnianosoitus oikeille ihmisille eikä
 arkkityyppiryhmä, eikä sille anneta persoonallisuuksia, puhetyylejä tai pelitapaeroja
 (`CLAUDE.md`, Players). Se sääntö on voimassa tämän kirjauksen jälkeenkin, koska sen peruste on
