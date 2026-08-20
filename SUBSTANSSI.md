@@ -1758,6 +1758,67 @@ siirtyi sellaisenaan. Kohdan 47 havainto laajenee: erikoiskorttien lisäksi myö
 täsmäysrangaistus on pöydästä muuttumattomana, ja Koputus on edelleen se peli jonka säännöstö
 on jäljitetty pöytään kattavimmin.
 
+---
+
+## 51. Kultakala on muistipeli strategialla
+
+Tommi 20.8.2026 (erä 32), kysyttäessä mikä Kultakalassa oli se juttu joka teki siitä pöydässä
+pelaamisen arvoisen:
+
+> *se on muistipeli strategialla*
+
+**Seuraus:** luonnehdinta vahvistaa kanonin tyyppiluokan (muistipeli) ja lisää siihen sanan
+jota luokka ei kanna: strategian. Muisti ei siis ollut koko vetovoima vaan pohja jonka päällä
+tehdään valintoja, ja kanonissa valintojen paikat ovat olemassa: vaihtoketjun ohjaus,
+poistopakan hyödyntäminen ja pelin lopetuksen ajoitus. Paikkojen nimeäminen on kirjoittajan
+päätelmä kanonista eikä Tommin lause.
+
+**Seuraus** *(kirjoittajan päätelmä)*: kohdan 44 pari saa vastinparinsa. Koputuksen vetovoima
+oli muistaminen ja täsmäys, Kultakalan muisti ja strategia, eli kokoelman kaksi muistipeliä
+rakentavat saman pohjan päälle eri toisen kerroksen: toinen nopeuden, toinen harkinnan.
+
+## 52. Kultakalan kokeneen virhe on sama kuin Koputuksen: ei ota selvää pöytäkorteistaan
+
+Tommi 20.8.2026 (erä 32), kysyttäessä mikä on se Kultakalan virhe jonka kokenutkin pelaaja
+tekee:
+
+> *ei ota selvää pöytäkorteistaan*
+
+Vastaus on lähes sanasta sanaan sama kuin Koputuksen kokeneen virhe (kohta 48), ja se on
+merkille pantavaa siksi että kysymykset esitettiin eri erissä eikä yhteyttä tarjottu.
+
+**Seuraus:** molempien muistipelien kokeneen virhe on tiedonhankinnan laiminlyönti, joten se
+näyttää olevan lajin virhe eikä pelin. Mekanismi on kummassakin eri: Koputuksessa selvää
+otetaan erikoiskorteilla ja sokkovaihdoilla, Kultakalassa ainoa oppimiskeino on vaihtaminen,
+koska paikan oppii vasta vaihtaessaan siihen kortin. Passiivisuus maksaa Kultakalassa siis
+vielä suoremmin: vaihtamatta jättäminen jättää oman pöydän pimeäksi loppuun asti. Mekanismien
+erittely on kirjoittajan päätelmä kanonista.
+
+## 53. Muiden kortit ovat Kultakalassa merkityksettömiä, ja vaikeinta on oma muisti
+
+Tommi 20.8.2026 (erä 32), kysyttäessä kumpi pöydässä oli vaikeinta, omien opittujen paikkojen
+muistaminen vai muiden korttien päättely:
+
+> *muiden korteilla ei ollut merkitystä, niitä voi vain arvailla ja se on ajanhukkaa, koska
+> kortteja ei voi vaihtaa pelaajien kesken. vaikeinta on muistaa pöytäkortit*
+
+**Kysymyksen toinen vaihtoehto kaatui kokonaan, ja se kirjataan kaatuneena.** Muiden korttien
+päättely ei ollut vaikeaa vaan merkityksetöntä, ja vastaus nimeää syyn: kortteja ei voi
+vaihtaa pelaajien kesken, joten arvailu ei johda mihinkään tekoon. Vaikeinta oli omien
+pöytäkorttien muistaminen.
+
+**Seuraus:** kahden muistipelin ero täsmentyy rakenteelliseksi. Koputuksessa rouva ja kuningas
+liikuttavat kortteja pelaajien välillä, joten muiden kortit ovat pelitietoa ja tuntemattomuus
+suojaa kahdesta suunnasta (kohta 46). Kultakalassa ristivaihtoa ei ole, joten sama arvailu on
+ajanhukkaa. Koputus katsoo ulospäin ja Kultakala sisäänpäin, ja tämä tukee kohtaa 23: pelit
+eivät ole saman idean muunnelmia edes saman tyyppiluokan sisällä.
+
+**Seuraus** *(kirjoittajan päätelmä)*: kohdan 16 kahden pelaajan kestävyys saa Kultakalan
+osalta tarkemman selityksen kuin kohdassa 44 arvattiin. Epävarmuus ei asu vastustajan käden
+arvailussa vaan omissa korteissa, joten pelaajamäärän lasku ei syö sitä (kohdan 13 mittari).
+Kahden pelaajan Kultakala on yhtä epävarma kuin neljän, koska kumpikin pelaa omaa muistiaan
+vastaan.
+
 **Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
 nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
 Tämä saa kaatua, koska syytä harvinaisuuteen ei kysytty.
