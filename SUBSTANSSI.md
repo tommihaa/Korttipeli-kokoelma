@@ -1997,6 +1997,36 @@ todennäköisesti sama sääntö kahdesta suunnasta: jos pata olisi valtti, Maij
 valttikortti ja koko häviömekaniikka vesittyisi. Tätä perustetta ei kysytty, ja se saa
 kaatua.
 
+## 60. Moskan nimi, valttikakkosvaihto ja siirto tulivat pöydästä, mutta häviäjää ei pilkattu
+
+Tommi 20.8.2026 (erä 38), kysyttäessä kutsuttiinko peliä Laiturilla Moskaksi ja häviäjää
+Moskaksi, oliko valttikakkosen vaihto pakan pohjakorttiin pöydän sääntö, ja oliko
+puolustuksen siirtäminen pöydän sääntö:
+
+> *peli oli moska, häviäjää ei pilkattu*
+> *sai siis vaihtaa isomman valttikortin valttikakkosen tilalle*
+> *kyllä*
+
+Pelin nimi, valttikakkosen vaihto ja puolustuksen siirtäminen ovat pöydästä. Laiturin
+viidestä pelistä kaikkien viiden ydin on nyt jäljitetty pöytään, ja Moskan ainoa kirjattu
+muutos on edelleen sivustalyönnin käännös vuoroksi (kohta 39).
+
+**Ensimmäisen vastauksen jälkiosa on hienovaraisempi kuin kysymys.** Sovelluksen kanoni
+nimeää häviäjän Moskaksi, ja pöydässä häviäjää ei pilkattu. Vastaus ei kerro käytettiinkö
+sanaa häviäjästä lainkaan vai vain ilman pilkkaa, eikä sitä täytetä päättelemällä. Sävy on
+silti substanssia: se sopii kohdan 17 panoksettomuuteen ja erän 25 vapaaehtoisuuteen, eli
+pöytä jossa kukaan ei pelannut pakosta ei myöskään nimitellyt häviäjää.
+
+**Seuraus:** vaihto oli Tommin sanamuodossa lupa (*sai vaihtaa*) ja sovelluksessa se on
+automaattinen. Ero on käytännössä mitätön, koska vaihto on aina haltijalleen edullinen,
+mutta muoto kirjataan: pöytä antoi oikeuden, sovellus tekee sen puolesta.
+
+**Seuraus** *(kirjoittajan päätelmä)*: Tommin tuntomerkki (kohta 54) osoittautuu
+yksisuuntaiseksi. Sellaisenaan siirtyneillä ei ole asetusmuunnoksia, mutta asetusten puute
+ei todista sellaisenaan siirtymistä: Moskalla ei ole sääntövalintoja ja silti sen
+sivustalyönti käännettiin. Tuntomerkki toimii siis siihen suuntaan johon se lausuttiin,
+eikä sitä pidä lukea takaperin.
+
 **Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
 nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
 Tämä saa kaatua, koska syytä harvinaisuuteen ei kysytty.
