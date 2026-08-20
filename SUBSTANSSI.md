@@ -1455,7 +1455,10 @@ pisterajaa*, joten raja on nyt kysytty muistin raja eikä ohesta luettu.
 
 ---
 
-## 39. Laiturilla pidettiin turnauksia, ja niitä oli kahta muotoa
+## 39. Laiturilla pidettiin turnauksia, ja muoto oli yksi: sijoitusten summa ratkaisi
+
+*(Otsikko sanoi erään 48 asti että muotoja oli kahta, ja se korjattiin kun Tommi kumosi
+kahden muodon jaon itse; vaiheet ovat alla näkyvissä kumoutuneet yliviivattuina.)*
 
 Tommi 20.8.2026 (erä 15), kysyttäessä pidettiinkö Laiturilla turnauksia, miten ne rakentuivat
 ja missä porukassa Läpsyä pelattiin:
@@ -1469,7 +1472,8 @@ ja samassa istunnossa täydennyksenä:
 > *oli myös turnauksia, missä pelin sijoituksesta sai pisteitä, mitä enemmän pelaajia ja
 > korkeammalle niin sitä enemmän sai pisteitä*
 
-Turnauksia siis pidettiin, ja muotoja oli kaksi. Kevyemmässä voitosta sai pisteen.
+~~Turnauksia siis pidettiin, ja muotoja oli kaksi. Kevyemmässä voitosta sai pisteen.~~
+*(Kahden muodon jako kumoutui erässä 48 Tommin omalla korjauksella, ks. kohdan loppu.)*
 ~~Raskaammassa pisteitä sai sijoituksesta, ja pistemäärä skaalautui kahdella akselilla: mitä
 enemmän pelaajia ja mitä korkeampi sijoitus, sitä enemmän pisteitä.~~ *(Luenta kumoutui
 erissä 45 ja 46: pisteitä sai sijoituksesta, mutta suunta oli päinvastainen, pieni piste
@@ -1497,8 +1501,9 @@ kuinka usein turnauksia pidettiin:
 > *2 sijoituspisteet*
 > *3 harvinaisia, muutaman kerran vuodessa*
 
-Turnaus päättyi siis kun sovittu määrä eri pelejä oli pelattu, tavallisempi muoto oli
-sijoituspisteet, ja turnauksia pidettiin muutaman kerran vuodessa. Ensimmäinen kysymys oli
+Turnaus päättyi siis kun sovittu määrä eri pelejä oli pelattu, ~~tavallisempi muoto oli
+sijoituspisteet~~ *(muotoja oli erän 48 mukaan vain yksi)*, ja turnauksia pidettiin
+muutaman kerran vuodessa. Ensimmäinen kysymys oli
 kirjoittajan virheestä kaksi kysymystä yhtenä, ja sen toinen puoli (ratkesiko voittaja
 pistemäärään) jäi vastaamatta; se merkitään vastaamattomaksi eikä täytetä päättelemällä.
 
@@ -1645,9 +1650,10 @@ korttipelejä:
 > *kyllä, kaikenlaista*
 
 Ensimmäinen vastaus kaataa kysymyksen premissin ja lähentää muodot toisiinsa: ratkaisija
-oli myös kevyemmässä muodossa sijoitusten summa, ei voittopisteiden määrä. **Avoin:** mikä
+oli myös kevyemmässä muodossa sijoitusten summa, ei voittopisteiden määrä. ~~**Avoin:** mikä
 rooli voitosta saadulla pisteellä silloin oli ja mikä kahta muotoa lopulta erotti, ei
-kysytty; kahden muodon jako lepää erän 15 vastauksella, ja tämä vastaus ohentaa sitä.
+kysytty; kahden muodon jako lepää erän 15 vastauksella, ja tämä vastaus ohentaa sitä.~~
+*(Ratkesi erässä 48, ks. alla.)*
 
 Toinen vastaus laajentaa turnaussarjan kortin ulkopuolelle: seitsemään peliin kuului
 kaikenlaista, eli kortti oli turnauksessakin yksi laji muiden joukossa, samoin kuin
@@ -1656,6 +1662,22 @@ kohdan 1 kuvaamassa toiminnassa muutenkin.
 **Seuraus** *(kirjoittajan päätelmä)*: sijoitusten summa lajirajat ylittävässä sarjassa
 tarkoittaa että turnaussarja mittasi monipuolisuutta eikä yhden pelin taitoa, ja
 korttipelien osuus siitä oli osasuoritus. Tätä ei kysytty, ja se saa kaatua.
+
+Voittopisteen rooli kysyttiin erässä 48 suoraan, ja Tommi vastasi 20.8.2026:
+
+> *sanoin väärin: turnausmuotoja oli vain yksi, sijoitusten summa ratkaisi*
+
+Muotoja oli siis yksi, ja erän 15 ensimmäinen vastaus (*kyllä, voitosta piste*) kumoutui
+lähteen omalla korjauksella. Tämä on dokumentin selväsanaisin itsekorjaus: aiemmissa
+tapauksissa (kohdat 25 ja 58 sekä tämän kohdan iltasarjakierros) kumoutuminen on pitänyt
+lukea vastauksesta, ja tässä Tommi nimesi virheen itse sanalla *väärin*. Turnauksen
+lopullinen kuva on: yksi muoto, sovittu määrä kaikenlaisia pelejä, sija pisteinä
+sellaisenaan ja pienin summa voitti.
+
+**Seuraus:** kohdan alussa yliviivattu kahden muodon jako ja siitä johdetut tavallisuus-
+ja voittopistekirjaukset ovat kaikki saman alkuvirheen jälkiä, ja ne on jätetty näkyviin
+koska ne näyttävät miten monta kirjausta yksi väärä lausuma ehtii tuottaa ennen kuin se
+kysytään loppuun.
 
 Tommi 20.8.2026 (erä 18), kysyttäessä siirtyikö paperille kirjaamisen tapa lapsuudesta
 Laiturin turnauksiin:
