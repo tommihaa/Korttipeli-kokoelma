@@ -191,3 +191,24 @@ Erillinen havainto ilman toimenpidettä: Kultakalan reunatapaus (täysin tunnett
 nostettu ässä poistoon) koskee kaikkia tasoja ja on harvinainen, koska rivi on kokonaan
 tunnettu vasta kun kaikki viisi vaihdettavaa paikkaa on opittu. Se on nimetyn
 aloittelijavirheen ainoa koodissa elävä muoto.
+
+## Mitä tästä seurasi samana päivänä (20.8.2026)
+
+Kaksi kolmesta aukosta oli peleissä joilla ei ollut N=400-vertailukohtaa, joten niitä ei
+voinut työstää botbenchin omalla työjärjestyksellä. Mittaus ajettiin, ja se sulki
+mittarin viimeisen mittausvelan: `docs/BOTBENCH.md` osio "Koputus, Läpsy ja Paskahousu
+20.8.2026".
+
+**Paskahousun aukko sai mitatun vahvistuksen.** Kolme paria ovat 53,6 / 49,5 / 49,0
+prosenttia, eli porrasta ei ole. Koodinluku ja mittaus sanovat siis saman: kun ainoa
+tasoero on kohina eikä kyvykkyys, porras ei synny. Peli lisättiin `FLAT_AI_GAMES`-listaan
+Tommin linjauksella, ja kutonen on kirjattu botbenchin avoimeksi kohdaksi 4.
+
+**Koputuksen aukko jäi auki, ja peli on silti vahva.** Erikoiskorttien katsomiset
+puuttuvat yhä koko portaalta, mutta kolme paria ovat 69,9 / 61,6 / 66,9 prosenttia. Aukko
+ei siis estä porrasta vaan on käyttämätön vara sen päällä.
+
+**Moskan aukko laajeni diagnoosiksi.** Nostopakan koon lukemisen puuttumisen rinnalle
+löytyi toinen ja isompi puute samalla menetelmällä eli kanonia koodia vasten lukemalla:
+`MOSKA.md` sallii monikorttihyökkäyksen, eikä yksikään bottitaso käytä sitä. Ehdotus on
+botbenchin kohdassa 2.

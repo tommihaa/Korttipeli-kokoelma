@@ -470,7 +470,7 @@ poisti alapään vian ja siirsi Maijan uuden kanavan odottajiin** (ks. luokittel
 | ~~Koputus, Läpsy, Paskahousu~~ | ~~ei (N=30/40)~~ | ~~—~~ | ~~ei~~ |
 | Koputus | kyllä (20.8.2026) | ei (kaikki kolme paria yli 50 %, z = 4,65-7,95) | ei |
 | Paskahousu | kyllä (20.8.2026) | kyllä (suurin z = 1,45) | **on** (20.8.2026) |
-| Läpsy | mittaus kesken 20.8.2026 | — | ei |
+| Läpsy | kyllä (20.8.2026) | ei (kaikki kolme paria yli 80 %, z = 12,2-16,7) | ei |
 
 *Kolmen pelin rivi on korvattu kolmella omalla rivillä 20.8.2026, ks. osio "Koputus ja
 Paskahousu 20.8.2026". Vanha rivi jätetään näkyviin, koska se kertoo mitä mittausvelkaa
@@ -558,14 +558,19 @@ botin passausportti oli aiemmin tiukempi kuin `doPass`in oma tarkistus, ja löys
 voinut jättää botin odottamaan siirtoa jonka `doPass` hylkää. Uusi ehto kysyy vastaanottajan
 olemassaolon samalla haulla kuin `doPass`, ja 1200 peliä ajoi läpi ilman yhtään jumia.
 
-## Koputus ja Paskahousu 20.8.2026 (N=400): vahvin mitattu porras ja ei porrasta lainkaan
+## Koputus, Läpsy ja Paskahousu 20.8.2026 (N=400): mittausvelka on suljettu
 
 Mitattu commitista `b2b2559`, joka koskee vain dokumentteja, eli koodi on sama kuin
 18.8.2026 julkaistu. Syy ajoon tuli `docs/BOTTIVERTAILU.md`:stä: se nimesi kolme aukkoa
 joissa virheen välttäminen puuttuu koko portaalta, ja kaksi niistä on juuri näissä
 peleissä (Koputuksen erikoiskorttien katsomiset, Paskahousun kutonen). Kumpaakaan ei
 voinut työstää, koska tämän dokumentin oma työjärjestys vaatii N=400-vertailukohdan eikä
-sellaista ollut: Koputus oli N=40:n ja Paskahousu N=30:n varassa.
+sellaista ollut: Koputus oli N=40:n, Läpsy ja Paskahousu N=30:n varassa.
+
+**Nämä kolme olivat mittarin viimeiset mittaamattomat pelit, joten jokainen yhdeksästä on
+nyt mitattu N=400:lla.** Kierros tuotti sekä mittarin vahvimman portaan (Läpsy) että sen
+toisen täysin litteän pelin sen jälkeen kun Ristiseiskan nollaporras kumoutui 18.8.2026
+(Paskahousu).
 
 ### Koputus: kaikki kolme paria erottuvat
 
@@ -578,8 +583,9 @@ sellaista ollut: Koputus oli N=40:n ja Paskahousu N=30:n varassa.
 Kaikki 1 200 peliä tulkittiin: 0 pattiin jäänyttä, 0 istuimeen yhdistämätöntä. Tasapelit
 ovat 18.8.2026 koodiin viedyn tasasääntösäännön tulos ja ne on laskettu puolikkaina.
 
-**Tämä on mittarin vahvin porras, ja se on ainoa jonka kolme paria on mitattu samassa
-N=400-ajossa ja jotka kaikki ovat merkitsevästi yli 50 %:n.** Muotoilu on tarkoituksella
+~~**Tämä on mittarin vahvin porras**~~, ja se on ~~ainoa~~ *(ks. Läpsy alla, joka on sekä
+vahvempi että mitattu samalla tavalla)* peli jonka kolme paria on mitattu samassa
+N=400-ajossa ja jotka kaikki ovat merkitsevästi yli 50 %:n. Muotoilu on tarkoituksella
 kapeampi kuin *ensimmäinen monotoninen porras*, koska Seiska tulee lähelle (73,3 / 58,0 /
 77,3) mutta sen luvut ovat eri ajoista: vain `hard vs normal` on mitattu N=400:lla
 nykyisestä koodista, ja juuri sillä parilla on dokumentoitu epävakaus osaotosten välillä
@@ -592,6 +598,34 @@ välissä irrotettu `runAI`:n sisältä moduulitason funktioiksi (`koKnockEstima
 `koWantsDiscard`, `koSwapTarget`) Mestarin neuvoa varten, ja tasapelisääntö on lisätty.
 Suunta on silti sama ja kaikki kolme paria vahvistuivat, joten pieni otos ei tässä
 valehdellut. Se on toinen tunnettu tapaus Kultakalan 24.7.2026 rinnalla.
+
+### Läpsy: mittarin vahvin porras
+
+| pari | winsA / winsB / ties | voitto-% | z | keskisija |
+|------|---------------------:|---------:|--:|---|
+| hard vs beginner | 367 / 33 / 0 | **91,8 %** | 16,7 | 1,92 vs 3,08 |
+| hard vs normal | 343 / 57 / 0 | **85,8 %** | 14,3 | 2,00 vs 3,00 |
+| normal vs beginner | 322 / 78 / 0 | **80,5 %** | 12,2 | 2,05 vs 2,95 |
+
+Kaikki 1 200 peliä ratkesivat: 0 tasapeliä, 0 pattia, 0 istuimeen yhdistämätöntä.
+
+**Läpsy on selvästi mittarin vahvin porras, ja ero muihin on suuruusluokka eikä
+vivahde.** Heikoin sen pareista (80,5 %) on vahvempi kuin minkään toisen pelin paras.
+Portaan mekanismi on myös eri kuin Koputuksen: Läpsyssä tasot erottaa pelkkä
+reaktioviive, Koputuksessa deterministiset kyvykkyydet. Kahden vahvimman portaan
+mekanismit ovat siis eri lajia, eikä yhtä oikeaa tapaa rakentaa porras siis ole.
+
+**17.7.2026 tehty Oppipojan hidastus kestää mittakaavan.** Silloin mitattiin korjauksen
+jälkeen 100/87/77 (N=30), ja N=400 antaa 91,8 / 85,8 / 80,5. Suunta ja suuruusluokka
+pitävät, ja `normal vs beginner` jopa nousi (77 → 80,5). Pieni otos oli tässä
+liian ruusuinen vain ylimmässä parissa, jossa 100 % oli mahdoton pitää.
+
+**Kolmas tapaus jossa N=30 ei valehdellut.** Kultakalan (24.7.2026) ja Koputuksen
+rinnalla tämä tarkoittaa, että pienen otoksen petossarja koskee ennen kaikkea
+*litteitä ja ohuita* portaita, joissa kohina on samaa kokoluokkaa kuin mitattava ero.
+Kun ero on aito ja suuri, N=30 löytää sen. Sääntö *älä nimeä referenssipeliä otoksella
+joka ei kestä kaksinkertaistusta* pysyy silti voimassa, koska otoshetkellä ei tiedä
+kumpaan luokkaan peli kuuluu.
 
 ### Paskahousu: porrasta ei ole
 
@@ -636,8 +670,10 @@ mark-compacts near heap limit*) kun vuoro tuli Läpsyyn. Kuusi paria yhdeksäst�
 kirjoitettu levylle, koska `BOTBENCH_OUT` appendataan parin valmistuttua. **Käytä siis
 aina `BOTBENCH_OUT`ia pitkissä ajoissa**, muuten kaatuminen vie kaiken.
 
-Läpsy ajetaan omana prosessinaan ja mieluiten pari kerrallaan, jolloin muisti nollautuu
-parien välissä:
+Läpsy ajetaan omana prosessinaan ja pari kerrallaan, jolloin muisti nollautuu parien
+välissä. **Todennettu samana päivänä: kaikki kolme paria menivät näin läpi paluuarvolla 0
+ja kukin vei 5,3-5,5 minuuttia**, eli koko Läpsy on noin 16 minuuttia eikä sen tarvitse
+kaataa mitään:
 
 ```powershell
 $env:NODE_OPTIONS='--max-old-space-size=8192'
@@ -666,8 +702,13 @@ Uudelleenajo on siis regressiotesti, ja lisävarmuus vaatisi eri siemenen.
 ## Avoimet AI-työt (per 26.7.2026)
 
 Kootut `JATKOPROMPTI_tasoporras.md`:stä, joka oli committaamaton työpuutiedosto ja
-poistettiin tämän kirjauksen jälkeen. Mittausvelkaa ei enää ole: kaikki kuusi peliä
-joista on tehty johtopäätös on mitattu N=400:lla, ks. yhteenvetotaulu yllä.
+poistettiin tämän kirjauksen jälkeen. ~~Mittausvelkaa ei enää ole: kaikki kuusi peliä
+joista on tehty johtopäätös on mitattu N=400:lla, ks. yhteenvetotaulu yllä.~~
+
+*Lause piti 26.7.2026 rajauksellaan ja on nyt vahvempi ilman sitä: 20.8.2026 alkaen
+**kaikki yhdeksän peliä** on mitattu N=400:lla, eivät vain ne joista oli tehty
+johtopäätös. Rajaus oli tarpeen niin kauan kuin Koputus, Läpsy ja Paskahousu olivat
+mittaamatta, ks. osio "Koputus, Läpsy ja Paskahousu 20.8.2026".*
 
 **Työjärjestys kaikissa alla:** baseline on jo tallessa (luvut yllä), joten muutos →
 aja N=400 → pidä jos porras nousee, peru ja kirjaa nollatulos jos ei. **Muutoksen on
@@ -684,8 +725,10 @@ kuin valitsee mistä aloittaa:
 |---|---|---|
 | ~~Maija (alapää)~~ | ~~kalibrointi~~ | ✅ ratkaistu 26.7.2026, ks. osio yllä |
 | Maija (yläpää) | uusi kanava | vasta kun kanava löytyy |
-| Moska | ei diagnosoitu, luultavasti uusi kanava | kun syy on selvitetty |
+| ~~Moska~~ | ~~ei diagnosoitu, luultavasti uusi kanava~~ | ~~kun syy on selvitetty~~ |
+| Moska | **uusi kanava, nyt diagnosoitu** (20.8.2026) | heti, ks. kohta 2 |
 | Ristiseiska | **uusi kanava**, vanha todettu umpikujaksi | vasta kun kanava löytyy |
+| Paskahousu | **uusi kanava, nimetty koodikohde** (20.8.2026) | heti, ks. kohta 4 |
 
 **Luokittelu koeteltiin heti ja piti.** Maija ennustettiin kalibroinniksi ja ratkesi
 yhden rivin muutoksella ilman uutta taitoelementtiä, täsmälleen kuten laji lupasi.
@@ -719,10 +762,32 @@ osiossaan "Maija 26.7.2026" yllä.
 **Jäljelle jäi Maijan yläpää:** `hard vs normal` on yhä 52,9 % (z = 1,2). Se on eri lajin
 kohta, uuden kanavan odottaja, eikä jatku tästä samalla työtavalla.
 
-### 2. Moska: Mestari ei erotu Kisällistä
+### 2. Moska: Mestari ei erotu Kisällistä, ja syy on nyt nimetty
 
-`hard vs normal` 53,5 % (N=400). Muoto on `beginner << normal ≈ hard`, sama kuin
-Seiskalla ja Kultakalalla: alaporras terve, yläpää samantasoinen.
+`hard vs normal` 53,5 % (N=400, 18.8.2026 uusintamittauksessa 54,0 %). Muoto on
+`beginner << normal ≈ hard`, sama kuin Seiskalla ja Kultakalalla: alaporras terve, yläpää
+samantasoinen.
+
+**Diagnoosi 20.8.2026, ja se tuli kanonin ja koodin ristiriidasta eikä AI-työstä.**
+`MOSKA.md` rivi 12: *hyökkääjä lyö pöytään yhden tai useamman saman vahvuisen kortin*,
+ja rivi 13 rajaa määrän puolustajan käden kokoon. Koodissa sekä `aiPickAttack` että
+Mestarin `aiPickAttackSN` palauttavat aina täsmälleen yhden kortin, ja kommentti sanoo
+sen suoraan. **Monikorttihyökkäystä ei käytä yksikään bottitaso, vaikka säännöt sallivat
+sen ja ihmisen käyttöliittymä toteuttaa sen.** Reitti on siis sama kuin Ristiseiskan
+kanavalla 18.8.2026, ja se on kolmas kerta kun umpikujaksi merkitty peli avautuu
+lukemalla sen oma kanoni koodia vasten.
+
+**Toinen puoli samasta diagnoosista** (`docs/BOTTIVERTAILU.md`): yksikään botin päätös ei
+lue nostopakan kokoa, joten Tommin nimeämä kokeneen virhe (vaiheen vaihtuminen pakan
+loputtua, kohta 19 substanssihaastattelussa) on mallintamatta koko portaalla. Mestarilla
+on vaiheen toinen puoli, muisti poistuneista korteista, muttei vaihetta itseään.
+
+**Ehdotus, jota ei ole vielä mitattu:** Mestari lyö koko samanarvoisen ryhmän silloin kun
+nostopakka on tyhjä, ja yhden kortin niin kauan kuin käsi täydentyy. Se yhdistää
+molemmat puutteet yhteen tasokohtaiseen muutokseen. Se on `hard`-only, joten
+`normal vs beginner` on verrokki jonka pitää tulla ulos bitilleen samana (259 / 141 / 0).
+Kanonin rivin 13 raja on toteutettava botin omassa valinnassa, koska `doAttack` ei valvo
+korttimäärää vaan luottaa kutsujaan.
 
 ### 3. Ristiseiska: hyväksy nykytila vai etsi uusi kanava?
 
@@ -745,6 +810,25 @@ siltä osin että hypoteesin piti tulla AI-työstä: se tuli kanonin ja koodin r
 
 **Avoin kohta kapenee eikä sulkeudu.** Kysymys ei ole enää *löytyykö kanavaa* vaan
 *riittääkö 55 % merkinnän poistoon*, ja se on Tommin linjaus.
+
+### 4. Paskahousu: litteä porras, ja kutonen on ainoa nimetty kohde
+
+Uusi kohta 20.8.2026. Kaikki kolme paria ovat noin 50 % (53,6 / 49,5 / 49,0, N=400), ja
+peli on lisätty `FLAT_AI_GAMES`-listaan, joten pelaajalle ei valehdella. Kohta on silti
+auki, koska litteys ei ole tässä pelin ominaisuus samalla tavalla kuin Kasinossa: syy on
+tiedossa ja se on rakenteellinen.
+
+Paskahousun ainoa tasoero on `aiShouldFumble`, eikä pelissä ole yhtään tasokohtaista
+kyvykkyyttä. Mitattu hinta 50 %:n virhetodennäköisyydelle on noin kolme
+prosenttiyksikköä, eli fumble osuu päätöksiin jotka eivät ratkaise peliä.
+
+**Nimetty kohde on kutonen.** Tommi nimesi kokeneen virheeksi ysin ja kutosen arvon
+ymmärtämättömyyden, ja perusteli kutosen näin: sen päälle käy paljon vähemmän kortteja
+kuin seiskan, joten kutosen pelaaja tekee nostamisesta todennäköisemmän seuraajalle kuin
+itselleen. Ysi on jo säästölistalla kaikilla tasoilla, mutta **kutoseen viittaavaa
+päätöshaaraa ei ole koodissa lainkaan**. Se on siis uusi kanava jolla on sekä lähde että
+puuttuva koodikohde, mikä on harvinaisempi yhdistelmä kuin Maijan tai Ristiseiskan
+yläpäässä.
 
 ### Reunaehdot AI-työssä
 
