@@ -1819,6 +1819,31 @@ arvailussa vaan omissa korteissa, joten pelaajamäärän lasku ei syö sitä (ko
 Kahden pelaajan Kultakala on yhtä epävarma kuin neljän, koska kumpikin pelaa omaa muistiaan
 vastaan.
 
+## 54. Kultakalan nimi ja ydinmekaniikat tulivat pöydästä sellaisinaan
+
+Tommi 20.8.2026 (erä 33), kysyttäessä pelattiinko peliä Laiturilla nimellä Kultakala, oliko
+tuntematon kortti (jota ei voi vaihtaa ja joka paljastuu vasta lopussa) pöydän sääntö, ja
+kulkiko vaihtaminen pöydässä samassa järjestyksessä paikka kerrallaan:
+
+> *kultakala*
+> *kyllä*
+> *sama järjestys*
+
+Nimi, tuntemattoman kortin sääntö ja vaihtojärjestys ovat kaikki pöydästä muuttumattomina.
+
+**Seuraus:** molempien Laiturin muistipelien säännöstö on nyt jäljitetty pöytään
+sellaisenaan: Koputuksessa nimi, erikoiskortit ja täsmäysrangaistus (kohdat 47 ja 49),
+Kultakalassa nimi, tuntematon kortti ja vaihtoketju. Kumpikaan ei vaatinut käännöstä, toisin
+kuin Moskan sivustalyönti (kohta 39), jonka reaaliaikasääntö piti kääntää vuoroksi. Laiturin
+peleistä siirron helppous vaihteli siis mekaniikan eikä pelin mukaan, ja tämä on kirjoittajan
+päätelmä kolmesta tapauksesta.
+
+**Seuraus:** kohdan 33 taulukon ulkopuolella oleville peleille alkaa kertyä sama jäljitys
+toisella menetelmällä. Asetusvalintoja on vain kolmessa pelissä, mutta kysymällä sääntö
+kerrallaan pöytäalkuperä on nyt todennettu kahdelle pelille joilla valintoja ei ole. Se
+selittää osaltaan miksi niillä ei ole valintoja: pöydän muoto ei jättänyt vaihtoehtoja
+joista valita.
+
 **Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
 nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
 Tämä saa kaatua, koska syytä harvinaisuuteen ei kysytty.
