@@ -1677,8 +1677,37 @@ korttien lukumäärä on kanonissa vasta tasatilanteen ratkaisija. Mitat korrelo
 vähempi kortteja tarkoittaa yleensä pienempää summaa, mutta pöydän muotoilu lähtee määrästä
 ja koodin summasta. Ero on luultavasti kirjaus eikä käyttäytyminen, ja se saa kaatua.
 
-**Avoin, ja se on luentakysymys eikä uusi aihe:** vastauksen loppu *jos muille ne ovat
+~~**Avoin, ja se on luentakysymys eikä uusi aihe:** vastauksen loppu *jos muille ne ovat
 tuntemattomia* taipuu kahteen suuntaan: omat kortit ovat muilta piilossa (kukaan ei voi
 varastaa hyviä pikkukortteja Q- tai K-vaihdolla), tai muiden omat kortit ovat heille
 itselleen tuntemattomia (heidän summa-arvionsa on epävarma eivätkä he uskalla koputtaa
-ensin). Kumpaa tarkoitettiin, kysytään seuraavassa erässä eikä täytetä päättelemällä.
+ensin). Kumpaa tarkoitettiin, kysytään seuraavassa erässä eikä täytetä päättelemällä.~~
+*(Kysytty erässä 29, ja vastaus oli **molemmat**. Tuntemattomuus suojaa siis kahdesta
+suunnasta yhtä aikaa: omat kortit ovat turvassa vaihdoilta, ja muiden epävarmuus omista
+korteistaan lykkää heidän koputustaan.)*
+
+## 47. Koputuksen erikoiskortit ja nimi tulivat pöydästä sellaisinaan
+
+Tommi 20.8.2026 (erä 29), kysyttäessä olivatko sovelluksen erikoiskorttisäännöt (jätkällä
+katsotaan oma piilokortti, rouvalla vaihdetaan minkä tahansa kortin kanssa, kuninkaalla
+katsotaan ja voidaan vaihtaa) samat Laiturin pöydässä, ja kutsuttiinko peliä siellä
+Koputukseksi:
+
+> *oli juuri noin*
+> *koputus*
+
+Erikoiskortit toimivat pöydässä täsmälleen kuten sovelluksessa, ja pelin nimi oli Laiturilla
+Koputus.
+
+**Seuraus:** Koputus on ensimmäinen peli jonka säännöstöstä on kirjattu siirtyneen pöydästä
+kokonainen mekaniikkaryhmä muuttumattomana. Kohta 33 jäljitti viisi asetusvalintaa kolmessa
+muussa pelissä, ja kohta 28 vahvisti Kasinon pistelaskun hetken, mutta erikoiskorttien
+kolmikko on laajin yksittäinen sellaisenaan siirtynyt kokonaisuus. Koputuksella ei
+myöskään ole aloitusnäytön sääntövalintoja, mikä sopii tähän: pöydän muoto ei jättänyt
+valittavaa.
+
+**Seuraus:** nimi kulki samaa reittiä kuin säännöt. Lapsuuden peleillä oli omaa sanastoa
+(kiusa kohdassa 38, turnaussarja kohdassa 39), Laiturin Koputus taas tuli nimineen
+sellaisenaan. Oma nimistö näyttää siis olleen lapsuuden sukuperinteen piirre eikä
+pöytäperinteiden yleinen ominaisuus, ja tämä on kirjoittajan päätelmä kahdesta
+tapauksesta eikä Tommin lause.
