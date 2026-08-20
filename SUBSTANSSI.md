@@ -199,11 +199,13 @@ tilanteen lukemisen virhe.
 siitä mitä pelissä kerätään tai vältetään. Yleistä muotoa ei siis voi kirjata, vaan kysymys on
 esitettävä peli kerrallaan.
 
-**Avoin:** kumpaakin virhettä ei ole vielä purettu yhdenkään yhdeksän pelin kohdalla, eikä
+~~**Avoin:** kumpaakin virhettä ei ole vielä purettu yhdenkään yhdeksän pelin kohdalla,~~ eikä
 sitä ole verrattu siihen mitä botit tekevät. Jälkimmäinen on tarkistettavissa koodista, mutta
 vasta kun tiedetään mitä pöydässä pidetään virheenä.
 
-*Kohta täydentyi erässä 2, ks. kohta 6.*
+*Kohta täydentyi erässä 2, ks. kohta 6. Purku valmistui erässä 52: aloittelijan virhe on
+nimetty kaikista yhdeksästä pelistä ja kokeneen virhe kahdeksasta, kooste kohdassa 69.
+Bottivertailu on yhä tekemättä, ja se on koodityötä eikä haastattelun avoin.*
 
 ---
 
@@ -2504,3 +2506,65 @@ peliin.
 testitapauksensa: peli joka on tekijälleen tylsä on silti kokoelmassa yhdeksän joukossa,
 eikä tästä vastauksesta seuraa sille mitään. Se on teesin (*siksi ei standardia vaan
 vaihtoehtoja*) suora sovellus: valikoima ei ole tekijän maun kuva.
+
+## 66. Seiskan aloittelijavirhe on samanarvoisten pelaaminen yksitellen
+
+Tommi 20.8.2026 (erä 52), kysyttäessä missä hetkessä Seiskan aloittelija tekee virheen:
+
+> *ei pelaa kaikkia samanarvoisia kerralla*
+
+**Seuraus** *(kirjoittajan luenta suhteesta, saa kaatua)*: aloittelijan ja kokeneen virheet
+(kohta 55) koskevat samaa mekaniikkaa eri portaissa. Aloittelija ei käytä ryhmälyöntiä
+lainkaan vaan lyö samanarvoisista yhden, kokenut käyttää sen mutta väärään aikaan eikä
+säästä ryhmää lopetukseksi. Samanarvoisten ryhmä on siis Seiskan taidon mitta molemmilla
+tasoilla: ensin opitaan lyömään ryhmä, sitten opitaan säästämään se.
+
+## 67. Moskan aloittelija pelaa isoja pienten sijaan eikä siirrä hyökkäystä
+
+Tommi 20.8.2026 (erä 52), kysyttäessä missä hetkessä Moskan aloittelija tekee virheen:
+
+> *pelaa isoja, kun voi pelata pieniä. ei siirrä hyökkäystä*
+
+Virheitä on kaksi. Ensimmäinen on kohdan 6 muodon viides nimetty peli (Ristiseiska,
+Paskahousu ja Kultakala kohdassa 6, Maija kohdassa 26): iso kortti käytetään tilanteessa
+jossa pieni riittäisi. Toinen on oma lajinsa: hyökkäyksen siirtäminen (kohta 60: siirto on
+pöydän sääntö) jää käyttämättä, eli aloittelija puolustaa itse tilanteessa josta voisi
+siirtää hyökkäyksen eteenpäin.
+
+**Seuraus:** Moska on ensimmäinen peli jonka aloittelijalta nimettiin kaksi virhettä samassa
+vastauksessa, ja se sopii pelin asemaan kokoelman ainoana vaativaksi merkittynä: opittavia
+mekaniikkoja on kaksi kerrosta jo ennen kohdan 19 kokeneen vaihetajua.
+
+## 68. Läpsyn aloittelijavirhe on väärä läpsy tai hitaus
+
+Tommi 20.8.2026 (erä 52), kysyttäessä missä hetkessä Läpsyn aloittelija tekee virheen:
+
+> *väärä läpsy tai hitaus*
+
+Virheellä on kaksi suuntaa: lyödään väärin tai lyödään liian hitaasti.
+
+**Seuraus:** tämä täsmää kohdan 20 havaintoon että lyönti on päätös eikä refleksi, ja
+selittää sen kahdesta suunnasta. Väärän lyönnin hinta rankaisee hätäilystä ja hitaus
+menettää tilaisuuden, joten taito on nopean päätöksen tarkkuus eikä kumpikaan yksin.
+Läpsy on samalla ainoa peli jonka aloittelijalla on virhe mutta kokeneella ei (kohta 65),
+mikä sopii pelin luonteeseen: opittava kynnys on olemassa, mutta sen jälkeen peli ei enää
+syvene.
+
+## 69. Kasinon aloittelijavirhe on kaiken vieminen pöydästä
+
+Tommi 20.8.2026 (erä 52), kysyttäessä missä hetkessä Kasinon aloittelija tekee virheen:
+
+> *vie pöydästä kaikkia mitä saisi*
+
+Aloittelija maksimoi jokaisen kaappauksen eli vie kaiken minkä säännöt sallivat.
+
+**Seuraus:** tämä on kohdan 29 kolmen akselin vastinpari aloittelijan puolelta. Kolme
+palkitsemisen akselia tekevät valikoivasta kaappauksesta oikean, ja aloittelijan virhe on
+kohdella määrää ainoana akselina. Virhe on rakenteeltaan päinvastainen kuin kohdan 6
+pidättämisvirheet: siellä pelataan liikaa arvoa, täällä otetaan liikaa määrää.
+
+**Seuraus:** aloittelijan virhe on nyt nimetty kaikista yhdeksästä pelistä, ja kokeneen
+virhe kahdeksasta (Läpsyllä sitä ei ole, kohta 65; Kasinosta sitä ei ole kysytty, koska
+kohdan 35 mukaan pöytäpeli ei noussut sille tasolle). Kohdan 3 alkuperäinen aukko
+(kumpaakaan virhettä ei ole purettu yhdenkään pelin kohdalla) on sulkeutunut kokonaan
+tämän erän myötä.
