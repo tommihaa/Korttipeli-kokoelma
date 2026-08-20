@@ -1634,6 +1634,29 @@ automaattisesti painavamman ilman erillistä sääntöä, koska viimeisyys isoss
 enemmän. Kohdan 36 kumoutunut luenta (turnaus mittasi kenttää) oli siis oikeassa
 lopputuloksessa väärällä mekanismilla. Tätä ei kysytty, ja se saa kaatua.
 
+Tommi vastasi 20.8.2026 (erä 47) kahteen jatkoon. Kysyttäessä voittiko kevyemmässä
+muodossa se jolla oli lopussa eniten voittopisteitä:
+
+> *ei, sijoitusten summa oli merkitsevä*
+
+ja kysyttäessä kuuluiko turnaussarjan noin seitsemään peliin muitakin lajeja kuin
+korttipelejä:
+
+> *kyllä, kaikenlaista*
+
+Ensimmäinen vastaus kaataa kysymyksen premissin ja lähentää muodot toisiinsa: ratkaisija
+oli myös kevyemmässä muodossa sijoitusten summa, ei voittopisteiden määrä. **Avoin:** mikä
+rooli voitosta saadulla pisteellä silloin oli ja mikä kahta muotoa lopulta erotti, ei
+kysytty; kahden muodon jako lepää erän 15 vastauksella, ja tämä vastaus ohentaa sitä.
+
+Toinen vastaus laajentaa turnaussarjan kortin ulkopuolelle: seitsemään peliin kuului
+kaikenlaista, eli kortti oli turnauksessakin yksi laji muiden joukossa, samoin kuin
+kohdan 1 kuvaamassa toiminnassa muutenkin.
+
+**Seuraus** *(kirjoittajan päätelmä)*: sijoitusten summa lajirajat ylittävässä sarjassa
+tarkoittaa että turnaussarja mittasi monipuolisuutta eikä yhden pelin taitoa, ja
+korttipelien osuus siitä oli osasuoritus. Tätä ei kysytty, ja se saa kaatua.
+
 Tommi 20.8.2026 (erä 18), kysyttäessä siirtyikö paperille kirjaamisen tapa lapsuudesta
 Laiturin turnauksiin:
 
