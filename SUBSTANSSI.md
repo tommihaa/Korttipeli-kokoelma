@@ -1890,6 +1890,12 @@ tarkistettavaksi eikä ratkaista tässä.** Pöydässä nostolta välttyi jos *j
 pinoamisen (bonusmaa vaihtuu), muttei sano että pinoaminen vapauttaisi nostolta. Kumpi muoto
 koodissa on ja kumpi pitäisi olla, on sopimusmuutos-kysymys eikä tämän dokumentin ratkaistava.
 
+*Koodi tarkistettiin samana iltana:* rangaistus osuu kaikkiin muihin aina eikä pinoaminen
+vapauta nostolta (`applyAcePenalty`, jonka kommentti nimeää lähteekseen kanonin). Koodi ja
+kanoni ovat siis yhtä, ja ero on pöydän ja kanonin välillä, jos luenta jatkamisesta pitää.
+Ero odottaa ensin luennan vahvistusta ja sen jälkeen Tommin päätöstä siitä jääkö sovelluksen
+muoto vai tuleeko pöydän muoto asetukseksi tai vakioksi.
+
 ## 57. Seiskan oppimisen tapa ei ole muistissa, ja Jako-Seiska vaati sääntöjen johtamista
 
 Tommi 20.8.2026 (erä 34), kysyttäessä opittiinko Seiskan säännöt opiskelukaverilta
