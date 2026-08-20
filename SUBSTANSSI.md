@@ -1971,6 +1971,32 @@ sellaisenaan siirtynyttä ovat Laiturin pelejä, ja kaikki asetusvalinnat ovat p
 joiden muoto eli useammassa ympäristössä (lapsuus, luettu, pöytä). Tämä on kirjoittajan
 päätelmä kertyneestä jakaumasta eikä Tommin lause.
 
+## 59. Maijan nimi ja padan valttikielto tulivat pöydästä, valtin vetotapa on muistin raja
+
+Tommi 20.8.2026 (erä 37), kysyttäessä kutsuttiinko peliä Laiturilla Maijaksi, oliko valtin
+katsominen pakan pohjimmaisesta ja padan valttikielto pöydän sääntö, ja sanottiinko pöydässä
+että lopussa istuu Maija:
+
+> *maija*
+> *en muista mistä valtti vedettiin, mutta pata ei voinut olla valtti*
+> *Pata Q on maija, häviäjälle jäi se*
+
+Nimi on pöydästä, ja padan valttikielto on pöydästä. Valtin vetotapa (pohjimmainen kortti
+vai jokin muu) on muistin raja ja kirjataan sellaisena: pöydän sääntö oli kielto, ja
+sovelluksen mekanismi toteuttaa kiellon tavalla jonka alkuperää ei muisteta. Kolmas vastaus
+vahvisti mekaniikan (patarouva on Maija ja häviäjälle jäi se), mutta kysymyksen sanontapuoli
+(*lopussa istuu Maija*, sanottiinko niin) jäi vastaamatta ja merkitään vastaamattomaksi.
+
+**Seuraus:** Maija on neljäs Laiturin peli peräkkäin jonka nimi tuli pöydästä sellaisenaan,
+eikä silläkään ole aloitusnäytön sääntövalintoja. Kohdan 58 jakauma vahvistuu: Laiturin
+viidestä pelistä neljän ydin on nyt jäljitetty pöytään, ja viides on Moska jonka ainoa
+kirjattu muutos on pelimuodon pakottama käännös (kohta 39).
+
+**Seuraus** *(kirjoittajan päätelmä)*: padan valttikielto ja Maijan patasidonnaisuus ovat
+todennäköisesti sama sääntö kahdesta suunnasta: jos pata olisi valtti, Maija olisi
+valttikortti ja koko häviömekaniikka vesittyisi. Tätä perustetta ei kysytty, ja se saa
+kaatua.
+
 **Seuraus** *(kirjoittajan päätelmä)*: harvinaisuus sopii kohdan 20 havaintoon Läpsystä:
 nopeuslyönti on päätös eikä refleksi, ja väärän lyönnin hinta piti kynnyksen korkealla.
 Tämä saa kaatua, koska syytä harvinaisuuteen ei kysytty.
