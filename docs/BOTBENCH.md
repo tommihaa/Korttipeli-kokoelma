@@ -796,6 +796,41 @@ palautetun muutoksen eikä nykytilaa. Ja laskuri oli **väliaikainen instrumentt
 ajon jälkeen: mittalaite tuotantokoodissa olisi johdettu kopio jota kukaan ei myöhemmin mitätöi,
 joten luku asuu tässä dokumentissa ja koodi on ennallaan.
 
+## Lukumääräsääntö 20.8.2026 (N=400): Mestari heikkeni, muutos palautettu
+
+Saman päivän kolmas ajosarja, ja se toteutti kohdan 4 viimeisen mittaamattoman ehdokkaan:
+Mestari lyö suurimman määrän samanarvoisia jolla näkymättömät samanarvoiset eivät riitä
+täydentämään kasan päälle jäävää sarjaa neljäksi, poikkeuksina oma neloskaato ja käden
+tyhjentävä lyönti. Näkymättömät laskettiin omasta kädestä, kasasta ja kasatuista, eli
+pelkästä julkisesta tiedosta, joten näkyvyysvaatimus ei rikkoutunut.
+
+**Baseline ajettiin ensin uudelleen ja se toistui bitilleen** (214/185/0 · 198/202/0 ·
+196/204/0, samat kuin saman päivän aiemmat ajot).
+
+| pari | tulos | 20.8. baseline | muutos |
+|------|------:|---------------:|-------:|
+| hard vs beginner | 52,25 % (209 / 191 / 0) | 53,6 % | −1,4 %-yks. |
+| hard vs normal | **45,0 %** (180 / 220 / 0) | 49,5 % | **−4,5 %-yks.** |
+| normal vs beginner | 49,0 % (196 / 204 / 0) | 49,0 % | bitilleen sama |
+
+Laukeamislaskuri ajettiin samalla menetelmällä kuin kutoskiristyksessä ja poistettiin ajon
+jälkeen: **fired 466 ja changed 239 sadassa hard vs normal -pelissä**, eli 2,4 muuttunutta
+siirtoa per peli. Haara siis eli ja muutti siirtoja runsaasti, ja verrokki toistui
+bitilleen, joten muutos pysyi Mestarissa. Tulos ei ole sokea koetin, eikä se ole edes
+nollatulos: **molemmat Mestari-parit heikkenivät.**
+
+**Tulkinta, ja se on päätelmä eikä mitattu syy.** Tukkosarjan hyöty ei realisoidu, koska
+vastustajan on joka tapauksessa ylitettävä sarja tai nostettava kasa, täydensipä sen
+neljäksi tai ei. Pidätetty samanarvoinen sen sijaan jää käteen pienenä korttina joka on
+myöhemmin lyötävä yksinään, ja pidättäjän käsi tyhjenee hitaammin. Hinta ylittää hyödyn
+jokseenkin joka tilanteessa jossa haara laukeaa.
+
+**Muutos palautettiin** työjärjestyksen omalla säännöllä (peru jos porras ei nouse, ja
+tässä porras laski), ja työpuu todennettiin palautuksen jälkeen puhtaaksi `git status`
+-komennolla. Paskahousun tunnetut kanavat on nyt käytetty loppuun: fumble-hinta,
+kutoskiristys ja lukumääräsääntö on kaikki mitattu, eikä yksikään liikuttanut porrasta
+ylöspäin.
+
 ## Käyttö jatkossa
 
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän
@@ -840,7 +875,8 @@ kuin valitsee mistä aloittaa:
 | ~~Moska~~ | ~~ei diagnosoitu, luultavasti uusi kanava~~ | ~~kun syy on selvitetty~~ |
 | ~~Moska~~ | ~~uusi kanava, nyt diagnosoitu~~ | ✅ mitattu 20.8.2026: nollatulos, kanava suljettu |
 | Ristiseiska | **uusi kanava**, vanha todettu umpikujaksi | vasta kun kanava löytyy |
-| Paskahousu | **uusi kanava**, kutonen mitattu ja hylätty (20.8.2026) | vasta kun uusi kanava löytyy |
+| ~~Paskahousu~~ | ~~uusi kanava, kutonen mitattu ja hylätty (20.8.2026)~~ | ~~vasta kun uusi kanava löytyy~~ |
+| Paskahousu | **uusi kanava**, kutonen ja lukumääräsääntö mitattu ja hylätty (20.8.2026) | vasta kun uusi kanava löytyy |
 
 **Luokittelu koeteltiin heti ja piti.** Maija ennustettiin kalibroinniksi ja ratkesi
 yhden rivin muutoksella ilman uutta taitoelementtiä, täsmälleen kuten laji lupasi.
@@ -970,7 +1006,14 @@ niitä on näkymättömissä enää yksi: silloin kaato ei ole epätodennäköin
 pakan tyhjennyttyä kukaan muukaan voi täydentää sitä. Sääntö kirjoittuu siis lukumääränä eikä
 korttina: lyö suurin määrä jolla näkymättömät samanarvoiset eivät riitä neljään, ja jos sellaista
 määrää ei ole, lyö kaikki. Poikkeus on käsi joka tyhjenee lyönnillä, koska se voittaa aina.
-Ehdotusta ei ole mitattu, eikä sitä saa mitata samassa ajossa kutoskiristyksen kanssa.
+~~Ehdotusta ei ole mitattu, eikä sitä saa mitata samassa ajossa kutoskiristyksen kanssa.~~
+
+**Mitattu 20.8.2026 omana ajonaan, ja tulos on negatiivinen: muutos palautettu.** Molemmat
+Mestari-parit heikkenivät (`hard vs normal` 49,5 → 45,0 %, `hard vs beginner` 53,6 →
+52,25 %), verrokki toistui bitilleen ja laskuri näytti 2,4 muuttunutta siirtoa per peli,
+eli kanava oli todellinen ja haitallinen. Luvut ja tulkinta osiossa "Lukumääräsääntö
+20.8.2026". Kohta pysyy auki, mutta tunnetut kanavat on nyt käytetty loppuun: seuraava
+ehdokas vaatii keksinnön eikä työsuoritusta.
 
 ### Reunaehdot AI-työssä
 
