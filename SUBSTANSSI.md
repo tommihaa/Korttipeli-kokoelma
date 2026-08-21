@@ -3600,6 +3600,52 @@ poistumisesta, eikä sovelluksen arvo ole yhtä ja samaa kaikille yhdeksälle.
 **Rajaus:** vastaus koskee Laiturin pöytää eikä Läpsyä pelinä. Se ei kerro pelattiinko Läpsyä
 muualla enemmän, eikä se selitä kohdan 65 nykyistä tylsyyttä, joka on eri asia ja eri ajassa.
 
+## 90. Pelipöytä oli sama pöytä kuin kaikki muukin, ja ikkunat ovat siksi seuraus eivätkä päätös
+
+Tommi 21.8.2026 (erä 70), kysyttäessä oliko Laiturilla pelipaikka sama iso pöytä jossa muutkin
+päivän asiat tehtiin vai erillinen paikka:
+
+> *sama iso pöytä jossa syötiin ja tehtiin ryhmän juttuja*
+
+**Kohdan 73 päivärakenne saa selityksen, eikä se ole aikataulu.** Kaksi puolen tunnin
+peli-ikkunaa eivät olleet varattua peliaikaa vaan **se aika jolloin kaikki olivat jo pöydän
+ääressä**: päivän alussa ennen ryhmiin hajaantumista ja lopussa ennen lähtöä. Peli ei siis ollut
+oma tilaisuutensa vaan täytti hetken jossa väki oli koolla joka tapauksessa. Ikkuna oli seuraus
+päivän kulusta eikä päätös pelata.
+
+**Se selittää myös miksi lopetusikkuna oli ehdollinen.** Kohta 73 kirjasi *ei aina* rakenteen
+ainoana epäsymmetriana ja jätti syyn auki. Jos peliaika on se hetki jolloin porukka sattuu
+olemaan pöydässä, sitä ei ole silloin kun porukka ei kokoonnu uudelleen. Avausikkuna oli varma
+koska päivä alkoi kokoontumisella; lopetusikkuna ei ollut, koska päivän lopussa saatettiin
+hajaantua suoraan.
+
+**Ja se selittää erän 23 vastauksen kolmannen kerran.** Kohta 15 kirjasi *riippui ryhmästä,
+ruuanlaiton lomassa oli aikaa pelata enemmän*, ja kohta 73 sijoitti sen keskiosaan. Nyt
+tiedetään miksi juuri ruuanlaittoryhmä: ruoka tehtiin ja syötiin samassa pöydässä, joten se
+ryhmä oli pelipöydän ääressä silloinkin kun muut olivat muualla. **Peliaikaa ei siis ansaittu
+vaan se seurasi sijainnista.**
+
+**Seuraus kohtaan 89, ja se on tämän kohdan kirpein.** Pöytä oli valittu ja mitoitettu
+ruokailuun ja ryhmätyöhön korkeintaan kolmelle ryhmälle, ei korttipeliin. Läpsy putosi siis
+pois kalusteen takia, joka oli hankittu aivan muuhun tarkoitukseen. **Yhden pelin asema
+kokoelman synty-ympäristössä ratkesi siis siitä, minkä muotoinen pöytä sattui olemaan siinä
+huoneessa.** Se ei ole kenenkään pelivalinta eikä pelin ominaisuus.
+
+**Seuraus kohtaan 77, ja se vahvistaa sitä toisesta suunnasta.** Jos peliaika on ruokailun ja
+muun toiminnan välissä samassa pöydässä, aika pelin aloittamiseen on lyhyt ja katkonainen.
+Peli joka on opetettava ensin (Koputus) häviää tässä kahdesti: opettaminen vie ajan josta
+pelaaminen on pois, ja pöytä on tarvittaessa tyhjennettävä muuhun käyttöön. Kohdan 77 mekanismi
+ei siis kaadu vaan saa fyysisen syyn nopeuden vaatimukselleen.
+
+**Kokonaiskuva, ja tämä on kirjoittajan koonti eikä Tommin lause.** Kohdat 73, 74 ja 90
+kuvaavat yhdessä ympäristön jossa kokoelman enemmistö opittiin: **korttipeli ei ollut ohjelmaa
+vaan se mitä tehtiin siinä missä kaikki muukin, silloin kun väki sattui olemaan koolla.**
+Kohdan 1 sitaatti sanoo saman lyhyemmin (*tehtiin asioita ja lätkittiin korttia*), ja tämä
+kohta kertoo mitä sen `ja` tarkoittaa: ei kahta erillistä tekemistä vaan yhtä pöytää.
+
+**Avoin:** oliko korttien esille ottaminen ja pois korjaaminen oma kitkansa, eli jäikö peli
+joskus aloittamatta siksi että pöytä oli varattu muuhun.
+
 ---
 
 ---
