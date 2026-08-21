@@ -3176,7 +3176,82 @@ pieleen. Onko virheen estäminen aina parempi kuin sen paljastaminen, ei ole tä
 sitä päätellä.
 
 **Avoin:** oliko pöydän virheenkorjaus muidenkin pelien ominaisuus vai erityisesti
-Ristiseiskan, ja korjattiinko virhe peruuttamalla siirto vai jatkettiinko siitä eteenpäin.
+Ristiseiskan~~, ja korjattiinko virhe peruuttamalla siirto vai jatkettiinko siitä eteenpäin~~.
+*(Jälkimmäinen vastattiin erässä 62, ks. kohta 80.)*
+
+## 80. Virhettä ei peruttu vaan todettiin, ja syy on monen pelaajan pelin hinta
+
+Tommi 21.8.2026 (erä 62), kysyttäessä peruttiinko turhaan pyydetty pantti vai jatkettiinko
+siitä eteenpäin:
+
+> *todettiin tapahtunut, jatkettiin siitä eteenpäin, pantti jäi voimaan koska toteamiseen menee
+> aikaa monen pelaajan pelissä*
+
+**Kohdan 79 nimi tarkentuu, ja tarkennus koskee sanaa eikä ilmiötä.** Tommi kutsui mekanismia
+virheenkorjaukseksi, ja se mitä pöydässä tapahtui, oli **virheen toteaminen ilman oikaisua**.
+Peli ei palannut virhettä edeltävään tilaan, vaan pantti jäi voimaan ja pelaaja maksoi kortin
+josta ei olisi tarvinnut luopua. Kohdan 79 havainto pitää sellaisenaan (virhe tuli ilmi
+nopeasti), mutta seuraus on eri: **pöytä opetti, se ei oikaissut.**
+
+**Syy on käytännöllinen ja se on nimetty vastauksessa itsessään:** toteamiseen menee aikaa monen
+pelaajan pelissä. Peruminen olisi vaatinut yhteisen sopimuksen siitä mikä tila oli oikea, ja
+mitä enemmän pelaajia, sitä kalliimpaa se on. **Virhe jäi siis voimaan koska sen korjaaminen
+olisi maksanut enemmän kuin virhe itse.** Tämä on sama laji kuin kohdan 73 puolen tunnin ikkuna:
+pöydän ratkaisu seuraa siitä paljonko aikaa oli, eikä siitä mikä olisi sääntöteknisesti oikein.
+
+**Seuraus, ja se tekee kohdan 79 vertailusta terävämmän.** Sanoin kohdassa 79 että ero pöydän ja
+sovelluksen välillä on ajoituksessa eikä opetuksessa. Se pitää yhä, mutta hinta on nyt
+tiedossa: pöydässä oppi maksoi panttikortin, sovelluksessa se ei maksa mitään. `cantPass`
+kertoo saman asian ilmaiseksi. **Sovellus ei siis vain siirrä oppia aikaisemmaksi vaan poistaa
+sen hinnan**, ja se on kolmas tapaus jossa sovellus poistaa pöydän rajoitteen (edelliset:
+oppimiskustannus kohdassa 72 ja puolen tunnin ikkuna kohdassa 73).
+
+**Rajaus:** vastaus koskee Ristiseiskaa ja sitä tapausta jossa virhe huomattiin. Se ei kerro
+mitä tapahtui jos virhettä ei huomattu lainkaan, eikä sitä oliko sama käytäntö muissa peleissä.
+Kohdan 79 avoimen ensimmäinen puoli on siis yhä auki.
+
+## 81. Haastattelu muutti kohteensa, ja se on menetelmän oma löydös
+
+Tommi 21.8.2026 (erä 62), kysymättä:
+
+> *substanssi-haastattelujen myötä olen päättänyt muuttaa moska ja maija pelaamistani suuria
+> kortteja säästäväksi, aiemmin löin lähes aina kaikki samaa maata olleet kerralla, mikäli
+> vastustajan korttitilanne salli sen*
+
+**Tämä on ensimmäinen kerta kun dokumentti vaikuttaa siihen mitä se kuvaa, ja se on kirjattava
+ennen kuin siitä tehdään mitään muuta.** `SUBSTANSSI.md`:n tehtävä on tallentaa se mitä pöydässä
+tapahtui, ja tallentaminen on tähän asti oletettu vaikutuksettomaksi. Nyt tiedetään ettei se
+ole: kysymysten sarja on saanut lähteen näkemään oman pelitapansa ulkopuolelta ja päättämään
+sen muuttamisesta.
+
+**Seuraus dokumentin luotettavuuteen, ja se on tämän kohdan tärkein rivi.** Tästä eteenpäin
+Tommin vastaus pelitavasta voi kuvata **haastattelun jälkeistä Tommia** eikä sitä pöytää jota
+dokumentti tallentaa. Ero ei näy vastauksesta. Kaikki tähän mennessä kirjatut pelitapavastaukset
+(kohdat 1-80) on annettu ennen tätä päätöstä ja ovat siltä osin koskemattomia, mutta jatkossa
+pelitapaa koskeva kysymys on kysyttävä muodossa joka erottaa muistin nykyisestä aikeesta.
+**Käytännön sääntö: kysy mitä pöydässä tehtiin, älä mitä kannattaa tehdä.**
+
+**Sisältö itsessään on substanssia, ja se sopii kokoelman tunnettuun teemaan.** Aiempi tapa oli
+lyödä lähes aina kaikki samaa maata olleet kerralla kun vastustajan korttitilanne salli, ja uusi
+on säästää suuria kortteja. Sama jännite on dokumentissa jo Seiskan kohdalla kahdesta suunnasta:
+kohta 66 nimeää aloittelijavirheeksi samanarvoisten pelaamisen yksitellen ja kohta 55 kokeneen
+virheeksi samanarvoisten säästämättä jättämisen. **Seiskassa ratkaisu on siis sama kuin se johon
+Tommi on nyt Moskassa ja Maijassa päätynyt**, ja se vahvistaa kohtien 6 ja 7 pidättämisteemaa
+kolmannessa ja neljännessä pelissä.
+
+**Mitä tämä ei ole.** Se ei ole sääntömuutos eikä kanoniin kirjattava pelitapa, koska kyse on
+yhden pelaajan päätöksestä eikä pöydän käytännöstä. Eikä se ole näyttö siitä että säästäminen
+olisi parempaa peliä; se on näyttö siitä että Tommi on tullut siihen tulokseen. Botin
+mallinnukseen sillä ei ole tässä seurausta.
+
+**Menetelmällinen huomio, joka ylittää tämän projektin.** Kokoelmassa on nimetty termi
+`koetin` (`Kaanon/KÄSITTEISTÖ.md` §0.2) ja neljä maastoa joissa koetin pettää. Tämä on eri
+ilmiö: koetin ei petä vaan **muuttaa kohdettaan mitatessaan**. Kuuluuko havainto
+kokoelmatasolle, on Tommin päätettävissä eikä sitä viedä sinne tästä.
+
+**Avoin:** oliko muutospäätös seurausta jostakin tietystä kysymyksestä vai haastattelusta
+kokonaisuutena. Vastaus kertoisi kumpi menetelmän puoli tuottaa vaikutuksen, yksittäinen
+kysymys vai kertyvä kokonaiskuva.
 
 ---
 
