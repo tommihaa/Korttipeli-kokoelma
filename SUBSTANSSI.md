@@ -3131,9 +3131,9 @@ sitä että avoimuus olisi ollut tietoinen opetuskeino. Kysymys kuului miksi Mos
 oppimiskustannuksensa, ja vastaus kertoo pelin luonteen; päätelmä *siksi se opetti itse itsensä*
 on kirjoittajan.
 
-**Avoin:** oliko sivusta lyöminen ja siirron kysyminen yhtä lailla tapa pitää muut mukana kun
-oli oma vuoro odottamassa, vai vain pelin kulkua. Kysymys koskee sitä oliko Moskan avoimuudessa
-myös sosiaalinen tehtävä, ja se on eri kysymys kuin oppiminen.
+~~**Avoin:** oliko sivusta lyöminen ja siirron kysyminen yhtä lailla tapa pitää muut mukana kun
+oli oma vuoro odottamassa, vai vain pelin kulkua.~~ *(Vastattu erässä 68, ks. kohta 88: juuri
+näiden kahden puuttuminen teki Maijasta tylsemmän, joten tehtävä oli myös sosiaalinen.)*
 
 ## 79. Ristiseiskassa virhe paljastui itsestään, ja sovellus estää saman virheen ennalta
 
@@ -3508,6 +3508,50 @@ avoimuus oli pelin ominaisuus ja sovelluksen avoimuus on alustan ominaisuus, jot
 muistipelejä joissa pöydässä sitä ei ollut. **Koputus ja Kultakala saavat sovelluksessa sen
 virheiden esiintulon jota niillä ei pöydässä ollut**, ja se on sama havainto kuin kohdassa 77
 (Koputus hyötyy sovellusmuodosta eniten) toisesta suunnasta.
+
+## 88. Moskan ja Maijan erottaa osallistuminen oman vuoron ulkopuolella
+
+Tommi 21.8.2026 (erä 68), kysyttäessä mikä pöydässä sai valitsemaan Moskan silloin kun olisi
+voinut yhtä hyvin pelata Maijaa:
+
+> *maija oli tylsempi: ei sivusta lyöntejä eikä siirtoja*
+
+**Vastaus nimeää täsmälleen ne kaksi mekaniikkaa jotka kohta 78 nosti Moskan avoimuudesta**, ja
+se on eri kysymys johon tuli sama vastaus. Kohta 78 kysyi miksi Moska kesti oppimiskustannuksensa
+ja sai vastaukseksi että pöydässä kysyttiin *siirrätkö* ja *lyökö joku sivusta*. Tämä kysyi mikä
+erottaa Moskan Maijasta ja sai vastaukseksi että Maijasta puuttuvat juuri ne. **Kaksi
+riippumatonta kysymystä osoittavat samaan pariin mekaniikkoja.**
+
+**Todennettu kanonista 21.8.2026:** `MAIJA.md` ei sisällä sanoja *sivusta*, *siirto* eikä
+*passaus* kertaakaan, kun `MOSKA.md`:n botin tasoportaassa molemmilla on oma rivinsä. Tommin
+muisti ja kanoni sanovat siis saman, eikä ero ole muistikuva vaan sääntöjen ero.
+
+**Kohdan 87 rajaus ratkeaa, ja ratkaisu tarkentaa koko mekanismia.** Kohta 87 totesi että
+avoimuus erottaa ikkunapelit muistipeleistä muttei Maijasta ja Läpsystä, joten se on
+välttämätön muttei riittävä ehto. Puuttuva ehto on nyt nimetty: **osallistuminen oman vuoron
+ulkopuolella.** Maijassa kortit näkyvät mutta vain hyökkääjä ja puolustaja toimivat; Moskassa
+kuka tahansa voi lyödä sivusta ja puolustaja voi siirtää vastuun eteenpäin. Näkyvyys tekee
+pelistä seurattavan, osallistuminen tekee siitä pelattavan silloinkin kun ei ole oma vuoro.
+
+**Seuraus, ja se on tämän kohdan ydin:** ikkunapaikan ehto ei ole avoimuus vaan **jatkuva
+tekeminen**. Puolen tunnin ikkunassa jossa on koolla kaikki ryhmät (kohta 73), peli jossa
+useimmat odottavat vuoroaan käyttää ajan huonommin kuin peli jossa kaikki ovat koko ajan
+mukana. Tommin sana on *tylsempi*, ja se on tässä pelaajan kokemus samasta rakenteellisesta
+asiasta.
+
+**Seuraus kohtaan 78, ja se sulkee sen avoimen.** Kysyin siellä oliko sivusta lyömisellä ja
+siirron kysymisellä myös sosiaalinen tehtävä vai oliko se vain pelin kulkua. Vastaus on että
+niiden puuttuminen tekee pelistä tylsemmän, eli tehtävä on molempia: ne ovat pelin kulkua **ja**
+se mikä pitää muut mukana. Sama mekaniikka siis opettaa aloittelijaa (kohta 78) ja pitää
+kokeneen kiinnostuneena (tämä kohta), eikä niitä tarvitse erottaa toisistaan.
+
+**Läpsy jää yhä selittämättä, ja se sanotaan.** Kohta 87 nimesi kaksi peliä jotka ovat avoimia
+muttei ikkunapelejä, ja Maija on nyt selitetty. Läpsyssä kaikki osallistuvat koko ajan, koska
+se on reaktiopeli, joten tämän kohdan ehto ei erota sitä. Läpsy on lisäksi harvimmin pelattu
+(kohta 76) ja Tommille nykyään tylsä (kohta 65). Selitys on siis toisaalla eikä sitä arvata.
+
+**Rajaus:** vastaus kertoo miksi Moska valittiin Maijan sijaan, ei sitä että Maija olisi huono
+peli. Maija on kokoelmassa ja kanonissa keskitasoinen, eikä tästä seuraa sille mitään.
 
 ---
 
