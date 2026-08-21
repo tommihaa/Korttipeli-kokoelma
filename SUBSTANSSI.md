@@ -3249,9 +3249,90 @@ mallinnukseen sillä ei ole tässä seurausta.
 ilmiö: koetin ei petä vaan **muuttaa kohdettaan mitatessaan**. Kuuluuko havainto
 kokoelmatasolle, on Tommin päätettävissä eikä sitä viedä sinne tästä.
 
-**Avoin:** oliko muutospäätös seurausta jostakin tietystä kysymyksestä vai haastattelusta
-kokonaisuutena. Vastaus kertoisi kumpi menetelmän puoli tuottaa vaikutuksen, yksittäinen
-kysymys vai kertyvä kokonaiskuva.
+~~**Avoin:** oliko muutospäätös seurausta jostakin tietystä kysymyksestä vai haastattelusta
+kokonaisuutena.~~ *(Vastattu erässä 63, ks. kohta 83: kokonaisuudesta.)*
+
+## 82. Seiskassa samanarvoiset ovat lopetusväline, koska Seiskassa ei ole loppupeliä
+
+Tommi 21.8.2026 (erä 63), kysymättä, tarkennuksena kohtiin 55 ja 66:
+
+> *Seiskassa siis kerään samanarvoisia, jotta voin lopettaa pelin niillä - ei ole erillistä
+> loppupeliä.*
+
+**Kohdat 55 ja 66 saavat syyn, ja ne ovat olleet siihen asti kuvauksia ilman perustetta.** Kohta
+66 nimeää aloittelijavirheeksi samanarvoisten pelaamisen yksitellen ja kohta 55 kokeneen
+virheeksi samanarvoisten säästämättä jättämisen, mutta kumpikaan ei kerro mihin säästäminen
+tähtää. Vastaus on **pelin lopettaminen yhdellä vuorolla**: monta samanarvoista kerralla vie
+käden tyhjäksi silloin kun se muuten ei tyhjenisi.
+
+**Ratkaiseva sana on `erillistä`, ja se tekee tästä rakenteellisen eikä taktisen havainnon.**
+Seiskassa ei ole vaihetta joka alkaisi pakan tyhjennyttyä, joten kerätyillä korteilla ei ole
+myöhempää käyttöä. Ne ovat arvokkaita vain siinä hetkessä jossa peli päättyy, ja jos peli
+päättyy jonkun toisen käteen, ne olivat turhia. **Säästäminen on Seiskassa panostus yhteen
+hetkeen eikä asemaan.**
+
+**Seuraus, ja se on kohtien 55 ja 66 näennäisen ristiriidan ratkaisu.** Kohta 66 sanoi
+aloittelijan virheeksi sen ettei pelaa samanarvoisia kerralla, ja kohta 55 kokeneen virheeksi
+sen ettei säästä niitä. Nämä eivät ole vastakkaisia ohjeita vaan saman ohjeen kaksi puolta:
+samanarvoiset pelataan kerralla, mutta vasta lopetettaessa. Aloittelija hajottaa ne pitkin
+peliä, kokenut säästää ne muttei tarpeeksi. Kohdan 66 kirjoittajan luenta suhteesta jää siis
+voimaan ja saa nyt mekanismin.
+
+## 83. Muutos tuli kokonaiskuvasta, ja sen perustelu on pelin kaksivaiheisuus
+
+Tommi 21.8.2026 (erä 63), kysyttäessä tuliko kohdan 81 päätös jostakin tietystä kysymyksestä
+vai haastattelusta kokonaisuutena:
+
+> *päätös muuttaa Moskan ja Maijan pelitapaa tuli haastattelusta kokonaisuutena, kun mietin:*
+>
+> *Isolla kortilla hyökkäys voi viedä vastustajalta vuoron tai valtin. Puolustautuessa sillä voi
+> säästää valtin. Siksi niitä kannattaa säästää, jos on vaihtoehtoja pelata pieniä.*
+>
+> *Maija ja Moska pitää ensin pelata pakka loppuun, sitten loppupelissä käsi täynnä valtteja on
+> hyvä asema. Moskassa samanarvoisia voi lyödä monta kerralla, joten myös niitä kannattaa
+> kerätä loppuun.*
+
+**Vastaus kohdan 81 avoimeen: kokonaisuudesta.** Vaikutusta ei siis voi jäljittää yhteen
+kysymykseen, ja se on menetelmän kannalta merkittävämpi tulos kuin toinen vaihtoehto olisi
+ollut. **Pelkkä oman pelitavan järjestelmällinen sanoiksi pukeminen riitti muuttamaan sitä**, ja
+sama vaikutus on odotettavissa myös DG Androidin ja Itun haastatteluissa.
+
+**Kohdan 81 sääntö otetaan käyttöön heti tässä kohdassa.** Sääntö kuuluu: kysy mitä pöydässä
+tehtiin, älä mitä kannattaa tehdä. Yllä oleva perustelu on **haastattelun jälkeistä päättelyä
+eikä pöytäkäytännön kuvausta**, ja se merkitään siksi eri lajiksi kuin kohtien 1-80
+pelitapavastaukset. Se on Tommin analyysi omasta pelistään tänään, ei muistitieto Laiturin
+pöydästä.
+
+**Perustelun ydin on kaksivaiheisuus, ja se on kanonista todennettavissa.** Maija ja Moska
+jakautuvat pakkavaiheeseen ja loppupeliin, ja jälkimmäinen alkaa kun pakka on tyhjä.
+`MOSKA.md` sanoo tavoitteeksi päästä korteista eroon ensimmäisenä **sen jälkeen kun pakka on
+tyhjä**, ja `MAIJA.md` nimeää valttimaan pakan pohjakortista. Suuret kortit ja valtit ovat siis
+arvokkaampia toisessa vaiheessa kuin ensimmäisessä, koska pakkavaiheessa menetetyn tilalle saa
+nostaa ja loppupelissä ei.
+
+**Rakenteellinen vastakohta kohdan 82 kanssa, ja se on tämän parin painavin havainto.** Sama
+teko, samanarvoisten ja suurten korttien kerääminen, palvelee kahta vastakkaista rakennetta.
+Seiskassa ei ole loppupeliä, joten kerätty käsi on **lopetusväline**: se käytetään kerralla ja
+peli päättyy. Moskassa ja Maijassa on loppupeli, joten kerätty käsi on **asema**: se kannetaan
+vaiheen yli ja käytetään siellä. Kokoelman sisällä on siis kaksi eri syytä samalle tavalle
+pelata, ja ne erottaa se onko pelissä vaihe pakan tyhjennyttyä.
+
+**Todennettu kanonista 21.8.2026, ja tulos on odottamaton.** `MAIJA.md`:n botin tasoporras
+tuntee juuri tämän strategian ja antaa sen ylimmälle tasolle: **valttihyökkäys pakan
+tyhjennyttyä on vain Mestarilla**, ja valtilla kaatamisessa Oppipoika tuhlaa valttia kun
+Kisälli ja Mestari säästävät sitä. `MOSKA.md` sanoo saman lyhyemmin: Kisälli ja Mestari
+siirtävät valtilla vain jos muuta samaa vahvuutta ei ole. **Sovelluksen Mestari-botti pelaa siis
+jo sitä peliä johon Tommi on nyt päättänyt siirtyä.**
+
+**Seuraus, ja se on kirjoittajan päätelmä joka saa kaatua:** botin tasoporras rakennettiin
+sääntöanalyysista eikä Tommin pelitavasta, ja se päätyi samaan johtopäätökseen. Jos tämä pitää,
+se on kokoelman ensimmäinen tapaus jossa **sovellus tiesi pelistä jotain jota sen tekijä ei
+vielä soveltanut omassa pelissään**. Tommi ei sanonut mitään botista, ja yhtymä on havaittu
+koodista tässä.
+
+**Rajaus:** kanonin porras kertoo miten botti pelaa, ei sitä että se olisi oikein. Ja Tommin
+perustelu kertoo mihin hän on päätynyt, ei sitä että se olisi oikein. Kaksi riippumatonta
+päätymistä samaan on vihje eikä todiste.
 
 ---
 
