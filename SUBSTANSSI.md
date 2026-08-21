@@ -93,6 +93,12 @@ pelilomakkeen kenttä ja Tommin oma paikkakunta eikä ryhmän kokoontumiskunta. 
 paikannus ei mene nollaan vaan leviää kunnasta seutukuntaan. Ero on nimenomaan se mitä
 tällä haettiin: seutu ei osoita ryhmää, kunta osoittaa.
 
+*Mitä poisto ei tee.* Repo on julkinen, ja poisto koskee vain tämän tiedoston kärkeä:
+kunta on yhä luettavissa commitissa `894b20d`, samoin 21.8. anonymisoidut kohdat.
+**Tommi päätti 22.8.2026 että historia jää julkiseksi**, joten sitä ei kirjoiteta
+uudelleen. Rajaus toimii siis eteenpäin, ja ainoa toimiva suoja on kirjoittamatta
+jättäminen. Samalla hän rajasi tason: maakunta saa olla tunnistettavissa, kunta ei.
+
 **Mikä ei muuttunut.** `porukka`-nimiryhmä on kunnianosoitus oikeille ihmisille eikä
 arkkityyppiryhmä, eikä sille anneta persoonallisuuksia, puhetyylejä tai pelitapaeroja
 (`CLAUDE.md`, Players). Se sääntö on voimassa tämän kirjauksen jälkeenkin, koska sen peruste on
