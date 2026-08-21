@@ -159,16 +159,23 @@ Virstanpylväät:
 - Human player: "Hero"
 - AI opponents: "Tekoäly" (1–3 bots)
 - Player count per game varies: see Games table above
-- Nimiryhmiä on kuusi (`laituri`, `jumalat`, `puolue`, `kansa`, `meme`, `goauld`). Viidellä on
+- Nimiryhmiä on kuusi (`porukka`, `jumalat`, `puolue`, `kansa`, `meme`, `goauld`). Viidellä on
   lyhyt selite `App.jsx`:n `GROUP_BLURB`issa, ja se **näytetään aina englanniksi eikä sitä
   käännetä**, koska se on käyttäjän oma ääni.
-- **`laituri` on kunnianosoitus oikeille ihmisille, ei arkkityyppiryhmä (kirjattu 19.8.2026).**
+- **`porukka` on kunnianosoitus oikeille ihmisille, ei arkkityyppiryhmä (kirjattu 19.8.2026).**
   Nimet ovat niiden ihmisten nimiä joiden parissa Tommi oppi monet kokoelman peleistä, ja
   hänen omin sanoin 19.5.2026: *ne on vain nimiä että niille ei ole mitään persoonallisuuksia
   mutta kunniaosoituksena.* **Seuraus koodiin:** ryhmälle ei anneta persoonallisuuksia,
   puhetyylejä eikä pelitapaeroja, toisin kuin `meme`lle tai `goauld`ille. Se on ainoa ryhmä
   jonka merkitys katoaa jos siihen lisätään luonnetta. Muiden ryhmien alkuperää ei ole kirjattu
   eikä tarvitse kirjata. Lähde: `Lahteet/louhinnat/04-pelit-ja-pelisuunnittelu.md` kohta 6.
+- **Avain vaihtui 21.8.2026 (`laituri` → `porukka`), ja syy on eri kuin kunnianosoitus.** Vanha
+  avain ja nimilappu (*Laiturin tyypit* ja sen 22 käännöstä) kertoivat julkisessa repossa myös
+  **missä** nuo ihmiset on tavattu, ja `SUBSTANSSI.md` kertoo Laiturista muuta. Nimet ovat
+  oikeita, eivätkä nuo ihmiset ole itse kirjanneet mitään mihinkään, joten linkki katkaistiin
+  ryhmän nimestä. **Nimilista itse ei muuttunut**, eikä kunnianosoitus muutu: se muuttuu
+  yksityiseksi. Vanha avain migratoidaan `App.jsx`:ssä, koska se voi olla localStoragessa.
+  Tätä ei pidä yhtenäistää takaisin.
 
 ## Tech
 - React functional components + hooks only (no class components)

@@ -40,7 +40,7 @@ const ITU_URL = 'https://tommi-itu.vercel.app';
 const SUPERJATSI_URL = 'https://tommi-superjatsi.vercel.app';
 // Ryhmäkohtaiset kuvaukset — tietoisesti EI käännetä, käyttäjän oma ääni, näytetään aina englanniksi.
 const GROUP_BLURB = {
-  laituri: 'I learned many of these games with this gang.',
+  porukka: 'I learned many of these games with this gang.',
   puolue:  'Ihmisten Puolue is strictly Finnish humor — until you understand it.',
   jumalat: 'I love backgammon, and to the gods of luck we pray.',
   kansa:   'Strictly Finnish archetypes.',
@@ -60,7 +60,7 @@ const Seiska = lazy(() => import('./games/Seiska.jsx'));
 const Ristiseiska = lazy(() => import('./games/Ristiseiska.jsx'));
 const Paskahousu = lazy(() => import('./games/Paskahousu.jsx'));
 
-// Nimipoolit (LAITURI_SPECIAL ym.) ja NAME_GROUPS on siirretty shared/playerGroups.js:ään,
+// Nimipoolit (PELIPORUKKA ym.) ja NAME_GROUPS on siirretty shared/playerGroups.js:ään,
 // jotta päävalikon asetukset ja aloitusnäytön GroupPicker jakavat saman datan.
 
 // Pikkukortti-ikoni valikon ruutuun (esim. Maija = Q♠) — luettavampi kuin tumma Unicode-korttiglyyfi
@@ -793,9 +793,13 @@ export default function App() {
   // sen jälkeen satunnainen ryhmä. Valinta muistetaan; 'visited'-lippu ratkaisee laiskan oletuksen.
   const [playerGroup, setPlayerGroup] = useStickySetting('playerGroup', () => {
     if (!loadPref('visited', false)) return 'meme';
-    const groups = ['laituri', 'jumalat', 'puolue', 'kansa', 'meme', 'goauld'];
+    const groups = ['porukka', 'jumalat', 'puolue', 'kansa', 'meme', 'goauld'];
     return groups[Math.floor(Math.random() * groups.length)];
   });
+  // Migraatio 21.8.2026: nimiryhmän avain 'laituri' → 'porukka'. Vanha arvo voi olla tallessa
+  // localStoragessa, ja ilman tätä POOL_BY_GROUP-haku putoaisi oletukseen (KANSA) eikä
+  // valitsin näyttäisi mitään valituksi.
+  useEffect(() => { if (playerGroup === 'laituri') setPlayerGroup('porukka'); }, [playerGroup]);
   const [goauldTaunt, setGoauldTaunt] = useState(() => GOAULD_TAUNTS[Math.floor(Math.random() * GOAULD_TAUNTS.length)]);
   const [resultData, setResultData] = useState(null);   // {ranking, revealCards?, scoreBreakdown?}
   const [botResult, setBotResult]   = useState(null);   // bot-only result — stay on game view

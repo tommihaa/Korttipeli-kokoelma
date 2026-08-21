@@ -44,7 +44,7 @@ export const fr = {
       playersTitle: 'Joueurs 👥',
       playersIntro: 'Les adversaires sont tirés au hasard dans le groupe choisi.',
       groups: {
-        laituri: '🏖 Les habitués du ponton',
+        porukka: '🃏 La bande de joueurs',
         jumalat: '⚡ Les dieux de la fortune',
         puolue:  '🗳 Le parti du peuple',
         kansa:   '🧑‍🤝‍🧑 Le peuple',

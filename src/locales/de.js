@@ -44,7 +44,7 @@ export const de = {
       playersTitle: 'Spieler 👥',
       playersIntro: 'Die Gegner werden zufällig aus der gewählten Gruppe gelost.',
       groups: {
-        laituri: '🏖 Stegtypen',
+        porukka: '🃏 Die Spielrunde',
         jumalat: '⚡ Götter des Glücks',
         puolue:  '🗳 Volkspartei',
         kansa:   '🧑‍🤝‍🧑 Das Volk',

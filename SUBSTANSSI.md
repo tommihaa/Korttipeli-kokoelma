@@ -66,10 +66,21 @@ päätöksen sisältö eikä sen sivuvaikutus.
 
 **Rajaus 20.8.2026:** Laiturin tausta on kysytty ja vastattu tarkemmin kuin kohta 1 kertoo,
 ja Tommi päätti ettei tarkennusta (osallistumisen muoto ja sen osapuolet) kirjata tähän
-tiedostoon. Toiminnan laji ja päivärytmi ovat kohdassa 1, ja siihen tämä tiedosto jää.
+tiedostoon. Päivärytmi on kohdassa 1, ja siihen tämä tiedosto jää.
 Kysymys on suljettu eikä avoin, ja sitä ei kysytä haastattelussa uudelleen.
 
-**Mikä ei muuttunut.** `laituri`-nimiryhmä on kunnianosoitus oikeille ihmisille eikä
+**Rajaus tiukkeni 21.8.2026, ja se kirjataan tähän eikä korjata hiljaa.** Rajaus kattoi 20.8.
+alkaen osallistumisen muodon ja osapuolet, mutta **toiminnan laji** jäi kohtaan 1 nimetyksi.
+`SanaMix/SUBSTANSSI.md` rajasi lajin kokonaan ulos jo samana päivänä, joten kokoelmassa oli
+kaksi eri tasoista rajausta samasta asiasta, ja kumpikin dokumentti yksin luettuna antoi väärän
+kuvan siitä mitä toisessa lukee. Tommi päätti 21.8.2026 että **Itun tiukempi rajaus on se joka
+jää**, ja laji on poistettu kohdasta 1. Kunta ja Tommin oma nimi jäävät hänen päätöksellään.
+
+*Miksi laji eikä kunta:* rajaus on tässä kolmansia osapuolia varten eikä Tommia varten. Toiminnan
+laji on tieto myös niistä muista ihmisistä jotka olivat samassa ryhmässä, eivätkä he ole sitä
+kirjanneet mihinkään. Kunta ja Tommin oma osallistuminen ovat hänen omiaan ja jäävät siksi.
+
+**Mikä ei muuttunut.** `porukka`-nimiryhmä on kunnianosoitus oikeille ihmisille eikä
 arkkityyppiryhmä, eikä sille anneta persoonallisuuksia, puhetyylejä tai pelitapaeroja
 (`CLAUDE.md`, Players). Se sääntö on voimassa tämän kirjauksen jälkeenkin, koska sen peruste on
 kunnianosoitus eikä salassapito.
@@ -90,7 +101,8 @@ Tommi 19.8.2026, kysyttäessä mistä pelit ovat tulleet ja kuka ne opetti:
 | Opiskelukaveri | Kasino, Seiska | 2 |
 | Laituri | Moska, Maija, Koputus, Kultakala, Läpsy | 5 |
 
-Laituri on Kontiolahden kuntouttava työtoiminta, jota siellä kutsuttiin Laituriksi. Tommin oma
+Laituri on Kontiolahdella kokoontunut ryhmä, jonka toimintaa siellä kutsuttiin Laituriksi.
+*(Toiminnan laji poistettu tästä rivistä 21.8.2026, ks. rajaus yllä.)* Tommin oma
 kuvaus 21.5.2026: *Siellä neljä tuntia vietettiin, tehtiin asioita ja lätkittiin korttia
 teemasta riippuen, mutta päivittäin. Pakko ei ollut pelata ja aikaa oli toistoihin. Siviilissä
 näitä pelien oppimisia rajoittaa, kun ei ole aikaa, opettajaa, virtaa tai pelaajia.*
@@ -431,7 +443,7 @@ ole lainkaan: botti ei vuoda mitään paitsi sen minkä sen siirrot paljastavat.
 
 **Seuraus, ja tässä on ansa joka on syytä nimetä ennen kuin joku innostuu:** pokerinaaman
 puute houkuttelee antamaan boteille tunnusomaisia tapoja, epäröintiä tai puheenvuoroja, jotta
-pöydän tuntu siirtyisi mukana. **Laituri-nimiryhmän kohdalla se on nimenomaan kielletty**
+pöydän tuntu siirtyisi mukana. **`porukka`-nimiryhmän kohdalla se on nimenomaan kielletty**
 (`CLAUDE.md`, Players): ryhmä on kunnianosoitus oikeille ihmisille, eikä sille anneta
 persoonallisuuksia, puhetyylejä eikä pelitapaeroja, koska juuri se hävittäisi
 kunnianosoituksen. Kielto ja tämä havainto osoittavat samaan kohtaan vastakkaisista suunnista,
@@ -1908,11 +1920,17 @@ oli pidettävä eikä hukattava.
 Tommi 20.8.2026 (erä 17), kysyttäessä keitä lapsuuden peliporukkaan kuului ja missä yleensä
 pelattiin, sekä pidettiinkö turnaussarjan pisteet paperilla vai muistissa:
 
-> *sukulaiset mummon siskon luona*
+> *sukulaiset [sukulaisen] luona*
 > *paperi*
 
-Lapsuuden pelit pelattiin sukulaisporukassa mummon siskon luona, ja turnaussarjan pisteet
+Lapsuuden pelit pelattiin sukulaisporukassa yhden sukulaisen luona, ja turnaussarjan pisteet
 kirjattiin paperille.
+
+**Yksityisyysrajaus, ja se on Tommin päätös 21.8.2026:** vastauksessa oli tarkka
+sukulaisuussuhde, ja se on korvattu merkinnällä `[sukulaisen]`. Sama peruste kuin
+`SanaMix/SUBSTANSSI.md` kohdassa 17: suhde yksilöi ihmisen lähipiirissä yhtä tarkasti kuin nimi,
+ja repo on julkinen. Kohdan seuraus lepää sillä että paikka oli yksi ja sama sukulaisen koti,
+ei sillä kenen.
 
 **Seuraus:** kohta 1 tarkentuu: lapsena opitut pelit (Ristiseiska ja Paskahousu) saavat nyt
 paikan ja porukan. Lapsuuden perinne oli sukuperinne jolla oli oma paikka, oma sanasto
@@ -2650,7 +2668,7 @@ tämän erän myötä.
 ## 70. Linkin saaneista toinen valitsi Ristiseiskan, ja se on ensimmäinen mitattu vihje pelien keskinäisestä kilpailusta
 
 Tommi 21.8.2026 (Itun haastattelun erä 13, viety tänne Tommin kuittauksella samana päivänä),
-kysyttäessä sanoivatko Itua pelanneet veli ja siskontyttö siitä jotain oma-aloitteisesti:
+kysyttäessä sanoivatko Itua pelanneet kaksi lähisukulaista siitä jotain oma-aloitteisesti:
 
 > *palautteessa uskon vapaaehtoisuuteen, toinen tykkää pelata ristiseiskaa*
 
@@ -3720,7 +3738,7 @@ todella jäi.
 Tommi 21.8.2026 (erä 72), kysyttäessä oliko pöydässä pääosin sama porukka viikosta toiseen:
 
 > *olin itse 2-3 päivää viikossa 11 kuukauden ajan, joka kuukausi uusia kasvoja, mutta ei joka
-> viikko - en muistanut kaikkia nimiä laiturin tyypit-kohtaan*
+> viikko - en muistanut kaikkia nimiä [nimiryhmä]-kohtaan*
 
 **Vaihtuvuuden tahti on kuukausi eikä viikko, ja se on juuri se väli jolla mekanismit
 kestävät.** Kohtien 72 ja 77 oppimiskustannus maksetaan kerran, ja se pitää viikkojen sisällä:
@@ -3741,13 +3759,13 @@ enemmistö syntyi alle vuoden mittaisessa jaksossa** jonka aikana Tommi oli paik
 kolmena päivänä viikossa.
 
 **Nimiryhmän vajaus on kirjattava, koska se elää koodissa ja näyttää täydelliseltä.**
-Todennettu `src/shared/playerGroups.js`:stä 21.8.2026: `LAITURI_SPECIAL` sisältää **25 nimeä**.
+Todennettu `src/shared/playerGroups.js`:stä 21.8.2026: `PELIPORUKKA` sisältää **25 nimeä**.
 Tommi sanoo ettei muistanut kaikkia nimiä siihen. **Luku 25 on siis muistin raja eikä
 kokoonpanon koko**, ja kuukausittaisen vaihtuvuuden ja yhdentoista kuukauden perusteella
 ihmisiä on kulkenut pöydän kautta enemmän. Tätä ei lasketa tarkemmin, koska vaihtuvuuden määrää
 ei tiedetä.
 
-**Seuraus, ja se on kunnianosoituksen kannalta olennainen.** Kohta 1 kertoo että `laituri`-ryhmä
+**Seuraus, ja se on kunnianosoituksen kannalta olennainen.** Kohta 1 kertoo että `porukka`-ryhmä
 on kunnianosoitus oikeille ihmisille. Kunnianosoitus on siis vajaa, ja vajauden syy on muisti
 eikä valinta. Se on kirjattava juuri siksi ettei koodista näy ero: 25 nimen lista näyttää
 listalta, ei otokselta. Tästä ei seuraa toimenpidettä eikä sitä ehdoteta; puuttuvia nimiä ei
@@ -3757,6 +3775,18 @@ voi palauttaa muistiin kysymällä.
 vastaus pysyy samassa rajassa. Dokumentti ei kerää tietoa Laiturin ihmisistä eikä se ole tämän
 kohdan tarkoitus; kohta 1 rajaa taustan kirjaamisen erikseen, ja tämä kohta kirjaa vaihtuvuuden
 tahdin koska mekanismit riippuvat siitä.
+
+**Yksityisyysrajaus 21.8.2026, ja se on syy siihen miksi nimiryhmän avain vaihtui.** Sitaatissa
+oli nimiryhmän vanha nimilappu, ja se on korvattu merkinnällä `[nimiryhmä]`. Syy on tämän kohdan
+oma sisältö luettuna toisin päin: kohta kertoo että koodin 25 nimeä ovat oikeita ihmisiä, ja
+vanha nimilappu kertoi lisäksi **missä** heidät on tavattu. Yhdessä ne tekivät julkiseen repoon
+nimilistan johon liittyi paikka, eivätkä nuo ihmiset ole itse kirjanneet mitään mihinkään.
+Ryhmän avain on vaihdettu (`laituri` → `porukka`, ks. `CLAUDE.md`, Players), nimilista itse ei
+muuttunut, ja tämä sitaatti oli viimeinen kohta joka sitoi listan paikkaan.
+
+*Mitä rajaus ei tee:* tämä kohta kertoo yhä että nimet ovat oikeiden ihmisten nimiä ja että lista
+on muistin rajaama. Se on kohdan substanssi eikä sitä poisteta; poistettu on vain se rivi joka
+nimesi paikan.
 
 ## 93. Laiturin pöytä ylitti neljän rajan kaikissa paitsi Läpsyssä
 
@@ -3961,7 +3991,7 @@ luvun perässä, joten luku kulkee subjektinsa kanssa eikä sitä muutettu; kirj
 sama tarkistus toistu.
 
 **Kuusi tarkistettavaa väitettä tarkistettiin, ja kaikki pitivät.** Kohdan 92 nimimäärä täsmää
-koodiin (`LAITURI_SPECIAL` sisältää 25 nimeä), kohtien 76 ja 93 pelaajakatto täsmää
+koodiin (`PELIPORUKKA` sisältää 25 nimeä), kohtien 76 ja 93 pelaajakatto täsmää
 (`App.jsx` antaa kaikille yhdeksälle `maxPlayers: 4`), kohdan 88 sanaväite täsmää (`MAIJA.md`
 ei sisällä sanoja *sivusta*, *siirto* eikä *passaus* sanatarkasti), kohdan 6 Kultakala-vartijan
 raja täsmää (`playerCount + 1` kahdessa kohdassa koodia), kohdan 79 passiesto täsmää

@@ -53,7 +53,7 @@ export const pl = {
       playersTitle: 'Gracze 👥',
       playersIntro: 'Przeciwnicy są losowani z wybranej grupy.',
       groups: {
-        laituri: '🏖 Bywalcy pomostu',
+        porukka: '🃏 Ekipa do gry',
         jumalat: '⚡ Bogowie szczęścia',
         puolue:  '🗳 Partia ludowa',
         kansa:   '🧑‍🤝‍🧑 Lud',

@@ -44,7 +44,7 @@ export const et = {
       playersTitle: 'Mängijad 👥',
       playersIntro: 'Vastased loositakse valitud grupist.',
       groups: {
-        laituri: '🏖 Kai püsikliendid',
+        porukka: '🃏 Mänguseltskond',
         jumalat: '⚡ Õnnejumalad',
         puolue:  '🗳 Rahva partei',
         kansa:   '🧑‍🤝‍🧑 Rahvas',

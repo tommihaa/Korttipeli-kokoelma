@@ -42,7 +42,7 @@ export const se = {
       playersTitle: 'Spealárat 👥',
       playersIntro: 'Vuostebealit vuorbáduvvojit válljejuvvon joavkkus.',
       groups: {
-        laituri: '🏖 Šalddi olbmot',
+        porukka: '🃏 Speallanjoavku',
         jumalat: '⚡ Lihku ipmilat',
         puolue:  '🗳 Olbmuid bellodat',
         kansa:   '🧑‍🤝‍🧑 Álbmot',

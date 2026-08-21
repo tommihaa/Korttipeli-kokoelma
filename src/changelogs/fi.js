@@ -9,6 +9,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '21.8.2026',
+    items: [
+      'Vastustajien nimiryhmistä ensimmäinen on nyt nimeltään Peliporukka. Ryhmän sisällä olevat nimet ovat samat kuin ennen, ja jos sinulla oli tämä ryhmä valittuna, valinta säilyy. Vaihdoimme nimen siksi, että ryhmän nimet ovat oikeiden ihmisten etunimiä, ja ryhmän vanha nimi kertoi heistä enemmän kuin heiltä on kysytty.',
+    ],
+  },
+  {
     date: '20.8.2026',
     items: [
       'Moskan Mestari osaa nyt lyödä useamman samanarvoisen kortin kerralla, mutta vasta silloin kun nostopakka on tyhjä. Säännöt ovat sallineet sen alusta asti ja pelaaja on voinut tehdä niin, mutta botti löi aina vain yhden kortin. Pakan loputtua käsi ei enää täydenny, joten koko ryhmän lyöminen kerralla on silloin oikea siirto. Mittasimme muutoksen 400 pelin sarjalla eikä se muuttanut voitto-osuuksia, joten kyse on pelitavan uskottavuudesta eikä vaikeustason noususta. Kysy Mestalta kertoo saman perustelun kun tilanne osuu kohdalle.',

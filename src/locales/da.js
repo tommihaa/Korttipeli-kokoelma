@@ -44,7 +44,7 @@ export const da = {
       playersTitle: 'Spillere 👥',
       playersIntro: 'Modstanderne trækkes tilfældigt fra den valgte gruppe.',
       groups: {
-        laituri: '🏖 Havnens stamgæster',
+        porukka: '🃏 Spilleflokken',
         jumalat: '⚡ Lykkens guder',
         puolue:  '🗳 Folkets parti',
         kansa:   '🧑‍🤝‍🧑 Folket',

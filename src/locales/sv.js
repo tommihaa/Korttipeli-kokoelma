@@ -44,7 +44,7 @@ export const sv = {
       playersTitle: 'Spelare 👥',
       playersIntro: 'Motståndarna lottas slumpmässigt ur den valda gruppen.',
       groups: {
-        laituri: '🏖 Bryggans typer',
+        porukka: '🃏 Spelgänget',
         jumalat: '⚡ Lyckans gudar',
         puolue:  '🗳 Folkets parti',
         kansa:   '🧑‍🤝‍🧑 Folket',

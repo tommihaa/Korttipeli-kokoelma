@@ -4,7 +4,11 @@
 // (ks. GroupPicker.jsx) käyttävät yhtä totuuden lähdettä. Labelit tulevat i18n:stä
 // avaimella `ui.settings.groups.<key>`.
 
-export const LAITURI_SPECIAL  = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
+// Ryhmän avain ja vakion nimi vaihdettiin 21.8.2026 (`laituri` → `porukka`): nimet ovat
+// oikeiden ihmisten nimiä, ja vanha nimi kertoi julkisessa reposssa myös missä heidät on
+// tavattu. Nimet itse eivät muuttuneet, eikä kunnianosoitus (ks. CLAUDE.md, Players) muutu.
+// Vanha avain migratoidaan App.jsx:ssä, koska se voi olla tallessa localStoragessa.
+export const PELIPORUKKA      = ['Antti','Arto','Arttu','Janus','Jens','Jokke','Juuso','Jukka','Kirsi','Markku','Marko','Markus','Marviel','Mika','Mikael','Osku','Panja','Rebekka','Sanna','Sari','Simo','Sune','Tarja','Teemu','Tinja'];
 export const ONNEN_JUMALAT    = ['Vortumna','Loki','Fortuna','Tykhe','Onnetar','Macuilxochitl','Felicitas'];
 export const IHMISTEN_PUOLUE  = ['Hannes','Päivi','Regina','Tapani (DI)','Topi-Petteri'];
 export const KANSA            = ['Astraalitason tirehtööri','Jonne','Justiina','Kukkahattutäti','Lumihiutale','Rane','Setämies','Veeti'];
@@ -13,7 +17,7 @@ export const GOAULD           = ['Ra','Apophis','Anubis','Ba\'al','Hathor','Cron
 
 // Järjestys = näyttöjärjestys valitsimissa. key vastaa i18n-avainta ja playerGroup-tilaa.
 export const NAME_GROUPS = [
-  { key: 'laituri', pool: LAITURI_SPECIAL },
+  { key: 'porukka', pool: PELIPORUKKA     },
   { key: 'jumalat', pool: ONNEN_JUMALAT  },
   { key: 'puolue',  pool: IHMISTEN_PUOLUE },
   { key: 'kansa',   pool: KANSA          },

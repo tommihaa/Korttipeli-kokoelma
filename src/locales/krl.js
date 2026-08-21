@@ -45,7 +45,7 @@ export const krl = {
       playersTitle: 'Kizuajat 👥',
       playersIntro: 'Vastuštajat arvotah valitusta joukosta.',
       groups: {
-        laituri: '🏖 Laiturin tyypit',
+        porukka: '🃏 Peliporukka',
         jumalat: '⚡ Ozan jumalat',
         puolue:  '🗳 Rahvahan puolovehet',
         kansa:   '🧑‍🤝‍🧑 Rahvas',

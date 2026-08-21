@@ -44,7 +44,7 @@ export const no = {
       playersTitle: 'Spillere 👥',
       playersIntro: 'Motstanderne trekkes tilfeldig fra den valgte gruppen.',
       groups: {
-        laituri: '🏖 Bryggegjengen',
+        porukka: '🃏 Spillegjengen',
         jumalat: '⚡ Lykkens guder',
         puolue:  '🗳 Folkets parti',
         kansa:   '🧑‍🤝‍🧑 Folket',

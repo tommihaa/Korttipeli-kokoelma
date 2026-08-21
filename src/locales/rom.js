@@ -43,7 +43,7 @@ export const rom = {
       playersTitle: 'Khelutne 👥',
       playersIntro: 'Le riventa alosardon bi-jakhasa andai aldo grupa.',
       groups: {
-        laituri: '🏖 Manuša le poduske',
+        porukka: '🃏 Le khelimaske manuša',
         jumalat: '⚡ Le devla le bahtake',
         puolue:  '🗳 Partia le manušengi',
         kansa:   '🧑‍🤝‍🧑 O narodo',
