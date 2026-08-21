@@ -3443,8 +3443,37 @@ vahvisti sen**, ja se on hyvä tulos: kun lähde ja kirjattu mittaus sanovat sam
 ole ajautunut. Vastakkainen tapaus olisi ollut se että Tommi olisi pitänyt porrasta valmiina
 vaikka mittari sanoo muuta.
 
-**Avoin:** onko samantasoisuus hyväksytty pysyväksi vai odottaako se työtä. *Tunnistettu ja
-tunnustettu* kertoo että asia tiedetään, muttei sitä onko se päätetty jättää sellaiseksi.
+~~**Avoin:** onko samantasoisuus hyväksytty pysyväksi vai odottaako se työtä.~~ *(Vastattu
+erässä 66, ks. kohta 86: odottaa ideoita, ei akuutti.)*
+
+## 86. Puuttuva osa on menetelmä eikä työ, ja se koskee bottien laatua kahdesta suunnasta
+
+Tommi 21.8.2026 (erä 66), kysyttäessä onko ylätasojen samantasoisuus hyväksytty pysyväksi vai
+odottaako se työtä:
+
+> *odottaa ideoita työhön, jolla tavoite luoda portaita - ei siis akuutti*
+
+**Vastaus erottaa kaksi asiaa jotka menevät helposti sekaisin: tekemättä oleva työ ja
+keksimättä oleva tapa tehdä se.** Kyse ei ole siitä ettei ehtisi tai ettei asia olisi tärkeä,
+vaan siitä ettei ole tiedossa **mitä pitäisi tehdä**. Tasoportaan rakentaminen on tavoite jolla
+ei ole menetelmää.
+
+**Tämä sopii siihen mitä mittausdokumentti sanoo, ja yhdessä ne muodostavat täyden kuvan.**
+`BOTBENCH.md` on jo diagnosoinut syyn: sama heuristiikka virhekohinalla säädettynä ei tuota
+aitoa tasoeroa. Diagnoosi on siis olemassa ja lääke ei. Kohdan 85 tulos (mittari ja lähde
+sanovat samaa) täydentyy: ne ovat yhtä mieltä myös siitä mikä puuttuu.
+
+**Havainto, ja se on kirjoittajan:** tässä on nyt kaksi vierekkäistä aukkoa joiden puuttuva osa
+on samaa lajia. Kohdassa 84 ehdotettu keksintöjen etsintä kaatui siihen ettei ole menetelmää
+erottaa vikaa keksinnöstä, ja tämä kohta sanoo ettei ole menetelmää tuottaa tasoeroa. Molemmat
+koskevat bottien laatua, kummankin työkalut ovat jo olemassa (Botbench, katselutila, snapshotit)
+ja kummastakin puuttuu se mitä työkaluilla pitäisi tehdä. **Bottien laadun kehitys ei siis ole
+rajoittunut työhön vaan ideoihin**, ja se on eri tilanne kuin missään muualla mitä tämä
+dokumentti on kuvannut.
+
+**Rajaus, jotta *ei akuutti* ei luettaisi vähättelyksi.** Tommi nimeää sen odottavaksi eikä
+hylätyksi, joten se ei ole hautakivi. Eikä siitä avata työjonon kohtaa tässä, koska
+substanssihaastattelun tehtävä on kirjata mitä lähde tietää, ei jäsentää projektin työtä.
 
 ---
 
