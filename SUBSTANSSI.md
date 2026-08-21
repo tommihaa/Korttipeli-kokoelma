@@ -3135,6 +3135,49 @@ on kirjoittajan.
 oli oma vuoro odottamassa, vai vain pelin kulkua. Kysymys koskee sitä oliko Moskan avoimuudessa
 myös sosiaalinen tehtävä, ja se on eri kysymys kuin oppiminen.
 
+## 79. Ristiseiskassa virhe paljastui itsestään, ja sovellus estää saman virheen ennalta
+
+Tommi 21.8.2026 (erä 61, kysymättä kysymyksen jälkeen):
+
+> *ristiseiskassa on virheenkorjaus eli kävi ilmi nopeasti jos joku pelasi virheellisesti eikä
+> huomannut kortin käyvän vaikka kysyi korttipanttia*
+
+**Tämä on kohdan 78 mekanismiperheen kolmas jäsen, ja se täydentää kuvan päivän rakenteesta.**
+Moska opettaa itsensä avoimuudella (kohta 78), ja Ristiseiska paljastaa virheen itse. Kummankin
+kohdalla peli tekee sen työn joka Koputuksessa piti tehdä erikseen ennen pelaamista. Kaksi
+kolmesta ikkunapelistä on siis rakenteeltaan itseään korjaavia, ja ne ovat samat pelit jotka
+olivat päivän rakenteessa.
+
+**Virheen laji on nimettävä, koska dokumentissa on jo toinen Ristiseiskan virhe.** Kohta 61
+nimeää aloittelijavirheeksi porttikortin pelaamisen pihtaamisen sijaan, ja se on **taktinen**
+virhe: laillinen siirto joka on huono. Tämä on eri: pelaaja pyysi korttipanttia vaikka hänellä
+oli pelattava kortti, eli **sääntövirhe**, laiton siirto jota pelaaja ei itse huomannut. Kohdan
+3 jako (liian hyvä kortti vastaan täysin väärä kortti) ei kata tätä lainkaan, koska molemmat
+sen puolet ovat laillisia siirtoja.
+
+**Miksi virhe paljastui nopeasti, ja se on pelin rakenteen ansiota.** Ristiseiskassa pöytä on
+avoin ja pelattavuus on tarkistettavissa riveistä. Kun joku pyysi panttia, muut näkivät saman
+tiedon kuin hän ja pystyivät toteamaan että kortti olisi käynyt. Sama avoimuus siis toimii,
+mutta eri suuntaan kuin Moskassa: Moskassa avoimuus **opettaa vaihtoehdot**, Ristiseiskassa se
+**paljastaa laiminlyönnin**.
+
+**Todennettu koodista 21.8.2026, ja sovellus on tehnyt vastakkaisen valinnan.** `Ristiseiska.jsx`
+tarkistaa `humanPass`issa `hasAnyPlay`in ja kieltäytyy passaamasta jos pelattava kortti on:
+lokiin tulee `cantPass` eikä vuoro etene. **Pöydässä virhe tapahtui ja paljastui, sovelluksessa
+se ei tapahdu.** Ero on ajoituksessa eikä opetuksessa: pöytä kertoi jälkikäteen että kortti olisi
+käynyt, sovellus kertoo saman etukäteen ja estää siirron. Sama oppi tulee siis aiemmin ja
+halvemmalla, mutta virheen tekemisen kokemus jää pois.
+
+**Seuraus, ja se on kirjoittajan eikä Tommin:** tämä on toinen tapaus jossa sovellus asettaa
+rajoitteen jota pöydässä ei ollut (edellinen on neljän pelaajan katto, kohta 76), ja molempien
+perustelu osoittaa samaan suuntaan. Neljän katto perusteltiin oppimiskäytöllä, ja
+sääntövirheen esto on samaa lajia: opetteleva pelaaja ei joudu selvittämään mitä äsken meni
+pieleen. Onko virheen estäminen aina parempi kuin sen paljastaminen, ei ole tässä kysytty, eikä
+sitä päätellä.
+
+**Avoin:** oliko pöydän virheenkorjaus muidenkin pelien ominaisuus vai erityisesti
+Ristiseiskan, ja korjattiinko virhe peruuttamalla siirto vai jatkettiinko siitä eteenpäin.
+
 ---
 
 ---
