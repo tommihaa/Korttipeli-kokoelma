@@ -541,7 +541,8 @@ Aloituspelin olemassaolo antaa ymmärtää että pelit eivät olleet keskenään
 mittaan, mutta sitä ei ole kysytty mikä peli otettiin esiin kun porukka oli lämmennyt tai kun
 aikaa oli vähän jäljellä.
 
-*Kohta täydentyi erässä 6, ks. kohta 15.*
+*Kohta täydentyi erässä 6, ks. kohta 15. Avoimen ensimmäinen puolikas (lämmenneen porukan
+peli) sulkeutui erässä 55, ks. kohta 72; jäljellä on se mikä otettiin kun aikaa oli vähän.*
 
 ## 15. Pelipäivällä oli järjestys, ja sen kaksi muuta paikkaa ovat Paskahousu ja Moska
 
@@ -2682,6 +2683,52 @@ todennäköisyydellä, eli se mallintaa valintaa eikä sattumaa, ja se osuu siis
 
 **Rajaus:** vastaus koskee sitä miten pöydässä pelattiin, ei sitä kumpi asento on parempi peli.
 Sitä ei kysytty, eikä asetuksen olemassaoloa perustella tällä suuntaan tai toiseen.
+
+
+## 72. Lämmenneen porukan peli oli Moska, ja sen esteenä oli oppiminen eikä vaikeus
+
+Tommi 21.8.2026 (erä 55), kysyttäessä mikä peli otettiin esiin siinä vaiheessa kun porukka oli
+lämmennyt ja aloituspelistä oli siirrytty eteenpäin:
+
+> *yleensä moska, riippuen kuinka moni oli paikalla, joillekin moska oli haastava oppia*
+
+**Kohdan 14 avoin sulkeutuu puoliksi.** Päivällä oli siis muoto molemmissa päissä: Ristiseiska
+aloitti ja Moska tuli kun oli lämmitty. Se mikä otettiin esiin kun aikaa oli vähän jäljellä,
+on yhä kysymättä, ja se on eri kysymys eikä saman vastauksen jatke.
+
+**Vastauksen kolmas osa selittää ensimmäisen, ja se on tämän kohdan varsinainen löydös.**
+Moska ei ole myöhäinen peli siksi että se olisi kanonissa vaativa, vaan siksi että **joillekin
+se oli haastava oppia**. Ne ovat eri asioita: vaikeus on pelin ominaisuus ja koskee sitä kuinka
+hyvin sitä voi pelata, oppimiskustannus on pöydän ominaisuus ja koskee sitä kuinka paljon
+aikaa menee ennen kuin voidaan pelata lainkaan. Peli jonka joku joutuu opettamaan ei voi olla
+avauspeli, koska avaus tapahtuu ennen kuin porukka on koossa ja lämmennyt. Kohta 14 selitti
+Ristiseiskan aloituspaikan sillä että se on tunnetuin ja kevein; nyt tiedetään että toinen
+puoli samasta järjestyksestä syntyy vastakkaisesta syystä.
+
+**Seuraus, ja se on tuotteeseen osuva:** oppimiskustannus on ensimmäinen tässä dokumentissa
+nimetty valikoimaa ohjaava tekijä joka ei ole pelin oma ominaisuus vaan pelaajien. Kohta 12
+(epävarmuus), kohta 13 (pelaajamäärä) ja kanonin vaikeustaulukko kuvaavat kaikki peliä; tämä
+kuvaa sitä mitä pöydässä istuvat osaavat. Sovelluksessa vastaava kustannus on eri paikassa:
+säännöt ovat aina luettavissa eikä ketään tarvitse opettaa, joten se este jonka takia Moska
+odotti lämpenemistä, ei siirry sovellukseen lainkaan.
+
+**Toinen osa on ehto, eikä sen suuntaa arvata.** *Riippuen kuinka moni oli paikalla* toistaa
+kohdan 13 mekanismin (peliä vaihdettiin kokoonpanoon eikä kokoonpanoa peliin), mutta se ei
+kerro kumpaan suuntaan ehto meni. Kanoni antaa Moskalle 2-4 pelaajaa, mikä tekisi siitä pienen
+porukan pelin ja sopisi kohtaan 50 (Koputusta pelattiin useimmin isolla porukalla). Sitä ei
+kuitenkaan kysytty, ja vastauksen voi lukea myös toisin: Moska saattoi vaatia riittävästi
+osaavia pelaajia paikalle, jolloin ehto koskisi oppimista eikä pelaajarajaa. Kaksi eri lukutapaa
+tuottaa saman lauseen, joten tämä jätetään kysyttäväksi.
+
+**Avoin:** kumpaa ehto tarkoittaa, pelaajamäärän ylärajaa vai osaavien pelaajien alarajaa. Ja
+erikseen: mitä pelattiin kun aikaa oli vähän jäljellä.
+
+**Jännite kohdan 34 kanssa, ja se nostetaan tässä jännitteenä eikä ristiriitana.** Moska on
+Tommin kahdesta suosikista toinen, ja se on nyt myös se peli johon päivä ajautui lämmettyään.
+Kohta 34 sanoo ettei mieltymys ohjaa valikoimaa, ja se pitää yhä: se koskee sitä mitkä pelit
+ovat kokoelmassa, ei sitä mitä yhden illan aikana pelattiin. Silti nämä kaksi ovat lähellä
+toisiaan, ja niiden ero on syytä pitää näkyvissä. Tämä on kirjoittajan havainto eikä Tommin
+lause, ja se saa kaatua.
 
 ---
 
