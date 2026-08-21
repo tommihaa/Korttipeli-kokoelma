@@ -3684,6 +3684,49 @@ koska se oli pöydän ääressä; sama toiminta myös söi pöytätilan silloin 
 dokumenttien osuutta päivistä ei tiedetä, joten tästä ei voi laskea kuinka paljon peliaikaa
 todella jäi.
 
+## 92. Porukka vaihtui kuukausittain, ja nimiryhmä on muistin rajaama eikä täydellinen
+
+Tommi 21.8.2026 (erä 72), kysyttäessä oliko pöydässä pääosin sama porukka viikosta toiseen:
+
+> *olin itse 2-3 päivää viikossa 11 kuukauden ajan, joka kuukausi uusia kasvoja, mutta ei joka
+> viikko - en muistanut kaikkia nimiä laiturin tyypit-kohtaan*
+
+**Vaihtuvuuden tahti on kuukausi eikä viikko, ja se on juuri se väli jolla mekanismit
+kestävät.** Kohtien 72 ja 77 oppimiskustannus maksetaan kerran, ja se pitää viikkojen sisällä:
+sama porukka jatkoi, joten opetettu peli pysyi pelattavana. Kuukauden välein tuli uusia kasvoja,
+eli **kustannus palasi säännöllisesti muttei jatkuvasti**. Se on kolmas mahdollinen tila kahden
+väliltä, jotka kysymys tarjosi, ja se selittää miksi opettamista vaativa peli ei kadonnut
+kokonaan muttei myöskään vakiintunut.
+
+**Tommin oma läsnäolo on eri asia kuin talon rytmi, ja se tarkentaa kohtaa 1.** Kohdan 1 sitaatti
+sanoo että korttia lätkittiin *päivittäin*, ja nyt tiedetään että Tommi itse oli paikalla 2-3
+päivää viikossa. Lause voi siis tarkoittaa talon rytmiä tai hänen omiensa päiviensä rytmiä, eikä
+sitä ratkaista tässä. **Kohdan 1 seuraus (päivittäinen toisto) on joka tapauksessa toisen kerran
+tarkentunut**, ensin kohdassa 75 (jokaista peliä ei pelattu joka päivä) ja nyt tässä.
+
+**Kesto on uutta tietoa: 11 kuukautta.** Se on ensimmäinen kerta kun dokumentti saa Laiturin
+jaksolle pituuden. Kohdan 1 mukaan siellä opittiin viisi yhdeksästä pelistä, eli **kokoelman
+enemmistö syntyi alle vuoden mittaisessa jaksossa** jonka aikana Tommi oli paikalla kahtena tai
+kolmena päivänä viikossa.
+
+**Nimiryhmän vajaus on kirjattava, koska se elää koodissa ja näyttää täydelliseltä.**
+Todennettu `src/shared/playerGroups.js`:stä 21.8.2026: `LAITURI_SPECIAL` sisältää **25 nimeä**.
+Tommi sanoo ettei muistanut kaikkia nimiä siihen. **Luku 25 on siis muistin raja eikä
+kokoonpanon koko**, ja kuukausittaisen vaihtuvuuden ja yhdentoista kuukauden perusteella
+ihmisiä on kulkenut pöydän kautta enemmän. Tätä ei lasketa tarkemmin, koska vaihtuvuuden määrää
+ei tiedetä.
+
+**Seuraus, ja se on kunnianosoituksen kannalta olennainen.** Kohta 1 kertoo että `laituri`-ryhmä
+on kunnianosoitus oikeille ihmisille. Kunnianosoitus on siis vajaa, ja vajauden syy on muisti
+eikä valinta. Se on kirjattava juuri siksi ettei koodista näy ero: 25 nimen lista näyttää
+listalta, ei otokselta. Tästä ei seuraa toimenpidettä eikä sitä ehdoteta; puuttuvia nimiä ei
+voi palauttaa muistiin kysymällä.
+
+**Rajaus, ja se on tässä tavallista tärkeämpi.** Kysymys koski pysyvyyttä eikä ihmisiä, ja
+vastaus pysyy samassa rajassa. Dokumentti ei kerää tietoa Laiturin ihmisistä eikä se ole tämän
+kohdan tarkoitus; kohta 1 rajaa taustan kirjaamisen erikseen, ja tämä kohta kirjaa vaihtuvuuden
+tahdin koska mekanismit riippuvat siitä.
+
 ---
 
 ---
