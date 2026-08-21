@@ -3643,8 +3643,46 @@ vaan se mitä tehtiin siinä missä kaikki muukin, silloin kun väki sattui olem
 Kohdan 1 sitaatti sanoo saman lyhyemmin (*tehtiin asioita ja lätkittiin korttia*), ja tämä
 kohta kertoo mitä sen `ja` tarkoittaa: ei kahta erillistä tekemistä vaan yhtä pöytää.
 
-**Avoin:** oliko korttien esille ottaminen ja pois korjaaminen oma kitkansa, eli jäikö peli
-joskus aloittamatta siksi että pöytä oli varattu muuhun.
+~~**Avoin:** oliko korttien esille ottaminen ja pois korjaaminen oma kitkansa, eli jäikö peli
+joskus aloittamatta siksi että pöytä oli varattu muuhun.~~ *(Vastattu erässä 71, ks. kohta 91:
+tila ei ollut este, paikallaolo oli.)*
+
+## 91. Pöytätila ei ollut este, mutta koko päivä saattoi olla muualla
+
+Tommi 21.8.2026 (erä 71), kysyttäessä jäikö peli joskus aloittamatta koska pöytä oli varattu:
+
+> *korteille ja peleille löytyi lähes aina tilaa, poislukien ruuanlaitto ja syöminen vei
+> välillä senkin pöytätilan*
+>
+> *jos oltiin kirpputorilla tai muussa kohteessa, kuten näyttelyssä, käymässä tai katsottiin
+> dokumenttia niin silloin ei pelattu korttia*
+
+**Kohdan 90 koonti vahvistuu: peli oli pöydän oletustila.** Tilaa löytyi lähes aina, joten
+korttien esille ottaminen ei ollut oma kitkansa eikä neljättä selittäjää synny. Kolme lajia
+(pelin, pelaajien ja tilan ominaisuudet) riittävät edelleen.
+
+**Este ei ollut pöytätila vaan paikallaolo, ja se on vastauksen uusi tieto.** Päivän kolmen
+tunnin keskiosa saattoi olla kokonaan muualla: kirpputorilla, näyttelyssä tai muussa kohteessa.
+Ja pöydän ääressäkin saatettiin tehdä jotain joka sulkee kortit pois, kuten katsoa dokumenttia.
+Kohta 74 kirjasi keskiosasta *ihan mitä vaan pelejä, myös ulkona*, ja se luettiin pihapiirissä
+tapahtuvaksi; nyt tiedetään että keskiosa saattoi viedä koko porukan pois talolta.
+
+**Seuraus kohtaan 73, ja se on tarkennus eikä kumoaminen.** Rakennetaulukon keskiosa (*kukin
+ryhmä erikseen, ryhmän omat jutut*) pitää yhä, mutta *erikseen* saattoi tarkoittaa myös
+*eri paikassa*. Retkipäivänä korttipeliä oli siis korkeintaan ikkunoiden verran, ja jos
+lopetusikkuna jäi väliin (kohta 73), koko päivässä ei välttämättä pelattu kuin puoli tuntia.
+**Kohdan 75 tiheysporras saa tästä syyn:** peli jota pelattiin vain silloin kun oltiin talolla ja
+väki oli koolla, ei voi olla päivittäinen.
+
+**Toinen este on sisäinen ja pieni mutta osuu tuttuun kohtaan.** Ruuanlaitto ja syöminen veivät
+välillä senkin pöytätilan. Kohta 90 nimesi ruuanlaittoryhmän siksi jolla oli eniten peliaikaa,
+koska se oli pöydän ääressä; sama toiminta myös söi pöytätilan silloin kun se oli käynnissä.
+**Ruoka oli siis yhtä aikaa peliajan syy ja sen este**, eikä kumpikaan puoli kumoa toista: pöydän
+ääressä oleminen antoi tilaisuuden, ruoan valmistus vei tilan.
+
+**Rajaus:** Tommi kertoo milloin ei pelattu, ei sitä kuinka usein näitä päiviä oli. Retkien ja
+dokumenttien osuutta päivistä ei tiedetä, joten tästä ei voi laskea kuinka paljon peliaikaa
+todella jäi.
 
 ---
 
