@@ -80,6 +80,19 @@ jää**, ja laji on poistettu kohdasta 1. Kunta ja Tommin oma nimi jäävät hä
 laji on tieto myös niistä muista ihmisistä jotka olivat samassa ryhmässä, eivätkä he ole sitä
 kirjanneet mihinkään. Kunta ja Tommin oma osallistuminen ovat hänen omiaan ja jäävät siksi.
 
+**Rajaus tiukkeni uudelleen 22.8.2026, ja tällä kertaa se koskee kuntaa.** Yllä oleva
+perustelu sanoo kunnan jäävän, koska se on Tommin omaa tietoa eikä kolmansien. Peruste ei
+kaatunut vaan sen ympäristö muuttui: nimiryhmän lappu on vaihtumassa muotoon joka sanoo
+ryhmän olevan **paikallinen**, ja silloin kunta ei enää ole tieto Tommista vaan
+kahdestakymmenestäviidestä nimestä hänen ympärillään. Sama yhdistelmä kaatoi jo kerran
+avaimen `laituri`, ja korjaus on sama: **kunta on poistettu kohdasta 1.** Yksi maininta oli, ja se oli tämän dokumentin
+ainoa kunnan nimi kokoelman julkisissa repoissa (mitattu 22.8.2026).
+
+*Mitä tämä ei poista.* `Superjatsi/SUBSTANSSI.md` nimeää Joensuun kolmesti, ja siellä se on
+pelilomakkeen kenttä ja Tommin oma paikkakunta eikä ryhmän kokoontumiskunta. Se jää, joten
+paikannus ei mene nollaan vaan leviää kunnasta seutukuntaan. Ero on nimenomaan se mitä
+tällä haettiin: seutu ei osoita ryhmää, kunta osoittaa.
+
 **Mikä ei muuttunut.** `porukka`-nimiryhmä on kunnianosoitus oikeille ihmisille eikä
 arkkityyppiryhmä, eikä sille anneta persoonallisuuksia, puhetyylejä tai pelitapaeroja
 (`CLAUDE.md`, Players). Se sääntö on voimassa tämän kirjauksen jälkeenkin, koska sen peruste on
@@ -101,9 +114,9 @@ Tommi 19.8.2026, kysyttäessä mistä pelit ovat tulleet ja kuka ne opetti:
 | Opiskelukaveri | Kasino, Seiska | 2 |
 | Laituri | Moska, Maija, Koputus, Kultakala, Läpsy | 5 |
 
-Laituri on Kontiolahdella kokoontunut ryhmä, jonka toimintaa siellä kutsuttiin Laituriksi.
-*(Toiminnan laji poistettu tästä rivistä 21.8.2026, ks. rajaus yllä.)* Tommin oma
-kuvaus 21.5.2026: *Siellä neljä tuntia vietettiin, tehtiin asioita ja lätkittiin korttia
+Laituri on ryhmä, jonka toimintaa kutsuttiin Laituriksi.
+*(Toiminnan laji poistettu tästä rivistä 21.8.2026 ja kunta 22.8.2026, ks. rajaus yllä.)*
+Tommin oma kuvaus 21.5.2026: *Siellä neljä tuntia vietettiin, tehtiin asioita ja lätkittiin korttia
 teemasta riippuen, mutta päivittäin. Pakko ei ollut pelata ja aikaa oli toistoihin. Siviilissä
 näitä pelien oppimisia rajoittaa, kun ei ole aikaa, opettajaa, virtaa tai pelaajia.*
 
