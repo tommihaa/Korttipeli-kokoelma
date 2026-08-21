@@ -85,8 +85,9 @@ perustelu sanoo kunnan jäävän, koska se on Tommin omaa tietoa eikä kolmansie
 kaatunut vaan sen ympäristö muuttui: nimiryhmän lappu on vaihtumassa muotoon joka sanoo
 ryhmän olevan **paikallinen**, ja silloin kunta ei enää ole tieto Tommista vaan
 kahdestakymmenestäviidestä nimestä hänen ympärillään. Sama yhdistelmä kaatoi jo kerran
-avaimen `laituri`, ja korjaus on sama: **kunta on poistettu kohdasta 1.** Yksi maininta oli, ja se oli tämän dokumentin
-ainoa kunnan nimi kokoelman julkisissa repoissa (mitattu 22.8.2026).
+avaimen `laituri`, ja korjaus on sama: **kunta on poistettu kohdasta 1.** Yksi maininta
+oli, ja se oli tämän dokumentin ainoa kunnan nimi kokoelman julkisissa repoissa
+(mitattu 22.8.2026).
 
 *Mitä tämä ei poista.* `Superjatsi/SUBSTANSSI.md` nimeää Joensuun kolmesti, ja siellä se on
 pelilomakkeen kenttä ja Tommin oma paikkakunta eikä ryhmän kokoontumiskunta. Se jää, joten
@@ -97,7 +98,14 @@ tällä haettiin: seutu ei osoita ryhmää, kunta osoittaa.
 kunta on yhä luettavissa commitissa `894b20d`, samoin 21.8. anonymisoidut kohdat.
 **Tommi päätti 22.8.2026 että historia jää julkiseksi**, joten sitä ei kirjoiteta
 uudelleen. Rajaus toimii siis eteenpäin, ja ainoa toimiva suoja on kirjoittamatta
-jättäminen. Samalla hän rajasi tason: maakunta saa olla tunnistettavissa, kunta ei.
+jättäminen.
+
+*Mitä rajaus koskee, ja mitä se ei koske.* Tommi tarkensi 22.8.2026: **kunta saa olla
+tunnistettavissa, pelikaverit eivät.** Rajaus on siis dokumenttikohtainen eikä tasoon
+sidottu. Kunta saa esiintyä vapaasti muualla, koska se on Tommin omaa tietoa; se on poissa
+tästä tiedostosta siksi että täällä on kahdenkymmenenviiden ihmisen etunimet. Yksikään
+kolmesta palasta ei osoita ketään yksin, vaan ne osoittavat yhdessä: nimilista, kunta ja
+lappu joka sanoo nimien olevan paikallisia.
 
 **Mikä ei muuttunut.** `porukka`-nimiryhmä on kunnianosoitus oikeille ihmisille eikä
 arkkityyppiryhmä, eikä sille anneta persoonallisuuksia, puhetyylejä tai pelitapaeroja
