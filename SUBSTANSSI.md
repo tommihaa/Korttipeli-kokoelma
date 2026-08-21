@@ -96,7 +96,10 @@ teemasta riippuen, mutta päivittäin. Pakko ei ollut pelata ja aikaa oli toisto
 näitä pelien oppimisia rajoittaa, kun ei ole aikaa, opettajaa, virtaa tai pelaajia.*
 
 **Seuraus:** enemmistö kokoelmasta on opittu yhdessä paikassa päivittäisellä toistolla ilman
-pakkoa, ja sovelluksen lupaus on sama pari toisessa muodossa (*sääntöjä ei tarvitse opetella
+pakkoa *(tarkennettu erässä 58, ks. kohta 75: pelaaminen oli päivittäistä, mutta jokainen peli
+ei ollut. Kultakalaa, Koputusta ja Maijaa ei pelattu joka päivä, joten toisto oli näiden
+kolmen kohdalla harvempaa kuin tämä lause antaa ymmärtää)*, ja sovelluksen lupaus on sama pari
+toisessa muodossa (*sääntöjä ei tarvitse opetella
 etukäteen, peli neuvoo pelatessa, kukaan ei kiirehdi sinua*). Tätä ei ole aiemmin sanottu
 missään ääneen, vaikka sekä pelivalikoima että opetustapa seuraavat siitä.
 
@@ -2880,6 +2883,55 @@ se saa kaatua, mutta se on tarkistettavissa kysymällä.
 **Avoin:** kumpi Paskahousu ja Moska oli lopetusikkunassa ensin, jos järjestys oli vakiintunut.
 Alkuperäinen vastaus erässä 6 antoi ne järjestyksessä *paskahousu, moska*, mutta kohdan 15
 kokemuksen jälkeen sitä ei lueta järjestykseksi ilman kysymistä.
+
+## 75. Lopetusikkunan järjestys ei ollut vakiintunut, ja kolmea Laiturin peliä ei pelattu joka päivä
+
+Tommi 21.8.2026 (erä 58), kysyttäessä oliko Paskahousulla ja Moskalla vakiintunut järjestys
+lopetusikkunassa:
+
+> *ei ollut vakiintunutta järjestystä, kultakala, koputus ja maija ei pelattu joka päivä*
+
+**Kohdan 74 avoin sulkeutuu kieltävänä, ja kielto kirjataan kieltona.** Lopetusikkunalla oli
+siis vakiintunut **valikoima** muttei vakiintunutta **järjestystä**. Ero on tarkka: kaksi peliä
+kuului ikkunaan säännönmukaisesti, mutta se kumpi aloitti, ratkesi kussakin tilanteessa.
+Erän 6 vastauksen sanajärjestys ei siis kantanut tietoa, ja kohdan 15 luenta olisi ollut väärä
+myös siinä tapauksessa että kolmipaikkainen kaari olisi ollut olemassa.
+
+**Toinen osa vastausta ei liity kysymykseen ja on painavampi kuin ensimmäinen.** Kolmea
+Laiturin viidestä pelistä **ei pelattu joka päivä**: Kultakala, Koputus ja Maija. Tämä on
+ensimmäinen kerta kun dokumentti saa tietoa pelien **esiintymistiheydestä**, ja se on eri akseli
+kuin kaikki aiemmat. Kohta 12 mittaa hyvyyttä, kanoni vaikeutta, kohta 34 mieltymystä ja kohta
+73 sijaintia päivässä; tämä mittaa sitä kuinka usein peli ylipäätään tuli pelatuksi.
+
+**Ensimmäinen seuraus, ja se tarkentaa kohtaa 1.** Kohdan 1 seuraus sanoo että enemmistö
+kokoelmasta on opittu päivittäisellä toistolla, ja se nojaa Tommin lauseeseen *lätkittiin
+korttia teemasta riippuen, mutta päivittäin*. Lause pitää yhä pelaamisesta, muttei jokaisesta
+pelistä. **Päivittäistä oli korttipelaaminen, ei koko valikoima.** Kolmen pelin kohdalla toisto
+oli siis harvempaa kuin kohdan 1 seurauksesta voisi lukea, ja viite on lisätty sinne.
+
+**Toinen seuraus, ja se tukee kohdan 74 havaintoa ilman että todistaa sen.** Kolme
+ei-päivittäistä peliä ovat kaikki keskiosan pelejä, eikä yksikään lopetusikkunan kolmesta ole
+listalla. Se sopii kohdan 74 kirjoittajan havaintoon kahdesta asemasta (yhteiset pelit
+vakiintuneella paikalla, ryhmän omat keskiosassa): yhteinen peli tuli pelatuksi koska ikkuna
+oli päivän rakenteessa, ryhmän oma vain jos ryhmä valitsi sen. Tämä on yhdenmukaisuus eikä
+näyttö, koska Tommi ei nimennyt syytä.
+
+**Läpsy jää listan ulkopuolelle, eikä siitä päätellä mitään.** Laiturin viidestä pelistä
+nimettiin kolme, joten Moska ja Läpsy jäivät nimeämättä. Moskan kohdalla vastaus tiedetään
+muualta (se kuului lopetusikkunaan, kohta 74), mutta **Läpsystä ei tiedetä kumpaa se oli**.
+Kysymys oli järjestyksestä eikä tiheydestä, joten luettelo saattoi olla myös epätäydellinen.
+Tätä ei täydennetä päättelemällä.
+
+**Jännite kohdan 50 kanssa, ja se nostetaan jännitteenä.** Kohta 50 sanoo että Koputusta
+pelattiin useimmin isolla porukalla, ja kohta 73 sijoittaa ison porukan hetket kahteen
+ikkunaan joissa kaikki ryhmät olivat läsnä. Koputus ei kuitenkaan ollut ikkunapeli vaan
+keskiosan peli, ja nyt tiedetään ettei sitä pelattu edes joka päivä. Joko *iso porukka*
+tarkoittaa neljää pelaajaa vastakohtana kahdelle eikä kaikkia ryhmiä, tai keskiosassa saattoi
+olla isoja pöytiä. Edellinen on uskottavampi, koska kanonin maksimi on neljä pelaajaa, mutta
+kumpaakaan ei ole kysytty.
+
+**Avoin:** kuuluiko Läpsy päivittäin pelattuihin vai ei, ja tarkoittaako kohdan 50 *iso porukka*
+neljää pelaajaa vai koko talon läsnäoloa.
 
 ---
 
