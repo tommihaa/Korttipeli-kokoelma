@@ -2754,8 +2754,9 @@ kuitenkaan kysytty, ja vastauksen voi lukea myös toisin: Moska saattoi vaatia r
 osaavia pelaajia paikalle, jolloin ehto koskisi oppimista eikä pelaajarajaa. Kaksi eri lukutapaa
 tuottaa saman lauseen, joten tämä jätetään kysyttäväksi.
 
-**Avoin:** kumpaa ehto tarkoittaa, pelaajamäärän ylärajaa vai osaavien pelaajien alarajaa.
-*(Kysyttiin erässä 56, ja vastaus kuvasi päivän rakenteen ehdon takana, ks. kohta 73.)*
+~~**Avoin:** kumpaa ehto tarkoittaa, pelaajamäärän ylärajaa vai osaavien pelaajien alarajaa.~~
+*(Kysyttiin erässä 56, ja vastaus kuvasi päivän rakenteen ehdon takana, ks. kohta 73. Kaventui
+erässä 73, ks. kohta 93, ja sulkeutui erässä 74, ks. kohta 94: osaavia **ja halukkaita**.)*
 
 **Jännite kohdan 34 kanssa, ja se nostetaan tässä jännitteenä eikä ristiriitana.** Moska on
 Tommin kahdesta suosikista toinen, ja se on nyt myös se peli johon päivä ajautui lämmettyään.
@@ -3782,6 +3783,37 @@ vastatuksi, koska Tommi ei ole sitä sanonut ja päätelmä on kirjoittajan.
 
 **Rajaus:** *yli neljä* ei ole luku. Koputuksesta tiedetään 4-6, muista vain että raja ylittyi.
 Kuinka paljon yli, ei ole kysytty eikä sitä arvata.
+
+## 94. Moskan ehto oli osaavia ja halukkaita, ja jälkimmäinen on uusi sana
+
+Tommi 21.8.2026 (erä 74), vahvistuksena kohdan 72 avoimeen:
+
+> *72 vahvistan: osaavia ja halukkaita*
+
+**Kohdan 72 avoin sulkeutuu, ja kohdan 93 päätelmä oli oikein.** *Riippuen kuinka moni oli
+paikalla* tarkoitti siis osaavien pelaajien alarajaa eikä pelaajamäärän ylärajaa. Kysymyksen
+kaksi haaraa esitettiin erässä 56, kaventuivat erässä 73 ja sulkeutuivat tässä.
+
+**Vastaus lisää sanan jota kumpikaan haara ei tarjonnut: `halukkaita`.** Kysymys ja sen kaikki
+aiemmat muotoilut puhuivat osaamisesta, eli kyvystä. Tommi lisää tahdon. **Moskan ehto ei siis
+ollut vain se osasiko riittävän moni, vaan myös se halusiko riittävän moni**, ja nämä ovat eri
+asioita: pöydässä saattoi olla neljä Moskan osaajaa joista kaksi ei halunnut pelata sitä.
+
+**Se sitoo Laiturin perusehtoon jonka kohta 1 kirjaa.** Kohdan 1 sitaatissa Tommi sanoo
+*Pakko ei ollut pelata ja aikaa oli toistoihin*. Vapaaehtoisuus on siis nimetty jo siellä
+oppimisen ehtona, ja tämä kohta näyttää sen toisen puolen: **vapaaehtoisuus toimii myös
+esteenä.** Peli jota kukaan ei voi vaatia, tarvitsee joka kerta riittävän monta joka haluaa, ja
+vaativa peli kerää niitä harvemmin kuin helppo.
+
+**Seuraus, ja se yhdistää kolme mekanismia yhdeksi.** Kohta 77 nimesi harvinaisuuden syyksi
+opettamisen ja keskittymisen, kohta 92 vaihtuvuuden tahdiksi kuukauden ja tämä kohta lisää
+halukkuuden. Ne eivät ole kolme eri selitystä vaan yhden ketjun osat: **uusi kasvo kuukausittain
+tarkoittaa uutta opetusta, opetusta vaativa peli kerää harvemmin halukkaita, ja ilman pakkoa
+harvempi halukas tarkoittaa harvempi peli.** Ketju alkaa ympäristöstä ja päätyy tiheysportaaseen
+(kohta 76), eikä yksikään sen lenkeistä ole pelin sääntö.
+
+**Rajaus:** vastaus koskee Moskaa, koska kysymys koski sitä. Sitä ei ole kysytty muista peleistä,
+vaikka ketju yllä on muotoiltu yleisemmin; yleistys on kirjoittajan ja se saa kaatua.
 
 ---
 
