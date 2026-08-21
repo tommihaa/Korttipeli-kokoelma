@@ -2984,12 +2984,15 @@ ristiriidassa, koska *useimmin* on suhteellinen. Koputusta ei pelattu usein, mut
 pelattiin, pöytä oli iso. Kohdan 50 otsikko kertoo siis mikä kokoonpano oli tyypillinen sille
 pelille, ei sitä kuinka usein peli tuli pelatuksi. Kaksi eri asiaa mahtui samaan sanaan.
 
-**Toinen seuraus, ja se on tämän kohdan kirpein.** Se kokoonpano joka teki Koputuksesta *tosi
+~~**Toinen seuraus, ja se on tämän kohdan kirpein.** Se kokoonpano joka teki Koputuksesta *tosi
 hauskaa*, oli myös harvinainen. Kuuden pelaajan pöytä edellyttää väkeä, ja väkeä oli koolla
 kahdessa puolen tunnin ikkunassa (kohta 73), jotka olivat kolmen muun pelin paikka (kohta 74).
-Koputuksen paras muoto kilpaili siis suoraan päivän vakiintuneen ohjelman kanssa. Tämä on
+Koputuksen paras muoto kilpaili siis suoraan päivän vakiintuneen ohjelman kanssa.~~ Tämä on
 kirjoittajan päätelmä eikä Tommin sanoma, ja se saa kaatua; Tommi nimesi harvinaisuuden muttei
 sen syytä.
+
+*Päätelmä kaatui erässä 60, ks. kohta 77: syy ei ollut rakenteellinen vaan pelin oma, eli
+opettamisen ja keskittymisen vaatimus. Kumottu kappale jää näkyviin.*
 
 **Kolmas seuraus: dokumentti saa nyt tiheysportaan, ja se on kolmiportainen.** Kohdan 75 tieto
 ja tämä vastaus yhdessä antavat Laiturin peleille järjestyksen jota ei ole aiemmin ollut.
@@ -3016,6 +3019,63 @@ täyttää kokoelmassa paikan jota mikään muu ei täytä.
 hauskaksi todettu. Ja erikseen: pelattiinko muitakin pelejä yli neljällä, vai onko Koputus
 ainoa jonka pöytä kasvoi kanonin ulkopuolelle. Jälkimmäinen ei ole enää kysymys sovelluksen
 rajasta vaan pöydän käytännöstä, koska raja on nyt perusteltu.
+
+## 77. Harvinaisuuden syy on opettaminen ja keskittyminen, ja Moska on säännön poikkeus
+
+Tommi 21.8.2026 (erä 60), kysyttäessä miksi Koputusta ei pelattu usein vaikka sen paras
+kokoonpano oli tiedossa ja hauskaksi todettu:
+
+> *koputus vaati opettamista ja keskittymistä, muistipelit ovat makuuni*
+>
+> *ristiseiska ja paskahousu helppoja oppia*
+
+**Kirjoittajan päätelmä kaatui, ja se sanotaan ensin.** Kohdassa 76 arvelin syyn olevan
+rakenteellinen: kuuden pelaajan pöytä edellyttää väkeä, väkeä oli koolla vain kahdessa
+ikkunassa, ja ikkunat olivat kolmen muun pelin paikka. Syy on pelin oma eikä päivän rakenteen.
+Kumottu kappale jää näkyviin kohtaan 76.
+
+**Mekanismi on nyt Tommin sanoma eikä pääteltävissä, ja se on tämän kohdan ydin.**
+Esiintymistiheyden selittää **oppimiskustannus yhdessä keskittymisvaatimuksen kanssa**.
+Ristiseiska ja Paskahousu olivat helppoja oppia ja ne olivat päivän rakenteessa; Koputus vaati
+opettamista ja keskittymistä ja se jäi harvinaiseksi. Kohta 72 nimesi oppimiskustannuksen
+yhden pelin selittäjänä, ja tämä nostaa sen koko valikoimaa järjestäväksi tekijäksi.
+
+**Keskittyminen on erillinen vaatimus eikä oppimisen osa.** Peli voi olla opittu ja vaatia silti
+keskittymistä joka kerta. Se osuu suoraan Laiturin tilanteeseen: puolen tunnin ikkuna päivän
+päätteeksi tai vapaa keskiosa jossa oli myös ulkopelejä, eivät ole hetkiä joissa keskittymistä
+on eniten tarjolla. **Oppimiskustannus maksetaan kerran, keskittymisvaatimus joka kerta**, ja
+jälkimmäinen on siksi ankarampi harvinaisuuden selittäjä.
+
+**Moska on poikkeus, ja se nostetaan poikkeuksena eikä siloteta.** Kohta 72 kertoo että
+joillekin Moska oli haastava oppia, ja kanoni pitää sitä ainoana vaativana pelinä. Silti se oli
+lopetusikkunassa eli päivän rakenteessa, kun Koputus samalla perusteella jäi harvinaiseksi.
+Sääntö *vaikea oppia tarkoittaa harvinaista* ei siis päde Moskaan. Syytä ei tiedetä. Kohta 34
+kertoo Moskan olevan Tommin suosikki, mikä on yksi mahdollinen selitys, mutta kohta 34 sanoo
+myös ettei mieltymys ohjaa valikoimaa; se koskee kokoelmaa eikä päivän ohjelmaa, joten se ei
+sulje selitystä pois eikä vahvista sitä.
+
+**Löydös jota ei kysytty: muistipelit ovat Tommin makuun.** Tämä on toinen kerta kun mieltymys
+mainitaan tässä dokumentissa (edellinen on kohta 34, Moska ja Paskahousu), ja se on eri lajia:
+kohta 34 nimeää pelit, tämä nimeää **pelityypin**. Kanonissa muistipelejä on kaksi, Koputus ja
+Kultakala, eikä kumpikaan ole kohdan 34 suosikeissa. Näiden kahden lauseen suhdetta ei ratkaista
+tässä, koska mieltymys pelityyppiin ja suosikkipeli ovat eri asioita eikä kumpaakaan ole
+kysytty toisen kautta.
+
+**Seuraus, ja se on kirjoittajan luenta:** Koputuksen harvinaisuus ei johtunut siitä ettei
+Tommi pitänyt siitä, vaan päinvastoin. Este oli sosiaalinen eikä henkilökohtainen, eli se että
+muut piti opettaa ja että pelaaminen vaati kaikilta keskittymistä. Luenta sopii siihen että
+sama vastaus sisältää sekä harvinaisuuden syyn että maininnan omasta mausta, mutta Tommi ei
+sanonut niiden liittyvän toisiinsa.
+
+**Seuraus sovellukseen, ja se on suora.** Sovellus poistaa kummankin esteen eri tavalla:
+opettaminen ei vaadi ihmistä (peli neuvoo pelatessa, kohta 1) ja keskittymisvaatimus koskee
+enää yhtä ihmistä eikä koko pöytää, koska muut pelaajat ovat botteja. **Koputus on siis niistä
+yhdeksästä pelistä se joka hyötyy sovellusmuodosta eniten**, mitattuna sillä kuinka suuren
+pöytäesteen se poistaa. Tämä on kirjoittajan päätelmä ja se saa kaatua.
+
+**Avoin:** miksi Moska kesti oppimiskustannuksensa ja pysyi päivän rakenteessa, kun Koputus ei.
+Ja erikseen: onko muistipeleistä pitäminen syy siihen että Koputus ja Kultakala ovat
+kokoelmassa, vai päätyivätkö ne sinne samalla perusteella kuin muutkin.
 
 ---
 
