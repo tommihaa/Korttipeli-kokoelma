@@ -3389,9 +3389,62 @@ eivät voi tuottaa siirtoa jota niihin ei ole kirjoitettu. **Nykyisillä boteill
 toteutua**, ja se on tarkistettava havainto eikä mielipide. Tämä ei kaada ideaa vaan nimeää mitä
 se edellyttäisi.
 
-**Avoin:** onko kolmitasoisen portaan tavoite saavutettu vai kesken. Tommi sanoo *yritys luoda*,
-ja `MOSKA.md` ja `MAIJA.md` sisältävät valmiit kolmiportaiset taulukot, joten sanamuoto ja
-kanoni voivat kertoa eri asiaa tai koskea eri pelejä.
+~~**Avoin:** onko kolmitasoisen portaan tavoite saavutettu vai kesken.~~ *(Vastattu erässä 65,
+ks. kohta 85: kesken, ja tunnistettu.)*
+
+## 85. Uusia siirtoja ei synny bottien pelistä vaan ihmisen, ja tasoero puuttuu osasta pelejä
+
+Tommi 21.8.2026 (erä 65), kahtena osana:
+
+> *ahaa, siis uutta luova agentti ei voi hyötyä bottien taistelun seuraamisesta, koska uudet
+> pelivuorot ei toteudu*
+>
+> *ihminen vs botit tai ihmisten keskinäistä peliä seuratessahan näitä ilmenisi*
+
+> *porras on litteä joissain peleissä ja kesken, mutta tämä on tunnistettu ja tunnustettu*
+
+**Ensimmäinen osa on Tommin oma johtopäätös ja se menee kohdan 84 varausta pidemmälle.**
+Kohta 84 sanoi ettei sääntöporras voi tuottaa siirtoa jota siihen ei ole kirjoitettu, ja siitä
+seuraa mitä siitä seuraa: **havaintokanava on väärä**. Bottien keskinäinen peli ei voi paljastaa
+uusia siirtoja, koska uusia siirtoja ei tapahdu. Ihmisen pelistä niitä sen sijaan tulisi, koska
+ihminen ei ole kirjoitettu porras.
+
+**Seuraus, ja se kääntää ehdotuksen suunnan:** löytöjen lähde ei ole kone jota katsotaan vaan
+**ihminen jota tallennetaan**. Se on eri työ kuin Botbench, joka ajaa botteja siemennetysti, ja
+eri työ kuin katselutila, jossa ihminen katsoo botteja. Tämä olisi kolmas asetelma: kone katsoo
+ihmistä. Raaka-aine on periaatteessa olemassa, koska peleissä on `onSnapshot`-mekanismi ja
+Botbench lukee jo snapshot-frameja, mutta **mitään tällaista ei ole rakennettu**, eikä siitä
+avata työtä tässä. Kirjattu koska tunnistus on itsessään tulos: ehdotus ei kaatunut vaan vaihtoi
+kohdetta.
+
+**Toinen osa vastaa kohdan 84 avoimeen: porras on kesken.** Tommin sanamuoto *yritys luoda* oli
+siis tarkka eikä vaatimaton, ja `MOSKA.md`:n ja `MAIJA.md`:n valmiit taulukot eivät ole
+ristiriidassa sen kanssa: taulukko voi olla kirjoitettu vaikkei se tuottaisi mitattavaa
+tasoeroa.
+
+**Todennettu `docs/BOTBENCH.md`:stä 21.8.2026, ja tunnustus on kirjattu sinne ennen tätä
+haastattelua.** Mittari on löytänyt useita pelejä joissa **ylätasot ovat samantasoiset**, eli
+voitto-osuus on lähellä puolta eikä taso erota pelaajia. Kasinolla ja Maijalla tasoilla ei ollut
+mitattavaa eroa jo 17.7.2026 baselinessa, ja N=400-ajo vahvisti Seiskan ja Moskan ylätasojen
+olevan samantasoiset. Dokumentti nimeää myös syyn: sama heuristiikka virhekohinalla säädettynä
+ei tuota aitoa tasoeroa.
+
+**Seuraus, ja se sulkee kaaren kohtaan 84.** Kolmivaiheinen kaari (sääntöjen mukaan, paremmin,
+porras) ei siis ole kolme valmista vaihetta vaan kaksi valmista ja yksi kesken. **Kesken oleva
+vaihe on juuri se joka palvelee oppimiskäyttöä**, koska säädettävä vastustaja on
+opettelevan pelaajan asia eikä kokeneen. Kohdan 76 ja 79 linja (sovellus optimoi oppimista) on
+siis toteutunut niiltä osin kuin se koskee sääntöjä ja rajoja, mutta ei siltä osin kuin se
+koskee vastustajan tasoa.
+
+**Seuraus menetelmään, ja se on tämän kohdan menetelmällinen tulos.** Tommi sanoi asian
+tunnistetuksi ja tunnustetuksi, ja niin se oli: tarkistus löysi tunnustuksen kirjattuna
+mittausdokumentista kuukausia ennen tätä kysymystä. **Haastattelu ei siis löytänyt tätä vaan
+vahvisti sen**, ja se on hyvä tulos: kun lähde ja kirjattu mittaus sanovat samaa, kumpikaan ei
+ole ajautunut. Vastakkainen tapaus olisi ollut se että Tommi olisi pitänyt porrasta valmiina
+vaikka mittari sanoo muuta.
+
+**Avoin:** onko samantasoisuus hyväksytty pysyväksi vai odottaako se työtä. *Tunnistettu ja
+tunnustettu* kertoo että asia tiedetään, muttei sitä onko se päätetty jättää sellaiseksi.
 
 ---
 
