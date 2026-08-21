@@ -3073,9 +3073,67 @@ enää yhtä ihmistä eikä koko pöytää, koska muut pelaajat ovat botteja. **
 yhdeksästä pelistä se joka hyötyy sovellusmuodosta eniten**, mitattuna sillä kuinka suuren
 pöytäesteen se poistaa. Tämä on kirjoittajan päätelmä ja se saa kaatua.
 
-**Avoin:** miksi Moska kesti oppimiskustannuksensa ja pysyi päivän rakenteessa, kun Koputus ei.
-Ja erikseen: onko muistipeleistä pitäminen syy siihen että Koputus ja Kultakala ovat
-kokoelmassa, vai päätyivätkö ne sinne samalla perusteella kuin muutkin.
+~~**Avoin:** miksi Moska kesti oppimiskustannuksensa ja pysyi päivän rakenteessa, kun Koputus ei.~~
+*(Vastattu erässä 61, ks. kohta 78.)* Ja erikseen: onko muistipeleistä pitäminen syy siihen että
+Koputus ja Kultakala ovat kokoelmassa, vai päätyivätkö ne sinne samalla perusteella kuin muutkin.
+
+## 78. Moska opetetaan pelin sisällä, ja sen muisti on etu eikä edellytys
+
+Tommi 21.8.2026 (erä 61), kysyttäessä miksi Moska pysyi päivän rakenteessa vaikka se oli
+joillekin haastava oppia, kun Koputus jäi samasta syystä harvinaiseksi:
+
+> *moskaa pelattiin avoimesti pöytään ja kysyttiin siirrätkö, lyökö joku sivusta, ei ole omia
+> muistettavia kortteja vaan kaadettujen ja nostettujen korttien muistaminen paransi asemia*
+
+**Vastaus antaa kaksi eri mekanismia, ja ne on erotettava toisistaan koska ne purkavat kohdan 77
+poikkeuksen eri suunnista.**
+
+**Ensimmäinen: opettaminen tapahtuu pelin sisällä eikä ennen sitä.** Moskaa pelattiin avoimesti
+pöytään, ja pöydässä kysyttiin ääneen *siirrätkö* ja *lyökö joku sivusta*. Nämä eivät ole
+opetusta pelin vieressä vaan pelin omia vuoroja, jotka sattuvat samalla kertomaan aloittelijalle
+mitä hänen vaihtoehtonsa ovat. **Moskan oppimiskustannusta ei siis tarvinnut maksaa etukäteen**,
+ja siinä on ero Koputukseen, jossa opettaminen on erillinen työvaihe ennen pelaamista.
+
+Tämä tarkentaa kohtaa 77 eikä kumoa sitä. Kohta 77 sanoo oppimiskustannuksen selittävän
+tiheyden, ja tämä sanoo että ratkaisevaa on **missä kustannus maksetaan**. Peli jonka voi oppia
+pelaamalla, mahtuu puolen tunnin ikkunaan; peli joka on opetettava ensin, ei mahdu.
+
+**Toinen: muisti on Moskassa etu, muistipelissä edellytys.** Tommin sanoin Moskassa *ei ole omia
+muistettavia kortteja*, vaan kaadettujen ja nostettujen muistaminen **paransi asemia**. Muisti
+tuottaa siis lisäetua sille joka sen jaksaa, muttei ole pelaamisen ehto. Koputuksessa muisti on
+se mitä pelataan, joten muistamatta jättäminen ei tee pelaajasta huonompaa vaan estää
+osallistumisen. **Sama sana `keskittyminen` tarkoittaa siis kahdessa pelissä eri asiaa**, ja
+kohdan 77 mekanismi tarkentuu vastaavasti: harvinaisuutta ei tuota keskittymisen määrä vaan se,
+onko keskittyminen vapaaehtoista.
+
+**Todennettu kanonista 21.8.2026, ja pöydän kuvaus osuu koodiin sellaisenaan.** `MOSKA.md`
+tuntee molemmat vastauksessa mainitut teot omina mekaniikkoinaan: siirtämisellä (passaus) ja
+sivusta lisäämisellä on kummallakin oma rivinsä botin tasoportaassa, ja Oppipoika ei siirrä
+lainkaan. Kohta 60 kertoi jo että siirto tuli pöydästä; nyt tiedetään myös **miksi se on
+pöydässä sanottu ääneen**, ja se on eri asia kuin se että sääntö on olemassa.
+
+**Seuraus, ja se on tämän kohdan laajin.** Kohta 74 jakoi yhdeksän peliä kahteen asemaan sen
+mukaan oliko peli koko porukan vai ryhmän oma, ja kohta 77 selitti jaon oppimiskustannuksella.
+Nyt jaon takana on tarkempi ominaisuus: **avoin peli opettaa itse itsensä, suljettu ei.** Se on
+pelin rakenteen ominaisuus eikä sen vaikeuden, ja se selittää miksi kanonin ainoa vaativaksi
+merkitty peli oli päivittäisessä ohjelmassa ja keskitasoinen muistipeli ei.
+
+**Seuraus sovellukseen, ja tässä sovellus on jo tehnyt valinnan.** Pöydän avoimuudella on
+sovelluksessa vastine: `showIntention` näyttää mitä muut aikovat, ja `CLAUDE.md`:n mukaan se on
+käytössä seitsemässä pelissä yhdeksästä, poikkeuksina Läpsy ja **Kultakala**. Kultakala on
+kokoelman toinen muistipeli, eli juuri se pelityyppi jossa avoimuus tuhoaisi pelin. Sovellus on
+siis päätynyt samaan erotteluun kuin pöytä, ilman että sitä on tässä dokumentissa aiemmin
+sanottu. Tämä on kirjoittajan havainto koodista ja se saa kaatua, mutta erottelu on
+tarkistettavissa.
+
+**Rajaus, jotta vastausta ei lueta liian laajaksi.** Tommi kuvaa miten Moskaa pelattiin, ei
+sitä että avoimuus olisi ollut tietoinen opetuskeino. Kysymys kuului miksi Moska kesti
+oppimiskustannuksensa, ja vastaus kertoo pelin luonteen; päätelmä *siksi se opetti itse itsensä*
+on kirjoittajan.
+
+**Avoin:** oliko sivusta lyöminen ja siirron kysyminen yhtä lailla tapa pitää muut mukana kun
+oli oma vuoro odottamassa, vai vain pelin kulkua. Kysymys koskee sitä oliko Moskan avoimuudessa
+myös sosiaalinen tehtävä, ja se on eri kysymys kuin oppiminen.
 
 ---
 
