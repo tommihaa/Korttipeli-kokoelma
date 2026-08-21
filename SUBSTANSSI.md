@@ -541,8 +541,12 @@ Aloituspelin olemassaolo antaa ymmärtää että pelit eivät olleet keskenään
 mittaan, mutta sitä ei ole kysytty mikä peli otettiin esiin kun porukka oli lämmennyt tai kun
 aikaa oli vähän jäljellä.
 
-*Kohta täydentyi erässä 6, ks. kohta 15. Avoimen ensimmäinen puolikas (lämmenneen porukan
-peli) sulkeutui erässä 55, ks. kohta 72; jäljellä on se mikä otettiin kun aikaa oli vähän.*
+*Kohta täydentyi erässä 6, ks. kohta 15: avoin sulkeutui siellä kokonaan, ja tämä merkintä on
+ollut sen jälkeen ajan tasalla.*
+
+*~~Avoimen ensimmäinen puolikas sulkeutui erässä 55, ks. kohta 72.~~ Merkintä oli väärä ja se
+jätetään näkyviin: avoin oli jo suljettu erässä 6, ja erässä 55 kysyttiin uudelleen jo
+vastattua. Ks. kohta 72 ensimmäinen kappale.*
 
 ## 15. Pelipäivällä oli järjestys, ja sen kaksi muuta paikkaa ovat Paskahousu ja Moska
 
@@ -2692,9 +2696,24 @@ lämmennyt ja aloituspelistä oli siirrytty eteenpäin:
 
 > *yleensä moska, riippuen kuinka moni oli paikalla, joillekin moska oli haastava oppia*
 
-**Kohdan 14 avoin sulkeutuu puoliksi.** Päivällä oli siis muoto molemmissa päissä: Ristiseiska
-aloitti ja Moska tuli kun oli lämmitty. Se mikä otettiin esiin kun aikaa oli vähän jäljellä,
-on yhä kysymättä, ja se on eri kysymys eikä saman vastauksen jatke.
+**Tätä ei olisi pitänyt kysyä, ja se sanotaan ensin.** Kysymys oli jo esitetty erässä 6 ja
+vastattu kohdassa 15 (*paskahousu, moska*). Kohdan 14 avoin-merkintä oli vanhentunut, ja
+kirjoittaja luki sen auki olevaksi tarkistamatta oliko vastaus kirjattu toisaalle. Vikamuoto on
+tämän dokumentin oma ja se on nimetty toisessa grillauksessa 20.8.2026 kohtana 3: **vanhentunut
+avoin-merkintä syntyy kun vastaus kirjataan toiseen kohtaan kuin mihin kysymys jäi**, ja se
+johtaa kysymään uudelleen sen mikä on jo vastattu. Grillaus korjasi viisi tällaista ja jätti
+tämän, koska kohdan 14 avoin oli muotoiltu kahtena puolikkaana eikä yhtenä.
+
+**Uudelleenkysyminen tuotti silti kaksi asiaa, ja siksi kohta jää.** Vastaus ei ole sama kuin
+erässä 6, ja se sisältää perustelun jota siinä ei ollut.
+
+**Ristiriita kohdan 15 kanssa, ja se nostetaan ratkaisematta.** Kohta 15 lukee vastauksen
+*paskahousu, moska* järjestysvastaavuutena, eli Paskahousu keskelle ja Moska loppuun, ja
+kohta sanoo itse tämän olevan sen ainoa epävarma osa. Nyt samaan kysymykseen (mikä otettiin kun
+porukka oli lämmennyt) vastaus on Moska. Joko kohdan 15 järjestysluenta on väärin päin, tai
+*lämmennyt* ja *keskellä* eivät ole sama paikka päivässä. Molemmat lauseet ovat Tommin, joten
+ero on kysyttävä eikä pääteltävä. Erän 56 vastaus (kohta 73) tekee jälkimmäisestä
+todennäköisemmän, muttei ratkaise sitä.
 
 **Vastauksen kolmas osa selittää ensimmäisen, ja se on tämän kohdan varsinainen löydös.**
 Moska ei ole myöhäinen peli siksi että se olisi kanonissa vaativa, vaan siksi että **joillekin
@@ -2720,8 +2739,8 @@ kuitenkaan kysytty, ja vastauksen voi lukea myös toisin: Moska saattoi vaatia r
 osaavia pelaajia paikalle, jolloin ehto koskisi oppimista eikä pelaajarajaa. Kaksi eri lukutapaa
 tuottaa saman lauseen, joten tämä jätetään kysyttäväksi.
 
-**Avoin:** kumpaa ehto tarkoittaa, pelaajamäärän ylärajaa vai osaavien pelaajien alarajaa. Ja
-erikseen: mitä pelattiin kun aikaa oli vähän jäljellä.
+**Avoin:** kumpaa ehto tarkoittaa, pelaajamäärän ylärajaa vai osaavien pelaajien alarajaa.
+*(Kysyttiin erässä 56, ja vastaus kuvasi päivän rakenteen ehdon takana, ks. kohta 73.)*
 
 **Jännite kohdan 34 kanssa, ja se nostetaan tässä jännitteenä eikä ristiriitana.** Moska on
 Tommin kahdesta suosikista toinen, ja se on nyt myös se peli johon päivä ajautui lämmettyään.
@@ -2729,6 +2748,67 @@ Kohta 34 sanoo ettei mieltymys ohjaa valikoimaa, ja se pitää yhä: se koskee s
 ovat kokoelmassa, ei sitä mitä yhden illan aikana pelattiin. Silti nämä kaksi ovat lähellä
 toisiaan, ja niiden ero on syytä pitää näkyvissä. Tämä on kirjoittajan havainto eikä Tommin
 lause, ja se saa kaatua.
+
+## 73. Laituripäivässä oli kaksi puolen tunnin peli-ikkunaa, ja jälkimmäinen ei ollut varma
+
+Tommi 21.8.2026 (erä 56), kysyttäessä tarkoittiko *riippuen kuinka moni oli paikalla* sitä ettei
+Moska sopinut isolle porukalle vai sitä ettei sitä voitu ottaa esiin ennen kuin paikalla oli
+tarpeeksi osaavia:
+
+> *4h laituripäivän aikana pelattiin puolisen tuntia, jolloin kaikki ryhmät (1-3 kpl) oli
+> läsnä, sitten kolme tuntia kunkin ryhmän omat jutut, ja lopussa taas puolisen tuntia peliä ja
+> kaikki läsnä (ei aina)*
+
+**Vastaus ohitti kysymyksen ja antoi sen takana olevan rakenteen, ja se on enemmän kuin
+kysyttiin.** Kysymys tarjosi kaksi lukutapaa yhdelle ehdolle; vastaus kertoo mistä ehto syntyy.
+Päivä oli neljä tuntia ja sillä oli kolme osaa:
+
+| Osa | Kesto | Ketkä | Mitä |
+|---|---|---|---|
+| Avaus | n. 30 min | kaikki ryhmät, 1-3 kpl | peliä |
+| Keskiosa | n. 3 h | kukin ryhmä erikseen | ryhmän omat jutut |
+| Lopetus | n. 30 min | kaikki, **ei aina** | peliä |
+
+**Ensimmäinen seuraus: peliaika oli lyhyt ja rajattu, ei jatkuva.** Aiemmat kohdat ovat
+puhuneet pelipäivästä kaarena joka lämpenee, ja rakenne kertoo ettei kyse ollut yhtenäisestä
+istunnosta vaan kahdesta puolen tunnin ikkunasta joiden välissä oli kolme tuntia muuta.
+**Puoli tuntia on kova katto**, ja se koskee juuri niitä hetkiä jolloin väkeä oli eniten.
+
+**Toinen seuraus, ja se selittää ehdon:** paikallaolijoiden määrä ei vaihdellut yksittäisten
+ihmisten mukaan vaan **ryhmien lukumäärän mukaan, ja niitä oli yhdestä kolmeen**. Ero yhden ja
+kolmen ryhmän päivän välillä on kolminkertainen porukka samassa peli-ikkunassa. Ehto *riippuen
+kuinka moni oli paikalla* on siis rakenteellinen eikä sattumanvarainen, ja se on tiedossa
+etukäteen sinä aamuna.
+
+**Kysytty valinta jäi silti tekemättä, eikä sitä täydennetä päättelemällä.** Rakenne tekee
+pelaajamäärän ylärajasta uskottavamman kuin osaajien alarajasta, koska kanoni antaa Moskalle
+2-4 pelaajaa ja kolmen ryhmän avausikkuna ylittää sen selvästi; kohta 50 sanoo lisäksi että
+Koputus oli ison porukan peli. Tämä on kuitenkin kirjoittajan päätelmä eikä vastaus, ja kohdan
+72 avoin pysyy auki siihen asti kunnes Tommi valitsee. Sama vikamuoto (tosi lähtökohta, liian
+pitkä johtopäätös) on tässä dokumentissa kaatunut jo kahdesti.
+
+**Kolmas seuraus, ja se on rakenteen ainoa epäsymmetria:** lopetusikkuna oli ehdollinen ja
+avausikkuna ei. *Ei aina* koskee vain jälkimmäistä. Päivän varma peliaika oli siis puoli tuntia
+ja toinen puolikas oli sen varassa ehtikö tai jaksoiko porukka kokoontua uudelleen. Se antaa
+kohdan 15 kaarelle uuden luennan: jos loppupeli saattoi jäädä kokonaan väliin, päivän
+järjestyksen loppupää ei ollut vakio vaan paras tapaus.
+
+**Neljäs seuraus, ja se sitoo keskiosan aiempaan vastaukseen.** Kohta 15 kirjasi erästä 23
+vastauksen *riippui ryhmästä, ruuanlaiton lomassa oli aikaa pelata enemmän*, eikä siinä ollut
+sijaintia päivässä. Nyt se on: kolmen tunnin keskiosa on juuri se aika jolloin ryhmä teki omia
+juttujaan, ja ruuanlaittoryhmällä oli sen sisällä peliaikaa jota muilla ei ollut. Viisi peliä
+jotka eivät saaneet paikkaa kaaresta, sijoittuvat siis keskiosaan eivätkä ikkunoihin, ja niiden
+pelaaminen oli ryhmäkohtainen etu eikä yhteinen osa päivää.
+
+**Tuotteeseen osuva rivi, ja se on kirjoittajan havainto.** Puoli tuntia ja vaihteleva
+osallistujamäärä ovat molemmat rajoitteita jotka sovellus poistaa: siellä peli kestää niin
+kauan kuin kestää eikä kukaan lähde kesken. Se on sama muoto kuin kohdan 72 oppimiskustannus,
+eli pöydän rajoite jota ei tarvitse siirtää mukana. Onko rajoitteen poistaminen aina hyvä, ei
+ole tässä kysytty.
+
+**Avoin:** kumpaan ikkunaan Moska ja Paskahousu sijoittuivat, kun kaari kohdassa 15 on
+kolmipaikkainen mutta ikkunoita on kaksi. Ja erikseen: mitä lopetusikkunan poisjääminen
+tarkoitti pelin kannalta, eli jäikö jokin kesken vai eikö sitä aloitettu.
 
 ---
 
