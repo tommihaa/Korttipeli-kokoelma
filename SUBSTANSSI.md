@@ -3334,6 +3334,65 @@ koodista tässä.
 perustelu kertoo mihin hän on päätynyt, ei sitä että se olisi oikein. Kaksi riippumatonta
 päätymistä samaan on vihje eikä todiste.
 
+## 84. Botti on rakennettava eikä vastustaja, ja itsepeluu on jo olemassa toiseen tarkoitukseen
+
+Tommi 21.8.2026 (erä 64), kysyttäessä onko hän pelannut Mestari-botteja vastaan siinä määrin
+että olisi oppinut niiltä, vai onko botti ensisijaisesti rakennettava asia:
+
+> *botti ei ole vastustaja vaan rakennettava asia, painotus on muuttunut:*
+> *alussa tärkeintä oli että botti pelaa sääntöjen mukaan,*
+> *sitten että botti pelaa paremmin,*
+> *viimeisintä yritys luoda kolmitasoiset portaat boteille*
+>
+> *uutta voisi olla bottien peluuttaminen toisiaan vastaan, ehkä ne mullistaisivat tietyt
+> liikkeet mitä ihmiset ei ole ajatelleet kuten monissa lautapeleissä on käynyt*
+
+**Kohdan 83 päätelmä jää voimaan, ja se on nyt todennettu eikä oletettu.** Kysymys esitettiin
+juuri sen kaatamiseksi: jos Tommi olisi oppinut Mestarilta, yhtymä ei olisi ollut riippumaton.
+Vastaus sulkee sen pois. Botin tasoporras ja Tommin oma päätelmä päätyivät siis samaan
+strategiaan toisistaan tietämättä.
+
+**Kolmivaiheinen kaari on uutta tietoa, ja se kuvaa projektia eikä pöytää.** Painotus on siirtynyt
+**laillisuudesta laatuun ja laadusta portaaseen**: ensin että botti pelaa sääntöjen mukaan, sitten
+että se pelaa paremmin, sitten että se pelaa kolmella eri tasolla. Kolmas vaihe on eri laji kuin
+kaksi ensimmäistä, koska sen tavoite ei ole vahvempi botti vaan **säädettävä** botti. Se on sama
+suunta kuin kohdan 76 neljän pelaajan katto ja kohdan 79 sääntövirheen esto: sovellus optimoi
+oppimiskäyttöä eikä pelin vahvuutta.
+
+**Ehdotettu uusi asia on olemassa, ja se on tarkistettava ennen kuin siitä puhutaan uutena.**
+Todennettu `docs/BOTBENCH.md`:stä 21.8.2026: bottien peluuttaminen toisiaan vastaan on
+kokoelmassa tehty **kahdesti eri muodossa**.
+
+| Muoto | Milloin | Mitä tekee |
+|---|---|---|
+| Katselutila | 28.5.2026 alkaen | ihminen katsoo bottien peliä avoimin kortein, bongaa eriskummallisuuksia |
+| Botbench | julkaistu 18.7.2026 | ajaa taso vastaan taso, mittaa voimaeron siemennetysti |
+
+**Tommin idea ei silti ole kumpikaan näistä, ja ero on tarkka.** Botbench mittaa **voimaa** ja
+katselutila etsii **virheitä**; `BOTBENCH.md` sanoo tämän itse (*mittari näkee voimaeron mutta ei
+outoa siirtoa joka toistuu ilman että se näkyy voittoprosentissa*). Ehdotus etsii kolmatta:
+**bottien keksintöjä**, eli siirtoja jotka ovat hyviä mutta joita ihminen ei ole ajatellut. Sama
+havaintokanava, päinvastainen kiinnostuksen suunta. Katselutilassa outo siirto on korjattava
+vika; tässä se olisi mahdollinen löytö.
+
+**Seuraus, ja se on kirjoittajan havainto:** ero ei ole työkalussa vaan siinä mitä havainnolle
+tehdään. Kumpikin olemassa oleva muoto tuottaa jo raaka-aineen (toistuva outo siirto), ja
+puuttuva osa on menetelmä erottaa vika keksinnöstä. Se erottelu vaatii sen arvioimista onko
+siirto hyvä, eikä kumpikaan nykyinen muoto tee sitä: Botbench näkee vain lopputuloksen ja
+katselutila vain ihmisen silmän. Tämä on tunnistus eikä suunnitelma, eikä siitä avata työtä
+tässä.
+
+**Rajaus, ja se on tämän kohdan tärkein varaus.** Lautapeliverrokki (kone löytää siirtoja joita
+ihminen ei ole ajatellut) syntyi järjestelmistä jotka oppivat pelaamalla itseään vastaan
+miljoonia kertoja. Jakon botit eivät opi: ne ovat käsin kirjoitettuja sääntöportaita, joten ne
+eivät voi tuottaa siirtoa jota niihin ei ole kirjoitettu. **Nykyisillä boteilla ehdotus ei voi
+toteutua**, ja se on tarkistettava havainto eikä mielipide. Tämä ei kaada ideaa vaan nimeää mitä
+se edellyttäisi.
+
+**Avoin:** onko kolmitasoisen portaan tavoite saavutettu vai kesken. Tommi sanoo *yritys luoda*,
+ja `MOSKA.md` ja `MAIJA.md` sisältävät valmiit kolmiportaiset taulukot, joten sanamuoto ja
+kanoni voivat kertoa eri asiaa tai koskea eri pelejä.
+
 ---
 
 ---
