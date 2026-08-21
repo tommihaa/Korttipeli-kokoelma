@@ -43,7 +43,7 @@ export const hu = {
       playersTitle: 'Játékosok 👥',
       playersIntro: 'Az ellenfeleket a kiválasztott csoportból sorsoljuk.',
       groups: {
-        porukka: '🃏 A játékos banda',
+        porukka: '🃏 A helyiek',
         jumalat: '⚡ A szerencse istenei',
         puolue:  '🗳 Emberek pártja',
         kansa:   '🧑‍🤝‍🧑 A nép',

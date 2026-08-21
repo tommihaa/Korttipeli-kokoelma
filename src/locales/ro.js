@@ -42,7 +42,7 @@ export const ro = {
       playersTitle: 'Jucători 👥',
       playersIntro: 'Adversarii sunt trași la sorți din grupul ales.',
       groups: {
-        porukka: '🃏 Gașca de joc',
+        porukka: '🃏 Localnicii',
         jumalat: '⚡ Zeii norocului',
         puolue:  '🗳 Partidul oamenilor',
         kansa:   '🧑‍🤝‍🧑 Poporul',

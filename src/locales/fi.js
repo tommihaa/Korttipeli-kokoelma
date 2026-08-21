@@ -68,7 +68,7 @@ export const fi = {
       playersTitle: 'Pelaajat 👥',
       playersIntro: 'Vastustajat arvotaan valitusta ryhmästä.',
       groups: {
-        porukka: '🃏 Peliporukka',
+        porukka: '🃏 Paikalliset',
         jumalat: '⚡ Onnen jumalat',
         puolue:  '🗳 Ihmisten puolue',
         kansa:   '🧑‍🤝‍🧑 Kansa',

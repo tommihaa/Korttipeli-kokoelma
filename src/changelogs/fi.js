@@ -9,6 +9,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '22.8.2026',
+    items: [
+      'Vastustajien ensimmäinen nimiryhmä on nyt nimeltään Paikalliset. Nimet ryhmän sisällä ovat samat kuin ennen ja valintasi säilyy. Nimi vaihtui toista kertaa lyhyessä ajassa, koska Paikalliset kuvaa ryhmää paremmin ja kääntyy luontevasti jokaiselle kielelle.',
+    ],
+  },
+  {
     date: '21.8.2026',
     items: [
       'Vastustajien nimiryhmistä ensimmäinen on nyt nimeltään Peliporukka. Ryhmän sisällä olevat nimet ovat samat kuin ennen, ja jos sinulla oli tämä ryhmä valittuna, valinta säilyy. Vaihdoimme nimen siksi, että ryhmän nimet ovat oikeiden ihmisten etunimiä, ja ryhmän vanha nimi kertoi heistä enemmän kuin heiltä on kysytty.',

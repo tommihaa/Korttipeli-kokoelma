@@ -44,7 +44,7 @@ export const is = {
       playersTitle: 'Leikmenn 👥',
       playersIntro: 'Andstæðingar eru dregnir af handahófi úr völdum hópi.',
       groups: {
-        porukka: '🃏 Spilahópurinn',
+        porukka: '🃏 Heimafólkið',
         jumalat: '⚡ Guðir lánsins',
         puolue:  '🗳 Flokkur fólksins',
         kansa:   '🧑‍🤝‍🧑 Þjóðin',

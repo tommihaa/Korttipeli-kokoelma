@@ -42,7 +42,7 @@ export const la = {
       playersTitle: 'Lusores 👥',
       playersIntro: 'Adversarii e grege electo sorte leguntur.',
       groups: {
-        porukka: '🃏 Sodales lusorii',
+        porukka: '🃏 Incolae',
         jumalat: '⚡ Dii fortunae',
         puolue:  '🗳 Factio hominum',
         kansa:   '🧑‍🤝‍🧑 Populus',

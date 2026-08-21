@@ -51,7 +51,7 @@ export const cs = {
       playersTitle: 'Hráči 👥',
       playersIntro: 'Soupeři se losují z vybrané skupiny.',
       groups: {
-        porukka: '🃏 Herní parta',
+        porukka: '🃏 Místní',
         jumalat: '⚡ Bohové štěstí',
         puolue:  '🗳 Strana lidí',
         kansa:   '🧑‍🤝‍🧑 Lid',

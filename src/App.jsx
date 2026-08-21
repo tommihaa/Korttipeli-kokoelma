@@ -40,7 +40,7 @@ const ITU_URL = 'https://tommi-itu.vercel.app';
 const SUPERJATSI_URL = 'https://tommi-superjatsi.vercel.app';
 // Ryhmäkohtaiset kuvaukset — tietoisesti EI käännetä, käyttäjän oma ääni, näytetään aina englanniksi.
 const GROUP_BLURB = {
-  porukka: 'I learned many of these games with this gang.',
+  porukka: 'I learned many of these games with the locals.',
   puolue:  'Ihmisten Puolue is strictly Finnish humor — until you understand it.',
   jumalat: 'I love backgammon, and to the gods of luck we pray.',
   kansa:   'Strictly Finnish archetypes.',

@@ -53,7 +53,7 @@ export const uk = {
       playersTitle: 'Гравці 👥',
       playersIntro: 'Суперників обирають випадково з обраної групи.',
       groups: {
-        porukka: '🃏 Ігрова компанія',
+        porukka: '🃏 Місцеві',
         jumalat: '⚡ Боги фортуни',
         puolue:  '🗳 Народна партія',
         kansa:   '🧑‍🤝‍🧑 Народ',

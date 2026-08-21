@@ -53,7 +53,7 @@ export const ru = {
       playersTitle: 'Игроки 👥',
       playersIntro: 'Соперники выбираются случайно из выбранной группы.',
       groups: {
-        porukka: '🃏 Игровая компания',
+        porukka: '🃏 Местные',
         jumalat: '⚡ Боги удачи',
         puolue:  '🗳 Народная партия',
         kansa:   '🧑‍🤝‍🧑 Народ',

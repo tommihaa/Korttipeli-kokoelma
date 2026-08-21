@@ -44,7 +44,7 @@ export const pt = {
       playersTitle: 'Jogadores 👥',
       playersIntro: 'Os adversários são sorteados aleatoriamente do grupo escolhido.',
       groups: {
-        porukka: '🃏 A malta do jogo',
+        porukka: '🃏 Os locais',
         jumalat: '⚡ Deuses da fortuna',
         puolue:  '🗳 Partido do povo',
         kansa:   '🧑‍🤝‍🧑 O povo',

@@ -44,7 +44,7 @@ export const en = {
       playersTitle: 'Players 👥',
       playersIntro: 'Opponents are drawn at random from the chosen group.',
       groups: {
-        porukka: '🃏 The card gang',
+        porukka: '🃏 The locals',
         jumalat: '⚡ Gods of fortune',
         puolue:  '🗳 People\'s party',
         kansa:   '🧑‍🤝‍🧑 The people',
