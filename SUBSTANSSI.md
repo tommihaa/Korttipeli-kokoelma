@@ -555,9 +555,13 @@ ja mikä oli se jolla pelipäivä loppui:
 
 > *paskahousu, moska*
 
-**Luenta, ja se on kirjoittajan eikä Tommin:** kysymys nimesi kaksi paikkaa ja vastaus antaa
+~~**Luenta, ja se on kirjoittajan eikä Tommin:** kysymys nimesi kaksi paikkaa ja vastaus antaa
 kaksi peliä, joten luen ne samassa järjestyksessä eli Paskahousu keskelle ja Moska loppuun.
-Järjestysvastaavuutta ei ole vahvistettu, ja se on tämän kohdan ainoa epävarma osa.
+Järjestysvastaavuutta ei ole vahvistettu, ja se on tämän kohdan ainoa epävarma osa.~~
+
+*Luenta kaatui erässä 57, ks. kohta 74: molemmat pelattiin lopetusikkunassa, eikä keskipaikkaa
+ollut. Virhe ei ollut järjestyksessä vaan siinä että kysymykseni oletti kolme paikkaa, ja
+vastaus jaettiin niihin koska niitä tarjottiin. Kumottu luenta jää näkyviin.*
 
 **Seuraus:** kohdan 14 aloituspeli ei ollut yksittäinen tapa vaan osa kaarta, jossa on vähintään
 kolme paikkaa. Kaari kulkee lisäksi oppimispaikkojen yli eikä niitä pitkin: Ristiseiska ja
@@ -2715,6 +2719,10 @@ porukka oli lämmennyt) vastaus on Moska. Joko kohdan 15 järjestysluenta on vä
 ero on kysyttävä eikä pääteltävä. Erän 56 vastaus (kohta 73) tekee jälkimmäisestä
 todennäköisemmän, muttei ratkaise sitä.
 
+*Ratkesi erässä 57, ks. kohta 74: jälkimmäinen piti. Keskipaikkaa ei ollut lainkaan, joten
+kohdan 15 luenta kaatui eikä tässä ollut ristiriitaa. Molemmat vastaukset osoittavat samaan
+lopetusikkunaan, ja Moska on siinä se johon *lämmennyt* viittaa.*
+
 **Vastauksen kolmas osa selittää ensimmäisen, ja se on tämän kohdan varsinainen löydös.**
 Moska ei ole myöhäinen peli siksi että se olisi kanonissa vaativa, vaan siksi että **joillekin
 se oli haastava oppia**. Ne ovat eri asioita: vaikeus on pelin ominaisuus ja koskee sitä kuinka
@@ -2780,11 +2788,18 @@ kolmen ryhmän päivän välillä on kolminkertainen porukka samassa peli-ikkuna
 kuinka moni oli paikalla* on siis rakenteellinen eikä sattumanvarainen, ja se on tiedossa
 etukäteen sinä aamuna.
 
-**Kysytty valinta jäi silti tekemättä, eikä sitä täydennetä päättelemällä.** Rakenne tekee
+**Kysytty valinta jäi silti tekemättä, eikä sitä täydennetä päättelemällä.** ~~Rakenne tekee
 pelaajamäärän ylärajasta uskottavamman kuin osaajien alarajasta, koska kanoni antaa Moskalle
-2-4 pelaajaa ja kolmen ryhmän avausikkuna ylittää sen selvästi; kohta 50 sanoo lisäksi että
+2-4 pelaajaa ja kolmen ryhmän avausikkuna ylittää sen selvästi;~~ kohta 50 sanoo lisäksi että
 Koputus oli ison porukan peli. Tämä on kuitenkin kirjoittajan päätelmä eikä vastaus, ja kohdan
-72 avoin pysyy auki siihen asti kunnes Tommi valitsee. Sama vikamuoto (tosi lähtökohta, liian
+72 avoin pysyy auki siihen asti kunnes Tommi valitsee.
+
+*Yliviivattu perustelu kaatui 21.8.2026 tarkistuksessa, ja se jää näkyviin. `CLAUDE.md`:n
+pelitaulukko antaa **kaikille yhdeksälle** pelille rajan 2-4, paitsi Ristiseiskalle 3-4. Moskan
+raja ei siis erota sitä mistään muusta pelistä eikä voi olla peruste sille miksi juuri Moska
+riippui paikallaolijoiden määrästä. Luku oli oikein ja päätelmä väärä, koska en tarkistanut
+onko sama luku muillakin. Sama vikamuoto kolmatta kertaa, ja tällä kertaa lähtökohta ei ollut
+edes erotteleva.* Sama vikamuoto (tosi lähtökohta, liian
 pitkä johtopäätös) on tässä dokumentissa kaatunut jo kahdesti.
 
 **Kolmas seuraus, ja se on rakenteen ainoa epäsymmetria:** lopetusikkuna oli ehdollinen ja
@@ -2800,6 +2815,10 @@ juttujaan, ja ruuanlaittoryhmällä oli sen sisällä peliaikaa jota muilla ei o
 jotka eivät saaneet paikkaa kaaresta, sijoittuvat siis keskiosaan eivätkä ikkunoihin, ja niiden
 pelaaminen oli ryhmäkohtainen etu eikä yhteinen osa päivää.
 
+*Tarkennus erästä 57 (ks. kohta 74): keskiosassa pelattiin mitä vaan pelejä, myös ulkona, joten
+se ei ollut korttipelipaikka vaan vapaa aika jossa korttipeli oli yksi vaihtoehto muiden
+joukossa. Sijoitus pitää, mutta keskiosa on löyhempi kuin tämä kappale antaa ymmärtää.*
+
 **Tuotteeseen osuva rivi, ja se on kirjoittajan havainto.** Puoli tuntia ja vaihteleva
 osallistujamäärä ovat molemmat rajoitteita jotka sovellus poistaa: siellä peli kestää niin
 kauan kuin kestää eikä kukaan lähde kesken. Se on sama muoto kuin kohdan 72 oppimiskustannus,
@@ -2809,6 +2828,58 @@ ole tässä kysytty.
 **Avoin:** kumpaan ikkunaan Moska ja Paskahousu sijoittuivat, kun kaari kohdassa 15 on
 kolmipaikkainen mutta ikkunoita on kaksi. Ja erikseen: mitä lopetusikkunan poisjääminen
 tarkoitti pelin kannalta, eli jäikö jokin kesken vai eikö sitä aloitettu.
+
+## 74. Paskahousu ja Moska pelattiin molemmat lopetusikkunassa, ja keskiosa ei ollut korttipelipaikka
+
+Tommi 21.8.2026 (erä 57), kysyttäessä pelattiinko Paskahousu ja Moska molemmat samassa
+lopetusikkunassa vai oliko toinen keskiosan peli:
+
+> *molemmat lopetusikkunassa, keskiosassa pelattiin ihan mitä vaan pelejä, myös ulkona*
+
+**Kohdan 15 kaari romahtaa kolmesta paikasta kahteen ikkunaan, ja kaksi avointa sulkeutuu
+kerralla.** Kohdan 15 järjestysluenta (Paskahousu keskelle, Moska loppuun) kaatuu, koska
+keskipaikkaa ei ollut. Ja kohdan 72 ristiriita sulkeutuu samalla vastauksella: *lämmennyt* ja
+*keskellä* eivät olleet sama paikka, joten Tommin kaksi lausetta osoittivat koko ajan samaan
+lopetusikkunaan eivätkä olleet keskenään ristiriidassa. Molemmat kohdat oli merkitty
+epävarmoiksi omassa tekstissään, ja epävarmuus osui oikeaan.
+
+**Virheen muoto kannattaa nimetä, koska se on eri kuin dokumentin aiemmat.** Kohdan 15 kysymys
+oletti kolmipaikkaisen kaaren (alku, lämmennyt, loppu) ja tarjosi kaksi paikkaa täytettäväksi.
+Vastaus *paskahousu, moska* jakautui niihin, koska niitä tarjottiin. **Väärä premissi ei
+tuottanut väärää vastausta vaan väärän muotoisen vastauksen**, ja se pysyi väärän muotoisena
+kolme päivää siksi että se näytti kysymyksen kanssa yhteensopivalta. Aiemmat kaatuneet päätelmät
+tässä dokumentissa ovat olleet liian pitkiä johtopäätöksiä tosista lähtökohdista; tämä on eri
+laji, ja se on kysymyksen eikä vastauksen vika.
+
+**Ensimmäinen seuraus, ja se on mitattava:** kaksi peliä mahtui puoleen tuntiin. Lopetusikkuna
+oli noin 30 minuuttia (kohta 73) ja siinä pelattiin sekä Paskahousu että Moska, joten
+kummankin todellinen kesto pöydässä oli luokkaa neljännestunti. Kanoni pitää Moskaa vaativana ja
+Paskahousua keskitasona, eikä kumpikaan ollut pitkä. **Vaativuus ei siis tarkoittanut kestoa.**
+
+**Toinen seuraus:** kohdan 72 oppimiskustannus saa paikkansa. Jos Moska pelattiin päivän
+viimeisessä puolessa tunnissa, sitä ei opetettu siinä hetkessä, vaan opettaminen tapahtui
+jossain muualla tai aiemmin. Peli jonka jotkut kokivat haastavaksi oppia, ei ole se joka
+otetaan esiin kun aikaa on puoli tuntia ja päivä on päättymässä, ellei porukka jo osaa sitä.
+Se tekee kohdan 72 avoimesta terävämmän eikä ratkaise sitä.
+
+**Kolmas seuraus, ja se muuttaa keskiosan luonnetta:** keskiosassa pelattiin *ihan mitä vaan
+pelejä, myös ulkona*. Se ei siis ollut korttipeliaikaa vaan vapaata aikaa jossa korttipeli oli
+yksi vaihtoehto muiden joukossa, ja **ulkopelit ovat ensimmäinen maininta tässä dokumentissa
+pelaamisesta joka ei ole korttipeli**. Kohdan 73 sijoitus (viisi muuta peliä keskiosaan) pitää
+yhä, mutta keskiosa on löyhempi kuin siellä kirjattiin: se ei ollut näiden pelien paikka vaan
+paikka jossa niitä saattoi pelata.
+
+**Neljäs seuraus, ja se on kokoelman kannalta laajin.** Päivän rakenne asettaa yhdeksän peliä
+kahteen eri asemaan. Kolme peliä (Ristiseiska, Paskahousu, Moska) olivat **yhteisiä**: ne
+pelattiin silloin kun kaikki olivat läsnä, ja niiden paikka päivässä oli vakiintunut. Loput
+sijoittuivat keskiosaan, jossa ne kilpailivat ulkopelien ja ryhmän muiden tekemisten kanssa.
+Kokoelman yhdeksän peliä eivät siis olleet pöydässä samanarvoisia, ja ero ei ole vaikeus tai
+mieltymys vaan **se oliko peli koko porukan vai ryhmän oma**. Tämä on kirjoittajan havainto ja
+se saa kaatua, mutta se on tarkistettavissa kysymällä.
+
+**Avoin:** kumpi Paskahousu ja Moska oli lopetusikkunassa ensin, jos järjestys oli vakiintunut.
+Alkuperäinen vastaus erässä 6 antoi ne järjestyksessä *paskahousu, moska*, mutta kohdan 15
+kokemuksen jälkeen sitä ei lueta järjestykseksi ilman kysymistä.
 
 ---
 
