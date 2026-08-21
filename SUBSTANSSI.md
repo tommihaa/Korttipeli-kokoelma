@@ -3175,9 +3175,9 @@ sääntövirheen esto on samaa lajia: opetteleva pelaaja ei joudu selvittämää
 pieleen. Onko virheen estäminen aina parempi kuin sen paljastaminen, ei ole tässä kysytty, eikä
 sitä päätellä.
 
-**Avoin:** oliko pöydän virheenkorjaus muidenkin pelien ominaisuus vai erityisesti
-Ristiseiskan~~, ja korjattiinko virhe peruuttamalla siirto vai jatkettiinko siitä eteenpäin~~.
-*(Jälkimmäinen vastattiin erässä 62, ks. kohta 80.)*
+~~**Avoin:** oliko pöydän virheenkorjaus muidenkin pelien ominaisuus vai erityisesti
+Ristiseiskan, ja korjattiinko virhe peruuttamalla siirto vai jatkettiinko siitä eteenpäin.~~
+*(Jälkimmäinen vastattiin erässä 62, ks. kohta 80; edellinen erässä 67, ks. kohta 87.)*
 
 ## 80. Virhettä ei peruttu vaan todettiin, ja syy on monen pelaajan pelin hinta
 
@@ -3474,6 +3474,40 @@ dokumentti on kuvannut.
 **Rajaus, jotta *ei akuutti* ei luettaisi vähättelyksi.** Tommi nimeää sen odottavaksi eikä
 hylätyksi, joten se ei ole hautakivi. Eikä siitä avata työjonon kohtaa tässä, koska
 substanssihaastattelun tehtävä on kirjata mitä lähde tietää, ei jäsentää projektin työtä.
+
+## 87. Kaikki kolme ikkunapeliä ovat itseään korjaavia, ja syy on sama: kortit näkyvät
+
+Tommi 21.8.2026 (erä 67), kysyttäessä huomattiinko Paskahousussa virhe yhtä nopeasti kuin
+Ristiseiskassa:
+
+> *paskahousussa virhe huomattiin heti, koska kortit ovat pöydällä näkyvissä*
+
+**Mekanismiperhe on nyt täysi kaikkien kolmen ikkunapelin osalta.** Ristiseiska paljastaa
+laiminlyönnin (kohta 79), Moska opettaa vaihtoehdot avoimuudella (kohta 78) ja Paskahousussa
+virhe huomataan heti. **Tommi nimeää lisäksi yhteisen syyn kolmelle eri havainnolle**: kortit
+ovat pöydällä näkyvissä. Kolme erikseen kysyttyä asiaa palautuu siis yhteen ominaisuuteen, eikä
+sitä ole tässä dokumentissa aiemmin sanottu ääneen.
+
+**Seuraus kohtiin 74 ja 77: mekanismi selittää muistipelit muttei kaikkea, ja tämä on
+sanottava.** Avoimuus erottaa kolme ikkunapeliä molemmista muistipeleistä (Koputus, Kultakala),
+joissa tieto on piilossa ja virhe jää siksi näkymättömäksi. Se ei kuitenkaan erota niitä
+**Maijasta ja Läpsystä**, jotka pelataan yhtä lailla näkyville korteille mutta jotka eivät olleet
+päivän rakenteessa (kohdat 74, 75). **Avoimuus on siis välttämätön muttei riittävä ehto
+ikkunapaikalle.** Kohtien 74 ja 77 asemajako ei siis kaadu, mutta se ei myöskään selity tällä
+loppuun asti.
+
+**Terävin jäljelle jäävä kysymys on Maija, ja se kannattaa nimetä.** Maija ja Moska ovat
+kanonissa lähisukua: molemmat kaatopelejä, molemmissa valtti pakan pohjakortista, molemmissa
+loppupeli pakan tyhjennyttyä (kohta 83), ja molemmat pelataan avoimesti pöytään. Silti Moska oli
+päivän rakenteessa ja Maijaa ei pelattu joka päivä (kohta 75). Mikään tähän mennessä nimetty
+tekijä ei erota niitä. Tämä on kirjoittajan havainto rakenteesta eikä Tommin lause.
+
+**Seuraus sovellukseen, ja se on aiempien jatke.** Sovelluksessa jokainen peli on väistämättä
+avoin siinä mielessä että sääntöjenvastainen siirto estetään koneellisesti (kohta 79). Pöydän
+avoimuus oli pelin ominaisuus ja sovelluksen avoimuus on alustan ominaisuus, joten se koskee myös
+muistipelejä joissa pöydässä sitä ei ollut. **Koputus ja Kultakala saavat sovelluksessa sen
+virheiden esiintulon jota niillä ei pöydässä ollut**, ja se on sama havainto kuin kohdassa 77
+(Koputus hyötyy sovellusmuodosta eniten) toisesta suunnasta.
 
 ---
 
