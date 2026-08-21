@@ -98,7 +98,10 @@ näitä pelien oppimisia rajoittaa, kun ei ole aikaa, opettajaa, virtaa tai pela
 **Seuraus:** enemmistö kokoelmasta on opittu yhdessä paikassa päivittäisellä toistolla ilman
 pakkoa *(tarkennettu erässä 58, ks. kohta 75: pelaaminen oli päivittäistä, mutta jokainen peli
 ei ollut. Kultakalaa, Koputusta ja Maijaa ei pelattu joka päivä, joten toisto oli näiden
-kolmen kohdalla harvempaa kuin tämä lause antaa ymmärtää)*, ja sovelluksen lupaus on sama pari
+kolmen kohdalla harvempaa kuin tämä lause antaa ymmärtää. Tarkentui toisen kerran erässä 72,
+ks. kohta 92: Tommi itse oli paikalla 2-3 päivää viikossa, joten päivittäisyys voi kuvata
+talon rytmiä eikä hänen omaansa; viite lisätty kolmannessa grillauksessa 21.8.2026)*, ja
+sovelluksen lupaus on sama pari
 toisessa muodossa (*sääntöjä ei tarvitse opetella
 etukäteen, peli neuvoo pelatessa, kukaan ei kiirehdi sinua*). Tätä ei ole aiemmin sanottu
 missään ääneen, vaikka sekä pelivalikoima että opetustapa seuraavat siitä.
@@ -551,7 +554,11 @@ ollut sen jälkeen ajan tasalla.*
 jätetään näkyviin: avoin oli jo suljettu erässä 6, ja erässä 55 kysyttiin uudelleen jo
 vastattua. Ks. kohta 72 ensimmäinen kappale.*
 
-## 15. Pelipäivällä oli järjestys, ja sen kaksi muuta paikkaa ovat Paskahousu ja Moska
+## 15. Pelipäivän muut vakiopelit olivat Paskahousu ja Moska
+
+*(Otsikko sanoi kolmanteen grillaukseen 21.8.2026 asti että ne olivat pelipäivän kaksi muuta
+paikkaa, vaikka kolmipaikkainen kaari kaatui kohdassa 74: paikkoja oli kaksi ikkunaa eikä
+keskipaikkaa ollut. Korjattu kohdan 39 otsikkokäytännön mukaan.)*
 
 Tommi 20.8.2026, kysyttäessä mikä peli otettiin ristiseiskan jälkeen kun porukka oli lämmennyt
 ja mikä oli se jolla pelipäivä loppui:
@@ -566,14 +573,20 @@ Järjestysvastaavuutta ei ole vahvistettu, ja se on tämän kohdan ainoa epävar
 ollut. Virhe ei ollut järjestyksessä vaan siinä että kysymykseni oletti kolme paikkaa, ja
 vastaus jaettiin niihin koska niitä tarjottiin. Kumottu luenta jää näkyviin.*
 
-**Seuraus:** kohdan 14 aloituspeli ei ollut yksittäinen tapa vaan osa kaarta, jossa on vähintään
-kolme paikkaa. Kaari kulkee lisäksi oppimispaikkojen yli eikä niitä pitkin: Ristiseiska ja
+**Seuraus:** kohdan 14 aloituspeli ei ollut yksittäinen tapa vaan osa vakiintunutta rakennetta.
+~~Kaarella on vähintään kolme paikkaa.~~ *(Kaatui kohdassa 74: paikkoja oli kaksi ikkunaa eikä
+keskipaikkaa ollut; merkintä lisätty kolmannessa grillauksessa 21.8.2026.)* Rakenne kulkee
+lisäksi oppimispaikkojen yli eikä niitä pitkin: Ristiseiska ja
 Paskahousu ovat kohdan 1 mukaan lapsuudesta ja Moska Laiturilta, joten päivän järjestys ei
 noudata sitä mistä pelit on opittu.
 
-**Seuraus:** kolmesta pelistä kaksi on kanonissa vaikeudeltaan kevyempiä kuin Moska, joten
+~~**Seuraus:** kolmesta pelistä kaksi on kanonissa vaikeudeltaan kevyempiä kuin Moska, joten
 järjestys kulkee kevyemmästä raskaampaan. Tämä on kirjoittajan päätelmä kanonien
-vaikeusarvioista eikä Tommin sanoma, ja se saa kaatua ilman että vastaus kaatuu.
+vaikeusarvioista eikä Tommin sanoma, ja se saa kaatua ilman että vastaus kaatuu.~~
+*(Kaatui kohdissa 74 ja 75 ja jätetään näkyviin: keskipaikkaa ei ollut, eikä lopetusikkunan
+sisällä ollut vakiintunutta järjestystä, joten pelien välistä järjestystä kevyemmästä
+raskaampaan ei ollut olemassa. Ikkunatasolla suunta säilyy: avauspeli oli kanonissa helppo ja
+lopetusikkunan kaksi raskaampia. Merkintä lisätty kolmannessa grillauksessa 21.8.2026.)*
 
 ~~**Avoin:** viisi muuta peliä eivät saa tästä paikkaa, eikä vastaus kerro sijoittuivatko ne
 kaaren väliin vai olivatko ne eri kokoonpanojen pelejä.~~ *(Vastattu erässä 23, ks. alla.)*
@@ -1988,7 +2001,7 @@ tai enemmän.
 **Seuraus:** pöydän yläraja oli siis selvästi sovelluksen neljää suurempi, ja kahden pakan
 muoto koski juuri niitä kahta peliä jotka kohdan 15 mukaan olivat pelipäivän kaaren
 kiinteitä paikkoja (Ristiseiska alussa, Moska lopussa). Yhteiset puolituntiset pelattiin
-koko ryhmällä (kohta 24 erän kuvaus), joten kaaren pelien piti venyä koko porukkaan, ja
+koko ryhmällä (erän 24 kuvaus, ks. kohta 15), joten kaaren pelien piti venyä koko porukkaan, ja
 toinen pakka oli se venytys. Tämä on kirjoittajan päätelmä kohtien yhdistämisestä eikä
 Tommin lause.
 
@@ -2562,9 +2575,10 @@ sitä ei kirjata virheenä.
 
 **Vastauksen loppu on uusi mieltymystieto, ja se päivätään:** 20.8.2026 Läpsy on Tommille
 tylsä. Sanapari *tätä nykyä* tekee tästä ajallisen kerroksen eikä ristiriidan: kohta 21
-(suosikkien joukossa, suhteellisena) ja kohta 36 (ok osana turnausta ja isommassa
-porukassa) kuvaavat pelin ehdollista arvoa pöydässä, ja tämä kuvaa nykyhetken suhdetta
-peliin.
+(reaktiopelimäisin suhteessa muihin) ja kohta 36 (hyväksytty muttei suosikki, parempi
+pienessä porukassa) kuvaavat pelin ehdollista arvoa pöydässä, ja tämä kuvaa nykyhetken
+suhdetta peliin. *(Luonnehdinnat korjattu kolmannessa grillauksessa 21.8.2026: aiempi muoto
+siteerasi molemmista kohdista kumoutuneen luennan, suosikkijäsenyyden ja ison porukan.)*
 
 **Seuraus:** kohdan 34 havainto (mieltymys ei ohjaa valikoimaa) saa vahvimman
 testitapauksensa: peli joka on tekijälleen tylsä on silti kokoelmassa yhdeksän joukossa,
@@ -2674,7 +2688,13 @@ kun joku joutui passaamaan:
 
 > *antaja valitsi itse*
 
-**Kohdan 33 taulukon viimeinen tyhjä ruutu on täytetty.** Sovelluksen vakioasento on siis se
+~~**Kohdan 33 taulukon viimeinen tyhjä ruutu on täytetty.**~~ *(Ruutu oli jo täytetty, ja se
+huomattiin vasta kolmannessa grillauksessa 21.8.2026: kohta 37 sulki saman aukon erässä 13
+sanalla `kiinteä`, ja toinen grillaus lisäsi viitteen kohtaan 33 päivää ennen tätä erää. Erä 54
+kysyi siis uudelleen jo vastatun, eli sama vikamuoto kuin erässä 55 kohdassa 72. Kohta jää,
+koska uudelleenkysyntä muutti kirjoittajan luennan, sanan `kiinteä` lukemisen antajan
+valinnaksi, lähteen omaksi lauseeksi, ja alla olevat seuraukset ovat uusia.)*
+Sovelluksen vakioasento on siis se
 pöydässä nähty, ja arvonta on luettu vaihtoehto. Tämä pitää voimassa kohdan 33 seurauksen
 kauttaaltaan: jokainen asetus on pöytäperinteen ja luetun säännön pari, ja vaihtoehto on aina
 se jota Tommi ei ole pelannut, paitsi Kasinossa jossa kumpaakaan ei ole pelattu.
@@ -2833,9 +2853,13 @@ kauan kuin kestää eikä kukaan lähde kesken. Se on sama muoto kuin kohdan 72 
 eli pöydän rajoite jota ei tarvitse siirtää mukana. Onko rajoitteen poistaminen aina hyvä, ei
 ole tässä kysytty.
 
-**Avoin:** kumpaan ikkunaan Moska ja Paskahousu sijoittuivat, kun kaari kohdassa 15 on
-kolmipaikkainen mutta ikkunoita on kaksi. Ja erikseen: mitä lopetusikkunan poisjääminen
-tarkoitti pelin kannalta, eli jäikö jokin kesken vai eikö sitä aloitettu.
+~~**Avoin:** kumpaan ikkunaan Moska ja Paskahousu sijoittuivat, kun kaari kohdassa 15 on
+kolmipaikkainen mutta ikkunoita on kaksi.~~ *(Vastattu erässä 57, ks. kohta 74: molemmat
+lopetusikkunassa. Viite lisätty kolmannessa grillauksessa 21.8.2026.)* Ja erikseen avoimeksi
+jää: mitä lopetusikkunan poisjääminen tarkoitti pelin kannalta, eli jäikö jokin kesken vai
+eikö sitä aloitettu. Kohta 90 antaa mekanismin joka viittaa siihen ettei peliä aloitettu
+(ikkuna oli olemassa vain jos porukka kokoontui uudelleen), mutta sitä ei ole kysytty eikä
+täytetä päättelemällä.
 
 ## 74. Paskahousu ja Moska pelattiin molemmat lopetusikkunassa, ja keskiosa ei ollut korttipelipaikka
 
@@ -2885,9 +2909,11 @@ Kokoelman yhdeksän peliä eivät siis olleet pöydässä samanarvoisia, ja ero 
 mieltymys vaan **se oliko peli koko porukan vai ryhmän oma**. Tämä on kirjoittajan havainto ja
 se saa kaatua, mutta se on tarkistettavissa kysymällä.
 
-**Avoin:** kumpi Paskahousu ja Moska oli lopetusikkunassa ensin, jos järjestys oli vakiintunut.
+~~**Avoin:** kumpi Paskahousu ja Moska oli lopetusikkunassa ensin, jos järjestys oli vakiintunut.
 Alkuperäinen vastaus erässä 6 antoi ne järjestyksessä *paskahousu, moska*, mutta kohdan 15
-kokemuksen jälkeen sitä ei lueta järjestykseksi ilman kysymistä.
+kokemuksen jälkeen sitä ei lueta järjestykseksi ilman kysymistä.~~ *(Vastattu erässä 58, ks.
+kohta 75: vakiintunutta järjestystä ei ollut. Viite lisätty kolmannessa grillauksessa
+21.8.2026.)*
 
 ## 75. Lopetusikkunan järjestys ei ollut vakiintunut, ja kolmea Laiturin peliä ei pelattu joka päivä
 
@@ -3073,7 +3099,10 @@ sanonut niiden liittyvän toisiinsa.
 opettaminen ei vaadi ihmistä (peli neuvoo pelatessa, kohta 1) ja keskittymisvaatimus koskee
 enää yhtä ihmistä eikä koko pöytää, koska muut pelaajat ovat botteja. **Koputus on siis niistä
 yhdeksästä pelistä se joka hyötyy sovellusmuodosta eniten**, mitattuna sillä kuinka suuren
-pöytäesteen se poistaa. Tämä on kirjoittajan päätelmä ja se saa kaatua.
+pöytäesteen se poistaa. Tämä on kirjoittajan päätelmä ja se saa kaatua. *(Kapeni kohdassa 89:
+eri pelit hyötyvät eri esteen poistumisesta, Läpsyn pöytäesteen sovellus poistaa
+täydellisimmin ja Koputus hyötyy eniten opettamisen poistumisesta. Viite lisätty kolmannessa
+grillauksessa 21.8.2026.)*
 
 ~~**Avoin:** miksi Moska kesti oppimiskustannuksensa ja pysyi päivän rakenteessa, kun Koputus ei.~~
 *(Vastattu erässä 61, ks. kohta 78.)* Ja erikseen: onko muistipeleistä pitäminen syy siihen että
@@ -3740,7 +3769,7 @@ ainoa jonka pöytä kasvoi kanonin ulkopuolelle:
 **Kohdan 76 löydös ei ollutkaan poikkeus vaan sääntö, ja se on tämän kohdan tärkein rivi.**
 Koputuksen 4-6 pelaajaa luettiin siellä ensimmäiseksi tapaukseksi jossa pöytäkäytäntö ei mahdu
 sovellukseen. Tapauksia onkin kuusi seitsemästä. Laiturilla pelatuista peleistä (viisi Laiturin
-omaa ja kaksi lapsuudesta, kohta 22) **vain Läpsy pysyi kanonin rajoissa**.
+omaa ja kaksi lapsuudesta, erä 22, ks. kohta 1) **vain Läpsy pysyi kanonin rajoissa**.
 
 | Peli | Kanoni | Laiturin pöytä |
 |---|---|---|
@@ -3870,3 +3899,78 @@ laskuvirheen sisällöstä, tämä löysi ylläpidon virheitä dokumentin kasvet
 grillauksen hetkellä numeroituja kohtia oli 32, nyt 69). Vanhentunut avoin-merkintä on
 tämän dokumentin oma muoto vanhentuneesta tilaväitteestä, ja se syntyy kun vastaus
 kirjataan toiseen kohtaan kuin mihin kysymys jäi.
+
+---
+
+## Kolmas grillaus 21.8.2026: kahdeksan löydöstä, ja kohtien 72-94 sato jäi merkitsemättä taakseen
+
+Dokumentti luettiin kokonaan läpi erän 74 jälkeen ristiriitojen etsimiseksi, eikä kohtia
+lisätty kysymällä. Edellisestä grillauksesta oli 21 erää, ja niissä syntyivät kohdat 70-94.
+Löydösten yhteinen muoto on juuri se: **loppupään kohdat kaatoivat ja tarkensivat alkupään
+kohtia nopeammin kuin viitteet ehtivät perässä.** Kaikki kahdeksan ovat kirjoittajan
+kirjanpitoa, eivät Tommin vastausten ristiriitoja.
+
+**1. Otsikko ja kaksi seurausta väittivät kumoutunutta (kohta 15).** Otsikko sanoi pelipäivällä
+olevan kaksi muuta paikkaa ja seuraus kaarella vähintään kolme paikkaa, vaikka kohta 74 kaatoi
+keskipaikan kokonaan. Myös järjestys kevyemmästä raskaampaan kaatui, koska kohta 75 kertoo
+ettei lopetusikkunan sisällä ollut järjestystä. Otsikko korjattiin kohdan 39 käytännön mukaan
+ja molemmat seuraukset yliviivattiin merkinnöin. Tämä on sama muoto kuin toisen grillauksen
+löydös 2, ja se syntyi samalla tavalla: kohtaan lisättiin kumoutumisviite (erä 57) mutta
+otsikkoon ja seurauksiin ei koskettu.
+
+**2. Kaksi kohtaa sulki saman aukon toisistaan tietämättä (kohdat 37 ja 71), eli
+uudelleenkysyntöjä oli kaksi eikä yksi.** Kohta 37 sulki kohdan 33 pantin arvonnan erässä 13,
+ja toinen grillaus lisäsi viitteen. Erä 54 kysyi silti saman uudelleen, ja kohta 71 väitti
+täyttävänsä taulukon viimeisen tyhjän ruudun. Session 21.8. loppumerkintä laski yhden
+uudelleenkysynnän (erä 55); niitä oli siis kaksi, ja tämä toinen jäi huomaamatta koska kohta 71
+ei maininnut kohtaa 37 lainkaan. Kohta 71 jää, koska uudelleenkysyntä muutti kirjoittajan
+luennan lähteen omaksi lauseeksi ja sen seuraukset ovat uusia; merkintä lisättiin kohtaan.
+
+**3. Kaksi vanhentunutta avoin-merkintää (kohdat 73 ja 74).** Kohdan 73 ikkunakysymys vastattiin
+kohdassa 74 ja kohdan 74 järjestyskysymys kohdassa 75, kumpikin heti seuraavassa erässä, eikä
+kumpaankaan tullut viitettä. Sama vikamuoto joka toisessa grillauksessa nimettiin (löydös 3) ja
+jonka vuoksi erä 55 kysyi jo vastattua. Molemmat saivat ratkaisuviitteen. Kohdan 73 avoimen
+jälkipuoli (mitä lopetusikkunan poisjääminen tarkoitti) jää aidosti auki, ja siihen kirjattiin
+että kohta 90 antaa mekanismin muttei vastausta.
+
+**4. Kohdan 1 tarkennusviite kattoi vain toisen kahdesta tarkennuksesta.** Kohta 92 tarkensi
+*päivittäin*-luentaa toisen kerran (Tommi itse oli paikalla 2-3 päivää viikossa), mutta kohdan 1
+viite osoitti vain kohtaan 75. Kohta 1 on dokumentin noudetuin perusta, joten sen on
+kannettava molemmat tarkennukset itse. Viite lisättiin.
+
+**5. Kohta 65 luonnehti kahta kohtaa niiden kumoutuneilla muodoilla.** Kohta 21 esitettiin
+muodossa *suosikkien joukossa* (luenta kumoutui kohdassa 36) ja kohta 36 muodossa *ok osana
+turnausta ja isommassa porukassa* (molemmat puolet kumoutuivat erässä 15). Toinen grillaus
+korjasi kohdan 36 otsikon muttei huomannut että kohta 65 siteerasi samaa kumoutunutta muotoa.
+Luonnehdinnat korjattiin kumoutumattomiin.
+
+**6. Ohentunut superlatiivi ilman merkintää (kohta 77).** Väite Koputuksesta pelinä joka hyötyy
+sovellusmuodosta eniten kapeni kohdassa 89 (Läpsyn pöytäesteen sovellus poistaa
+täydellisimmin), eikä kohdassa 77 ollut siitä merkintää. Sama muoto kuin toisen grillauksen
+löydös 4. Viite lisättiin.
+
+**7. Viitevirhe (kohta 93).** Laiturilla pelattujen seitsemän pelin lähteeksi nimettiin kohta
+22, vaikka tieto on kohdassa 1 ja erässä 22; kohta 22 käsittelee muistista puhumista. Korjattu
+muotoon *erä 22, ks. kohta 1*. Samalla korjattiin kohdan 43 taittunut viite *(kohta 24 erän
+kuvaus)* muotoon *(erän 24 kuvaus, ks. kohta 15)*.
+
+**8. Luvun subjekti tarkistettiin ja jätettiin ennalleen.** Kohtien 3 ja 69 *kokeneen virhe
+kahdeksasta* laskee mukaan Läpsyn, jonka virhettä ei ole (nimettyjä virheitä on seitsemän).
+Sama laskutapa on `docs/BOTTIVERTAILU.md`:ssä, ja molemmissa sulkeet nimeävät poikkeuksen heti
+luvun perässä, joten luku kulkee subjektinsa kanssa eikä sitä muutettu; kirjattu tähän jottei
+sama tarkistus toistu.
+
+**Kuusi tarkistettavaa väitettä tarkistettiin, ja kaikki pitivät.** Kohdan 92 nimimäärä täsmää
+koodiin (`LAITURI_SPECIAL` sisältää 25 nimeä), kohtien 76 ja 93 pelaajakatto täsmää
+(`App.jsx` antaa kaikille yhdeksälle `maxPlayers: 4`), kohdan 88 sanaväite täsmää (`MAIJA.md`
+ei sisällä sanoja *sivusta*, *siirto* eikä *passaus* sanatarkasti), kohdan 6 Kultakala-vartijan
+raja täsmää (`playerCount + 1` kahdessa kohdassa koodia), kohdan 79 passiesto täsmää
+(`Ristiseiska.jsx` tarkistaa `hasAnyPlay`in ja lokittaa `cantPass`), ja kohdan 70 ristiviite
+täsmää (Itun `SUBSTANSSI.md`:n kohdat 17, 20 ja 39 ovat olemassa ja käsittelevät linkkejä).
+
+**Mitä grillaus ei löytänyt.** Yhtään keksittyä substanssia eikä yhtään ratkaisematonta
+ristiriitaa Tommin vastausten välillä. Painotus siirtyi edelleen samaan suuntaan kuin
+ensimmäisestä toiseen: sisältövirheistä ylläpitovirheisiin. Uutta lajia on löydös 2, jossa
+vanhentuneen avoin-merkinnän seuraus (uudelleenkysyntä) oli jo tapahtunut ja jäänyt itsekin
+kirjaamatta: vikamuoto ei siis vain tuota ylimääräisiä kysymyksiä vaan myös aliarvioi omaa
+esiintymistään.
