@@ -3015,10 +3015,11 @@ on vahvin yksittäinen näyttö kohdan 34 linjasta: valikoiman peruste ei ole mi
 sekään kuinka paljon peliä on itse pelannut. Läpsy on kanonissa helppo ja reaktiopeli, eli se
 täyttää kokoelmassa paikan jota mikään muu ei täytä.
 
-**Avoin:** miksi Koputusta ei pelattu usein, kun sen paras kokoonpano oli tiedossa ja
+~~**Avoin:** miksi Koputusta ei pelattu usein, kun sen paras kokoonpano oli tiedossa ja
 hauskaksi todettu. Ja erikseen: pelattiinko muitakin pelejä yli neljällä, vai onko Koputus
-ainoa jonka pöytä kasvoi kanonin ulkopuolelle. Jälkimmäinen ei ole enää kysymys sovelluksen
-rajasta vaan pöydän käytännöstä, koska raja on nyt perusteltu.
+ainoa jonka pöytä kasvoi kanonin ulkopuolelle.~~ *(Edellinen vastattu erässä 60, ks. kohta 77;
+jälkimmäinen erässä 73, ks. kohta 93: muitakin pelattiin, ja Koputus ei ollut poikkeus vaan
+sääntö.)*
 
 ## 77. Harvinaisuuden syy on opettaminen ja keskittyminen, ja Moska on säännön poikkeus
 
@@ -3726,6 +3727,61 @@ voi palauttaa muistiin kysymällä.
 vastaus pysyy samassa rajassa. Dokumentti ei kerää tietoa Laiturin ihmisistä eikä se ole tämän
 kohdan tarkoitus; kohta 1 rajaa taustan kirjaamisen erikseen, ja tämä kohta kirjaa vaihtuvuuden
 tahdin koska mekanismit riippuvat siitä.
+
+## 93. Laiturin pöytä ylitti neljän rajan kaikissa paitsi Läpsyssä
+
+Tommi 21.8.2026 (erä 73), kysyttäessä pelattiinko muitakin pelejä yli neljällä vai onko Koputus
+ainoa jonka pöytä kasvoi kanonin ulkopuolelle:
+
+> *muitakin pelejä pelattiin yli neljällä pelaajalla (poislukien läpsy 3-4 pelaajaa, kasino ja
+> seiska ei pelattu laiturilla ollenkaan)*
+
+**Kohdan 76 löydös ei ollutkaan poikkeus vaan sääntö, ja se on tämän kohdan tärkein rivi.**
+Koputuksen 4-6 pelaajaa luettiin siellä ensimmäiseksi tapaukseksi jossa pöytäkäytäntö ei mahdu
+sovellukseen. Tapauksia onkin kuusi seitsemästä. Laiturilla pelatuista peleistä (viisi Laiturin
+omaa ja kaksi lapsuudesta, kohta 22) **vain Läpsy pysyi kanonin rajoissa**.
+
+| Peli | Kanoni | Laiturin pöytä |
+|---|---|---|
+| Ristiseiska | 3-4 | yli neljä |
+| Paskahousu | 2-4 | yli neljä |
+| Moska | 2-4 | yli neljä |
+| Maija | 2-4 | yli neljä |
+| Koputus | 2-4 | 4-6 (kohta 76) |
+| Kultakala | 2-4 | yli neljä |
+| Läpsy | 2-4 | 3-4 |
+| Kasino, Seiska | 2-4 | ei pelattu Laiturilla |
+
+**Sovelluksen ja pöydän ero on siis järjestelmällinen eikä yksittäinen.** Kohta 76 kirjasi
+neljän katon tietoiseksi rajaukseksi (pieni näyttö, oppimiskäyttö), ja se pitää muuttumattomana.
+Muuttuu vain mittakaava: **sovellus ei kavenna yhtä peliä vaan lähes koko sitä pöytää josta
+kokoelma on peräisin.** Tämä ei ole vika eikä siitä seuraa toimenpidettä, mutta se on eri asia
+kuin mitä kohta 76 antoi ymmärtää.
+
+**Läpsyn poikkeus osuu kohtaan 89, ja yhteys on merkittävä.** Läpsy oli ainoa peli joka pysyi
+neljässä, ja se on sama peli jonka esti pöydän koko: isossa suorakulmaisessa pöydässä kaikilta
+paikoilta ei yllä läpsäämään. **Mitä enemmän pelaajia, sitä useampi istuu kaukana keskeltä**,
+joten pelaajamäärän kasvattaminen olisi pahentanut juuri sitä ongelmaa joka pelin muutenkin
+esti. Kaksi erikseen kysyttyä asiaa (miksi Läpsy jäi väliin, mikä oli pelaajamäärä) osoittavat
+siis samaan fyysiseen syyhyn. Tämä on kirjoittajan päätelmä, ja Tommi nimesi luvun muttei sen
+syytä.
+
+**Seuraus kohdan 73 ikkunoihin, ja se sopii yhteen.** Avausikkunassa oli koolla yhdestä
+kolmeen ryhmää, eli mahdollisesti paljon väkeä. Kaikki kolme ikkunapeliä (Ristiseiska,
+Paskahousu, Moska) skaalautuivat yli neljän, joten ne olivat pelattavissa täydessä pöydässä.
+Läpsy ei ollut. **Skaalautuminen ei kuitenkaan erota ikkunapelejä keskiosan peleistä**, koska
+Maija, Koputus ja Kultakala skaalautuivat myös; se on välttämätön ehto siinä missä avoimuus
+(kohta 87), ei erotin.
+
+**Seuraus kohdan 72 avoimeen, ja se kaventuu mutta ei sulkeudu.** Kohta 72 jätti auki
+tarkoittiko *riippuen kuinka moni oli paikalla* Moskan pelaajamäärän ylärajaa vai osaavien
+pelaajien alarajaa. **Yläraja on nyt lähes poissuljettu**, koska Moskaa pelattiin yli neljällä
+eikä pelaajamäärä siis ollut sen este. Jäljelle jää osaavien alaraja, mikä sopii kohtaan 77
+(Moska vaati oppimista) ja kohtaan 92 (uusia kasvoja kuukausittain). Tätä ei silti merkitä
+vastatuksi, koska Tommi ei ole sitä sanonut ja päätelmä on kirjoittajan.
+
+**Rajaus:** *yli neljä* ei ole luku. Koputuksesta tiedetään 4-6, muista vain että raja ylittyi.
+Kuinka paljon yli, ei ole kysytty eikä sitä arvata.
 
 ---
 
