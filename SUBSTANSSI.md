@@ -3553,6 +3553,53 @@ se on reaktiopeli, joten tämän kohdan ehto ei erota sitä. Läpsy on lisäksi 
 **Rajaus:** vastaus kertoo miksi Moska valittiin Maijan sijaan, ei sitä että Maija olisi huono
 peli. Maija on kokoelmassa ja kanonissa keskitasoinen, eikä tästä seuraa sille mitään.
 
+## 89. Läpsyn esteenä oli pöydän muoto, ja se on kolmas selittäjien laji
+
+Tommi 21.8.2026 (erä 69), kysyttäessä mikä Läpsyssä sai sen jäämään väliin vaikka se täytti ne
+ehdot jotka pitivät muut pelit pöydässä:
+
+> *läpsy on nopeaa ja lisäksi fyysinen rajoite eli isossa suorakulmaisessa pöydässä ei kaikilta
+> paikoilta yllä läpsäämään nousematta tuolilta*
+
+**Selittäjä ei ole peli eikä pelaaja vaan tila, ja se on dokumentissa uusi laji.** Tähän asti
+päivän rakennetta on selitetty kahdella: **pelin ominaisuuksilla** (avoimuus kohdassa 87,
+osallistuminen kohdassa 88) ja **pelaajien ominaisuuksilla** (oppimiskustannus ja keskittyminen
+kohdassa 77). Tämä on kolmas: **tilan ominaisuus**. Pöytä oli iso ja suorakulmainen, eivätkä
+kaikki paikat yltäneet keskelle.
+
+**Kaksi tekijää yhdessä, eivätkä kumpikaan yksin.** Nopeus ei olisi ongelma jos kaikki yltäisivät,
+eikä ulottumattomuus olisi ongelma hitaassa pelissä jossa ehtii nousta. **Läpsy on ainoa peli
+jossa nopeus ratkaisee**, ja siksi se on ainoa jossa istumapaikka ratkaisee. Peli ei siis ollut
+epäreilu sääntöjensä vaan pöydän vuoksi, ja lopputulos oli sama: osa pelaajista hävisi
+paikkansa takia.
+
+**Tämä sulkee kohtien 87 ja 88 viimeisen aukon.** Kohta 87 nimesi kaksi peliä joita avoimuus ei
+erottanut, ja kohta 88 selitti Maijan osallistumisella. Läpsy jäi selittämättä, ja nyt tiedetään
+ettei syy ollutkaan pelissä lainkaan. **Kaikki neljä keskiosaan jäänyttä peliä on nyt selitetty**,
+ja selitykset ovat kolmea eri lajia: Koputus ja Kultakala ovat piilotettuja (oppiminen ja
+keskittyminen), Maijasta puuttuu osallistuminen, ja Läpsyn esti pöytä.
+
+**Tämä on dokumentin puhtain esimerkki siitä mitä substanssi tarkoittaa.** `LAEPSY.md` ei voi
+tietää pöydän muotoa, eikä sitä saa gitistä, koodista eikä kanonista. Se ei ole pelin sääntö
+eikä sovelluksen ominaisuus, ja silti se selittää yhden yhdeksästä pelistä koko aseman siinä
+ympäristössä josta kokoelma on peräisin. **Tieto on saatavissa vain lähteeltä**, ja se on koko
+haastattelun peruste yhtenä esimerkkinä.
+
+**Yhteys kohtaan 76, ja se on kirjoittajan päätelmä joka saa kaatua.** Iso suorakulmainen pöytä
+selittäisi myös sen miten Koputusta pystyttiin pelaamaan 4-6 pelaajalla: pöytä johon ei yllä
+keskeltä on pöytä jonka ääreen mahtuu paljon väkeä. Sama fyysinen tosiasia toimisi siis yhtä
+peliä vastaan ja toista puolesta. Tommi ei sanonut tätä, eikä pöydän kokoa ole kysytty
+Koputuksen yhteydessä.
+
+**Seuraus sovellukseen, ja se täydentää kohdan 77 havainnon pariksi.** Sovellus poistaa
+istumapaikan kokonaan: ruudulla kaikki yltävät yhtä hyvin ja reaktioaika on ainoa erottaja.
+**Läpsy on siis se peli jonka pöytäesteen sovellus poistaa täydellisimmin**, kun Koputus on se
+joka hyötyy eniten opettamisen poistumisesta (kohta 77). Eri pelit hyötyvät siis eri esteen
+poistumisesta, eikä sovelluksen arvo ole yhtä ja samaa kaikille yhdeksälle.
+
+**Rajaus:** vastaus koskee Laiturin pöytää eikä Läpsyä pelinä. Se ei kerro pelattiinko Läpsyä
+muualla enemmän, eikä se selitä kohdan 65 nykyistä tylsyyttä, joka on eri asia ja eri ajassa.
+
 ---
 
 ---
