@@ -2171,6 +2171,10 @@ suunnasta. Kahden pelaajan lista (Kultakala ja Koputus) kertoo mihin vaihdettiin
 oli kaksi, ei sitä missä kokoonpanossa peli eli. Koputus kesti kahden pelaajan asetelman,
 mutta sen tavallinen pöytä oli iso.
 
+*Tarkennettu erässä 59, ks. kohta 76: iso porukka tarkoitti 4-6 pelaajaa, eli enemmän kuin
+kanonin maksimi. Ja kohdan otsikon `useimmin` on suhteellinen eikä absoluuttinen: Koputusta ei
+pelattu usein, mutta kun pelattiin, pöytä oli iso.*
+
 **Seuraus** *(kirjoittajan päätelmä)*: täsmäys selittää miksi iso pöytä oli pelin parhaimmillaan.
 Mitä enemmän pelaajia, sitä useampi voi kilpailla samasta täsmäyslyönnistä, joten pelin
 nopeuselementti elää pelaajamäärästä. Kahdella jäljelle jää muistipeli ilman kilpailua
@@ -2930,8 +2934,88 @@ tarkoittaa neljää pelaajaa vastakohtana kahdelle eikä kaikkia ryhmiä, tai ke
 olla isoja pöytiä. Edellinen on uskottavampi, koska kanonin maksimi on neljä pelaajaa, mutta
 kumpaakaan ei ole kysytty.
 
-**Avoin:** kuuluiko Läpsy päivittäin pelattuihin vai ei, ja tarkoittaako kohdan 50 *iso porukka*
-neljää pelaajaa vai koko talon läsnäoloa.
+~~**Avoin:** kuuluiko Läpsy päivittäin pelattuihin vai ei, ja tarkoittaako kohdan 50 *iso porukka*
+neljää pelaajaa vai koko talon läsnäoloa.~~
+
+*Molemmat sulkeutuivat erässä 59, ks. kohta 76: Läpsyä ei pelattu joka viikko, ja iso porukka
+oli 4-6 pelaajaa.*
+
+## 76. Koputuksen paras kokoonpano oli 4-6 pelaajaa, eli suurempi kuin sovellus sallii
+
+Tommi 21.8.2026 (erä 59), kysyttäessä tarkoittiko kohdan 50 *iso porukka* neljää pelaajaa
+vastakohtana kahdelle vai enempää kuin neljää:
+
+> *4-6 pelaajaa koputuksessa teki pelistä tosi hauskaa, sitä ei pelattu usein*
+>
+> *läpsyä ei pelattu joka viikko*
+
+**Vastaus on kolmas vaihtoehto: se ylittää kanonin.** Kysymyksen molemmat haarat olettivat
+neljän olevan katto, koska se on kanonin maksimi kaikissa yhdeksässä pelissä. Pöydässä Koputusta
+pelattiin **kuudella**, ja se on ensimmäinen kerta kun tämä dokumentti tapaa pöytäkäytännön joka
+ei mahdu sovellukseen lainkaan.
+
+**Todennettu koodista 21.8.2026:** `App.jsx` antaa jokaiselle yhdeksälle pelille
+`maxPlayers: 4`, ja `CLAUDE.md`:n taulukko sanoo saman. **Koputuksen paras kokoonpano ei siis
+ole pelattavissa sovelluksessa.**
+
+**Raja on tietoinen, ja perustelu saatiin samassa erässä.** Tommi 21.8.2026, ilman että sitä
+kysyttiin:
+
+> *jako on rajoitettu 4 max, koska pieneen näyttöön ja oppimiskäyttöön se riittää*
+
+**Kyseessä ei siis ole aukko vaan rajaus, ja se on kirjattava ennen kuin edellinen kappale
+luetaan puutteeksi.** Kaksi perustetta, ja ne ovat eri lajia: **pieni näyttö** on tekninen
+(kuusi pelaajaa ei mahdu puhelimen ruudulle luettavasti) ja **oppimiskäyttö** on tarkoituksen
+rajaus (sovellus opettaa pelin, ei korvaa pöytää). Jälkimmäinen on painavampi, koska se sanoo
+mihin sovellus tähtää: neljä riittää sille joka opettelee, vaikkei riitä sille joka jo osaa ja
+haluaa parhaan kokoonpanon.
+
+**Seuraus, ja se on tämän kohdan täsmällisin:** pöydän ja sovelluksen ero on tässä **valittu
+eikä johtunut**. Kohdat 72 ja 73 nimesivät kaksi pöydän rajoitetta (oppimiskustannus, puolen
+tunnin ikkuna) jotka sovellus poistaa; tämä on ensimmäinen tapaus jossa sovellus **asettaa**
+rajoitteen jota pöydässä ei ollut. Suunta on siis päinvastainen kuin aiemmin, ja perustelu on
+sama tarkoitus: oppiminen.
+
+Sillä on koodijalanjälki, joten mahdollinen jatko (esimerkiksi se, muuttuuko raja koskaan
+työpöytänäytöllä) kuuluu projektin omiin dokumentteihin eikä tähän.
+
+**Ensimmäinen seuraus, ja se ratkaisee kohdan 75 jännitteen.** Kohta 50 ja kohta 73 eivät ole
+ristiriidassa, koska *useimmin* on suhteellinen. Koputusta ei pelattu usein, mutta kun sitä
+pelattiin, pöytä oli iso. Kohdan 50 otsikko kertoo siis mikä kokoonpano oli tyypillinen sille
+pelille, ei sitä kuinka usein peli tuli pelatuksi. Kaksi eri asiaa mahtui samaan sanaan.
+
+**Toinen seuraus, ja se on tämän kohdan kirpein.** Se kokoonpano joka teki Koputuksesta *tosi
+hauskaa*, oli myös harvinainen. Kuuden pelaajan pöytä edellyttää väkeä, ja väkeä oli koolla
+kahdessa puolen tunnin ikkunassa (kohta 73), jotka olivat kolmen muun pelin paikka (kohta 74).
+Koputuksen paras muoto kilpaili siis suoraan päivän vakiintuneen ohjelman kanssa. Tämä on
+kirjoittajan päätelmä eikä Tommin sanoma, ja se saa kaatua; Tommi nimesi harvinaisuuden muttei
+sen syytä.
+
+**Kolmas seuraus: dokumentti saa nyt tiheysportaan, ja se on kolmiportainen.** Kohdan 75 tieto
+ja tämä vastaus yhdessä antavat Laiturin peleille järjestyksen jota ei ole aiemmin ollut.
+
+| Tiheys | Pelit | Lähde |
+|---|---|---|
+| Päivän rakenteessa | Ristiseiska, Paskahousu, Moska | kohdat 73, 74 |
+| Ei joka päivä | Kultakala, Koputus, Maija | kohta 75 |
+| Ei joka viikko | Läpsy | tämä kohta |
+| Ei usein, tarkennus | Koputus | tämä kohta |
+
+Taulukko on koottu vastauksista eikä kysytty sellaisenaan, joten portaiden rajat ovat
+karkeat. Koputus esiintyy kahdesti, koska *ei joka päivä* ja *ei usein* ovat eri lauseita
+eivätkä välttämättä sama taso.
+
+**Neljäs seuraus, ja se osuu kokoelman koostumukseen.** Läpsy on Laiturin peleistä harvimmin
+pelattu ja se on silti kokoelmassa. Kohta 65 kertoo lisäksi että Läpsy on Tommille tätä nykyä
+tylsä. Peli on siis mukana vaikka se ei ollut usein pöydässä eikä ole nykyään suosikki, ja se
+on vahvin yksittäinen näyttö kohdan 34 linjasta: valikoiman peruste ei ole mieltymys eikä
+sekään kuinka paljon peliä on itse pelannut. Läpsy on kanonissa helppo ja reaktiopeli, eli se
+täyttää kokoelmassa paikan jota mikään muu ei täytä.
+
+**Avoin:** miksi Koputusta ei pelattu usein, kun sen paras kokoonpano oli tiedossa ja
+hauskaksi todettu. Ja erikseen: pelattiinko muitakin pelejä yli neljällä, vai onko Koputus
+ainoa jonka pöytä kasvoi kanonin ulkopuolelle. Jälkimmäinen ei ole enää kysymys sovelluksen
+rajasta vaan pöydän käytännöstä, koska raja on nyt perusteltu.
 
 ---
 
