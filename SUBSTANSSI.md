@@ -1070,6 +1070,9 @@ Laajuus kysyttiin erässä 41, ja Tommi vastasi 20.8.2026 listan ulkopuolelta:
 
 > *en ymmärrä enää mitä yritinkään sanoa*
 
+*Ratkeamattomuus purkautui erässä 76, ks. kohta 100: kysyttynä konkreettisena tilanteena lause
+avautui, ja se osoittautui kapeammaksi kuin alla oleva luenta.*
+
 Avoin sulkeutuu ratkeamattomana: lähde ei enää tavoita oman lauseensa tarkoitusta, joten
 laajuutta ei voi kysyä uudelleen eikä vastausta yleistetä. Alkuperäinen lause jää kohtaan
 sellaisena kuin se lausuttiin, ja kaikki siitä vedetty on kirjoittajan luentaa jolla ei ole
@@ -4180,3 +4183,35 @@ koska vastaus ei nimeä mitä tarinan osaa se tarkoittaa, eikä sitä arvata pid
 
 **Seuraus, jos luenta pitää:** kohdan 97 poissaolohavainto koskee kolmea peliä yhdeksästä eikä
 kahta. Tätä ei kirjata kohtaan 97, koska se lepäisi luennalla eikä vastauksella.
+
+
+## 100. Maijan tieto tulee pöydästä, ja hymy ei ole kanava
+
+Tommi 22.8.2026 (erä 76), avatessaan kohdan 25 lauseen kontekstia:
+
+> *vain jos Maija on pelattu pöytään, niin tiedetään kuka sen viimeksi nosti. joku saattaa
+> hymyillä, mutta eihän sitä edes tiedä liittyykö pöytäpuheisiin vai hymyileekö muuten vaan*
+
+**Kohdan 25 ratkeamattomaksi jäänyt avoin ratkeaa, ja se ratkeaa kapeampana kuin luenta oli.**
+Siellä pääteltiin että puhe on kolmesta kanavasta heikoin ja että se on pelattujen korttien
+tulkintaa. Vastaus sanoo vähemmän ja tarkemmin: **tieto on pöydässä ja vain siellä.** Kun Maija
+on pelattu, tiedetään kuka sen viimeksi nosti, ja se on koko tiedon määrä. Kaikki sitä
+edeltävä on tulkintaa jonka kohteesta ei voi olla varma.
+
+**Hymy ei ole heikko kanava vaan ei kanava lainkaan, ja se on tämän kohdan terävin osa.** Kohta
+25 luki ilmeen kolmanneksi kanavaksi puheen ja muistin rinnalle. Tommi kaataa sen eri
+perusteella kuin heikkoudella: hymyilijästä ei tiedä liittyykö hymy peliin ollenkaan. Signaali
+jonka lähdettä ei voi tunnistaa ei ole heikko signaali vaan kohinaa, ja ero on
+tiedon lajissa eikä sen määrässä.
+
+**Seuraus, ja se on sovellukselle myönteinen:** kohta 25 päätteli että sovelluksesta puuttuu
+pöytäpuhe ja että se on menetys. Tämän valossa menetys on pienempi kuin luultiin. Se mikä
+pöydässä oli oikeaa tietoa (kuka nosti Maijan) on sovelluksessa tallella lokissa ja botin
+muistissa, ja se mikä puuttuu (puhe ja ilme) oli lähteen omankin arvion mukaan tulkintaa jonka
+kohde on epävarma. Sovellus ei siis kadota kanavaa vaan kohinan.
+
+**Seuraus:** tämä on kolmas kerta kun lähde kumoaa kirjoittajan luennan omasta lauseestaan
+(kohdat 25 ja 58 ovat aiemmat), ja ensimmäinen kerta kun se tapahtuu lauseelle joka oli jo
+kirjattu ratkeamattomaksi. Ratkeamattomuus ei siis ole pysyvä tila: kysymys jonka lähde ei
+tavoita muotoiltuna abstraktina voi aueta kun se kysytään konkreettisena tilanteena. Tämä on
+kirjoittajan päätelmä eikä Tommin lause, ja se on menetelmähavainto eikä substanssia.
