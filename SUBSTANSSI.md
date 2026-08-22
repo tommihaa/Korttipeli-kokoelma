@@ -790,6 +790,9 @@ pelattiin jatkamisen eikä voittamisen vuoksi, ja Tommi käytti vastauksessaan i
 **Avoin:** vastaus ei kerro kumpi kahdesta menettelystä oli tavallisempi, eikä sitä mitä
 tehtiin jos järjestäjä oli itse osapuoli erimielisyydessä.
 
+*Menettely tarkentui erässä 75, ks. kohta 96: argumentoitiin ja sovittiin, eikä ehto ollut vain
+panoksen puute vaan rakkaus lajiin.*
+
 Ensimmäinen puoli kysyttiin erässä 42, ja Tommi valitsi 20.8.2026 monivalinnasta vaihtoehdon
 *yhteisymmärrys*: useimmiten sovittiin porukalla ilman ratkaisijaa. Järjestäjän sana oli siis
 varamenettely eikä ensisijainen, mikä sopii erän 21 täydennykseen: kun voitolla ei ollut niin
@@ -1196,6 +1199,10 @@ esimerkkiä ei Kasinosta vielä ole.
 
 *Kysyttiin erässä 12 ja jää avoimeksi, ks. kohta 35: pöytäversiossa ei ollut rakennelmia eikä tilanne noussut esiin.*
 
+*Aukon syy nimettiin erässä 75, ks. kohta 97: pöydässä pelaamisesta on vuosikymmeniä, joten
+yksittäisiä tilanteita ei ole muistissa noudettavaksi. Avoin on siis sulkeutumaton eikä
+kysymättä jäänyt.*
+
 ---
 
 ## 30. Molempia opiskelukaverin pelejä pelattiin, ja ajankohta oli ennen internetiä
@@ -1271,6 +1278,9 @@ ole vielä kysytty järjestelmällisesti.
 
 **Avoin:** kumman suuntainen sukulaisuus on, jää tässä kysymättä ja kirjaamatta. Se kuuluu
 korttipelien yleiseen kirjallisuuteen, jota menetelmäosion mukaan ei toisteta täällä.
+
+*Kohtaan vastattiin erässä 75 eri asiasta, ks. kohta 99: Seiskan tarina on Kasinon tarina.
+Sukulaisuuden suunta on yhä kysymättä.*
 
 ---
 
@@ -1486,6 +1496,8 @@ jokainen sai pisteitä käteen jääneistä korteistaan, pantin haltija lisäksi
 voitti se jolla oli lopussa vähiten pisteitä. Se mikä laukaisi pelin päättymisen (pisteraja,
 kierrosmäärä vai jokin muu) ei ole muistissa, ja se kirjataan sellaisenaan eikä täytetä
 päättelemällä.
+
+*Sulkeutui erässä 75, ks. kohta 98: laukaisin oli sadan pisteen raja, ja sen saavuttanut hävisi.*
 
 **Seuraus:** kohdan 37 varovaisuus pantin mekaniikasta osoittautui aiheettomaksi kierroksen
 sisällä. Kierros päättyi samalla tavalla kuin sovelluksessa (ensimmäinen tyhjä käsi), joten
@@ -4031,3 +4043,140 @@ ensimmäisestä toiseen: sisältövirheistä ylläpitovirheisiin. Uutta lajia on
 vanhentuneen avoin-merkinnän seuraus (uudelleenkysyntä) oli jo tapahtunut ja jäänyt itsekin
 kirjaamatta: vikamuoto ei siis vain tuota ylimääräisiä kysymyksiä vaan myös aliarvioi omaa
 esiintymistään.
+
+---
+
+## 95. Muunnelmat ovat alueellisia, ja siksi yksityiskohta jäi mieleen
+
+Tommi 22.8.2026 (erä 75), palatessaan kohdan 2 kysymykseen siitä mistä kukin sääntömuunnelma
+on peräisin:
+
+> *todennäköisesti jäänyt mieleen kun asunut muualla päin Suomea, monet yksityiskohdat on
+> alueellisia*
+
+Vastaus ei nimeä yksittäisen asetuksen lähdettä vaan kertoo mekanismin josta ne kaikki tulevat:
+sama peli pelataan eri paikkakunnilla eri yksityiskohdilla, ja Tommin oma muunnelmavalikoima on
+kertynyt asuinpaikkojen yli. Kohdan 2 aukko oli jo suljettu erissä 12 ja 13, joten tämä ei
+sulje sitä uudelleen vaan kertoo miksi muunnelmia oli olemassa muistettavaksi.
+
+**Seuraus, ja se osoittaa suoraan teesiin:** *siksi ei standardia vaan vaihtoehtoja* saa tässä
+maantieteellisen perustan. Kohta 17 selitti miksi muunnelmat säilyivät (panoksettomuus teki
+väärästä tulkinnasta halvan), ja tämä selittää miksi niitä ylipäätään oli useampi kuin yksi:
+sama peli oli opittu eri paikoissa eri tavoin. Asetusrivi sovelluksessa ei siis ole
+sääntöepävarmuutta vaan kartta.
+
+**Seuraus:** tämä on neljäs akseli Tommin pelihistoriassa. Kohta 1 sijoittaa oppimisen kolmeen
+elämänvaiheeseen ja kohta 30 nimeää ajan aikakautena, ja tässä tulee paikka. Yhdeksän pelin
+valikoima ei ole yhden pöydän perintöä vaan kertynyt ajan, elämänvaiheen ja paikkakunnan yli.
+Tämä on kirjoittajan päätelmä eikä Tommin lause.
+
+**Rajaus:** vastaus ei kerro mikä muunnelma tuli miltäkin paikkakunnalta, eikä sitä kysytä.
+Asuinpaikkojen luettelo olisi henkilötietoa julkisessa repossa, ja se on Tommin nostettava jos
+se on nostettava.
+
+## 96. Riita ratkesi argumentoimalla, ja panoksettomuus sai positiivisen nimen
+
+Tommi 22.8.2026 (erä 75), täydentäen kohtaa 17:
+
+> *argumentoitiin ja sovittiin, ei sen kummempaa. ei pelata rahasta tai kunniasta vaan
+> rakkaudesta lajiin*
+
+Vastauksessa on kaksi osaa. Ensimmäinen tarkentaa menettelyä: yhteisymmärrys ei syntynyt
+äänestämällä eikä auktoriteetin sanalla vaan argumentoimalla ja sopimalla, eikä siihen liittynyt
+mitään erillistä rituaalia. Toinen antaa kohdan 17 ehdolle nimen.
+
+**Kohdan 17 ehto kääntyy negatiivisesta positiiviseksi.** Siellä ehto oli *panosta ei ollut*,
+eli poissaolo. Tässä Tommi nimeää mitä tilalla on: pelataan rakkaudesta lajiin. Samalla hän
+sulkee toisen panoksen lajin jota kohdassa 17 ei ollut suljettu: kyse ei ole vain siitä ettei
+rahaa ollut pelissä, vaan siitä ettei **kunniaakaan** ollut. Kunnia olisi ollut panos joka ei
+näy pöydällä, ja se olisi voinut tehdä väärästä sääntötulkinnasta kallista ilman että kukaan
+maksaa mitään.
+
+**Seuraus:** tämä on kolmas kerta kun Tommi vastaa korttipelikysymykseen ääretön peli
+-kehyksellä (kohdat 17 ja 21 ovat aiemmat), eikä kertaakaan kysyttäessä siitä. Kokoelmatason
+arvolinssi ei siis ole peleihin jälkikäteen luettu tulkinta vaan se kieli jolla lähde itse
+kuvaa pöytäänsä.
+
+## 97. Kasino oli ensimmäinen peli jonka Tommi halusi tehdä tekoälyn kanssa, ja sääntötyö vei aikaa
+
+Tommi 22.8.2026 (erä 75), kohdan 29 avoimeen:
+
+> *kasinon opin 19 vuotiaana, en pelannut vuosikymmeniin, sovellusta sille ei löytynyt joten se
+> oli ensimmäinen korttipeli, jonka halusin tekoälyn kanssa tehdä, mutta vei aikaa ottaa
+> tarkasti selvää säännöistä ja tehdä valintoja*
+
+**Kohdan 29 avoin ei sulkeudu, ja se merkitään tähän eikä täytetä.** Kysymys koski sitä missä
+konkreettisessa tilanteessa pöydästä otetaan liian vähän, ja vastaus koskee Kasinon asemaa
+projektina. Konkreettista esimerkkiä ei siis edelleenkään ole, mutta nyt tiedetään miksi:
+pöydässä pelaamisesta on vuosikymmeniä, joten yksittäisiä tilanteita ei ole muistissa
+noudettavaksi. Aukko on sulkeutumaton eikä kysymättä jäänyt.
+
+**Neljä uutta tietoa, ja ne ovat eri painoisia.** Kasino opittiin 19-vuotiaana, mikä päivää
+kohdan 1 opiskeluajan ja kohdan 30 *ajan ennen internettiä* Tommin omaan ikään. Peliä ei
+pelattu vuosikymmeniin. Sille ei löytynyt sovellusta. Ja sääntöjen tarkka selvittäminen ja
+niistä tehdyt valinnat veivät aikaa.
+
+**Seuraus, ja se on koko kokoelman kannalta olennaisin:** kaksi yhdeksästä pelistä on
+rakennettu poissaolon päälle. Kasinolle ei löytynyt sovellusta, ja `SanaMix/SUBSTANSSI.md`
+kohta 5 sanoo saman suomenkielisestä sanapelistä. Rakentamisen syy ei siis kummassakaan ollut
+parempi versio olemassa olevasta vaan se ettei versiota ollut.
+
+**Seuraus:** tämä antaa syyn sille mitä `Superjatsi/SUBSTANSSI.md` kohta 22 kertoo
+järjestyksenä. Siellä Kasino ja Seiska nimetään ensimmäisiksi toteutuskandidaateiksi, ja tässä
+sanotaan miksi Kasino oli niistä se ensimmäinen. Sama kohta selittää myös miksi kandidaatti ei
+ollut se joka valmistui ensin: sääntötyö vei aikaa, ja Superjatsi oli valmiin taulukon
+digitointi.
+
+**Seuraus:** *tehdä valintoja* on sama työ jonka `docs/PELIKANONIT.md` kirjaa viitenä
+aloitusnäytön sääntövalintana (kohta 2). Tommi kuvaa sen tässä kustannuksena eikä
+ominaisuutena, ja se on eri näkökulma kuin kohdan 2 *yritin kanonisoida minkä voin*: sama teko
+lopputuloksena ja työmääränä.
+
+## 98. Lapsuuden Ristiseiskan laukaisin oli 100 pistettä
+
+Tommi 22.8.2026 (erä 75), kohdan 38 viimeiseen aukkoon:
+
+> *pelin päätyttyä jos jollain 100 pistettä, niin hävisi turnauksen. Se jolla oli vähiten
+> pisteitä voitti.*
+
+**Kohdan 38 avoin sulkeutuu.** Laukaisimen laji oli pisteraja, ja sen suuruus oli 100.
+Kierroksia pelattiin kunnes joku saavutti sadan pisteen rajan, ja se pelaaja hävisi
+kokonaisuuden; voittaja oli vähiten pisteitä kerännyt. Kaikki kohtien 37 ja 38 avoimet ovat nyt
+suljettuja.
+
+**Seuraus:** rakenne on häviäjäveto eikä voittajaveto. Sadan pisteen raja ei ole maali jota
+tavoitellaan vaan katto jota vältetään, ja voitto ratkeaa vasta kun joku on osunut kattoon.
+Kohta 38 sanoi jo että pisteet olivat sakkoa, ja tämä tekee samasta luvusta myös pelin
+päättymisen mekanismin: se toimii kellona ja rangaistuksena yhtä aikaa.
+
+**Seuraus:** kohdan 37 ensimmäinen seuraus vahvistuu kolmannen kerran. Sovelluksen Ristiseiska
+on lapsuuden pelin yksi kierros, ja lapsuuden muodossa sen päälle tuli sekä pistekerros että
+sadan pisteen lopetusehto. Sovelluksessa kumpaakaan ei ole, eikä tästä seuraa että niiden
+pitäisi olla: kohta 27 nimeää kierrosten yli kertyvän pistelaskun Kasinon vetovoimaksi, ja se
+on eri peli.
+
+**Rajaus, koska sana on Tommin eikä kirjoittajan:** vastaus käyttää sanaa *turnaus*
+monikierroksisesta kokonaisuudesta. Onko se lapsuuden pöydän oma sana vai tässä valittu, ei käy
+ilmi, eikä sitä yhdistetä kohdan 39 Laiturin turnauksiin. Ne ovat eri aika, eri paikka ja eri
+rakenne (sijoitusten summa useasta pelistä), ja yhteyden vetäminen olisi juuri se liian pitkä
+johtopäätös jonka menetelmäosio nimeää.
+
+## 99. Seiskan tarina on Kasinon tarina
+
+Tommi 22.8.2026 (erä 75), kohtaan 32:
+
+> *kyllä, seiskan tarina on kuin kasinon*
+
+**Mitä vastaus ei sano.** Kohdan 32 avoin koski Unon ja Seiskan sukulaisuuden suuntaa, ja se
+jää edelleen kysymättä ja kirjaamatta samasta syystä kuin ennenkin: se kuuluu korttipelien
+yleiseen kirjallisuuteen jota tässä ei toisteta. Vastaus koskee siis eri asiaa kuin kohdan 32
+avoin, ja se merkitään näin eikä luetella avoimen vastaukseksi.
+
+**Luenta, ja se on kirjoittajan.** *Kuin kasinon* viittaa kohdan 97 tarinaan, ja sen osat ovat
+kokoelmassa jo kirjattuina: Seiska opittiin samalta opiskelukaverilta samaan aikaan kuin Kasino
+(kohta 30), sitä ei pelattu vuosikymmeniin, sille ei ollut sovellusta, ja se oli toinen kahdesta
+ensimmäisestä toteutuskandidaatista (`Superjatsi/SUBSTANSSI.md` kohta 22). Luenta saa kaatua,
+koska vastaus ei nimeä mitä tarinan osaa se tarkoittaa, eikä sitä arvata pidemmälle.
+
+**Seuraus, jos luenta pitää:** kohdan 97 poissaolohavainto koskee kolmea peliä yhdeksästä eikä
+kahta. Tätä ei kirjata kohtaan 97, koska se lepäisi luennalla eikä vastauksella.
